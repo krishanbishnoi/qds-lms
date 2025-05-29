@@ -1,0 +1,689 @@
+.ck-editor__editable,
+textarea {
+    min-height: 150px;
+}
+
+.datatable {
+    width: 100% !important;
+}
+
+.dataTables_length,
+.dataTables_filter,
+.dt-buttons {
+    margin-bottom: 0.333em;
+    margin-top: .2rem;
+}
+
+.dataTables_filter {
+    margin-right: .2rem;
+}
+
+.dt-buttons .btn {
+    margin-left: 0.333em;
+    border-radius: 0;
+    display: none;
+}
+
+.table.datatable {
+    box-sizing: border-box;
+    border-collapse: collapse;
+}
+
+table.dataTable thead th {
+    border-bottom: 2px solid #c8ced3;
+}
+
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+    border-bottom: 1px solid #c8ced3;
+}
+
+.select2 {
+    max-width: 100%;
+    width: 100% !important;
+}
+
+.select2-selection__rendered {
+    padding-bottom: 5px !important;
+}
+
+.has-error .invalid-feedback {
+    display: block;
+}
+
+.btn-info,
+.badge-info {
+    color: white;
+}
+
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+    background-image: none;
+}
+
+.sidebar .nav-item {
+    cursor: pointer;
+}
+
+.btn-default {
+    color: #23282c;
+    background-color: #f0f3f5;
+    border-color: #f0f3f5;
+}
+
+.btn-default.focus,
+.btn-default:focus {
+    box-shadow: 0 0 0 .2rem rgba(209, 213, 215, .5);
+}
+
+.btn-default:hover {
+    color: #23282c;
+    background-color: #d9e1e6;
+    border-color: #d1dbe1;
+}
+
+.btn-group-xs>.btn,
+.btn-xs {
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+}
+
+.searchable-title {
+    font-weight: bold;
+}
+
+.searchable-fields {
+    padding-left: 5px;
+}
+
+.searchable-link {
+    padding: 0 5px 0 5px;
+}
+
+.searchable-link:hover {
+    cursor: pointer;
+    background: #eaeaea;
+}
+
+.select2-results__option {
+    padding-left: 10px;
+    padding-right: 0px;
+}
+
+
+
+/* Gunjan */
+ul.select2-selection__rendered {
+    padding-right: 30px !important;
+}
+
+ul.select2-selection__rendered:after {
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top: 5px solid #333;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+}
+.row.gstsub-card {
+    border-style: groove;
+    border: 5px solid #e7e0e024;
+    padding: 17px;
+    border-radius: 11px;
+    box-shadow: 3px 3px 3px 3px #dbd7d773;
+}
+.row.gst-card {
+    margin: 11px 2px 11px 2px;
+}
+.grp-f {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.grp-f label {
+    font-size: 12.5px;
+    background-color: #fff;
+    padding: 0px 5px;
+    position: absolute;
+    top: -7px;
+    color: #707070;
+    left: 11px;
+    font-weight: 500;
+}
+
+.tblM {
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid #E9E9E9;
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+.mainTbl {
+    background-color: #FBFBFB;
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+
+
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.sidebar {
+    background: #39246f;
+}
+
+.app-header {
+    background: #39246f;
+}
+
+.sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-primary {
+    background: #39246f;
+    border: none;
+}
+
+.card-header.heading-title {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.form-padding {
+    padding: 10px 104px;
+}
+
+.row.roomRow {
+    border: 1px solid #c3c3c3;
+    margin: 10px 0px 10px 0px;
+    padding: 20px 10px 5px 10px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.append-amenty {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.min-hight-update {
+    min-height: auto;
+}
+
+.form-control {
+    background-color: #72cdce12;
+}
+
+.dropzone {
+    background: #72cdce12;
+}
+
+.select2-container .select2-selection--multiple .select2-selection__rendered {
+    background-color: #72cdce12;
+    padding: 0px 10px !important;
+}
+
+span.select2-selection.select2-selection--single {
+    background: #72cdce12;
+}
+
+.alert-warning {
+    color: #f5123c;
+    background-color: #fff;
+    border-color: #fff;
+    padding: 0;
+}
+
+.alert-danger {
+    color: #fff;
+    background-color: #39246f;
+    border-color: #39246f;
+
+}
+
+i.fa.fa-info-circle.info-icon {
+    font-size: 16px;
+    padding: 7px;
+}
+
+.second-step,
+.thired-step,
+.forth-step {
+    display: none;
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+    width: 50%;
+}
+
+table.dataTable tbody td.select-checkbox,
+table.dataTable tbody th.select-checkbox {
+    position: unset;
+}
+
+table.dataTable tbody td.select-checkbox:before,
+table.dataTable tbody th.select-checkbox:before {
+    content: none;
+}
+
+.text-end a:hover {
+    color: #fff;
+}
+
+
+.custom-new {
+    margin: 0px 0px 0px 26px;
+    color: #fff;
+
+}
+
+.custom-new label.form-check-label {
+    color: #fff;
+    font-size: 12px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 55px;
+    height: 25px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: red;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+
+}
+
+input:checked+.slider {
+    background-color: green;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    left: 7px;
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+
+/* Lokesh CSS Start */
+.app-body {
+    margin-top: 0px;
+}
+
+.ms-auto {
+    margin-left: auto !important;
+}
+
+.login-page .app.flex-row.align-items-center>.container {
+    max-width: 100%;
+    padding: 0px;
+}
+
+.textstep {
+    font-size: 42px;
+    font-weight: 500;
+    color: var(--whiteText);
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+
+}
+
+.tophotels p {
+    color: #3A266B;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.tophotels {
+    background-color: #F9F9F9;
+    padding: 0px 15px;
+    margin-bottom: 10px;
+}
+
+.arrowinfo {
+    position: absolute;
+    right: 5px;
+    bottom: 8px;
+}
+
+.chartredial {
+    width: 100%;
+    height: 370px;
+}
+
+.header-fixed .app-header {
+    width: 100%;
+    display: flex;
+}
+
+.sidebar .nav-dropdown.open {
+    background: #0000;
+}
+
+.sidebar-fixed.sidebar-lg-show .sidebar .nav {
+    width: 250px;
+}
+
+.text-end {
+    text-align: right !important;
+}
+
+span.requiredErr {
+    color: red;
+    font-size: 12px;
+    padding: 5px 0px;
+    display: block;
+}
+
+.admin-panel header.app-header.navbar {
+    width: 100%;
+}
+
+.sampleHotelImport-btn {
+    float: right;
+}
+.filter-hotel{
+    float: right;
+}
+
+.customTableOuter {
+    height: 300px;
+    overflow-y: scroll;
+    margin: 20px 20px 40px 20px;
+    padding: 10px;
+}
+
+.customTableOuter table,
+.customTableOuter table th,
+.customTableOuter table td,
+.customTableOuter table tr {
+    margin: auto;
+    text-align: center;
+    padding: 17px;
+    border: 1px solid #c3c3c3;
+}
+
+.customTableOuter table ol li {
+    list-style: initial;
+}
+
+.customTableOuter ol {
+    text-align: left;
+}
+
+.customTableOuter table {
+    width: 100%;
+    background: #fafaff;
+}
+
+span.error {
+    color: red;
+    font-size: 12px;
+}
+
+span.error.checking {
+    color: green;
+}
+
+.main .container-fluid {
+    padding-top: 40px !important;
+}
+
+.tab-content {
+    border: none;
+    margin-top: 5px;
+}
+
+.customTableOuter table.table tr td:nth-child(4) {
+    width: 70%;
+}
+
+.removeRoom {
+    text-align: right;
+    font-size: 15px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.roomNumbers {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.btn.btn-xs i {
+    font-size: 12px;
+}
+
+table.table td,
+table.table th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+div#DataTables_Table_0_wrapper th.status span {
+    font-size: 10px;
+}
+
+div#DataTables_Table_0_wrapper th.status {
+    width: 10% !important;
+}
+
+th.action {
+    width: 15% !important;
+}
+
+table.table td {
+    font-size: 12px;
+}
+
+table.table th {
+    font-size: 14px;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background-color: #67BEC5;
+    border-radius: 10px;
+}
+
+.sidebar .nav-item {
+    font-size: 14px;
+}
+.admin-panel li.nav-item.nav-dropdown.open li.nav-item a {
+    padding-left: 30px;
+}
+.btn-primary:focus {
+    box-shadow: none !important;
+}
+.btn:hover {
+    /* background-color: #20a8d8; */
+}
+table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+    border-bottom-width: 1px;
+}
+.dropzone .dz-preview .dz-image img {
+    display: block;
+    width: 100%;
+}
+.loadingGif {
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.loadingGif img {
+    height: 20px;
+}
+.roomList .room-card .amtIcon img, .roomList .room-card .bedIcon img, .roomInfo img  {
+    height: 15px;
+}
+.roomList .room-card .amtIcon, .roomList .room-card .bedIcon, .roomInfo img {
+    margin-right: 5px;
+}
+.roomList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    text-transform: capitalize;
+    justify-content: space-around;
+}
+.room-card h6 {
+    font-size: 12px;
+}
+.room-card {
+    flex: 0 0 45%;
+    box-shadow: 0px 0px 8px 5px #d2d2d2;
+    border-radius: 10px;
+    padding: 15px;
+    position: relative;
+    cursor: pointer;
+}
+.room-card:hover {
+    background: #d2d2d22e;
+}
+.room-card.selected:before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    right: -5px;
+    width: 25px;
+    height: 25px;
+    background-image: url(/images/checkmark.png);
+    background-size: cover;
+    background-color: #fff;
+    border-radius: 50px;
+}
+.amtlist .amtInfo {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    margin-right: 5px;
+}
+.amtlist {
+    display: flex;
+    text-align: center;
+    justify-content: flex-start;
+}
+.amtlist img {
+    margin-right: 5px;
+}
+.bedlist .bedInfo {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    margin-right: 5px;
+}
+.bedlist {
+    display: flex;
+    text-align: center;
+    justify-content: flex-start;
+}
+.roomInfo {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    text-transform: none;
+}
+.priceSection .price {
+    display: flex;
+    align-items: center;
+}
+.priceSection .price div {
+    margin: 0 0 0 5px;
+}
+.priceSection{
+    font-weight: 600;
+}
+.priceSection del {
+    color: red;
+    font-size: 12px;
+}
+.priceSection .sPrice {
+    color: #000;
+    font-weight: 800;
+}
+.priceSection .discount {
+    color: green;
+    font-size: 12px;
+}
+.room-card.selected {
+    background: #d2d2d245;
+    box-shadow: 0px 0px 8px 5px #39246f7d;
+}
+.invalid_bbc {
+    border-bottom-color: red !important;
+}
+.dropzone.dz-started .dz-message{
+    display: block !important;
+}

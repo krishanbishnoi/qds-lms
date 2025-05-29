@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="37.036" height="37.036" viewBox="0 0 37.036 37.036">
+  <g id="Group_36029" data-name="Group 36029" transform="translate(-241.964 -11728.838)">
+    <g id="twitter-circular-button" transform="translate(241.964 11728.838)">
+      <g id="Group_34323" data-name="Group 34323">
+        <path id="Path_35922" data-name="Path 35922" d="M37.036,18.518A18.518,18.518,0,1,0,18.518,37.036,18.518,18.518,0,0,0,37.036,18.518Zm-35.352,0A16.834,16.834,0,1,1,18.518,35.353,16.834,16.834,0,0,1,1.683,18.518Z" fill="#fff"/>
+      </g>
+    </g>
+    <g id="instagram" transform="translate(251.564 11738.438)">
+      <path id="Path_35924" data-name="Path 35924" d="M96.757,80.326H83.27a2.239,2.239,0,0,0-2.236,2.236V96.216a2.239,2.239,0,0,0,2.236,2.236H96.757a2.239,2.239,0,0,0,2.236-2.236V82.562A2.239,2.239,0,0,0,96.757,80.326Zm.118,15.89a.118.118,0,0,1-.118.118H83.27a.118.118,0,0,1-.118-.118V82.562a.118.118,0,0,1,.118-.118H96.757a.118.118,0,0,1,.118.118Z" transform="translate(-81.034 -80.326)" fill="#fff"/>
+      <rect id="Rectangle_749" data-name="Rectangle 749" width="2.426" height="2.226" transform="translate(12.07 3.706)" fill="#fff"/>
+      <ellipse id="Ellipse_206" data-name="Ellipse 206" cx="2.392" cy="2.392" rx="2.392" ry="2.392" transform="translate(6.588 7.568)" fill="#fff"/>
+      <path id="Path_35925" data-name="Path 35925" d="M119.789,152.111a3.816,3.816,0,1,1-7.631,0l.005-1.7h-1.706v6.328H121.49v-6.328H119.8Z" transform="translate(-106.993 -142.162)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

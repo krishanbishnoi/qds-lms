@@ -1,0 +1,87 @@
+.btn {
+	height: 46px;
+}
+
+select.form-control {
+	height: 46px;
+	appearance: revert;
+}
+
+.mr-2 {
+	margin-right: 10px;
+}
+
+.custom_pagination {
+	border-radius: 0.25rem;
+}
+
+.custom_pagination li.active a,
+.custom_pagination li a:hover {
+
+	background: #004183;
+	border-color: #004183;
+	color: #ffffff;
+}
+
+
+.custom_pagination li a {
+	position: relative;
+
+	display: block;
+	padding: 0.5rem 0.75rem;
+	margin-left: -1px;
+	line-height: 1.25;
+	color: #000;
+	background-color: #fff;
+	border: 1px solid #dee2e6;
+	text-decoration: none;
+}
+
+.custom_pagination {
+	margin-top: 25px;
+	justify-content: flex-end;
+
+}
+
+.custom_pagination li:first-child a,
+.custom_pagination li:last-child a {
+	border-radius: 0.25rem;
+}
+
+
+
+table tr th a,
+.table tr th {
+	color: #004183 !important;
+	text-decoration: none;
+    font-weight: 500;
+}
+
+td.action-td a {
+	width: 40px !important;
+	height: 40px !important;
+	border-radius: 50%;
+	padding: 0;
+
+	line-height: 39px;
+}
+
+
+ol.breadcrumb li.breadcrumb-item a {
+	color: #004183;
+	text-decoration: none;
+}
+
+table.table.table-hover tr td {
+	white-space: normal;
+}
+
+.table th,
+.table td {
+	padding: 10px 5px;
+}
+
+
+
+.email-details-modal p,.email-details-modal strong{     white-space: initial;
+    word-break: break-word; }
