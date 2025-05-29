@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="67.609" height="67.609" viewBox="0 0 67.609 67.609">
+  <defs>
+    <filter id="_19._Next" x="0" y="0" width="67.609" height="67.609" filterUnits="userSpaceOnUse">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_26044" data-name="Group 26044" transform="translate(-1088.195 -56.195)">
+    <g id="Ellipse_588" data-name="Ellipse 588" transform="translate(1097 65)" fill="#fff" stroke="#707070" stroke-width="1">
+      <circle cx="25" cy="25" r="25" stroke="none"/>
+      <circle cx="25" cy="25" r="24.5" fill="none"/>
+    </g>
+    <g transform="matrix(1, 0, 0, 1, 1088.2, 56.2)" filter="url(#_19._Next)">
+      <path id="_19._Next-2" data-name="19. Next" d="M24.8,0a24.8,24.8,0,1,0,24.8,24.8A24.8,24.8,0,0,0,24.8,0ZM34.4,26.392,22,36.727a2.068,2.068,0,0,1-2.65-3.175l10.5-8.748-10.5-8.748A2.068,2.068,0,0,1,22,12.882L34.4,23.217a2.067,2.067,0,0,1,0,3.175Z" transform="translate(9 9)"/>
+    </g>
+  </g>
+</svg>

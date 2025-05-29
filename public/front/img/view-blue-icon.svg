@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="#00407E">
+  <g id="Group_44225" data-name="Group 44225" transform="translate(-1590 -591)">
+    <g id="Group_44224" data-name="Group 44224" transform="translate(1590 591)">
+      <rect id="Rectangle_1" data-name="Rectangle 1" width="42" height="42" rx="11"/>
+      <path id="Icon_awesome-eye" data-name="Icon awesome-eye" d="M22.013,11.321A12.332,12.332,0,0,0,11.073,4.5,12.334,12.334,0,0,0,.134,11.321a1.244,1.244,0,0,0,0,1.122,12.332,12.332,0,0,0,10.939,6.821,12.334,12.334,0,0,0,10.939-6.821A1.244,1.244,0,0,0,22.013,11.321Zm-10.939,6.1a5.537,5.537,0,1,1,5.537-5.537A5.537,5.537,0,0,1,11.073,17.419Zm0-9.228a3.665,3.665,0,0,0-.973.146,1.84,1.84,0,0,1-2.572,2.572,3.683,3.683,0,1,0,3.545-2.718Z" transform="translate(9.927 9.118)" fill="#fff"/>
+    </g>
+  </g>
+</svg>
