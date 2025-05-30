@@ -11,10 +11,10 @@ use Eloquent, Session;
 class Lob extends Eloquent
 {
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
+	protected $fillable = [
+		'id',        
+		'lob',
+		'is_active',
+	];
 	protected $table = 'lobs';
-}// end Lob class
+}

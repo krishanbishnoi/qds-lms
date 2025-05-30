@@ -6,14 +6,9 @@ use App\Http\Controllers\BaseController;
 use App\Models\Circle;
 use App\Models\Region;
 use App\Models\StateDescription;
-use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Request, Mail, Redirect, Response, Session, URL, View, Validator;
+use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator;
+use Illuminate\Http\Request;
 
-/**
- * CircleController Controller
- *
- * Add your methods in the class below
- *
- */
 class CircleController extends BaseController
 {
 
@@ -29,20 +24,14 @@ class CircleController extends BaseController
 		View::share('sectionNameSingular', $this->sectionNameSingular);
 	}
 
-	/**
-	 * Function for display all State 
-	 *
-	 * @param null
-	 *
-	 * @return view page. 
-	 */
-	public function index()
+
+	public function index(Request $request)
 	{
 		$DB							=	Circle::query();
 		$searchVariable				=	array();
-		$inputGet					=	Request::all();
-		if ((Request::all())) {
-			$searchData				=	Request::all();
+		$inputGet					=	$request->all();
+		if (($request->all())) {
+			$searchData				=	$request->all();
 			unset($searchData['display']);
 			unset($searchData['_token']);
 			if (isset($searchData['order'])) {
@@ -65,82 +54,65 @@ class CircleController extends BaseController
 			}
 		}
 		$DB->leftJoin('regions', 'regions.id', '=', 'circles.region_id')->select('circles.*', 'regions.region as region_id');
-		$sortBy 					= 	(Request::get('sortBy')) ? Request::get('sortBy') : 'updated_at';
-		$order  					= 	(Request::get('order')) ? Request::get('order')   : 'DESC';
+		$sortBy 					= 	($request->get('sortBy')) ? $request->get('sortBy') : 'updated_at';
+		$order  					= 	($request->get('order')) ? $request->get('order')   : 'DESC';
 		$results 					= 	$DB->orderBy($sortBy, $order)->paginate(Config::get("Reading.records_per_page"));
-		$complete_string			=	Request::query();
+		$complete_string			=	$request->query();
 		unset($complete_string["sortBy"]);
 		unset($complete_string["order"]);
 		$query_string				=	http_build_query($complete_string);
-		$results->appends(Request::all())->render();
+		$results->appends($request->all())->render();
 		//echo '<pre>'; print_r($results); die;
 		return  View::make("admin.$this->model.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string'));
 	}
 
-	/**
-	 * Function for add new State
-	 *
-	 * @param null
-	 *
-	 * @return view page. 
-	 */
 	public function add()
 	{
 		$region  = Region::pluck('region', 'id')->toArray();
-		return  View::make("admin.$this->model.add", compact('region'));
-	} // end add()
+		return view("admin.Circle.add", compact('region'));
+	}
 
-	/**
-	 * Function for save new Area
-	 *
-	 * @param null
-	 *
-	 * @return redirect page. 
-	 */
-	function save()
+	public function save(Request $request)
 	{
-		Request::replace($this->arrayStripTags(Request::all()));
-		$thisData					=	Request::all();
-		//echo '<pre>'; print_r($thisData); die;
+		$request->replace($this->arrayStripTags($request->all()));
+		$thisData = $request->all();
 
-		$validator = Validator::make(
-			$thisData,
-			array(
-				'circle' 			=> 'required|unique:circles',
-				'region_id' 			=> 'required',
-				//'description' 		=> 'required',
-			)
+		$rules = [
+			'circle'    => "required|unique:circles,circle," . $request->id,
+			'region_id' => 'required',
+			'status' => 'required',
+		];
 
-
-		);
+		$validator = Validator::make($thisData, $rules);
 
 		if ($validator->fails()) {
 			return Redirect::back()
-				->withErrors($validator)->withInput();
-		} else {
-			$obj = new Circle;
-			$obj->circle   			= Request::get('circle');
-			$obj->region_id   		= Request::get('region_id');
-			$objSave				= $obj->save();
-			if (!$objSave) {
-
-				Session::flash('error', trans("Something went wrong."));
-				return Redirect::route($this->model . ".index");
-			} else {
-				Session::flash('success', trans($this->sectionNameSingular . " has been added successfully"));
-				return Redirect::route($this->model . ".index");
-			}
+				->withErrors($validator)
+				->withInput();
 		}
-	} //end save()
 
-	/**
-	 * Function for update status
-	 *
-	 * @param $modelId as id of area 
-	 * @param $status as status of area 
-	 *
-	 * @return redirect page. 
-	 */
+		// Create or update record
+		$circle = Circle::updateOrCreate(
+			['id' => $request->id],
+			[
+				'circle'    => $request->circle,
+				'region_id' => $request->region_id,
+				'is_active' => $request->status,
+			]
+		);
+
+		if (!$circle) {
+			Session::flash('error', __(config('constants.REC_ADD_FAILED')));
+			return redirect()->route('Circle.index');
+		} else {
+			$message = $request->id ? __(config('constants.REC_UPDATE_SUCCESS'), ['section' => $this->sectionNameSingular])
+				: __(config('constants.REC_ADD_SUCCESS'), ['section' => $this->sectionNameSingular]);
+			Session::flash('success', $message);
+		}
+		return redirect()->route('Circle.index');
+	}
+
+
 	public function changeStatus($modelId = 0, $status = 0)
 	{
 		if ($status == 0) {
@@ -154,78 +126,17 @@ class CircleController extends BaseController
 		return Redirect::back();
 	} // end changeStatus()
 
-	/**
-	 * Function for display page for edit area
-	 *
-	 * @param $modelId id  of area
-	 *
-	 * @return view page. 
-	 */
+
 	public function edit($modelId = 0)
 	{
 		$model				=	Circle::find($modelId);
 		if (empty($model)) {
-			return Redirect::route($this->model . ".index");
+			return redirect()->route('Circle.index');
 		}
 		$region  = Region::pluck('region', 'id')->toArray();
-		return  View::make("admin.$this->model.edit", compact('model', 'region'));
-	} // end edit()
+		return  view("admin.Circle.add", compact('model', 'region'));
+	}
 
-
-	/**
-	 * Function for update area 
-	 *
-	 * @param $modelId as id of area 
-	 *
-	 * @return redirect page. 
-	 */
-	function update($modelId)
-	{
-		$model					=	Circle::findorFail($modelId);
-		if (empty($model)) {
-			return Redirect::back();
-		}
-
-		Request::replace($this->arrayStripTags(Request::all()));
-		$thisData					=	Request::all();
-		//echo '<pre>'; print_r($thisData); die;
-
-		$validator = Validator::make(
-			$thisData,
-			array(
-				'circle' 			=> "required|unique:circles,circle,$modelId",
-				'region_id' 			=> 'required',
-				//'description' 		=> 'required',
-			)
-		);
-
-		if ($validator->fails()) {
-			return Redirect::back()
-				->withErrors($validator)->withInput();
-		} else {
-			$obj = $model;
-			$obj->circle   		= Request::get('circle');
-			$obj->region_id   		= Request::get('region_id');
-			$objSave				= $obj->save();
-			if (!$objSave) {
-
-				Session::flash('error', trans("Something went wrong."));
-				return Redirect::route($this->model . ".index");
-			} else {
-				Session::flash('success', trans($this->sectionNameSingular . " has been Updated successfully"));
-				return Redirect::route($this->model . ".index");
-			}
-		}
-	} // end update()
-
-
-	/**
-	 * Function for mark a couse as deleted 
-	 *
-	 * @param $userId as id of couse
-	 *
-	 * @return redirect page. 
-	 */
 	public function delete($id = 0)
 	{
 		$model	=	Circle::find($id);
@@ -237,8 +148,5 @@ class CircleController extends BaseController
 			Session::flash('flash_notice', trans($this->sectionNameSingular . " has been removed successfully"));
 		}
 		return Redirect::back();
-	} // end delete()
-
-
-
-}// end CircleController
+	}
+}

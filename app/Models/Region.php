@@ -17,4 +17,9 @@ class Region extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'regions';
+	protected $fillable = [
+		'id',
+		'region',
+		'is_active',
+	];
 }// end Region class

@@ -19,7 +19,11 @@ class Designation extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'designations';
-	protected $fillable = ['designation'];
+	protected $fillable = [
+		'id',        
+		'designation',
+		'is_active',
+	];
 
 
 	// public function question()

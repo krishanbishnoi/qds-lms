@@ -74,6 +74,28 @@
                                             ],
                                         ) }}
                                     </th>
+                                    <th width="25%">Status</th>
+                                    {{-- <th width="25%">
+                                        {{ link_to_route(
+                                            "$modelName.index",
+                                            trans('Status'),
+                                            [
+                                                'sortBy' => 'is_active', // <-- use actual DB column here
+                                                'order' => $sortBy == 'is_active' && $order == 'desc' ? 'asc' : 'desc',
+                                                $query_string,
+                                            ],
+                                            [
+                                                'class' =>
+                                                    $sortBy == 'is_active' && $order == 'desc'
+                                                        ? 'sorting desc'
+                                                        : ($sortBy == 'is_active' && $order == 'asc'
+                                                            ? 'sorting asc'
+                                                            : 'sorting'),
+                                            ],
+                                        ) }}
+                                    </th> --}}
+
+
 
                                     <th width="40%">
                                         {{ link_to_route(
@@ -102,15 +124,10 @@
                                     @foreach ($results as $record)
                                         <tr class="items-inner">
                                             <td data-th='{{ trans('Page Name') }}'>{{ $record->lob }}</td>
-
-                                            <?php /* <td data-th='{{ trans("Status") }}'>
-                                            						@if($record->is_active	== 1)
-                                            							<span class="label label-success" >{{ trans("Activated") }}</span>
-                                            						@else
-                                            							<span class="label label-warning" >{{ trans("Deactivated") }}</span>
-                                            						@endif
-                                            						</td> */
-                                            ?>
+                                            <td> <span
+                                                    class="badge {{ $record->is_active ? 'text-success' : 'text-danger' }}">
+                                                    {{ config('constants.STATUS_LIST')[$record->is_active] ?? 'Unknown Status' }}
+                                                </span></td>
                                             <td data-th='{{ trans('Modified') }}'>
                                                 {{ date(Config::get('Reading.date_format'), strtotime($record->updated_at)) }}
                                             </td>
@@ -127,9 +144,9 @@
                                                         class="fas fa-edit"></span></a>
 
                                                 <!--
-                <a href='{{ route("$modelName.delete", "$record->id") }}' data-delete="delete"  class="delete_any_item btn btn-danger" title="Delete" data-confirm = 'Are you sure?' >
-                 <span class="fas fa-trash-alt   "></span>
-                </a>  -->
+                                <a href='{{ route("$modelName.delete", "$record->id") }}' data-delete="delete"  class="delete_any_item btn btn-danger" title="Delete" data-confirm = 'Are you sure?' >
+                                 <span class="fas fa-trash-alt   "></span>
+                                </a>  -->
                                             </td>
                                         </tr>
                                     @endforeach

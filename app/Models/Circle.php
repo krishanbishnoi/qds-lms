@@ -16,5 +16,11 @@ class Circle extends Eloquent
 	 *
 	 * @var string
 	 */
+	protected $fillable = [
+		'id',
+		'circle',
+		'region_id',
+		'is_active',
+	];
 	protected $table = 'circles';
 }// end Circle class

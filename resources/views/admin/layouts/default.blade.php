@@ -217,18 +217,19 @@
 
 
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ route('dashboard') }}">
+                        <a class="nav-link" href="{{ route('dashboard') }}">
                             <span class="menu-title">Dashboard</span>
-                            <i class="mdi mdi-home menu-icon"></i>
+                            <i class="mdi mdi-home menu-icon    "></i>
                         </a>
+                        
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#users" aria-expanded="false"
+                        <a class="nav-link" data-bs-toggle="collapse" href="#users" aria-expanded="false"
                             aria-controls="ui-basic">
-                            <i class="mdi mdi-account menu-icon me-3"></i>
                             <span class="menu-title">Users Management</span>
                             <i class="menu-arrow"></i>
+                            <i class="mdi mdi-account menu-icon "></i>
                         </a>
                         <div class="collapse <?php echo request()->segment(2) === 'users-mangement' ? 'show' : ''; ?>" id="users">
                             <ul class="nav flex-column sub-menu">

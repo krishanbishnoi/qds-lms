@@ -5,14 +5,9 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\BaseController;
 use App\Models\Partner;
 use App\Models\StateDescription;
-use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Request, Mail, Redirect, Response, Session, URL, View, Validator;
+use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator;
+use Illuminate\Http\Request;
 
-/**
- * PartnerController Controller
- *
- * Add your methods in the class below
- *
- */
 class PartnerController extends BaseController
 {
 
@@ -28,20 +23,14 @@ class PartnerController extends BaseController
 		View::share('sectionNameSingular', $this->sectionNameSingular);
 	}
 
-	/**
-	 * Function for display all State 
-	 *
-	 * @param null
-	 *
-	 * @return view page. 
-	 */
-	public function index()
+
+	public function index(Request $request)
 	{
 		$DB							=	Partner::query();
 		$searchVariable				=	array();
-		$inputGet					=	Request::all();
-		if ((Request::all())) {
-			$searchData				=	Request::all();
+		$inputGet					=	$request->all();
+		if (($request->all())) {
+			$searchData				=	$request->all();
 			unset($searchData['display']);
 			unset($searchData['_token']);
 			if (isset($searchData['order'])) {
@@ -66,81 +55,65 @@ class PartnerController extends BaseController
 			}
 		}
 		//$DB->where("areas.is_deleted",0);
-		$sortBy 					= 	(Request::get('sortBy')) ? Request::get('sortBy') : 'updated_at';
-		$order  					= 	(Request::get('order')) ? Request::get('order')   : 'DESC';
+		$sortBy 					= 	($request->get('sortBy')) ? $request->get('sortBy') : 'updated_at';
+		$order  					= 	($request->get('order')) ? $request->get('order')   : 'DESC';
 		$results 					= 	$DB->orderBy($sortBy, $order)->paginate(Config::get("Reading.records_per_page"));
-		$complete_string			=	Request::query();
+		$complete_string			=	$request->query();
 		unset($complete_string["sortBy"]);
 		unset($complete_string["order"]);
 		$query_string				=	http_build_query($complete_string);
-		$results->appends(Request::all())->render();
-		//echo '<pre>'; print_r($results); die;
-		return  View::make("admin.$this->model.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string'));
+		$results->appends($request->all())->render();
+		return view("admin.Partner.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string'));
 	}
 
-	/**
-	 * Function for add new State
-	 *
-	 * @param null
-	 *
-	 * @return view page. 
-	 */
 	public function add()
 	{
-		return  View::make("admin.$this->model.add");
-	} // end add()
+		return view("admin.Partner.add");
+	}
 
-	/**
-	 * Function for save new Area
-	 *
-	 * @param null
-	 *
-	 * @return redirect page. 
-	 */
-	function save()
+	function save(Request $request)
 	{
-		Request::replace($this->arrayStripTags(Request::all()));
-		$thisData					=	Request::all();
-		//echo '<pre>'; print_r($thisData); die;
+		$request->replace($this->arrayStripTags($request->all()));
 
-		$validator = Validator::make(
-			$thisData,
-			array(
-				'name' 			=> 'required',
-				'location' 			=> 'required',
-				//'description' 		=> 'required',
-			)
-
-
-		);
+		$validator = Validator::make($request->all(), [
+			'name'      => 'required',
+			'location'  => 'required',
+			'status'    => 'required',
+		]);
 
 		if ($validator->fails()) {
 			return Redirect::back()
-				->withErrors($validator)->withInput();
-		} else {
-			$obj = new Partner;
-			$obj->name   			= Request::get('name');
-			$obj->location   			= Request::get('location');
-			$objSave				= $obj->save();
-			if (!$objSave) {
-
-				Session::flash('error', trans("Something went wrong."));
-				return Redirect::route($this->model . ".index");
-			} else {
-				Session::flash('success', trans($this->sectionNameSingular . " has been added successfully"));
-				return Redirect::route($this->model . ".index");
-			}
+				->withErrors($validator)
+				->withInput();
 		}
-	} //end save()
 
-	/**
-	 * Function for update status
-	 *
-	 * @param $modelId as id of area 
-	 * @param $status as status of area 
-	 *
-	 * @return redirect page. 
-	 */
+		// Prepare data for updateOrCreate
+		$partnerData = [
+			'name'      => $request->name,
+			'location'  => $request->location,
+			'is_active'    => $request->status,
+		];
+
+
+		try {
+			$partner = Partner::updateOrCreate(
+				['id' =>  $request->id],
+				$partnerData
+			);
+
+			if (!$partner) {
+				Session::flash('error', __(config('constants.REC_ADD_FAILED')));
+			} else {
+				$message = $request->id ? __(config('constants.REC_UPDATE_SUCCESS'), ['section' => $this->sectionNameSingular])
+					: __(config('constants.REC_ADD_SUCCESS'), ['section' => $this->sectionNameSingular]);
+				Session::flash('success', $message);
+			}
+			return redirect()->route('Partner.index');
+		} catch (\Exception $e) {
+			Session::flash('error', __(config('constants.FLASH_TRY_CATCH')));
+			return redirect()->route('Partner.index');
+		}
+	}
 	public function changeStatus($modelId = 0, $status = 0)
 	{
 		if ($status == 0) {
@@ -152,79 +125,19 @@ class PartnerController extends BaseController
 		Partner::where('id', $modelId)->update(array('is_active' => $status));
 		Session::flash('flash_notice', $statusMessage);
 		return Redirect::back();
-	} // end changeStatus()
+	}
 
-	/**
-	 * Function for display page for edit area
-	 *
-	 * @param $modelId id  of area
-	 *
-	 * @return view page. 
-	 */
 	public function edit($modelId = 0)
 	{
 		$model				=	Partner::find($modelId);
 		if (empty($model)) {
-			return Redirect::route($this->model . ".index");
+			Session::flash('error', __(config('constants.REC_NOT_FOUND')));
+			return redirect()->route('Partner.index');
 		}
-		return  View::make("admin.$this->model.edit", compact('model'));
-	} // end edit()
+		return view("admin.Partner.add", compact('model'));
+	} 
 
 
-	/**
-	 * Function for update area 
-	 *
-	 * @param $modelId as id of area 
-	 *
-	 * @return redirect page. 
-	 */
-	function update($modelId)
-	{
-		$model					=	Partner::findorFail($modelId);
-		if (empty($model)) {
-			return Redirect::back();
-		}
-
-		Request::replace($this->arrayStripTags(Request::all()));
-		$thisData					=	Request::all();
-		//echo '<pre>'; print_r($thisData); die;
-
-		$validator = Validator::make(
-			$thisData,
-			array(
-				'name' 			=> "required|unique:partners,name,$modelId",
-				'location' 			=> "required",
-				//'description' 		=> 'required',
-			)
-		);
-
-		if ($validator->fails()) {
-			return Redirect::back()
-				->withErrors($validator)->withInput();
-		} else {
-			$obj = $model;
-			$obj->name   			= Request::get('name');
-			$obj->location   		= Request::get('location');
-			$objSave				= $obj->save();
-			if (!$objSave) {
-
-				Session::flash('error', trans("Something went wrong."));
-				return Redirect::route($this->model . ".index");
-			} else {
-				Session::flash('success', trans($this->sectionNameSingular . " has been Updated successfully"));
-				return Redirect::route($this->model . ".index");
-			}
-		}
-	} // end update()
-
-
-	/**
-	 * Function for mark a couse as deleted 
-	 *
-	 * @param $userId as id of couse
-	 *
-	 * @return redirect page. 
-	 */
 	public function delete($id = 0)
 	{
 		$model	=	Partner::find($id);
@@ -236,8 +149,5 @@ class PartnerController extends BaseController
 			Session::flash('flash_notice', trans($this->sectionNameSingular . " has been removed successfully"));
 		}
 		return Redirect::back();
-	} // end delete()
-
-
-
-}// end PartnerController
+	} 
+}

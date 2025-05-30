@@ -4,7 +4,14 @@
 
 // DB::enableQueryLog();
 
+use App\Http\Controllers\admin\CircleController;
+use App\Http\Controllers\admin\DesignationController;
+use App\Http\Controllers\admin\DomainController;
+use App\Http\Controllers\admin\LobController;
+use App\Http\Controllers\admin\PartnerController;
+use App\Http\Controllers\admin\RegionController;
 use App\Http\Controllers\admin\TraineesController;
+use App\Http\Controllers\admin\TrainingTypeController;
 use App\Http\Controllers\admin\UsersController;
 
 include(app_path() . '/global_constants.php');
@@ -275,85 +282,80 @@ Route::group(array('prefix' => 'admin'), function () {
 
 
         /** settings routing**/
-        Route::get('masters/circles', array('as' => 'Circle.index', 'uses' => 'CircleController@index'));
-        Route::post('masters/circles', array('as' => 'Circle.index', 'uses' => 'CircleController@index'));
-        Route::get('masters/circles/add-new-circle', array('as' => 'Circle.add', 'uses' => 'CircleController@add'));
-        Route::post('masters/circles/add-new-circle', array('as' => 'Circle.add', 'uses' => 'CircleController@save'));
-        Route::get('masters/circles/edit-circle/{id}', array('as' => 'Circle.edit', 'uses' => 'CircleController@edit'));
-        Route::post('masters/circles/edit-circle/{id}', array('as' => 'Circle.edit', 'uses' => 'CircleController@update'));
-        Route::get('masters/circles/delete-circle/{id}', array('as' => 'Circle.delete', 'uses' => 'CircleController@delete'));
-        Route::get('masters/circles/view-circle/{id}', array('as' => 'Circle.view', 'uses' => 'CircleController@view'));
-        Route::get('masters/circles/update-circle-status/{id}/{status}', array('as' => 'Circle.status', 'uses' => 'CircleController@changeStatus'));
+        Route::controller(CircleController::class)->prefix('masters/circles')->name('Circle.')->group(function () {
+            Route::match(['get', 'post'], '/', 'index')->name('index');
+            Route::get('add', 'add')->name('add');
+            Route::post('save', 'save')->name('save');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::get('delete/{id}', 'delete')->name('delete');
+            Route::get('view/{id}', 'view')->name('view');
+            Route::get('update-status/{id}/{status}', 'changeStatus')->name('status');
+        });
 
         /** settings routing**/
-        Route::get('masters/regions', array('as' => 'Region.index', 'uses' => 'RegionController@index'));
-        Route::post('masters/regions', array('as' => 'Region.index', 'uses' => 'RegionController@index'));
-        Route::get('masters/regions/add-new-region', array('as' => 'Region.add', 'uses' => 'RegionController@add'));
-        Route::post('masters/regions/add-new-region', array('as' => 'Region.add', 'uses' => 'RegionController@save'));
-        Route::get('masters/regions/edit-region/{id}', array('as' => 'Region.edit', 'uses' => 'RegionController@edit'));
-        Route::post('masters/regions/edit-region/{id}', array('as' => 'Region.edit', 'uses' => 'RegionController@update'));
-        Route::get('masters/regions/delete-region/{id}', array('as' => 'Region.delete', 'uses' => 'RegionController@delete'));
-        Route::get('masters/regions/view-region/{id}', array('as' => 'Region.view', 'uses' => 'RegionController@view'));
-        Route::get('masters/regions/update-region-status/{id}/{status}', array('as' => 'Region.status', 'uses' => 'RegionController@changeStatus'));
+        Route::controller(RegionController::class)->prefix('masters/regions')->name('Region.')->group(function () {
+            Route::match(['get', 'post'], '/', 'index')->name('index');
+            Route::get('add', 'add')->name('add');
+            Route::post('add', 'save')->name('save');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::get('delete/{id}', 'delete')->name('delete');
+            Route::get('view/{id}', 'view')->name('view');
+            Route::get('update-status/{id}/{status}', 'changeStatus')->name('status');
+        });
+
+
+        Route::controller(PartnerController::class)->prefix('masters/partners')->name('Partner.')->group(function () {
+            Route::match(['get', 'post'], '/', 'index')->name('index');
+            Route::get('add', 'add')->name('add');
+            Route::post('save', 'save')->name('save');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::get('delete/{id}', 'delete')->name('delete');
+            Route::get('view/{id}', 'view')->name('view');
+            Route::get('update-status/{id}/{status}', 'changeStatus')->name('status');
+        });
 
         /** settings routing**/
-        Route::get('masters/partners', array('as' => 'Partner.index', 'uses' => 'PartnerController@index'));
-        Route::post('masters/partners', array('as' => 'Partner.index', 'uses' => 'PartnerController@index'));
-        Route::get('masters/partners/add-new-partner', array('as' => 'Partner.add', 'uses' => 'PartnerController@add'));
-        Route::post('masters/partners/add-new-partner', array('as' => 'Partner.add', 'uses' => 'PartnerController@save'));
-        Route::get('masters/partners/edit-partner/{id}', array('as' => 'Partner.edit', 'uses' => 'PartnerController@edit'));
-        Route::post('masters/partners/edit-partner/{id}', array('as' => 'Partner.edit', 'uses' => 'PartnerController@update'));
-        Route::get('masters/partners/delete-partner/{id}', array('as' => 'Partner.delete', 'uses' => 'PartnerController@delete'));
-        Route::get('masters/partners/view-partner/{id}', array('as' => 'Partner.view', 'uses' => 'PartnerController@view'));
-        Route::get('masters/partners/update-partner-status/{id}/{status}', array('as' => 'Partner.status', 'uses' => 'PartnerController@changeStatus'));
+        Route::controller(DomainController::class)->prefix('masters/domains')->name('Domain.')->group(function () {
+                Route::match(['get', 'post'], '/', 'index')->name('index');
+                Route::get('add', 'add')->name('add');
+                Route::post('save', 'save')->name('save');
+                Route::get('edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'delete')->name('delete');
+                Route::get('view/{id}', 'view')->name('view');
+                Route::get('update-status/{id}/{status}', 'changeStatus')->name('status');
+            });
+
+        Route::controller(LobController::class)->prefix('masters/lobs')->name('Lob.')->group(function () {
+            Route::match(['get', 'post'], '/', 'index')->name('index');
+            Route::get('add-new-lob', 'add')->name('add');
+            Route::post('add-new-lob', 'save')->name('save');
+            Route::get('edit-lob/{id}', 'edit')->name('edit');
+            Route::get('delete-lob/{id}', 'delete')->name('delete');
+            Route::get('view-lob/{id}', 'view')->name('view');
+            Route::get('update-lob-status/{id}/{status}', 'changeStatus')->name('status');
+        });
 
 
-        /** settings routing**/
-        Route::get('masters/domains', array('as' => 'Domain.index', 'uses' => 'DomainController@index'));
-        Route::post('masters/domains', array('as' => 'Domain.index', 'uses' => 'DomainController@index'));
-        Route::get('masters/domains/add-new-domain', array('as' => 'Domain.add', 'uses' => 'DomainController@add'));
-        Route::post('masters/domains/add-new-domain', array('as' => 'Domain.add', 'uses' => 'DomainController@save'));
-        Route::get('masters/domains/edit-domain/{id}', array('as' => 'Domain.edit', 'uses' => 'DomainController@edit'));
-        Route::post('masters/domains/edit-domain/{id}', array('as' => 'Domain.edit', 'uses' => 'DomainController@update'));
-        Route::get('masters/domains/delete-domain/{id}', array('as' => 'Domain.delete', 'uses' => 'DomainController@delete'));
-        Route::get('masters/domains/view-domain/{id}', array('as' => 'Domain.view', 'uses' => 'DomainController@view'));
-        Route::get('masters/domains/update-domain-status/{id}/{status}', array('as' => 'Domain.status', 'uses' => 'DomainController@changeStatus'));
-
-
-        /** settings routing**/
-        Route::get('masters/lobs', array('as' => 'Lob.index', 'uses' => 'LobController@index'));
-        Route::post('masters/lobs', array('as' => 'Lob.index', 'uses' => 'LobController@index'));
-        Route::get('masters/lobs/add-new-lob', array('as' => 'Lob.add', 'uses' => 'LobController@add'));
-        Route::post('masters/lobs/add-new-lob', array('as' => 'Lob.add', 'uses' => 'LobController@save'));
-        Route::get('masters/lobs/edit-lob/{id}', array('as' => 'Lob.edit', 'uses' => 'LobController@edit'));
-        Route::post('masters/lobs/edit-lob/{id}', array('as' => 'Lob.edit', 'uses' => 'LobController@update'));
-        Route::get('masters/lobs/delete-lob/{id}', array('as' => 'Lob.delete', 'uses' => 'LobController@delete'));
-        Route::get('masters/lobs/view-lob/{id}', array('as' => 'Lob.view', 'uses' => 'LobController@view'));
-        Route::get('masters/lobs/update-lob-status/{id}/{status}', array('as' => 'Lob.status', 'uses' => 'LobController@changeStatus'));
-
+        Route::controller(DesignationController::class)->prefix('masters/designation')->name('Designation.')->group(function () {
+            Route::match(['get', 'post'], '/', 'index')->name('index');
+            Route::get('add', 'add')->name('add');
+            Route::post('save', 'save')->name('save');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::get('delete/{id}', 'delete')->name('delete');
+            Route::get('view/{id}', 'view')->name('view');
+            Route::get('update-status/{id}/{status}', 'changeStatus')->name('status');
+        });
 
         /** settings routing**/
-        Route::get('masters/designation', array('as' => 'Designation.index', 'uses' => 'DesignationController@index'));
-        Route::post('masters/designation', array('as' => 'Designation.index', 'uses' => 'DesignationController@index'));
-        Route::get('masters/designation/add-new-designation', array('as' => 'Designation.add', 'uses' => 'DesignationController@add'));
-        Route::post('masters/designation/add-new-designation', array('as' => 'Designation.add', 'uses' => 'DesignationController@save'));
-        Route::get('masters/designation/edit-designation/{id}', array('as' => 'Designation.edit', 'uses' => 'DesignationController@edit'));
-        Route::post('masters/designation/edit-designation/{id}', array('as' => 'Designation.edit', 'uses' => 'DesignationController@update'));
-        Route::get('masters/designation/delete-designation/{id}', array('as' => 'Designation.delete', 'uses' => 'DesignationController@delete'));
-        Route::get('masters/designation/view-designation/{id}', array('as' => 'Designation.view', 'uses' => 'DesignationController@view'));
-        Route::get('masters/designation/update-designation-status/{id}/{status}', array('as' => 'Designation.status', 'uses' => 'DesignationController@changeStatus'));
-
-        /** settings routing**/
-        Route::get('training-types', array('as' => 'TrainingType.index', 'uses' => 'TrainingTypeController@index'));
-        Route::post('training-types', array('as' => 'TrainingType.index', 'uses' => 'TrainingTypeController@index'));
-        Route::get('training-types/add-new-training-type', array('as' => 'TrainingType.add', 'uses' => 'TrainingTypeController@add'));
-        Route::post('training-types/add-new-training-type', array('as' => 'TrainingType.add', 'uses' => 'TrainingTypeController@save'));
-        Route::get('training-types/edit-training-type/{id}', array('as' => 'TrainingType.edit', 'uses' => 'TrainingTypeController@edit'));
-        Route::post('training-types/edit-training-type/{id}', array('as' => 'TrainingType.edit', 'uses' => 'TrainingTypeController@update'));
-        Route::get('training-types/delete-training-type/{id}', array('as' => 'TrainingType.delete', 'uses' => 'TrainingTypeController@delete'));
-        Route::get('training-types/view-training-type/{id}', array('as' => 'TrainingType.view', 'uses' => 'TrainingTypeController@view'));
-        Route::get('training-types/update-training-type-status/{id}/{status}', array('as' => 'TrainingType.status', 'uses' => 'TrainingTypeController@changeStatus'));
-
+        Route::controller(TrainingTypeController::class)->prefix('training-types')->name('TrainingType.')->group(function () {
+            Route::match(['get', 'post'], '/', 'index')->name('index');
+            Route::get('add', 'add')->name('add');
+            Route::post('save', 'save')->name('save');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::get('delete/{id}', 'delete')->name('delete');
+            Route::get('view/{id}', 'view')->name('view');
+            Route::get('update-status/{id}/{status}', 'changeStatus')->name('status');
+        });
 
         Route::any('admin-roles', array('as' => 'Roles.index', 'uses' => 'AdminRoleController@index'));
         //Route::post('admin-roles',array('as'=>'Roles.index','uses'=>'AdminRoleController@index'));

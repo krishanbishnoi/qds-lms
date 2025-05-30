@@ -16,5 +16,10 @@ class Domain extends Eloquent
 	 *
 	 * @var string
 	 */
+	protected $fillable = [
+		'id',        
+		'domain',
+		'is_active',
+	];
 	protected $table = 'domains';
 }// end Domain class
