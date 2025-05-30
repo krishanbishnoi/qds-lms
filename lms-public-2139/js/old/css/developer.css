@@ -1,0 +1,16 @@
+
+.help-inline{
+color:red !important;
+}
+.error-message{
+color:red !important;
+}
+.padding{
+	padding-top:20px;
+}
+.form-control::-webkit-input-placeholder
+{
+    color: #999 !important;
+}
+
+
