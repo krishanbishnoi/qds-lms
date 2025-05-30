@@ -20046,6 +20046,7 @@ dl li {
 .brdrclr {
     border-color: #dddddd;
 }
+
 .theadLight {
     background-color: #dfdfdf;
     height: 50px;
@@ -20851,6 +20852,49 @@ dl li {
     -webkit-transition: width 0.25s ease, background 0.25s ease;
     -moz-transition: width 0.25s ease, background 0.25s ease;
     -ms-transition: width 0.25s ease, background 0.25s ease;
+
+
+    position: fixed;
+    top: 70px;
+    left: 0;
+    bottom: 0;
+    width: 276px;
+    z-index: 996;
+    transition: all 0.3s;
+    padding: 20px 10px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
+    background-color: #fff;
+}
+
+.content-wrapper {
+    margin-left: 265px;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* Track */
+.sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+.sidebar::-webkit-scrollbar-thumb {
+    background: #aab7cf;
+    border-radius: 30px;
+}
+
+/* Handle on hover */
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #aab7cf;
+
+}
+
+.sidebar:hover {
+    scrollbar-width: inherit;
 }
 
 .sidebar .nav {

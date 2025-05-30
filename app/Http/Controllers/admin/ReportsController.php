@@ -12,9 +12,10 @@ use App\Models\StateDescription;
 use App\Exports\TestResultsExport;
 use App\Exports\TrainingResultsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 
 
-use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Request, Mail, Redirect, Response, Session, URL, View, Validator;
+use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator;
 
 /**
  * ReportsController Controller
@@ -37,31 +38,64 @@ class ReportsController extends BaseController
         View::share('sectionNameSingular', $this->sectionNameSingular);
     }
 
-    /**
-     * Function for display all State
-     *
-     * @param null
-     *
-     * @return view page.
-     */
-
-    public function index()
+    public function test(Request $request)
     {
+        $testType = $request->input('test_type', 'regular_test');
+        if ($testType == 'regular_test') {
+            $query = Test::orderBy('created_at', 'desc')->with([
+                'test_participants',
+                'test_results',
+            ])->where('type', 'regular_test');
+            // Apply Search Filter
+            if ($request->filled('search')) {
+                $query->where('title', 'LIKE', '%' . $request->input('search') . '%');
+            }
 
-        $allTest = Test::with([
-            'test_participants',
-            'test_results'
-        ])->get();
+            // // If the authenticated user's role ID is 4 (training manager), filter participants based on their data
+            // if (Auth::user()->user_role_id == 4) {
+            // }
+            $allTest = $query->get();
+            // return $allTest;
+        } elseif ($testType == 'training_test') {
+            $query = Test::where('type', 'training_test')->with([
+                'test_participants',
+                'test_results',
+            ]);
 
-        $allTraining = Training::with([
+            // Apply Search Filter
+            if ($request->filled('search')) {
+                $query->where('title', 'LIKE', '%' . $request->input('search') . '%');
+            }
+            // if (Auth::user()->user_role_id == 4) {
+            // }
+            $allTest = $query->get();
+            // return $allTest;
+        } else {
+            $allTest = [];
+        }
+
+        return View::make("admin.Reports.test-index", compact('allTest', 'testType'));
+    }
+    public function training(Request $request)
+    {
+        $allTraining = Training::orderBy('created_at', 'desc')->with([
             'training_participants',
+            'training_participants_count',
             'training_courses',
             'training_courses.test',
-            'training_results'
-        ])->get();
-        $countCoursesWithTestId = $allTraining->pluck('training_courses')->flatten(1)->whereNotNull('test_id')->count();
+            'training_results' => function ($query) {
+                $query->where('result', 'Passed');
+            },
+        ]);
 
-        return  View::make("admin.$this->model.index", compact('allTest', 'allTraining'));
+        // Filter training participants by data if user role is 4 (training manager)
+        // if (Auth::user()->user_role_id == 4) {
+        // }
+
+        $allTraining = $allTraining->get();
+
+        $countCoursesWithTestId = $allTraining->pluck('training_courses')->flatten(1)->whereNotNull('test_id')->count();
+        return View::make("admin.Reports.training-index", compact('allTraining',));
     }
     public function downloadReport($test_id)
     {

@@ -54,7 +54,7 @@
                                 'Select Status',
                                 trans('Select Status') .
                                     '<span class="requireRed">
-                                                                    </span>',
+                                                                                                                                            </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -68,7 +68,7 @@
                                 'olms_id',
                                 trans('Id') .
                                     '<span class="requireRed">
-                                                                    </span>',
+                                                                                                                                            </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -76,13 +76,13 @@
                     </div>
                 </div>
                 <!-- <div class="col-md-2 col-sm-2">
-                                <div class="form-group ">
-                                    {!! Html::decode(
-                                        Form::label('email', trans('Email') . '<span class="requireRed"> </span>', ['class' => 'mws-form-label']),
-                                    ) !!}
-                                    {{ Form::text('email', isset($searchVariable['email']) ? $searchVariable['email'] : '', ['class' => ' form-control', 'placeholder' => 'Email']) }}
-                                </div>
-                            </div> -->
+                                            <div class="form-group ">
+                                                {!! Html::decode(
+                                                    Form::label('email', trans('Email') . '<span class="requireRed"> </span>', ['class' => 'mws-form-label']),
+                                                ) !!}
+                                                {{ Form::text('email', isset($searchVariable['email']) ? $searchVariable['email'] : '', ['class' => ' form-control', 'placeholder' => 'Email']) }}
+                                            </div>
+                                        </div> -->
                 <div class="col-md-2 col-sm-2">
                     <div class="form-group ">
                         {!! Html::decode(
@@ -90,7 +90,7 @@
                                 'mobile_number',
                                 trans('Mobile Number') .
                                     '<span class="requireRed">
-                                                                    </span>',
+                                                                                                                                            </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -333,9 +333,9 @@
                                 </td> --}}
                                             <td data-th=''>
                                                 @if ($result->is_active == 1)
-                                                    <span class="btn btn-success px-4">{{ trans('Activated') }}</span>
+                                                    <span class="badge text-success">Active</span>
                                                 @else
-                                                    <span class="btn btn-warning px-4">{{ trans('Deactivated') }}</span>
+                                                    <span class="badge text-danger">Inactive</span>
                                                 @endif
                                             </td>
                                             <td data-th='' class="action-td">
@@ -453,8 +453,9 @@
         });
 
         function downloadFileChangeDesignation() {
-            var fileUrl = '{{ asset('
-                                sample - files / change - designation - sample.xlsx ') }}';
+            var fileUrl =
+                '{{ asset('
+                                                                                sample - files / change - designation - sample.xlsx ') }}';
             var link = document.createElement('a');
             link.href = fileUrl;
             link.download = 'change-designation-sample-file.xlsx';

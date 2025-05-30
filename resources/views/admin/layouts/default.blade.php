@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title><?php echo Config::get('Site.title'); ?></title>
+    <title>@php echo Config::get('Site.title'); @endphp</title>
 
     <!-- plugins:css -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -64,10 +64,6 @@
                     <li class="nav-item nav-profile dropdown">
                         <a class="nav-link dropdown-toggle" id="profileDropdown" href="#"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            {{-- <div class="nav-profile-img">
-                                <img src="{{ asset('images/faces/face1.jpg') }}" alt="image">
-                            <span class="availability-status online"></span>
-            </div> --}}
                             <div class="nav-profile-text">
                                 <p class="mb-1 text-black">{{ Auth::user()->first_name }}
                                     {{ Auth::user()->last_name }}</p>
@@ -83,118 +79,7 @@
                             <a class="dropdown-item" href="{{ URL('admin/logout') }}">
                                 <i class="mdi me-2 text-primary"></i> Signout </a>
                         </div>
-
-
-
                     </li>
-                    <!-- <li class="nav-item d-none d-lg-block full-screen-link">
-                        <a class="nav-link">
-                            <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="mdi mdi-email-outline"></i>
-                            <span class="count-symbol bg-warning"></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
-                            aria-labelledby="messageDropdown">
-                            <h6 class="p-3 mb-0">Messages</h6>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <img src="{{ asset('images/faces/face4.jpg') }}" alt="image" class="profile-pic">
-                                </div>
-                                <div
-                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Mark send you a message
-                                    </h6>
-                                    <p class="text-gray mb-0"> 1 Minutes ago </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <img src="{{ asset('images/faces/face2.jpg') }}" alt="image" class="profile-pic">
-                                </div>
-                                <div
-                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Cregh send you a
-                                        message</h6>
-                                    <p class="text-gray mb-0"> 15 Minutes ago </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <img src="{{ asset('images/faces/face3.jpg') }}" alt="image" class="profile-pic">
-                                </div>
-                                <div
-                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Profile picture updated
-                                    </h6>
-                                    <p class="text-gray mb-0"> 18 Minutes ago </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <h6 class="p-3 mb-0 text-center">4 new messages</h6>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
-                            data-bs-toggle="dropdown">
-                            <i class="mdi mdi-bell-outline"></i>
-                            <span class="count-symbol bg-danger"></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
-                            aria-labelledby="notificationDropdown">
-                            <h6 class="p-3 mb-0">Notifications</h6>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-success">
-                                        <i class="mdi mdi-calendar"></i>
-                                    </div>
-                                </div>
-                                <div
-                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                    <h6 class="preview-subject font-weight-normal mb-1">Event today</h6>
-                                    <p class="text-gray ellipsis mb-0"> Just a reminder that you have an event today
-                                    </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-warning">
-                                        <i class="mdi mdi-settings"></i>
-                                    </div>
-                                </div>
-                                <div
-                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                    <h6 class="preview-subject font-weight-normal mb-1">Settings</h6>
-                                    <p class="text-gray ellipsis mb-0"> Update dashboard </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-info">
-                                        <i class="mdi mdi-link-variant"></i>
-                                    </div>
-                                </div>
-                                <div
-                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                    <h6 class="preview-subject font-weight-normal mb-1">Launch Admin</h6>
-                                    <p class="text-gray ellipsis mb-0"> New admin wow! </p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <h6 class="p-3 mb-0 text-center">See all notifications</h6>
-                        </div>
-                    </li> -->
-
                 </ul>
                 <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
                     data-toggle="offcanvas">
@@ -204,16 +89,14 @@
         </nav>
         <!-- partial -->
         <div class="container-fluid page-body-wrapper">
-            <!-- partial:partials/_sidebar.html -->
-
-            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <nav class="sidebar sidebar-offcanvas sidebarScroll" id="sidebar">
                 <ul class="nav">
-                    <?php
-                    $segment1 = Request::segment(1);
-                    $segment2 = Request::segment(2);
-                    $segment3 = Request::segment(3);
-                    $segment4 = Request::segment(4);
-                    ?>
+                    @php
+                        $segment1 = Request::segment(1);
+                        $segment2 = Request::segment(2);
+                        $segment3 = Request::segment(3);
+                        $segment4 = Request::segment(4);
+                    @endphp
 
 
                     <li class="nav-item">
@@ -221,7 +104,7 @@
                             <span class="menu-title">Dashboard</span>
                             <i class="mdi mdi-home menu-icon    "></i>
                         </a>
-                        
+
                     </li>
 
                     <li class="nav-item">
@@ -231,7 +114,8 @@
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-account menu-icon "></i>
                         </a>
-                        <div class="collapse <?php echo request()->segment(2) === 'users-mangement' ? 'show' : ''; ?>" id="users">
+                        <div class="collapse @php echo request()->segment(2) === 'users-mangement' ? 'show' : ''; @endphp"
+                            id="users">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item" @if ($segment1 == 'users' && $segment3 == 'Site') class="active" @endif>
                                     <a class="nav-link" href="{{ route('Trainees.index') }}">All Users</a>
@@ -247,14 +131,15 @@
                         </div>
                     </li>
 
-                    <li class="nav-item tests <?php echo request()->segment(2) === 'tests' ? 'active' : ''; ?>">
+                    <li class="nav-item tests @php echo request()->segment(2) === 'tests' ? 'active' : ''; @endphp">
                         <a class="nav-link" data-bs-toggle="collapse" href="#testManagement" aria-expanded="false"
                             aria-controls="ui-basic">
                             <span class="menu-title">{{ trans('Test Management') }}</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-calendar-question menu-icon"></i>
                         </a>
-                        <div class="collapse <?php echo request()->segment(2) === 'tests' ? 'show' : ''; ?>" id="testManagement">
+                        <div class="collapse @php echo request()->segment(2) === 'tests' ? 'show' : ''; @endphp"
+                            id="testManagement">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('TestCategory.index') }}">Tests Categories</a>
@@ -268,14 +153,16 @@
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item trainings  <?php echo request()->segment(2) === 'trainings' ? 'active' : ''; ?>">
+                    <li
+                        class="nav-item trainings  @php echo request()->segment(2) === 'trainings' ? 'active' : ''; @endphp">
                         <a class="nav-link" data-bs-toggle="collapse" href="#trainingManagement"
                             aria-expanded="false" aria-controls="ui-basic-training">
                             <span class="menu-title">{{ trans('Training Management') }}</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-bulletin-board menu-icon"></i>
                         </a>
-                        <div class="collapse <?php echo request()->segment(2) === 'trainings' ? 'show' : ''; ?>" id="trainingManagement">
+                        <div class="collapse @php echo request()->segment(2) === 'trainings' ? 'show' : ''; @endphp"
+                            id="trainingManagement">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('TrainingCategory.index') }}">
@@ -295,12 +182,24 @@
                             </ul>
                         </div>
                     </li>
-
-                    <li class="nav-item <?php echo request()->segment(2) === 'reports' ? 'active' : ''; ?>">
-                        <a class="nav-link" href="{{ route('Reports.index') }}">
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#reportsMgmt" aria-expanded="false"
+                            aria-controls="ui-basic">
                             <span class="menu-title">Reports Management</span>
-                            <i class="mdi mdi-file-check menu-icon"></i>
+                            <i class="menu-arrow"></i>
+                            <i class="mdi mdi-file-check menu-icon "></i>
                         </a>
+                        <div class="collapse@php echo request()->segment(3) === 'reports' ? 'active' : ''; @endphp"
+                            id="reportsMgmt">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item" @if ($segment3 == 'reports' && $segment4 == 'test') class="active" @endif>
+                                    <a class="nav-link" href="{{ route('Reports.test') }}">Test Report</a>
+                                </li>
+                                <li class="nav-item" @if ($segment3 == 'reports' && $segment3 == 'training') class="active" @endif>
+                                    <a class="nav-link" href="{{ route('Reports.training') }}">Training Report</a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
 
                     @if (Auth::user()->user_role_id == SUPER_ADMIN_ROLE_ID)
@@ -311,7 +210,8 @@
                                 <i class="menu-arrow"></i>
                                 <i class="mdi mdi-email menu-icon"></i>
                             </a>
-                            <div class="collapse <?php echo request()->segment(2) === 'email-manager' ? 'show' : ''; ?>" id="email">
+                            <div class="collapse @php echo request()->segment(2) === 'email-manager' ? 'show' : ''; @endphp"
+                                id="email">
                                 <ul class="nav flex-column sub-menu">
                                     <li class="nav-item" @if ($segment1 == 'settings' && $segment3 == 'Site') class="active" @endif>
                                         <a class="nav-link" href="{{ route('EmailTemplate.index') }}">Email
@@ -327,13 +227,15 @@
                     @endif
 
                     <li class="nav-item">
-                        <a class="nav-link <?php echo request()->segment(2) === 'masters' ? 'active' : ''; ?>" data-bs-toggle="collapse" href="#Masters"
-                            aria-expanded="false" aria-controls="ui-basic">
+                        <a class="nav-link @php echo request()->segment(2) === 'masters' ? 'active' : ''; @endphp"
+                            data-bs-toggle="collapse" href="#Masters" aria-expanded="false"
+                            aria-controls="ui-basic">
                             <span class="menu-title">Masters Management</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-book-open-page-variant menu-icon"></i>
                         </a>
-                        <div class="collapse <?php echo request()->segment(2) === 'masters' ? 'show' : ''; ?>" id="Masters">
+                        <div class="collapse @php echo request()->segment(2) === 'masters' ? 'show' : ''; @endphp"
+                            id="Masters">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item" @if ($segment1 == 'lobs' && $segment3 == 'Site') class="active" @endif> <a
                                         class="nav-link" href="{{ route('Lob.index') }}">LOB Management</a></li>
@@ -376,7 +278,6 @@
                                 </ul>
                             </div>
                         </li>
-
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="collapse" href="#settings" aria-expanded="false"
                                 aria-controls="ui-basic">
@@ -404,122 +305,107 @@
 
                 </ul>
             </nav>
-
-
-
             <!-- partial -->
             <div class="main-panel">
 
-                @if(Session::has('error'))
-                <script type="text/javascript">
-                $(document).ready(function(e) {
+                @if (Session::has('error'))
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            show_message(@json(Session::get('error')), 'error');
+                        });
+                    </script>
+                @endif
 
-                    show_message("{{{ Session::get('error') }}}", 'error');
-                });
-                </script>
+                @if (Session::has('success'))
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            show_message(@json(Session::get('success')), 'success');
+                        });
+                    </script>
                 @endif
-                @if(Session::has('success'))
-                <script type="text/javascript">
-                $(document).ready(function(e) {
-                    show_message("{{{ Session::get('success') }}}", 'success');
-                });
-                </script>
+
+                @if (Session::has('flash_notice'))
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            show_message(@json(Session::get('flash_notice')), 'success');
+                        });
+                    </script>
                 @endif
-                @if(Session::has('flash_notice'))
-                <script type="text/javascript">
-                $(document).ready(function(e) {
-                    show_message("{{{ Session::get('flash_notice') }}}", 'success');
-                });
-                </script>
-                @endif
+
                 @yield('content')
-                <script type="text/javascript">
-                function show_message(message, message_type) {
-                    $().toastmessage('showToast', {
-                        text: message,
-                        sticky: false,
-                        position: 'top-right',
-                        type: message_type,
-                    });
-                }
 
-                $(function() {
-                    $(document).on('click', '.delete_any_item', function(e) {
-                        e.stopImmediatePropagation();
-                        url = $(this).attr('href');
-                        bootbox.confirm("Are you sure want to delete this ?",
-                            function(result) {
-                                if (result) {
-                                    window.location.replace(url);
-                                }
+                <script>
+                    function show_message(message, message_type) {
+                        $().toastmessage('showToast', {
+                            text: message,
+                            sticky: false,
+                            position: 'top-right',
+                            type: message_type,
+                        });
+                    }
+
+                    document.addEventListener('DOMContentLoaded', function() {
+                        document.querySelectorAll('.delete_any_item').forEach(function(el) {
+                            el.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                let url = this.getAttribute('href');
+                                bootbox.confirm("Are you sure want to delete this ?", function(result) {
+                                    if (result) {
+                                        window.location.replace(url);
+                                    }
+                                });
                             });
-                        e.preventDefault();
-                    });
-                    $(document).on('click', '.status_any_item', function(e) {
-                        e.stopImmediatePropagation();
-                        url = $(this).attr('href');
-                        bootbox.confirm("Are you sure want to change status ?",
-                            function(result) {
-                                if (result) {
-                                    window.location.replace(url);
-                                }
+                        });
+
+                        document.querySelectorAll('.status_any_item').forEach(function(el) {
+                            el.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                let url = this.getAttribute('href');
+                                bootbox.confirm("Are you sure want to change status ?", function(result) {
+                                    if (result) {
+                                        window.location.replace(url);
+                                    }
+                                });
                             });
-                        e.preventDefault();
+                        });
                     });
-
-                });
-
-
-                //  $(function() {
-                //         $(this).bind("contextmenu", function(e) {
-                //             e.preventDefault();
-                //         });
-                //     });
                 </script>
-                <!-- content-wrapper ends -->
-                <!-- partial:partials/_footer.html -->
-                {{-- <footer class="footer">
-                            <div class="container-fluid d-flex justify-content-between">
-                                <span class="text-muted d-block text-center text-sm-start d-sm-inline-block">Copyright ©
-                                    LMS 2021</span>
-                            </div>
-                        </footer> --}}
-                <!-- partial -->
             </div>
+
             <!-- main-panel ends -->
-            </div>
-            <!-- page-body-wrapper ends -->
-            </div>
-            <!-- container-scroller -->
-            <!-- plugins:js -->
-            <script src="{{ URL::asset('vendors/js/vendor.bundle.base.js') }}"></script>
-            <!-- endinject -->
-            <!-- Plugin js for this page -->
-            <script src="{{ URL::asset('vendors/chart.js/Chart.min.js') }}"></script>
-            <script src="{{ URL::asset('js/jquery.cookie.js') }}" type="text/javascript"></script>
-            <!-- End plugin js for this page -->
-            <!-- inject:js -->
-            <script src="{{ URL::asset('js/off-canvas.js') }}"></script>
-            {{-- <script src="{{ URL::asset('js/hoverable-collapse.js') }}"></script> --}}
-            <script src="{{ URL::asset('js/misc.') }}js"></script>
-            <!-- endinject -->
-            <!-- Custom js for this page -->
-            <script src="{{ URL::asset('js/dashboard.js') }}"></script>
-            <script src="{{ URL::asset('js/todolist.js') }}"></script>
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{{ URL::asset('vendors/js/vendor.bundle.base.js') }}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{{ URL::asset('vendors/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ URL::asset('js/jquery.cookie.js') }}" type="text/javascript"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{{ URL::asset('js/off-canvas.js') }}"></script>
+    {{-- <script src="{{ URL::asset('js/hoverable-collapse.js') }}"></script> --}}
+    <script src="{{ URL::asset('js/misc.') }}js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <script src="{{ URL::asset('js/dashboard.js') }}"></script>
+    <script src="{{ URL::asset('js/todolist.js') }}"></script>
 
-            <script src="https://cdn.ckeditor.com/4.15.0/standard-all/ckeditor.js"></script>
-            <script src="{{ URL::asset('old/js/jquery2.0.3.min.js') }}"></script>
-            <script src="{{ URL::asset('old/js/formValidation.js') }}"></script>
-            <script src="{{ URL::asset('old/js/bootbox.js') }}"></script>
-            {{-- <script src="{{ URL::asset('old/js/framework/bootstrap.js') }}" ></script> --}}
+    <script src="https://cdn.ckeditor.com/4.15.0/standard-all/ckeditor.js"></script>
+    <script src="{{ URL::asset('old/js/jquery2.0.3.min.js') }}"></script>
+    <script src="{{ URL::asset('old/js/formValidation.js') }}"></script>
+    <script src="{{ URL::asset('old/js/bootbox.js') }}"></script>
+    {{-- <script src="{{ URL::asset('old/js/framework/bootstrap.js') }}" ></script> --}}
 
-            <script src="{{ URL::asset('old/js/raphael-min.js') }}"></script>
-            <script src="{{ URL::asset('old/js/morris.js') }}"></script>
-            <script src="{{ URL::asset('old/js/moment.js') }}"></script>
-            <script src="{{ URL::asset('old/js/bootstrap-datetimepicker.js') }}"></script>
+    <script src="{{ URL::asset('old/js/raphael-min.js') }}"></script>
+    <script src="{{ URL::asset('old/js/morris.js') }}"></script>
+    <script src="{{ URL::asset('old/js/moment.js') }}"></script>
+    <script src="{{ URL::asset('old/js/bootstrap-datetimepicker.js') }}"></script>
 
-            <script src="{{ URL::asset('old/css/notification/jquery.toastmessage.js') }}"></script>
-            <!-- End custom js for this page -->
+    <script src="{{ URL::asset('old/css/notification/jquery.toastmessage.js') }}"></script>
+    <!-- End custom js for this page -->
 
 </body>
 
