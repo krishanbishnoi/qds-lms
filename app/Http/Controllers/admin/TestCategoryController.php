@@ -84,7 +84,6 @@ class TestCategoryController extends BaseController
         unset($complete_string["order"]);
         $query_string                =    http_build_query($complete_string);
         $results->appends($request->all())->render();
-        //	 echo '<pre>'; print_r($results); die;
         session(['filteredResult' => $results]);
 
         $training_manager = User::where("is_deleted", 0)->where("user_role_id", MANAGER_ROLE_ID)->pluck('first_name', 'id')->toArray();
@@ -96,63 +95,56 @@ class TestCategoryController extends BaseController
 
     public function add()
     {
+        dd('1');
         return view("admin.TestCategory.add");
-    } 
+    }
 
-    function save()
+    public function save(Request $request)
     {
         $request->replace($this->arrayStripTags($request->all()));
-        $thisData                    =    $request->all();
-        //  echo '<pre>'; print_r($thisData); die;
+        $data = $request->all();
 
         $rules = [
-            'name'             => 'required',
+            'name' => 'required',
         ];
 
-        // if (Auth::user()->user_role_id == MANAGER_ROLE_ID) {
-        // 	$rules['training_trainer'] = 'required';
-        // } else {
-        // 	$rules['training_manager'] = 'required';
-        // }
-
-        $validator = Validator::make($thisData, $rules);
+        $validator = Validator::make($data, $rules);
         if ($validator->fails()) {
-            return Redirect::back()
-                ->withErrors($validator)->withInput();
-        } else {
-
-            $name = strtolower($request->get('name'));
-            $keywords = str_replace(' ', '-', $name);
-
-            $obj = new TestCategory;
-            $obj->name                 = $request->get('name');
-
-            $obj->parent_id           = Auth::user()->id;
-            $obj->description         = $request->get('description');
-            $obj->keywords            = $keywords;
-
-            $obj->save();
-
-
-            if (!$obj->save()) {
-
-                Session::flash('error', trans("Something went wrong."));
-                return Redirect::route($this->model . ".index");
-            } else {
-                Session::flash('success', trans($this->sectionNameSingular . " has been added successfully"));
-                return Redirect::route($this->model . ".index");
-            }
+            return Redirect::back()->withErrors($validator)->withInput();
         }
-    } //end save()
 
-    /**
-     * Function for update status
-     *
-     * @param $modelId as id of area
-     * @param $status as status of area
-     *
-     * @return redirect page.
-     */
+        $name = strtolower($request->get('name'));
+        $keywords = str_replace(' ', '-', $name);
+
+        $categoryData = [
+            'name'        => $request->name,
+            'parent_id'   => Auth::id(),
+            'description' => $request->description,
+            'keywords'    => $keywords,
+            'is_active'    => $request->is_active,
+        ];
+
+        try {
+            $category = TestCategory::updateOrCreate(
+                ['id' => $request->id],
+                $categoryData
+            );
+
+            if (!$category) {
+                Session::flash('error', __(config('constants.REC_ADD_FAILED')));
+            } else {
+                $message = $request->id ? __(config('constants.REC_UPDATE_SUCCESS'), ['section' => $this->sectionNameSingular])
+                    : __(config('constants.REC_ADD_SUCCESS'), ['section' => $this->sectionNameSingular]);
+                Session::flash('success', $message);
+            }
+            return redirect()->route('TestCategory.index');
+        } catch (\Exception $e) {
+            Session::flash('error', __(config('constants.FLASH_TRY_CATCH')));
+            return redirect()->route('TestCategory.index');
+        }
+    }
+
+
     public function changeStatus($modelId = 0, $status = 0)
     {
         if ($status == 0) {
@@ -164,85 +156,20 @@ class TestCategoryController extends BaseController
         Training::where('id', $modelId)->update(array('is_active' => $status));
         Session::flash('flash_notice', $statusMessage);
         return Redirect::back();
-    } // end changeStatus()
+    }
 
-    /**
-     * Function for display page for edit area
-     *
-     * @param $modelId id  of area
-     *
-     * @return view page.
-     */
     public function edit($modelId = 0)
     {
         $model                =    TestCategory::find($modelId);
 
         if (empty($model)) {
-            return Redirect::route($this->model . ".index");
+            Session::flash('error', __(config('constants.REC_NOT_FOUND')));
+            return redirect()->route('TestCategory.index');
         }
 
         return  View::make("admin.$this->model.edit", compact('model'));
-    } // end edit()
+    }
 
-
-    /**
-     * Function for update area
-     *
-     * @param $modelId as id of area
-     *
-     * @return redirect page.
-     */
-    function update($modelId)
-    {
-        $model                    =    TestCategory::findorFail($modelId);
-        if (empty($model)) {
-            return Redirect::back();
-        }
-
-        $request->replace($this->arrayStripTags($request->all()));
-        $thisData                    =    $request->all();
-        //echo '<pre>'; print_r($thisData); die;
-
-        $rules = [
-            'name'             => 'required',
-        ];
-
-        $validator = Validator::make($thisData, $rules);
-
-        if ($validator->fails()) {
-            return Redirect::back()
-                ->withErrors($validator)->withInput();
-        } else {
-            $name = strtolower($request->get('name'));
-            $keywords = str_replace(' ', '-', $name);
-
-            $obj = $model;
-            $obj->name                   = $request->get('name');
-            $obj->parent_id           = Auth::user()->id;
-            $obj->description         = $request->get('description');
-            $obj->keywords            = $keywords;
-
-            $obj->save();
-
-            if (!$obj->save()) {
-
-                Session::flash('error', trans("Something went wrong."));
-                return Redirect::route($this->model . ".index");
-            } else {
-                Session::flash('success', trans($this->sectionNameSingular . " has been Updated successfully"));
-                return Redirect::route($this->model . ".index");
-            }
-        }
-    } // end update()
-
-
-    /**
-     * Function for mark a couse as deleted
-     *
-     * @param $userId as id of couse
-     *
-     * @return redirect page.
-     */
     public function delete($id = 0)
     {
         $model    =    TestCategory::find($id);
@@ -254,6 +181,5 @@ class TestCategoryController extends BaseController
             Session::flash('flash_notice', trans($this->sectionNameSingular . " has been removed successfully"));
         }
         return Redirect::back();
-    } // end delete()
-
-}// end TestCategoryController
+    }
+}
