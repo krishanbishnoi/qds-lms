@@ -14,11 +14,11 @@ use App\Http\Controllers\admin\ReportsController;
 use App\Http\Controllers\admin\TraineesController;
 use App\Http\Controllers\admin\TrainingTypeController;
 use App\Http\Controllers\admin\UsersController;
-
-include(app_path() . '/global_constants.php');
-include(app_path() . '/settings.php');
-
 use Illuminate\Support\Facades\Route;
+
+include_once(app_path() . '/global_constants.php');
+include_once(app_path() . '/settings.php');
+
 
 
 
