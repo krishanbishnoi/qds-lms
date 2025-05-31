@@ -14,6 +14,9 @@ select.form-control {
 .custom_pagination {
 	border-radius: 0.25rem;
 }
+.cke_notification {
+	display: none !important;
+}
 
 .custom_pagination li.active a,
 .custom_pagination li a:hover {
@@ -54,7 +57,7 @@ table tr th a,
 .table tr th {
 	color: #004183 !important;
 	text-decoration: none;
-    font-weight: 500;
+	font-weight: 500;
 }
 
 td.action-td a {
@@ -83,5 +86,8 @@ table.table.table-hover tr td {
 
 
 
-.email-details-modal p,.email-details-modal strong{     white-space: initial;
-    word-break: break-word; }
+.email-details-modal p,
+.email-details-modal strong {
+	white-space: initial;
+	word-break: break-word;
+}

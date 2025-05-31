@@ -37,4 +37,8 @@ class Training extends Eloquent
 	{
 		return $this->hasMany(TrainingTestResult::class);
 	}
+	public function training_participants_count()
+	{
+		return $this->hasMany(TrainingParticipants::class);
+	}
 }// end Training class

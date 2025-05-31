@@ -54,7 +54,7 @@
                                 'Select Status',
                                 trans('Select Status') .
                                     '<span class="requireRed">
-                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                            </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -68,7 +68,7 @@
                                 'olms_id',
                                 trans('Id') .
                                     '<span class="requireRed">
-                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                            </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -76,13 +76,13 @@
                     </div>
                 </div>
                 <!-- <div class="col-md-2 col-sm-2">
-                                <div class="form-group ">
-                                    {!! Html::decode(
-                                        Form::label('email', trans('Email') . '<span class="requireRed"> </span>', ['class' => 'mws-form-label']),
-                                    ) !!}
-                                    {{ Form::text('email', isset($searchVariable['email']) ? $searchVariable['email'] : '', ['class' => ' form-control', 'placeholder' => 'Email']) }}
-                                </div>
-                            </div> -->
+                                                                                            <div class="form-group ">
+                                                                                                {!! Html::decode(
+                                                                                                    Form::label('email', trans('Email') . '<span class="requireRed"> </span>', ['class' => 'mws-form-label']),
+                                                                                                ) !!}
+                                                                                                {{ Form::text('email', isset($searchVariable['email']) ? $searchVariable['email'] : '', ['class' => ' form-control', 'placeholder' => 'Email']) }}
+                                                                                            </div>
+                                                                                        </div> -->
                 <div class="col-md-2 col-sm-2">
                     <div class="form-group ">
                         {!! Html::decode(
@@ -90,7 +90,7 @@
                                 'mobile_number',
                                 trans('Mobile Number') .
                                     '<span class="requireRed">
-                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                            </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -115,7 +115,8 @@
                 <form action="{{ route('import.trainees') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="d-md-flex justify-content-between align-items-center gap-3">
-                        <a class="btn btn-primary" href="{{ asset('sample-files/user-upload-sample-file.xlsx') }}"> Download
+                        <a class="btn btn-primary" href="{{ asset('sample-files/user-upload-sample-file.xlsx') }}">
+                            Download
                             sample file</a>
                         <div class="form-group d-flex flex-column justify-content-center">
                             <input type="file" name="file" required>
@@ -155,7 +156,7 @@
                                     title="Release Selected Games" id="trigger_event">Delete Users</button>
                             </div>
                         </div>
-                        <table class="table table-hover brdrclr mt-2" width="100%">
+                        <table class="table table-hover brdrclr mt-2 " width="100%">
                             <thead class="theadLight">
                                 <tr>
                                     <th width=:15%;> <input type="checkbox" id="checkAll" class='check_box_all'>All</th>
@@ -330,7 +331,6 @@
                                     @foreach ($results as $result)
                                         <tr class="items-inner">
                                             <td><input type="checkbox" name="user_ids[]" value="{{ $result->id }}"></td>
-
                                             <td data-th='Name'>{{ $number++ }}</td>
                                             <td data-th='Name'>{{ $result->employee_id }}</td>
                                             <td data-th='Name'>{{ $result->fullname }}</td>
@@ -349,9 +349,9 @@
                                 </td> --}}
                                             <td data-th=''>
                                                 @if ($result->is_active == 1)
-                                                    <span class="btn btn-success px-4">{{ trans('Activated') }}</span>
+                                                    <span class="badge text-success">Active</span>
                                                 @else
-                                                    <span class="btn btn-warning px-4">{{ trans('Deactivated') }}</span>
+                                                    <span class="badge text-danger">Inactive</span>
                                                 @endif
                                             </td>
                                             <td data-th='' class="action-td">
@@ -469,8 +469,9 @@
         });
 
         function downloadFileChangeDesignation() {
-            var fileUrl = '{{ asset('
-                                sample - files / change - designation - sample.xlsx ') }}';
+            var fileUrl =
+                '{{ asset('
+                                                                                                                                                                                                                                                                                sample - files / change - designation - sample.xlsx ') }}';
             var link = document.createElement('a');
             link.href = fileUrl;
             link.download = 'change-designation-sample-file.xlsx';

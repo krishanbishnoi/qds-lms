@@ -11,14 +11,15 @@ use App\Http\Controllers\admin\LobController;
 use App\Http\Controllers\admin\PartnerController;
 use App\Http\Controllers\admin\RegionController;
 use App\Http\Controllers\admin\TestCategoryController;
+use App\Http\Controllers\admin\ReportsController;
 use App\Http\Controllers\admin\TraineesController;
 use App\Http\Controllers\admin\TrainingTypeController;
 use App\Http\Controllers\admin\UsersController;
-
-include(app_path() . '/global_constants.php');
-include(app_path() . '/settings.php');
-
 use Illuminate\Support\Facades\Route;
+
+include_once(app_path() . '/global_constants.php');
+include_once(app_path() . '/settings.php');
+
 
 
 
@@ -368,11 +369,13 @@ Route::group(array('prefix' => 'admin'), function () {
         Route::get('admin-roles/view-admin-role/{id}', array('as' => 'Roles.view', 'uses' => 'AdminRoleController@view'));
         Route::get('admin-roles/update-admin-role-status/{id}/{status}', array('as' => 'Roles.status', 'uses' => 'AdminRoleController@changeStatus'));
 
-        Route::get('reports', array('as' => 'Reports.index', 'uses' => 'ReportsController@index'));
-        Route::post('reports', array('as' => 'Reports.search', 'uses' => 'ReportsController@search'));
-
-        Route::get('downloads-report-test/{test_id}', array('as' => 'Reports.downloads', 'uses' => 'ReportsController@downloadReport'));
-        Route::get('downloads-report-training/{training_id}', array('as' => 'Reports.downloads.training', 'uses' => 'ReportsController@downloadReportTraining'));
+        Route::controller(ReportsController::class)->prefix('reports')->name('Reports.')->group(function () {
+            Route::get('reports/test', 'test')->name('test');
+            Route::post('reports/test', 'search')->name('search');
+            Route::get('reports/training', 'training')->name('training');
+            Route::get('downloads-report-test/{test_id}', 'downloadReport')->name('downloads');
+            Route::get('downloads-report-training/{training_id}', 'downloadReportTraining')->name('downloads.training');
+        });
     });
 });
 
