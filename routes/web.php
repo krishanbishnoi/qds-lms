@@ -10,16 +10,14 @@ use App\Http\Controllers\admin\DomainController;
 use App\Http\Controllers\admin\LobController;
 use App\Http\Controllers\admin\PartnerController;
 use App\Http\Controllers\admin\RegionController;
-use App\Http\Controllers\admin\TestCategoryController;
-use App\Http\Controllers\admin\ReportsController;
 use App\Http\Controllers\admin\TraineesController;
 use App\Http\Controllers\admin\TrainingTypeController;
 use App\Http\Controllers\admin\UsersController;
+
+include(app_path() . '/global_constants.php');
+include(app_path() . '/settings.php');
+
 use Illuminate\Support\Facades\Route;
-
-include_once(app_path() . '/global_constants.php');
-include_once(app_path() . '/settings.php');
-
 
 
 
@@ -318,14 +316,14 @@ Route::group(array('prefix' => 'admin'), function () {
 
         /** settings routing**/
         Route::controller(DomainController::class)->prefix('masters/domains')->name('Domain.')->group(function () {
-            Route::match(['get', 'post'], '/', 'index')->name('index');
-            Route::get('add', 'add')->name('add');
-            Route::post('save', 'save')->name('save');
-            Route::get('edit/{id}', 'edit')->name('edit');
-            Route::get('delete/{id}', 'delete')->name('delete');
-            Route::get('view/{id}', 'view')->name('view');
-            Route::get('update-status/{id}/{status}', 'changeStatus')->name('status');
-        });
+                Route::match(['get', 'post'], '/', 'index')->name('index');
+                Route::get('add', 'add')->name('add');
+                Route::post('save', 'save')->name('save');
+                Route::get('edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'delete')->name('delete');
+                Route::get('view/{id}', 'view')->name('view');
+                Route::get('update-status/{id}/{status}', 'changeStatus')->name('status');
+            });
 
         Route::controller(LobController::class)->prefix('masters/lobs')->name('Lob.')->group(function () {
             Route::match(['get', 'post'], '/', 'index')->name('index');
@@ -369,13 +367,11 @@ Route::group(array('prefix' => 'admin'), function () {
         Route::get('admin-roles/view-admin-role/{id}', array('as' => 'Roles.view', 'uses' => 'AdminRoleController@view'));
         Route::get('admin-roles/update-admin-role-status/{id}/{status}', array('as' => 'Roles.status', 'uses' => 'AdminRoleController@changeStatus'));
 
-        Route::controller(ReportsController::class)->prefix('reports')->name('Reports.')->group(function () {
-            Route::get('reports/test', 'test')->name('test');
-            Route::post('reports/test', 'search')->name('search');
-            Route::get('reports/training', 'training')->name('training');
-            Route::get('downloads-report-test/{test_id}', 'downloadReport')->name('downloads');
-            Route::get('downloads-report-training/{training_id}', 'downloadReportTraining')->name('downloads.training');
-        });
+        Route::get('reports', array('as' => 'Reports.index', 'uses' => 'ReportsController@index'));
+        Route::post('reports', array('as' => 'Reports.search', 'uses' => 'ReportsController@search'));
+
+        Route::get('downloads-report-test/{test_id}', array('as' => 'Reports.downloads', 'uses' => 'ReportsController@downloadReport'));
+        Route::get('downloads-report-training/{training_id}', array('as' => 'Reports.downloads.training', 'uses' => 'ReportsController@downloadReportTraining'));
     });
 });
 
@@ -477,17 +473,14 @@ Route::group(array('prefix' => 'trainer'), function () {
         Route::post('trainings/import-questions/{test_id}', 'QuestionController@importQuestions')->name('Trainerimport.questions');
 
         /* test category modules routes */
-        Route::controller(TestCategoryController::class)->prefix('tests')->name('TestCategory.')->group(function () {
-            Route::match(['get', 'post'], 'category', 'index')->name('index');
-            Route::get('add-category', 'add')->name('add');
-            Route::post('add-category', 'save')->name('save');
-            Route::get('edit-category/{id}', 'edit')->name('edit');
-            Route::post('edit-category/{id}', 'update')->name('update');
-            Route::get('delete-category/{id}', 'delete')->name('delete');
-            Route::get('view-category/{id}', 'view')->name('view');
-        });
-
-
+        Route::get('tests/category', array('as' => 'TrainerTestCategory.index', 'uses' => 'TestCategoryController@index'));
+        Route::post('tests/category', array('as' => 'TrainerTestCategory.index', 'uses' => 'TestCategoryController@index'));
+        Route::get('tests/add-category', array('as' => 'TrainerTestCategory.add', 'uses' => 'TestCategoryController@add'));
+        Route::post('tests/add-category', array('as' => 'TrainerTestCategory.add', 'uses' => 'TestCategoryController@save'));
+        Route::get('tests/edit-category/{id}', array('as' => 'TrainerTestCategory.edit', 'uses' => 'TestCategoryController@edit'));
+        Route::post('tests/edit-category/{id}', array('as' => 'TrainerTestCategory.edit', 'uses' => 'TestCategoryController@update'));
+        Route::get('tests/delete-category/{id}', array('as' => 'TrainerTestCategory.delete', 'uses' => 'TestCategoryController@delete'));
+        Route::get('tests/view-category/{id}', array('as' => 'TrainerTestCategory.view', 'uses' => 'TestCategoryController@view'));
         /** test routing**/
         Route::get('tests', array('as' => 'TrainerTest.index', 'uses' => 'TestController@index'));
         Route::post('tests', array('as' => 'TrainerTest.index', 'uses' => 'TestController@index'));
