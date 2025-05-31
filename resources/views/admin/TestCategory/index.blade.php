@@ -81,6 +81,7 @@
                                             ],
                                         ) }}
                                     </th>
+                                    <th width="25%"> Status</th>
                                     <th width="30%">
                                         {{ link_to_route(
                                             "$modelName.index",
@@ -108,6 +109,10 @@
                                     @foreach ($results as $record)
                                         <tr class="items-inner">
                                             <td data-th="{{ trans('Page Name') }}">{{ $record->name }}</td>
+                                            <td> <span
+                                                    class="badge {{ $record->is_active ? 'text-success' : 'text-danger' }}">
+                                                    {{ config('constants.STATUS_LIST')[$record->is_active] ?? 'Unknown Status' }}
+                                                </span></td>
 
                                             <td data-th="{{ trans('Page Name') }}">{{ $record->updated_at }}</td>
                                             <td data-th='' class="action-td">
@@ -159,7 +164,7 @@
                                     'training_manager',
                                     trans('Assign Test Manager') .
                                         '<span
-                                                                                                                                                                        class="requireRed"></span>',
+                                                                                                                                                                                                                                class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -204,7 +209,7 @@
                                     'training_trainer',
                                     trans('Assign Trainer') .
                                         '<span
-                                                                                                                                                                        class="requireRed"></span>',
+                                                                                                                                                                                                                                class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
