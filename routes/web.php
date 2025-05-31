@@ -369,6 +369,7 @@ Route::group(array('prefix' => 'admin'), function () {
         Route::get('admin-roles/view-admin-role/{id}', array('as' => 'Roles.view', 'uses' => 'AdminRoleController@view'));
         Route::get('admin-roles/update-admin-role-status/{id}/{status}', array('as' => 'Roles.status', 'uses' => 'AdminRoleController@changeStatus'));
 
+        // grouping of rourtes
         Route::controller(ReportsController::class)->prefix('reports')->name('Reports.')->group(function () {
             Route::get('reports/test', 'test')->name('test');
             Route::post('reports/test', 'search')->name('search');
