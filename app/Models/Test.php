@@ -17,6 +17,26 @@ class Test extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'tests';
+	protected $fillable = [
+		'user_id',
+		'category_id',
+		'type',
+		'minimum_marks',
+		'title',
+		'number_of_attempts',
+		'description',
+		'is_active',
+		'start_date_time',
+		'end_date_time',
+		'time_of_test',
+		'status',
+		'region',
+		'lob',
+		'circle',
+		'number_of_questions',
+		'regipublish_resulton',
+		'thumbnail',
+	];
 
 
 	public function getImageAttribute($value = "")

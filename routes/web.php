@@ -7,9 +7,13 @@
 use App\Http\Controllers\admin\CircleController;
 use App\Http\Controllers\admin\DesignationController;
 use App\Http\Controllers\admin\DomainController;
+use App\Http\Controllers\admin\FeedbackController;
 use App\Http\Controllers\admin\LobController;
 use App\Http\Controllers\admin\PartnerController;
 use App\Http\Controllers\admin\RegionController;
+use App\Http\Controllers\admin\ReportsController;
+use App\Http\Controllers\admin\TestCategoryController;
+use App\Http\Controllers\admin\TestController;
 use App\Http\Controllers\admin\TraineesController;
 use App\Http\Controllers\admin\TrainingTypeController;
 use App\Http\Controllers\admin\UsersController;
@@ -165,33 +169,33 @@ Route::group(array('prefix' => 'admin'), function () {
 
 
         /* test category modules routes */
-        Route::get('tests/category', array('as' => 'TestCategory.index', 'uses' => 'TestCategoryController@index'));
-        Route::post('tests/category', array('as' => 'TestCategory.index', 'uses' => 'TestCategoryController@index'));
-        Route::get('tests/add-category', array('as' => 'TestCategory.add', 'uses' => 'TestCategoryController@add'));
-        Route::post('tests/add-category', array('as' => 'TestCategory.add', 'uses' => 'TestCategoryController@save'));
-        Route::get('tests/edit-category/{id}', array('as' => 'TestCategory.edit', 'uses' => 'TestCategoryController@edit'));
-        Route::post('tests/edit-category/{id}', array('as' => 'TestCategory.edit', 'uses' => 'TestCategoryController@update'));
-        Route::get('tests/delete-category/{id}', array('as' => 'TestCategory.delete', 'uses' => 'TestCategoryController@delete'));
-        Route::get('tests/view-category/{id}', array('as' => 'TestCategory.view', 'uses' => 'TestCategoryController@view'));
+        Route::controller(TestCategoryController::class)->prefix('tests')->name('TestCategory.')->group(function () {
+            Route::match(['get', 'post'], 'category', 'index')->name('index');
+            Route::get('add', 'add')->name('add');
+            Route::post('add', 'save')->name('save');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::get('delete/{id}', 'delete')->name('delete');
+            Route::get('view/{id}', 'view')->name('view');
+        });
+
 
         /** test routing**/
-        Route::get('tests', array('as' => 'Test.index', 'uses' => 'TestController@index'));
-        Route::post('tests', array('as' => 'Test.index', 'uses' => 'TestController@index'));
-        Route::get('tests/add-new-test', array('as' => 'Test.add', 'uses' => 'TestController@add'));
-        Route::post('tests/add-new-test', array('as' => 'Test.add', 'uses' => 'TestController@save'));
-        Route::get('tests/edit-test/{id}', array('as' => 'Test.edit', 'uses' => 'TestController@edit'));
-        Route::post('tests/edit-test/{id}', array('as' => 'Test.edit', 'uses' => 'TestController@update'));
-        Route::get('tests/delete-test/{id}', array('as' => 'Test.delete', 'uses' => 'TestController@delete'));
-        Route::get('tests/view-test/{id}', array('as' => 'Test.view', 'uses' => 'TestController@view'));
-        Route::get('tests/update-test-status/{id}/{status}', array('as' => 'Test.status', 'uses' => 'TestController@changeStatus'));
-        Route::get('tests/export-tests', 'TestController@exportTests')->name('export.tests');
-        Route::get('tests/import-tests-participants/{id}', 'TestController@importTestsParticipants')->name('import.importregularTestsParticipants');
-        Route::post('tests/import-tests-participants/{id}', 'TestController@importTests')->name('import.tests');
-        Route::post('tests/assign-manager', array('as' => 'Test.AssignManager', 'uses' => 'TestController@AssignManager'));
-        Route::post('tests/assign-trainer', array('as' => 'Test.AssignTrainer', 'uses' => 'TestController@AssignTrainer'));
+        Route::controller(TestController::class)->prefix('tests')->group(function () {
+            Route::match(['get', 'post'], '/', 'index')->name('Test.index');
+            Route::get('add', 'add')->name('Test.add');
+            Route::post('save', 'save')->name('Test.save');
+            Route::get('edit/{id}', 'edit')->name('Test.edit');
+            Route::get('delete-test/{id}', 'delete')->name('Test.delete');
+            Route::get('view-test/{id}', 'view')->name('Test.view');
+            Route::get('update-status/{id}/{status}', 'changeStatus')->name('Test.status');
+            Route::get('export-tests', 'exportTests')->name('Test.export.tests');
+            Route::get('import-tests-participants/{id}', 'importTestsParticipants')->name('import.importregularTestsParticipants');
 
-        // option to add participate directly not with Excel upload
-        Route::post('tests/import-tests-participants-user/{id}', 'TestController@importTestsUsersDirectly')->name('import.tests.usersDirectly');
+            Route::post('import-tests-participants/{id}', 'importTests')->name('Test.import.tests');
+            Route::post('assign-manager', 'AssignManager')->name('Test.AssignManager');
+            Route::post('assign-trainer', 'AssignTrainer')->name('Test.AssignTrainer');
+            Route::post('import-tests-participants-user/{id}', 'importTestsUsersDirectly')->name('Test.import.tests.usersDirectly');
+        });
 
         /* test questions routes */
         Route::get('tests/questions/{test_id}', array('as' => 'Question.index', 'uses' => 'QuestionController@index'));
@@ -209,22 +213,25 @@ Route::group(array('prefix' => 'admin'), function () {
         Route::get('test/{test_id}', array('as' => 'Test.report', 'uses' => 'TestController@testReport'));
 
         /* Feedback modules routes */
-        Route::get('tests/feedback', array('as' => 'Feedback.index', 'uses' => 'FeedbackController@index'));
-        Route::post('tests/feedback', array('as' => 'Feedback.index', 'uses' => 'FeedbackController@index'));
-        Route::get('tests/feedback/add', array('as' => 'Feedback.add', 'uses' => 'FeedbackController@add'));
-        Route::post('tests/feedback/add', array('as' => 'Feedback.add', 'uses' => 'FeedbackController@save'));
-        Route::get('tests/feedback/edit-category/{id}', array('as' => 'Feedback.edit', 'uses' => 'FeedbackController@edit'));
-        Route::post('tests/feedback/edit-category/{id}', array('as' => 'Feedback.edit', 'uses' => 'FeedbackController@update'));
-        Route::get('tests/feedback/delete-category/{id}', array('as' => 'Feedback.delete', 'uses' => 'FeedbackController@delete'));
-        Route::get('tests/feedback/view-category/{id}', array('as' => 'Feedback.view', 'uses' => 'FeedbackController@view'));
-        Route::get('tests/feedback/update-test-status/{id}/{status}', array('as' => 'Feedback.status', 'uses' => 'FeedbackController@changeStatus'));
-        Route::get('tests/feedback/export-tests', 'FeedbackController@exportTests')->name('export.tests');
-        Route::get('tests/feedback/import-tests-participants/{id}', 'FeedbackController@importTestsParticipants')->name('import.importTestsParticipants');
-        Route::post('tests/feedback/import-tests-participants/{id}', 'FeedbackController@importTests')->name('import.tests');
-        Route::post('tests/feedback/assign-manager', array('as' => 'Feedback.AssignManager', 'uses' => 'FeedbackController@AssignManager'));
-        Route::post('tests/feedback/assign-trainer', array('as' => 'Feedback.AssignTrainer', 'uses' => 'FeedbackController@AssignTrainer'));
-        // option to add participate in feedback test directly not with Excel upload
-        Route::post('tests/feedback/import-tests-participants-user/{id}', 'FeedbackController@importTestsUsersDirectly')->name('import.feedbackTest.usersDirectly');
+
+        Route::controller(FeedbackController::class)
+            ->prefix('tests/feedback')
+            ->group(function () {
+                Route::match(['get', 'post'], '/', 'index')->name('Feedback.index');
+                Route::get('add', 'add')->name('Feedback.add');
+                Route::post('save', 'save')->name('Feedback.save');
+                Route::get('edit-category/{id}', 'edit')->name('Feedback.edit');
+                Route::post('edit-category/{id}', 'update')->name('Feedback.update');
+                Route::get('delete-category/{id}', 'delete')->name('Feedback.delete');
+                Route::get('view-category/{id}', 'view')->name('Feedback.view');
+                Route::get('update-test-status/{id}/{status}', 'changeStatus')->name('Feedback.status');
+                Route::get('export-tests', 'exportTests')->name('export.tests');
+                Route::get('import-tests-participants/{id}', 'importTestsParticipants')->name('import.importTestsParticipants');
+                Route::post('import-tests-participants/{id}', 'importTests')->name('Feedback.import.tests');
+                Route::post('assign-manager', 'AssignManager')->name('Feedback.AssignManager');
+                Route::post('assign-trainer', 'AssignTrainer')->name('Feedback.AssignTrainer');
+                Route::post('import-tests-participants-user/{id}', 'importTestsUsersDirectly')->name('Feedback.import.feedbackTest.usersDirectly');
+            });
 
         /* user routes */
         Route::get('sub-admin', array('as' => 'SubAdmin.index', 'uses' => 'SubAdminController@index'));

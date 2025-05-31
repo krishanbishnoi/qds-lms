@@ -29,23 +29,17 @@ use Auth;
 use Config;
 use DB;
 use File;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Maatwebsite\Excel\Facades\Excel;
 use Mail;
 use Notification;
 use Redirect;
-use Request;
 use Session;
 use URL;
 use Validator;
 use View;
 
-/**
- * TestController Controller
- *
- * Add your methods in the class below
- *
- */
 class TestController extends BaseController
 {
 
@@ -61,10 +55,8 @@ class TestController extends BaseController
         View::share('sectionNameSingular', $this->sectionNameSingular);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-
-        // $DB                            =    Test::query();
         $DB = Test::query()->where('type', '!=', 'feedback_test');
 
         if (Auth::user()->user_role_id == MANAGER_ROLE_ID) {
@@ -78,9 +70,9 @@ class TestController extends BaseController
             $DB = $DB;
         }
         $searchVariable = array();
-        $inputGet = Request::all();
-        if ((Request::all())) {
-            $searchData = Request::all();
+        $inputGet = $request->all();
+        if (($request->all())) {
+            $searchData = $request->all();
             unset($searchData['display']);
             unset($searchData['_token']);
             if (isset($searchData['order'])) {
@@ -106,14 +98,14 @@ class TestController extends BaseController
         }
 
         $DB->leftJoin('users', 'users.id', '=', 'tests.user_id')->join('test_categories', 'test_categories.id', '=', 'tests.category_id')->select('tests.*', 'users.first_name as created_by', 'test_categories.name as category_name');
-        $sortBy = (Request::get('sortBy')) ? Request::get('sortBy') : 'updated_at';
-        $order = (Request::get('order')) ? Request::get('order') : 'DESC';
+        $sortBy = ($request->get('sortBy')) ? $request->get('sortBy') : 'updated_at';
+        $order = ($request->get('order')) ? $request->get('order') : 'DESC';
         $results = $DB->orderBy($sortBy, $order)->paginate(Config::get("Reading.records_per_page"));
-        $complete_string = Request::query();
+        $complete_string = $request->query();
         unset($complete_string["sortBy"]);
         unset($complete_string["order"]);
         $query_string = http_build_query($complete_string);
-        $results->appends(Request::all())->render();
+        $results->appends($request->all())->render();
         // echo '<pre>'; print_r($results); die;
 
         session(['filteredResult' => $results]);
@@ -125,16 +117,9 @@ class TestController extends BaseController
         // $selected_training_trainers = TrainerTrainings::where('test_id', $modelId)->pluck('user_id');
         // echo '<pre>'; print_r($thisData); die;
 
-        return View::make("admin.$this->model.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string', 'training_manager', 'trainers'));
+        return view("admin.Test.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string', 'training_manager', 'trainers'));
     }
 
-    /**
-     * Function for add new State
-     *
-     * @param null
-     *
-     * @return view page.
-     */
     public function add()
     {
         $TestCategory = TestCategory::pluck('name', 'id')->toArray();
@@ -145,28 +130,18 @@ class TestController extends BaseController
         $training_manager = User::where("is_deleted", 0)->where("user_role_id", MANAGER_ROLE_ID)->pluck('first_name', 'id')->toArray();
         $trainers = User::where("is_deleted", 0)->where("user_role_id", TRAINER_ROLE_ID)->pluck('first_name', 'id')->toArray();
 
-        return View::make("admin.$this->model.add", compact('TestCategory', 'TrainingType', 'training_manager', 'circle', 'lob', 'region', 'trainers'));
-    } // end add()
+        return view("admin.Test.add", compact('TestCategory', 'TrainingType', 'training_manager', 'circle', 'lob', 'region', 'trainers'));
+    }
 
-    /**
-     * Function for save new Area
-     *
-     * @param null
-     *
-     * @return redirect page.
-     */
-    public function save()
+    public function save(Request $request)
     {
-        // return Request::all();
-
-        Request::replace($this->arrayStripTags(Request::all()));
-        $thisData = Request::all();
-        //// echo '<pre>'; print_r($thisData); die;
+        $request->replace($this->arrayStripTags($request->all()));
+        $thisData = $request->all();
 
         $rules = [
             'category_id' => 'required',
             'title' => 'required',
-            //    'lob' => 'required',
+            // 'lob' => 'required',
             // 'region' => 'required',
             // 'circle' => 'required',
             'type' => 'required',
@@ -176,101 +151,102 @@ class TestController extends BaseController
             // 'document' => 'required',
             'start_date_time' => 'required',
             'end_date_time' => 'required',
-            'thumbnail' => 'required',
+            'thumbnail' => $request->id ? 'nullable' : 'required',  // thumbnail required only on create
             'publish_result' => 'required',
         ];
-
-        // if (Auth::user()->user_role_id == MANAGER_ROLE_ID) {
-        //     $rules['training_trainer'] = 'required';
-        // } else {
-        //     $rules['training_manager'] = 'required';
-        // }
 
         $validator = Validator::make($thisData, $rules);
 
         if ($validator->fails()) {
-            return Redirect::back()
-                ->withErrors($validator)->withInput();
-        } else {
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
 
-            $obj = new Test;
-            $obj->category_id = Request::get('category_id');
-            $obj->title = Request::get('title');
-            $obj->type = Request::get('type');
-            $obj->minimum_marks = Request::get('minimum_marks');
-            $obj->user_id = Auth::user()->id;
-            $obj->number_of_attempts = Request::get('number_of_attempts');
-            $obj->time_of_test = Request::get('time_of_test');
-            $obj->number_of_questions = Request::get('number_of_questions') ?? '0';
-            // $obj->skip               = Request::get('skip');
-            // $obj->test_id             = Request::get('test_id');
-            $obj->region = Request::get('region');
-            $obj->circle = Request::get('circle');
-            $obj->lob = Request::get('lob');
-            $obj->start_date_time = Request::get('start_date_time');
-            $obj->end_date_time = Request::get('end_date_time');
-            $obj->publish_result = Request::get('publish_result');
-            $obj->description = Request::get('description');
-            if (Request::hasFile('thumbnail')) {
-                $extension = Request::file('thumbnail')->getClientOriginalExtension();
-                $fileName = time() . '-thumbnail.' . $extension;
+        // Prepare data array for saving
+        $data = [
+            'category_id' => $request->category_id,
+            'title' => $request->title,
+            'type' => $request->type,
+            'minimum_marks' => $request->minimum_marks,
+            'user_id' => Auth::id(),
+            'number_of_attempts' => $request->number_of_attempts,
+            'time_of_test' => $request->time_of_test,
+            'number_of_questions' => $request->number_of_questions ?? '0',
+            'region' => $request->region,
+            'circle' => $request->circle,
+            'lob' => $request->lob,
+            'start_date_time' => $request->start_date_time,
+            'end_date_time' => $request->end_date_time,
+            'publish_result' => $request->publish_result,
+            'description' => $request->description,
+        ];
 
-                $folderName = strtoupper(date('M') . date('Y')) . "/";
-                $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
-                if (!File::exists($folderPath)) {
-                    File::makeDirectory($folderPath, $mode = 0777, true);
-                }
-                if (Request::file('thumbnail')->move($folderPath, $fileName)) {
-                    $obj->thumbnail = $folderName . $fileName;
-                }
+        // Handle file upload if exists
+        if ($request->hasFile('thumbnail')) {
+            $extension = $request->file('thumbnail')->getClientOriginalExtension();
+            $fileName = time() . '-thumbnail.' . $extension;
+
+            $folderName = strtoupper(date('M') . date('Y')) . "/";
+            $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
+            if (!File::exists($folderPath)) {
+                File::makeDirectory($folderPath, 0777, true);
             }
-            $obj->save();
+            if ($request->file('thumbnail')->move($folderPath, $fileName)) {
+                $data['thumbnail'] = $folderName . $fileName;
+            }
+        }
+
+        try {
+            $obj = Test::updateOrCreate(
+                ['id' => $request->id],
+                $data
+            );
+
             $test_id = $obj->id;
 
             if ($test_id) {
                 if (isset($thisData['training_manager']) && !empty($thisData['training_manager'])) {
-                    //ContestStocks::where('contest_id',$contest_id)->delete();
+                    ManagerTrainings::where('test_id', $test_id)->delete();
                     foreach ($thisData['training_manager'] as $user_id) {
-                        //    print_r($user_id); die;
                         $object = new ManagerTrainings;
                         $object->test_id = $test_id;
                         $object->user_id = $user_id;
                         $object->save();
                     }
+                } else {
+                    ManagerTrainings::where('test_id', $test_id)->delete();
                 }
-            }
-            if ($test_id) {
+
+                // Manage related training trainers
                 if (isset($thisData['training_trainer']) && !empty($thisData['training_trainer'])) {
-                    //ContestStocks::where('contest_id',$contest_id)->delete();
+                    TrainerTrainings::where('test_id', $test_id)->delete();
                     foreach ($thisData['training_trainer'] as $user_id) {
-                        //    print_r($user_id); die;
                         $object = new TrainerTrainings;
                         $object->test_id = $test_id;
                         $object->user_id = $user_id;
                         $object->save();
                     }
+                } else {
+                    // If no training_trainer sent, delete old relations
+                    TrainerTrainings::where('test_id', $test_id)->delete();
                 }
             }
 
-            if (!$obj->save()) {
-
-                Session::flash('error', trans("Something went wrong."));
-                return Redirect::route($this->model . ".index");
+            if (!$obj) {
+                Session::flash('error', __(config('constants.REC_ADD_FAILED')));
             } else {
-                Session::flash('success', trans($this->sectionNameSingular . " has been added successfully"));
-                return Redirect::route($this->model . ".index");
+                $message = $request->id ? __(config('constants.REC_UPDATE_SUCCESS'), ['section' => $this->sectionNameSingular])
+                    : __(config('constants.REC_ADD_SUCCESS'), ['section' => $this->sectionNameSingular]);
+                Session::flash('success', $message);
             }
+            return redirect()->route('Test.index');
+        } catch (\Exception $e) {
+            dd($e);
+            Session::flash('error', __(config('constants.FLASH_TRY_CATCH')));
+            return redirect()->route('Test.index');
         }
-    } //end save()
+    }
 
-    /**
-     * Function for update status
-     *
-     * @param $modelId as id of area
-     * @param $status as status of area
-     *
-     * @return redirect page.
-     */
+
     public function changeStatus($modelId = 0, $status = 0)
     {
         if ($status == 0) {
@@ -282,7 +258,7 @@ class TestController extends BaseController
         Test::where('id', $modelId)->update(array('is_active' => $status));
         Session::flash('flash_notice', $statusMessage);
         return Redirect::back();
-    } // end changeStatus()
+    }
 
     public function view($modelId = 0)
     {
@@ -321,21 +297,15 @@ class TestController extends BaseController
 
         return View::make("admin.$this->model.view", compact('model', 'trainee_details', 'trainer_details', 'manager_details', 'questions'));
         // echo '<pre>'; print_r($createdBy); die;
-    } // end edit()
+    }
 
-    /**
-     * Function for display page for edit area
-     *
-     * @param $modelId id  of area
-     *
-     * @return view page.
-     */
     public function edit($modelId = 0)
     {
         $model = Test::find($modelId);
 
         if (empty($model)) {
-            return Redirect::route($this->model . ".index");
+            Session::flash('error', __(config('constants.REC_NOT_FOUND')));
+            return redirect()->route('Test.index');
         }
 
         $TestCategory = TestCategory::pluck('name', 'id')->toArray();
@@ -349,16 +319,9 @@ class TestController extends BaseController
         $trainers = User::where("is_deleted", 0)->where("user_role_id", TRAINER_ROLE_ID)->pluck('first_name', 'id')->toArray();
         $selected_training_trainers = TrainerTrainings::where('test_id', $modelId)->pluck('user_id');
 
-        return View::make("admin.$this->model.edit", compact('model', 'TestCategory', 'TrainingType', 'training_manager', 'selected_training_manager', 'region', 'lob', 'circle', 'trainers', 'selected_training_trainers'));
-    } // end edit()
+        return view("admin.Test.add", compact('model', 'TestCategory', 'TrainingType', 'training_manager', 'selected_training_manager', 'region', 'lob', 'circle', 'trainers', 'selected_training_trainers'));
+    }
 
-    /**
-     * Function for update area
-     *
-     * @param $modelId as id of area
-     *
-     * @return redirect page.
-     */
     public function update($modelId)
     {
         $model = Test::findorFail($modelId);
@@ -366,8 +329,8 @@ class TestController extends BaseController
             return Redirect::back();
         }
 
-        Request::replace($this->arrayStripTags(Request::all()));
-        $thisData = Request::all();
+        $request->replace($this->arrayStripTags($request->all()));
+        $thisData = $request->all();
         //     echo '<pre>'; print_r($thisData); die;
 
         $rules = [
@@ -399,23 +362,23 @@ class TestController extends BaseController
                 ->withErrors($validator)->withInput();
         } else {
             $obj = $model;
-            $obj->category_id = Request::get('category_id');
-            $obj->type = Request::get('type');
+            $obj->category_id = $request->get('category_id');
+            $obj->type = $request->get('type');
             //    $obj->user_id                   = Auth::user()->id;
-            $obj->title = Request::get('title');
-            $obj->region = Request::get('region');
-            $obj->circle = Request::get('circle');
-            $obj->lob = Request::get('lob');
-            $obj->minimum_marks = Request::get('minimum_marks');
-            $obj->number_of_attempts = Request::get('number_of_attempts');
-            $obj->time_of_test = Request::get('time_of_test');
-            $obj->number_of_questions = Request::get('number_of_questions') ?? '0';
-            $obj->start_date_time = Request::get('start_date_time');
-            $obj->end_date_time = Request::get('end_date_time');
-            $obj->publish_result = Request::get('publish_result');
-            $obj->description = Request::get('description');
-            if (Request::hasFile('thumbnail')) {
-                $extension = Request::file('thumbnail')->getClientOriginalExtension();
+            $obj->title = $request->get('title');
+            $obj->region = $request->get('region');
+            $obj->circle = $request->get('circle');
+            $obj->lob = $request->get('lob');
+            $obj->minimum_marks = $request->get('minimum_marks');
+            $obj->number_of_attempts = $request->get('number_of_attempts');
+            $obj->time_of_test = $request->get('time_of_test');
+            $obj->number_of_questions = $request->get('number_of_questions') ?? '0';
+            $obj->start_date_time = $request->get('start_date_time');
+            $obj->end_date_time = $request->get('end_date_time');
+            $obj->publish_result = $request->get('publish_result');
+            $obj->description = $request->get('description');
+            if ($request->hasFile('thumbnail')) {
+                $extension = $request->file('thumbnail')->getClientOriginalExtension();
                 $fileName = time() . '-thumbnail.' . $extension;
 
                 $folderName = strtoupper(date('M') . date('Y')) . "/";
@@ -423,7 +386,7 @@ class TestController extends BaseController
                 if (!File::exists($folderPath)) {
                     File::makeDirectory($folderPath, $mode = 0777, true);
                 }
-                if (Request::file('thumbnail')->move($folderPath, $fileName)) {
+                if ($request->file('thumbnail')->move($folderPath, $fileName)) {
                     $obj->thumbnail = $folderName . $fileName;
                 }
             }
@@ -465,15 +428,8 @@ class TestController extends BaseController
                 return Redirect::route($this->model . ".index");
             }
         }
-    } // end update()
+    }
 
-    /**
-     * Function for mark a couse as deleted
-     *
-     * @param $userId as id of couse
-     *
-     * @return redirect page.
-     */
     public function delete($id = 0)
     {
         $model = Test::find($id);
@@ -485,7 +441,7 @@ class TestController extends BaseController
             Session::flash('flash_notice', trans($this->sectionNameSingular . " has been removed successfully"));
         }
         return Redirect::back();
-    } // end delete()
+    }
 
     public function exportTests(Request $request)
     {
@@ -509,6 +465,7 @@ class TestController extends BaseController
         $export = new exportTests($filteredResult);
         return Excel::download($export, 'Test.xlsx');
     }
+
     public function importTestsParticipants($test_id = 0)
     {
         $existQuestions = Question::where('test_id', $test_id)->exists();
@@ -543,7 +500,7 @@ class TestController extends BaseController
     public function importTestsUsersDirectly(Request $request, $test_id)
     {
         // Replace request data to remove unwanted tags
-        $thisData = Request::all();
+        $thisData = $request->all();
         $rules = [
             'trainees' => 'required|string',
         ];
@@ -621,9 +578,6 @@ class TestController extends BaseController
         return redirect()->route('Test.view', $test_id)->with('success', 'Trainees imported successfully!');
     }
 
-    /**
-     * Send mail to the trainee for new test attendee.
-     */
     protected function sendTraineeMail($testAttendee, $email, $test_id)
     {
         $settingsEmail = Config::get('Site.email');
@@ -649,9 +603,6 @@ class TestController extends BaseController
         $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
     }
 
-    /**
-     * Send notification and email to the existing user.
-     */
     protected function sendNotificationAndMail($user, $test_id)
     {
         // Send notification to the user
@@ -705,7 +656,7 @@ class TestController extends BaseController
     public function AssignManager()
     {
 
-        $thisData = Request::all();
+        $thisData = $request->all();
         $test_id = $thisData['test_id'];
         if ($test_id) {
             if (isset($thisData['training_manager']) && !empty($thisData['training_manager'])) {
@@ -728,7 +679,7 @@ class TestController extends BaseController
     public function AssignTrainer()
     {
 
-        $thisData = Request::all();
+        $thisData = $request->all();
         //    echo '<pre>'; print_r($thisData); die;
         $test_id = $thisData['test_id'];
         if ($test_id) {
@@ -840,4 +791,4 @@ class TestController extends BaseController
             ]);
         }
     }
-} // end TestController
+}

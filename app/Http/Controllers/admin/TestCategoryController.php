@@ -67,10 +67,10 @@ class TestCategoryController extends BaseController
             foreach ($searchData as $fieldName => $fieldValue) {
                 if ($fieldValue != "") {
                     if ($fieldName == "is_active") {
-                        $DB->where("training_categories.is_active", $fieldValue);
+                        $DB->where("test_categories.is_active", $fieldValue);
                     }
                     if ($fieldName == "title") {
-                        $DB->where("training_categories.name", 'like', '%' . $fieldValue . '%');
+                        $DB->where("test_categories.name", 'like', '%' . $fieldValue . '%');
                     }
                 }
                 $searchVariable    =    array_merge($searchVariable, array($fieldName => $fieldValue));
@@ -95,7 +95,7 @@ class TestCategoryController extends BaseController
 
     public function add()
     {
-        dd('1');
+        
         return view("admin.TestCategory.add");
     }
 
@@ -167,7 +167,7 @@ class TestCategoryController extends BaseController
             return redirect()->route('TestCategory.index');
         }
 
-        return  View::make("admin.$this->model.edit", compact('model'));
+        return  View::make("admin.TestCategory.add", compact('model'));
     }
 
     public function delete($id = 0)
