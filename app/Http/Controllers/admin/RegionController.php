@@ -82,12 +82,12 @@ class RegionController extends BaseController
 		$validator = Validator::make($request->all(), $rules);
 
 		if ($validator->fails()) {
-			return Redirect::back()->withErrors($validator)->withInput();
-		}
+				return Redirect::back()->withErrors($validator)->withInput();
+			}
 
 		$regionData = [
 			'region' => $request->region,
-			'is_active' => $request->status,
+			'is_active' => $request->is_active,
 		];
 
 		$obj = Region::updateOrCreate(

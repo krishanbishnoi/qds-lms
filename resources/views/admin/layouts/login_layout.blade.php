@@ -8,6 +8,8 @@
 		<title>LMS</title>
 		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 		<!-- plugins:css -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
 		<link rel="stylesheet" href="{{ asset('vendors/mdi/css/materialdesignicons.min.css') }}">
 		<link rel="stylesheet" href="{{ asset('vendors/css/vendor.bundle.base.css') }}">
 		<link href="{{ asset('css/developer.css') }}"   rel="stylesheet">

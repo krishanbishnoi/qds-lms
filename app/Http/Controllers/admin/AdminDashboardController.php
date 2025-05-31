@@ -150,6 +150,8 @@ class AdminDashboardController extends BaseController
 			$user->email	 	= 	Request::get('email');
 			$user->first_name			= Request::get('first_name');
 			$user->last_name			= Request::get('last_name');
+			$user->mobile_number			= Request::get('mobile_number');
+			$user->employee_id			= Request::get('employee_id');
 
 			if (Request::hasFile('image')) {
 				$extension 	=	 Request::file('image')->getClientOriginalExtension();
@@ -210,14 +212,9 @@ class AdminDashboardController extends BaseController
 					->with('success', 'Information updated successfully.');
 			}
 		}
-	} // end bankdetails()
-	/**
-	 * Function for changedPassword
-	 *
-	 * @param null
-	 *
-	 * @return redirect page.
-	 */
+	} 
+
+	
 	public function changedPassword()
 	{
 		$thisData				=	Request::all();

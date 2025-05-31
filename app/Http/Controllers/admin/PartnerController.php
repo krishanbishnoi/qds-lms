@@ -78,20 +78,18 @@ class PartnerController extends BaseController
 		$validator = Validator::make($request->all(), [
 			'name'      => 'required',
 			'location'  => 'required',
-			'status'    => 'required',
+			'is_active'    => 'required',
 		]);
 
 		if ($validator->fails()) {
-			return Redirect::back()
-				->withErrors($validator)
-				->withInput();
-		}
+				return Redirect::back()->withErrors($validator)->withInput();
+			}
 
 		// Prepare data for updateOrCreate
 		$partnerData = [
 			'name'      => $request->name,
 			'location'  => $request->location,
-			'is_active'    => $request->status,
+			'is_active'    => $request->is_active,
 		];
 
 

@@ -8,12 +8,6 @@ use App\Models\StateDescription;
 use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator;
 use Illuminate\Http\Request;
 
-/**
- * DesignationController Controller
- *
- * Add your methods in the class below
- *
- */
 class DesignationController extends BaseController
 {
 
@@ -89,16 +83,14 @@ class DesignationController extends BaseController
 		$validator = Validator::make($data, $rules);
 
 		if ($validator->fails()) {
-			return Redirect::back()
-				->withErrors($validator)
-				->withInput();
+			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
 		$obj = Designation::updateOrCreate(
 			['id' => $request->id],
 			[
 				'designation' => $request->designation,
-				'is_active' => $request->status,
+				'is_active' => $request->is_active,
 			]
 		);
 

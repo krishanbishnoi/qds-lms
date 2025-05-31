@@ -80,15 +80,13 @@ class CircleController extends BaseController
 		$rules = [
 			'circle'    => "required|unique:circles,circle," . $request->id,
 			'region_id' => 'required',
-			'status' => 'required',
+			'is_active' => 'required',
 		];
 
 		$validator = Validator::make($thisData, $rules);
-
+		
 		if ($validator->fails()) {
-			return Redirect::back()
-				->withErrors($validator)
-				->withInput();
+			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
 		// Create or update record
@@ -97,7 +95,7 @@ class CircleController extends BaseController
 			[
 				'circle'    => $request->circle,
 				'region_id' => $request->region_id,
-				'is_active' => $request->status,
+				'is_active' => $request->is_active,
 			]
 		);
 
