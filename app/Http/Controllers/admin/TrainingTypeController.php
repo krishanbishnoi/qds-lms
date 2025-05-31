@@ -83,22 +83,19 @@ class TrainingTypeController extends BaseController
 
 		$rules = [
 			'type' => "required|unique:training_types,type,{$request->id}",
-			'status' => 'required',
+			'is_active' => 'required',
 		];
 
 		$validator = Validator::make($request->all(), $rules);
 
 		if ($validator->fails()) {
-			return redirect()->back()
-				->withErrors($validator)
-				->withInput();
+			return Redirect::back()->withErrors($validator)->withInput();
 		}
-
 		$trainingType = TrainingType::updateOrCreate(
 			['id' => $request->id],
 			[
 				'type' => $request->type,
-				'is_active' => $request->status
+				'is_active' => $request->is_active
 			]
 		);
 

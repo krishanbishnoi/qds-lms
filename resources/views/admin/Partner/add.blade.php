@@ -68,12 +68,12 @@
                                 <div class="form-group <?php echo $errors->first('lob') ? 'has-error' : ''; ?>">
                                     <div class="mws-form-row">
                                         {!! Html::decode(
-                                            Form::label('status', trans('Status') . '<span class="requireRed"> * </span>', ['class' => 'mws-form-label']),
+                                            Form::label('is_active', trans('Status') . '<span class="requireRed"> * </span>', ['class' => 'mws-form-label']),
                                         ) !!}
                                         <div class="mws-form-item">
-                                            {{ Form::select('status', config('constants.STATUS_LIST'), null, ['class' => 'form-control ']) }}
+                                            {{ Form::select('is_active', config('constants.STATUS_LIST'), null, ['class' => 'form-control ']) }}
                                             <div class="error-message help-inline">
-                                                <?php echo $errors->first('status'); ?>
+                                                <?php echo $errors->first('is_active'); ?>
                                             </div>
                                         </div>
                                     </div>

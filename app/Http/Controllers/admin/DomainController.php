@@ -77,24 +77,21 @@ class DomainController extends BaseController
 
 		$rules = [
 			'domain' => "required|unique:domains,domain,{$request->id}",
-			'status' => "required",
+			'is_active' => "required",
 		];
 
 		$validator = Validator::make($request->all(), $rules);
 
 		if ($validator->fails()) {
-			return redirect()
-				->back()
-				->withErrors($validator)
-				->withInput();
+			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
 		try {
 			$domain = Domain::updateOrCreate(
-				['id' => $request->id], 
-				[                      
+				['id' => $request->id],
+				[
 					'domain' => $request->domain,
-					'is_active' => $request->status,
+					'is_active' => $request->is_active,
 				]
 			);
 			if (!$domain) {

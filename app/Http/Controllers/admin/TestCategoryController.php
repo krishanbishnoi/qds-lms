@@ -19,7 +19,7 @@ use App\Models\Test;
 use App\Models\StateDescription;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\ApiService;
 use Illuminate\Support\Facades\Http;
@@ -28,14 +28,8 @@ use Illuminate\Http\JsonResponse;
 
 use \PDF;
 
-use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Session, URL, Validator, Request;
+use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Session, URL, Validator;
 
-/**
- * TestCategoryController Controller
- *
- * Add your methods in the class below
- *
- */
 class TestCategoryController extends BaseController
 {
 
@@ -51,21 +45,14 @@ class TestCategoryController extends BaseController
         View::share('sectionNameSingular', $this->sectionNameSingular);
     }
 
-    /**
-     * Function for display all State
-     *
-     * @param null
-     *
-     * @return view page.
-     */
-    public function index()
+    public function index(Request $request)
     {
         $DB                            =    TestCategory::query();
 
         $searchVariable                =    array();
-        $inputGet                    =    Request::all();
-        if ((Request::all())) {
-            $searchData                =    Request::all();
+        $inputGet                    =    $request->all();
+        if (($request->all())) {
+            $searchData                =    $request->all();
             unset($searchData['display']);
             unset($searchData['_token']);
             if (isset($searchData['order'])) {
@@ -89,14 +76,14 @@ class TestCategoryController extends BaseController
                 $searchVariable    =    array_merge($searchVariable, array($fieldName => $fieldValue));
             }
         }
-        $sortBy                     =     (Request::get('sortBy')) ? Request::get('sortBy') : 'updated_at';
-        $order                      =     (Request::get('order')) ? Request::get('order')   : 'DESC';
+        $sortBy                     =     ($request->get('sortBy')) ? $request->get('sortBy') : 'updated_at';
+        $order                      =     ($request->get('order')) ? $request->get('order')   : 'DESC';
         $results                     =     $DB->orderBy($sortBy, $order)->paginate(Config::get("Reading.records_per_page"));
-        $complete_string            =    Request::query();
+        $complete_string            =    $request->query();
         unset($complete_string["sortBy"]);
         unset($complete_string["order"]);
         $query_string                =    http_build_query($complete_string);
-        $results->appends(Request::all())->render();
+        $results->appends($request->all())->render();
         //	 echo '<pre>'; print_r($results); die;
         session(['filteredResult' => $results]);
 
@@ -104,32 +91,18 @@ class TestCategoryController extends BaseController
 
         $trainers = User::where("is_deleted", 0)->where("user_role_id", TRAINER_ROLE_ID)->pluck('first_name', 'id')->toArray();
 
-        return  View::make("admin.$this->model.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string', 'training_manager', 'trainers'));
+        return view("admin.TestCategory.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string', 'training_manager', 'trainers'));
     }
 
-    /**
-     * Function for add new State
-     *
-     * @param null
-     *
-     * @return view page.
-     */
     public function add()
     {
-        return  View::make("admin.$this->model.add");
-    } // end add()
+        return view("admin.TestCategory.add");
+    } 
 
-    /**
-     * Function for save new Area
-     *
-     * @param null
-     *
-     * @return redirect page.
-     */
     function save()
     {
-        Request::replace($this->arrayStripTags(Request::all()));
-        $thisData                    =    Request::all();
+        $request->replace($this->arrayStripTags($request->all()));
+        $thisData                    =    $request->all();
         //  echo '<pre>'; print_r($thisData); die;
 
         $rules = [
@@ -148,14 +121,14 @@ class TestCategoryController extends BaseController
                 ->withErrors($validator)->withInput();
         } else {
 
-            $name = strtolower(Request::get('name'));
+            $name = strtolower($request->get('name'));
             $keywords = str_replace(' ', '-', $name);
 
             $obj = new TestCategory;
-            $obj->name                 = Request::get('name');
+            $obj->name                 = $request->get('name');
 
             $obj->parent_id           = Auth::user()->id;
-            $obj->description         = Request::get('description');
+            $obj->description         = $request->get('description');
             $obj->keywords            = $keywords;
 
             $obj->save();
@@ -226,8 +199,8 @@ class TestCategoryController extends BaseController
             return Redirect::back();
         }
 
-        Request::replace($this->arrayStripTags(Request::all()));
-        $thisData                    =    Request::all();
+        $request->replace($this->arrayStripTags($request->all()));
+        $thisData                    =    $request->all();
         //echo '<pre>'; print_r($thisData); die;
 
         $rules = [
@@ -240,13 +213,13 @@ class TestCategoryController extends BaseController
             return Redirect::back()
                 ->withErrors($validator)->withInput();
         } else {
-            $name = strtolower(Request::get('name'));
+            $name = strtolower($request->get('name'));
             $keywords = str_replace(' ', '-', $name);
 
             $obj = $model;
-            $obj->name                   = Request::get('name');
+            $obj->name                   = $request->get('name');
             $obj->parent_id           = Auth::user()->id;
-            $obj->description         = Request::get('description');
+            $obj->description         = $request->get('description');
             $obj->keywords            = $keywords;
 
             $obj->save();

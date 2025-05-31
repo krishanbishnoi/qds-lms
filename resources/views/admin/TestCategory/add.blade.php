@@ -1,22 +1,23 @@
 @extends('admin.layouts.default')
 @section('content')
-    <!-- JS & CSS library of MultiSelect plugin -->
-    <!-- <script src="https://phpcoder.tech/multiselect/js/jquery.multiselect.js"></script>
-    <link rel="stylesheet" href="https://phpcoder.tech/multiselect/css/jquery.multiselect.css"> -->
-
     <script src="https://cdn.ckeditor.com/4.15.0/standard-all/ckeditor.js"></script>
+    @php
+        $flag = 0;
+        $heading = 'Add';
+        if (isset($model) && !empty($model)) {
+            $flag = 1;
+            $heading = 'Update';
+        }
+    @endphp
     <div class="content-wrapper">
         <div class="page-header">
-            <h2 class="page-title">Add New {{ $sectionNameSingular }}</h2>
+            <h2 class="page-title">{{ $heading }} New {{ $sectionNameSingular }}</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <!-- <li class="breadcrumb-item"><a href="#">Forms</a></li> -->
-                    <!-- <li class="breadcrumb-item active" aria-current="page">Forget Password</li> -->
-
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i
                                 class=" fa fa-dashboard"></i>Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{{ route($modelName . '.index') }}">{{ $sectionName }}</a></li>
-                    <li class="breadcrumb-item active">Add New {{ $sectionNameSingular }}</li>
+                    <li class="breadcrumb-item active">{{ $heading }} New {{ $sectionNameSingular }}</li>
                 </ol>
             </nav>
         </div>
@@ -24,8 +25,13 @@
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        {{ Form::open(['role' => 'form', 'route' => "$modelName.add", 'class' => 'mws-form', 'files' => true, 'autocomplete' => 'off']) }}
-
+                        @if ($flag == 1)
+                            {{ Form::model($model, ['url' => route("$modelName.save"), 'id' => 'edit-plan-form', 'class' => 'row g-3']) }}
+                            {{ Form::hidden('id', null) }}
+                        @else
+                            {{ Form::open(['url' => route("$modelName.save"), 'id' => 'add-plan-form', 'class' => 'row g-3']) }}
+                        @endif
+                        
                         <div class="mws-panel-body no-padding tab-content">
                             <div class=" form-group <?php echo $errors->first('name') ? 'has-error' : ''; ?>">
                                 <div class="mws-form-row">
@@ -34,7 +40,7 @@
                                             'name',
                                             trans('Name') .
                                                 '<span class="requireRed">*
-                                                                    </span>',
+                                                                                                        </span>',
                                             ['class' => 'mws-form-label'],
                                         ),
                                     ) !!}
@@ -52,7 +58,7 @@
                                         'description',
                                         trans('Description') .
                                             '<span class="requireRed">
-                                                                * </span>',
+                                                                                                * </span>',
                                         ['class' => 'mws-form-label'],
                                     ),
                                 ) !!}

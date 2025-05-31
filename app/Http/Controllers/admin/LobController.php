@@ -29,13 +29,6 @@ class LobController extends BaseController
 		View::share('sectionNameSingular', $this->sectionNameSingular);
 	}
 
-	/**
-	 * Function for display all State 
-	 *
-	 * @param null
-	 *
-	 * @return view page. 
-	 */
 	public function index(Request $request)
 	{
 		$DB							=	Lob::query();
@@ -54,7 +47,7 @@ class LobController extends BaseController
 			if (isset($searchData['page'])) {
 				unset($searchData['page']);
 			}
-			
+
 			foreach ($searchData as $fieldName => $fieldValue) {
 				if ($fieldValue != "") {
 					if ($fieldName == "is_active") {
@@ -85,39 +78,43 @@ class LobController extends BaseController
 
 	function save(Request $request)
 	{
-		$request->replace($this->arrayStripTags($request->all()));
-		$input = $request->all();
+		try {
+			$request->replace($this->arrayStripTags($request->all()));
+			$input = $request->all();
+			
+			$rules = [
+				'lob' => "required|unique:lobs,lob,{$request->id}",
+				'is_active' => 'required',
+			];
+			
+			$validator = Validator::make($input, $rules);
+			
+			if ($validator->fails()) {
+				return Redirect::back()->withErrors($validator)->withInput();
+			}
+			
+			$data = [
+				'lob' => $request->lob,
+				'is_active' => $request->is_active,
+			];
 
-		$rules = [
-			'lob' => "required|unique:lobs,lob,{$request->id}",
-			'status' => 'required',
-		];
+			$lob = Lob::updateOrCreate(
+				['id' => $request->id],
+				$data
+			);
 
-		$validator = Validator::make($input, $rules);
 
-		if ($validator->fails()) {
-			return Redirect::back()->withErrors($validator)->withInput();
+			if (!$lob) {
+				Session::flash('error', __(config('constants.REC_ADD_FAILED')));
+			} else {
+				$message = $request->id ? __(config('constants.REC_UPDATE_SUCCESS'), ['section' => $this->sectionNameSingular])
+					: __(config('constants.REC_ADD_SUCCESS'), ['section' => $this->sectionNameSingular]);
+				Session::flash('success', $message);
+			}
+			return redirect()->route('Lob.index');
+		} catch (\Exception $e) {
+			return redirect()->route('Lob.index')->with(['error' => 'Something went wrong']);
 		}
-
-		$data = [
-			'lob' => $request->lob,
-			'is_active' => $request->status,
-		];
-
-		$lob = Lob::updateOrCreate(
-			['id' => $request->id],
-			$data
-		);
-
-
-		if (!$lob) {
-			Session::flash('error', __(config('constants.REC_ADD_FAILED')));
-		} else {
-			$message = $request->id ? __(config('constants.REC_UPDATE_SUCCESS'), ['section' => $this->sectionNameSingular])
-				: __(config('constants.REC_ADD_SUCCESS'), ['section' => $this->sectionNameSingular]);
-			Session::flash('success', $message);
-		}
-		return redirect()->route('Lob.index');
 	}
 
 
@@ -132,7 +129,7 @@ class LobController extends BaseController
 		Lob::where('id', $modelId)->update(array('is_active' => $status));
 		Session::flash('flash_notice', $statusMessage);
 		return Redirect::back();
-	} 
+	}
 
 
 	public function edit($modelId = 0)
