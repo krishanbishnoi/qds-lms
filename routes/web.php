@@ -18,8 +18,8 @@ use App\Http\Controllers\admin\TraineesController;
 use App\Http\Controllers\admin\TrainingTypeController;
 use App\Http\Controllers\admin\UsersController;
 
-include(app_path() . '/global_constants.php');
-include(app_path() . '/settings.php');
+include_once(app_path() . '/global_constants.php');
+include_once(app_path() . '/settings.php');
 
 use Illuminate\Support\Facades\Route;
 
@@ -169,8 +169,8 @@ Route::group(array('prefix' => 'admin'), function () {
 
 
         /* test category modules routes */
-        Route::controller(TestCategoryController::class)->prefix('tests')->name('TestCategory.')->group(function () {
-            Route::match(['get', 'post'], 'category', 'index')->name('index');
+        Route::controller(TestCategoryController::class)->prefix('tests/category')->name('TestCategory.')->group(function () {
+            Route::match(['get', 'post'], '/', 'index')->name('index');
             Route::get('add', 'add')->name('add');
             Route::post('add', 'save')->name('save');
             Route::get('edit/{id}', 'edit')->name('edit');
