@@ -105,21 +105,20 @@ Route::group(array('prefix' => 'admin'), function () {
 
 
         /** settings routing**/
-        Route::get('trainings', array('as' => 'Training.index', 'uses' => 'TrainingController@index'));
-        Route::post('trainings', array('as' => 'Training.index', 'uses' => 'TrainingController@index'));
-        Route::get('trainings/add-new-training', array('as' => 'Training.add', 'uses' => 'TrainingController@add'));
-        Route::post('trainings/add-new-training', array('as' => 'Training.add', 'uses' => 'TrainingController@save'));
-        Route::get('trainings/edit-training/{id}', array('as' => 'Training.edit', 'uses' => 'TrainingController@edit'));
-        Route::post('trainings/edit-training/{id}', array('as' => 'Training.edit', 'uses' => 'TrainingController@update'));
-        Route::get('trainings/delete-training/{id}', array('as' => 'Training.delete', 'uses' => 'TrainingController@delete'));
-        Route::get('trainings/view-training/{id}', array('as' => 'Training.view', 'uses' => 'TrainingController@view'));
-        Route::get('trainings/update-training-status/{id}/{status}', array('as' => 'Training.status', 'uses' => 'TrainingController@changeStatus'));
-
-        Route::get('training/export-tainings', 'TrainingController@exportTraining')->name('export.training');
-
-        Route::post('trainings/import-questions/{test_id}', 'QuestionController@importQuestions')->name('import.questions');
-        Route::get('/download-sample-file-questions', 'QuestionController@downloadQuestionSample')->name('download.sample.file.questions');
-
+        Route::controller(TrainingController::class)->group(function () {
+            Route::get('trainings', 'index')->name('Training.index');
+            Route::post('trainings', 'index')->name('Training.index'); // same name, different method
+            Route::get('trainings/add-new-training', 'add')->name('Training.add');
+            Route::post('trainings/add-new-training', 'save')->name('Training.add');
+            Route::get('trainings/edit-training/{id}', 'edit')->name('Training.edit');
+            Route::post('trainings/edit-training/{id}', 'update')->name('Training.edit');
+            Route::get('trainings/delete-training/{id}', 'delete')->name('Training.delete');
+            Route::get('trainings/view-training/{id}', 'view')->name('Training.view');
+            Route::get('trainings/update-training-status/{id}/{status}', 'changeStatus')->name('Training.status');
+            Route::get('training/export-tainings', 'exportTraining')->name('export.training');
+            Route::get('training/import-training-participants/{id}', 'importTrainingParticipants')->name('import.importTrainingParticipants');
+            Route::post('training/import-training-participants/{id}', 'importTraining')->name('import.training-participants');
+        });
 
         /* training category modules routes */
         Route::controller(TrainingCategoryController::class)->group(function () {
