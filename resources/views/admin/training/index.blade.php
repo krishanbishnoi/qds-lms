@@ -145,24 +145,24 @@
                                     </th>
 
                                     <!-- <th width="12%">
-                                                {{ link_to_route(
-                                                    "$modelName.index",
-                                                    trans('Minimum Marks'),
-                                                    [
-                                                        'sortBy' => 'minimum_marks',
-                                                        'order' => $sortBy == 'minimum_marks' && $order == 'desc' ? 'asc' : 'desc',
-                                                        $query_string,
-                                                    ],
-                                                    [
-                                                        'class' =>
-                                                            $sortBy == 'minimum_marks' && $order == 'desc'
-                                                                ? 'sorting desc'
-                                                                : ($sortBy == 'minimum_marks' && $order == 'asc'
-                                                                    ? 'sorting asc'
-                                                                    : 'sorting'),
-                                                    ],
-                                                ) }}
-                                            </th> -->
+                                                    {{ link_to_route(
+                                                        "$modelName.index",
+                                                        trans('Minimum Marks'),
+                                                        [
+                                                            'sortBy' => 'minimum_marks',
+                                                            'order' => $sortBy == 'minimum_marks' && $order == 'desc' ? 'asc' : 'desc',
+                                                            $query_string,
+                                                        ],
+                                                        [
+                                                            'class' =>
+                                                                $sortBy == 'minimum_marks' && $order == 'desc'
+                                                                    ? 'sorting desc'
+                                                                    : ($sortBy == 'minimum_marks' && $order == 'asc'
+                                                                        ? 'sorting asc'
+                                                                        : 'sorting'),
+                                                        ],
+                                                    ) }}
+                                                </th> -->
                                     <th width="15%">
                                         {{ link_to_route(
                                             "$modelName.index",
@@ -275,12 +275,12 @@
                                             </td> --}}
                                             <td data-th='' class="action-td">
                                                 <!-- @if ($record->is_active == 1)
-                                                    <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$record->id, 0]) }}' class="btn btn-success btn-small status_any_item "><span class="fa fa-ban"></span>
-                                                                    </a>
-                                                @else
-                                                    <a title="Click To Activate" href='{{ route("$modelName.status", [$record->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fa fa-check"></span>
-                                                                    </a>
-                                                @endif  -->
+    <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$record->id, 0]) }}' class="btn btn-success btn-small status_any_item "><span class="fa fa-ban"></span>
+                                                                        </a>
+@else
+    <a title="Click To Activate" href='{{ route("$modelName.status", [$record->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fa fa-check"></span>
+                                                                        </a>
+    @endif  -->
                                                 <a href='{{ route("$modelName.edit", "$record->id") }}'
                                                     class="btn btn-primary" title="Edit"> <span
                                                         class="fas fa-edit"></span></a>
@@ -305,18 +305,12 @@
                                                         class="fa fa-plus"></span></a>
 
                                                 <?php
-                                                $selected_training_manager = DB::table('manager_assign_training')
-                                                    ->where('test_id', $record->id)
-                                                    ->pluck('user_id')
-                                                    ->toArray();
-
-                                                $selected_training_trainers = DB::table('trainer_assign_training')
-                                                    ->where('test_id', $record->id)
-                                                    ->pluck('user_id')
-                                                    ->toArray();
-
+                                                $selected_training_manager = DB::table('manager_assign_training')->where('test_id', $record->id)->pluck('user_id')->toArray();
+                                                
+                                                $selected_training_trainers = DB::table('trainer_assign_training')->where('test_id', $record->id)->pluck('user_id')->toArray();
+                                                
                                                 // echo '<pre>'; print_r($selected_training_manager);
-
+                                                
                                                 ?>
 
                                                 @if (Auth::user()->user_role_id == MANAGER_ROLE_ID)
@@ -377,7 +371,7 @@
                                     'training_manager',
                                     trans('Assign Training Manager') .
                                         '<span
-                                                                                    class="requireRed"></span>',
+                                                                                                                class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}

@@ -80,8 +80,8 @@ define('MANAGER_ROLE_ID', 4);
 
 
 
-define('user_role',array('2'=>'Trainer','3'=>'Trainee','4'=>'manager'));
-define('test_type',array('regular_test'=>'Regular Test','training_test'=>'Training Test','feedback_test'=>'Feedback Test'));
+define('user_role', array('2' => 'Trainer', '3' => 'Trainee', '4' => 'manager'));
+define('test_type', array('regular_test' => 'Regular Test', 'training_test' => 'Training Test', 'feedback_test' => 'Feedback Test'));
 
 
 
@@ -97,4 +97,6 @@ Config::set("Site.currencyCode", "INR");
 
 Config::set('per_page', array('10' => trans("Default"), '15' => '15', '20' => '20', '30' => '30', '50' => '50', '100' => '100'));
 
-define('question_type',array('MCQ' => 'MCQ', 'SCQ' => 'SCQ', 'T/F' => 'T/F','FreeText' => 'FreeText'));
+define('question_type', array('MCQ' => 'MCQ', 'SCQ' => 'SCQ', 'T/F' => 'T/F', 'FreeText' => 'FreeText'));
+
+define('QDS_PROJECT_LIST', array('RetailIQ' => 'RetailIQ', 'QAViews' => 'QAViews', 'SurveyCXM' => 'SurveyCXM', 'LMS' => 'All LMS'));
