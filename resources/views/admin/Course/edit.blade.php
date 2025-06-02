@@ -390,7 +390,10 @@
                                     </div>
                                     <input type="hidden" name="count" value="1" id="add_more_count">
                                 @endif
+<<<<<<< HEAD
+=======
 
+>>>>>>> 072d4776309fa9d06d3ef55e74d71b5a5a791da8
                             </div>
                             <div class="form-group <?php echo $errors->first('description') ? 'has-error' : ''; ?>">
                                 {!! Html::decode(

@@ -4,20 +4,21 @@ namespace App\Models;
 
 use Eloquent, Session;
 
-/**
- * Course Model
- */
-
 class Course extends Eloquent
 {
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
 	protected $table = 'courses';
 
+	protected $fillable = [
+		'title',
+		'skip',
+		'test_id',
+		'training_id',
+		'start_date_time',
+		'end_date_time',
+		'description',
+		'thumbnail',
+	];
 
 	public function getImageAttribute($value = "")
 	{
@@ -39,4 +40,4 @@ class Course extends Eloquent
 	{
 		return $this->belongsTo(Test::class);
 	}
-}// end Course class
+}

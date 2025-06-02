@@ -113,7 +113,6 @@
                                                 {{ date(Config::get('Reading.date_format'), strtotime($record->updated_at)) }}
                                             </td>
                                             <td data-th='' class="action-td">
-
                                                 <a href='{{ route("$modelName.edit", "$record->id") }}'
                                                     class="btn btn-primary" title="Edit"> <span
                                                         class="fas fa-edit"></span></a>

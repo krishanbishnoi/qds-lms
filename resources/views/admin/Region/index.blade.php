@@ -76,7 +76,6 @@
                                     </th>
                                     <th width="25%"> Status</th>
 
-
                                     <th width="40%">
                                         {{ link_to_route(
                                             "$modelName.index",
@@ -104,6 +103,7 @@
                                     @foreach ($results as $record)
                                         <tr class="items-inner">
                                             <td data-th='{{ trans('Page Name') }}'>{{ $record->region }}</td>
+
                                             <td> <span
                                                     class="badge {{ $record->is_active ? 'text-success' : 'text-danger' }}">
                                                     {{ config('constants.STATUS_LIST')[$record->is_active] ?? 'Unknown Status' }}
@@ -113,10 +113,22 @@
                                                 {{ date(Config::get('Reading.date_format'), strtotime($record->updated_at)) }}
                                             </td>
                                             <td data-th='' class="action-td">
-
+                                                {{-- @if ($record->is_active == 1)
+													<a  title="Click To Deactivate" href='{{route("$modelName.status",array($record->id,0))}}' class="btn btn-success btn-small status_any_item "><span class="fa fa-ban"></span>
+													</a>
+												@else
+													<a title="Click To Activate" href='{{route("$modelName.status",array($record->id,1))}}' class="btn btn-warning btn-small status_any_item"><span class="fa fa-check"></span>
+													</a>
+												@endif  --}}
                                                 <a href='{{ route("$modelName.edit", "$record->id") }}'
                                                     class="btn btn-primary" title="Edit"> <span
                                                         class="fas fa-edit"></span></a>
+
+                                                <!--
+                            <a href='{{ route("$modelName.delete", "$record->id") }}' data-delete="delete"  class="delete_any_item btn btn-danger" title="Delete" data-confirm = 'Are you sure?' >
+                             <span class="fas fa-trash-alt   "></span>
+                            </a>  -->
+
                                             </td>
                                         </tr>
                                     @endforeach

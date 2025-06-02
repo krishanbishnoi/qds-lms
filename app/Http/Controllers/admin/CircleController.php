@@ -124,7 +124,6 @@ class CircleController extends BaseController
 		return Redirect::back();
 	} // end changeStatus()
 
-
 	public function edit($modelId = 0)
 	{
 		$model				=	Circle::find($modelId);

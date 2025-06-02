@@ -338,7 +338,6 @@ class TraineesController extends BaseController
         $export = new TraineesExport($filteredResult);
         return Excel::download($export, 'users.xlsx');
     }
-
     public function exportTraineesAll()
     {
         $fileName = 'all-users.xlsx';
