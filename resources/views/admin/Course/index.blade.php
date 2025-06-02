@@ -112,19 +112,19 @@
                                                 {{ date(Config::get('Reading.date_format'), strtotime($result->updated_at)) }}
                                             </td>
                                             <!-- <td  data-th=''>
-                                                              @if ($result->is_active == 1)
+                                                                      @if ($result->is_active == 1)
     <span class="label label-success" >{{ trans('Activated') }}</span>
 @else
     <span class="label label-warning" >{{ trans('Deactivated') }}</span>
     @endif
-                                                             </td>								 -->
+                                                                     </td>								 -->
                                             <td data-th='' class="action-td">
                                                 <!-- @if ($result->is_active == 1)
     <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$result->id, 0]) }}' class="btn btn-success btn-small status_any_item"><span class="fas fa-ban"></span>
-                                                               </a>
+                                                                       </a>
 @else
     <a title="Click To Activate" href='{{ route("$modelName.status", [$result->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fas fa-check"></span>
-                                                               </a>
+                                                                       </a>
     @endif  -->
                                                 <a href='{{ route("$modelName.edit", [$training_id, $result->id]) }}'
                                                     class="btn btn-primary" title="Edit"> <span

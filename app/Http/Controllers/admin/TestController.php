@@ -35,6 +35,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use Mail;
 use Notification;
 use Redirect;
+use Session;
+use URL;
+use Validator;
 use View;
 
 class TestController extends BaseController
@@ -70,11 +73,13 @@ class TestController extends BaseController
         $inputGet = $request->all();
         if (($request->all())) {
             $searchData = $request->all();
-            $inputGet = $request->all();
-            if (($request->all())) {
+            unset($searchData['display']);
+            unset($searchData['_token']);
+            if (isset($searchData['order'])) {
                 unset($searchData['order']);
             }
             if (isset($searchData['sortBy'])) {
+                unset($searchData['sortBy']);
             }
             if (isset($searchData['page'])) {
                 unset($searchData['page']);
@@ -460,6 +465,10 @@ class TestController extends BaseController
         $export = new exportTests($filteredResult);
         return Excel::download($export, 'Test.xlsx');
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 072d4776309fa9d06d3ef55e74d71b5a5a791da8
     public function importTestsParticipants($test_id = 0)
     {
         $existQuestions = Question::where('test_id', $test_id)->exists();

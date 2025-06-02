@@ -132,7 +132,7 @@ class FeedbackController extends BaseController
         $trainers = User::where("is_deleted", 0)->where("user_role_id", TRAINER_ROLE_ID)->pluck('first_name', 'id')->toArray();
 
         return view("admin.Feedback.add", compact('TestCategory', 'TrainingType', 'training_manager', 'circle', 'lob', 'region', 'trainers'));
-    }
+    } 
 
     public function save(Request $request)
     {
@@ -147,14 +147,10 @@ class FeedbackController extends BaseController
             'minimum_marks' => 'required',
             'number_of_attempts' => 'required',
             'time_of_test' => 'required',
-            // 'document' => 'required',
             'start_date_time' => 'required',
             'end_date_time' => 'required',
-            'thumbnail' => 'required',
             'publish_result' => 'required',
         ];
-
-
 
         if (!$isUpdate) {
             $rules['thumbnail'] = 'required';
@@ -325,8 +321,8 @@ class FeedbackController extends BaseController
         $selected_training_trainers = TrainerTrainings::where('test_id', $modelId)->pluck('user_id');
 
         return view("admin.$this->model.add", compact('model', 'TestCategory', 'TrainingType', 'training_manager', 'selected_training_manager', 'region', 'lob', 'circle', 'trainers', 'selected_training_trainers'));
-    }
-
+    } 
+    
     public function delete($id = 0)
     {
         $model    =    Test::find($id);
@@ -338,7 +334,7 @@ class FeedbackController extends BaseController
             Session::flash('flash_notice', trans($this->sectionNameSingular . " has been removed successfully"));
         }
         return Redirect::back();
-    }
+    } 
 
     public function exportTests(Request $request)
     {
@@ -573,7 +569,7 @@ class FeedbackController extends BaseController
 
         Session::flash('flash_notice', trans(" Manager has been Assign successfully"));
         return Redirect::back();
-    }
+    } 
 
     public function AssignTrainer()
     {

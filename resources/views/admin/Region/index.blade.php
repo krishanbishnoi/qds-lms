@@ -74,11 +74,7 @@
                                             ],
                                         ) }}
                                     </th>
-<<<<<<< HEAD
-=======
                                     <th width="25%"> Status</th>
-
->>>>>>> 072d4776309fa9d06d3ef55e74d71b5a5a791da8
 
                                     <th width="40%">
                                         {{ link_to_route(
@@ -107,28 +103,16 @@
                                     @foreach ($results as $record)
                                         <tr class="items-inner">
                                             <td data-th='{{ trans('Page Name') }}'>{{ $record->region }}</td>
-<<<<<<< HEAD
 
-                                            <?php /* <td data-th='{{ trans("Status") }}'>
-                                            						@if($record->is_active	== 1)
-                                            							<span class="label label-success" >{{ trans("Activated") }}</span>
-                                            						@else
-                                            							<span class="label label-warning" >{{ trans("Deactivated") }}</span>
-                                            						@endif
-                                            						</td> */
-                                            ?>
-=======
                                             <td> <span
                                                     class="badge {{ $record->is_active ? 'text-success' : 'text-danger' }}">
                                                     {{ config('constants.STATUS_LIST')[$record->is_active] ?? 'Unknown Status' }}
                                                 </span></td>
 
->>>>>>> 072d4776309fa9d06d3ef55e74d71b5a5a791da8
                                             <td data-th='{{ trans('Modified') }}'>
                                                 {{ date(Config::get('Reading.date_format'), strtotime($record->updated_at)) }}
                                             </td>
                                             <td data-th='' class="action-td">
-<<<<<<< HEAD
                                                 {{-- @if ($record->is_active == 1)
 													<a  title="Click To Deactivate" href='{{route("$modelName.status",array($record->id,0))}}' class="btn btn-success btn-small status_any_item "><span class="fa fa-ban"></span>
 													</a>
@@ -141,15 +125,10 @@
                                                         class="fas fa-edit"></span></a>
 
                                                 <!--
-                <a href='{{ route("$modelName.delete", "$record->id") }}' data-delete="delete"  class="delete_any_item btn btn-danger" title="Delete" data-confirm = 'Are you sure?' >
-                 <span class="fas fa-trash-alt   "></span>
-                </a>  -->
-=======
+                            <a href='{{ route("$modelName.delete", "$record->id") }}' data-delete="delete"  class="delete_any_item btn btn-danger" title="Delete" data-confirm = 'Are you sure?' >
+                             <span class="fas fa-trash-alt   "></span>
+                            </a>  -->
 
-                                                <a href='{{ route("$modelName.edit", "$record->id") }}'
-                                                    class="btn btn-primary" title="Edit"> <span
-                                                        class="fas fa-edit"></span></a>
->>>>>>> 072d4776309fa9d06d3ef55e74d71b5a5a791da8
                                             </td>
                                         </tr>
                                     @endforeach

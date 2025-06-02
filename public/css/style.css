@@ -20046,10 +20046,7 @@ dl li {
 .brdrclr {
     border-color: #dddddd;
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> 072d4776309fa9d06d3ef55e74d71b5a5a791da8
 .theadLight {
     background-color: #dfdfdf;
     height: 50px;
@@ -21478,9 +21475,11 @@ button.btn.btn-default.ml5 {
     display: flex;
     align-items: center;
 }
+
 .input-group .form-control {
     border-right: 0;
 }
+
 .input-group .input-group-text {
     border-left: 0;
 }
