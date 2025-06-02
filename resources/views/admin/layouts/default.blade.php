@@ -98,6 +98,7 @@
                         $segment2 = Request::segment(2);
                         $segment3 = Request::segment(3);
                         $segment4 = Request::segment(4);
+                        // dd($segment1, $segment2, $segment3, $segment4);
                     @endphp
 
 
@@ -116,16 +117,15 @@
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-account menu-icon "></i>
                         </a>
-                        <div class="collapse @php echo request()->segment(2) === 'users-mangement' ? 'show' : ''; @endphp"
-                            id="users">
+                        <div class="collapse @php $segment2 ==  'users' ? 'show' : ''; @endphp" id="users">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item" @if ($segment1 == 'users' && $segment3 == 'Site') class="active" @endif>
+                                <li class="nav-item" @if ($segment2 == 'users') class="active" @endif>
                                     <a class="nav-link" href="{{ route('Trainees.index') }}">All Users</a>
                                 </li>
-                                <li class="nav-item" @if ($segment1 == 'training-managers' && $segment3 == 'Site') class="active" @endif>
+                                <li class="nav-item" @if ($segment2 == 'users' && $segment3 == 'training-managers') class="active" @endif>
                                     <a class="nav-link" href="{{ route('Users.index') }}">Training Managers</a>
                                 </li>
-                                <li class="nav-item" @if ($segment1 == 'trainers' && $segment3 == 'Site') class="active" @endif>
+                                <li class="nav-item" @if ($segment2 == 'users' && $segment3 == 'trainers') class="active" @endif>
                                     <a class="nav-link" href="{{ route('Trainers.index') }}">Trainers Managers</a>
                                 </li>
 

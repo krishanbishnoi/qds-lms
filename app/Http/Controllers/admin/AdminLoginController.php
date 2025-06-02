@@ -274,6 +274,6 @@ class AdminLoginController extends BaseController
 	{
 		Auth::logout();
 		Session::flash('flash_notice', 'You are now logged out!');
-		return Redirect::to('admin/')->with('message', 'You are now logged out!');
+		return Redirect::to('admin/login')->with('message', 'You are now logged out!');
 	} //endLogout()
 }// end AdminLoginController

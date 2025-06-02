@@ -50,45 +50,30 @@ Route::group(array('prefix' => 'admin'), function () {
         Route::get('/change-password', 'AdminDashboardController@change_password');
         Route::post('/changed-password', 'AdminDashboardController@changedPassword');
 
+        /* training-managers routes */
+        Route::get('users/training-managers', array('as' => 'Users.index', 'uses' => 'UsersController@index'));
+        Route::post('users/training-managers', array('as' => 'Users.index', 'uses' => 'UsersController@index'));
+        Route::get('users/training-managers/add-new-training-managers', array('as' => 'Users.add', 'uses' => 'UsersController@add'));
+        Route::post('users/training-managers/add-new-training-managers', array('as' => 'Users.add', 'uses' => 'UsersController@save'));
+        Route::get('users/training-managers/edit-training-managers/{id}', array('as' => 'Users.edit', 'uses' => 'UsersController@edit'));
+        Route::post('users/training-managers/edit-training-managers/{id}', array('as' => 'Users.edit', 'uses' => 'UsersController@update'));
+        Route::get('users/training-managers/delete-training-managers/{id}', array('as' => 'Users.delete', 'uses' => 'UsersController@delete'));
+        Route::get('users/training-managers/view-training-managers/{id}', array('as' => 'Users.view', 'uses' => 'UsersController@view'));
+        Route::get('users/training-managers/update-training-managers-status/{id}/{status}', array('as' => 'Users.status', 'uses' => 'UsersController@changeStatus'));
+        Route::post('users/training-managers/import-training-managers', 'UsersController@importUsers')->name('import.training-managers');
 
-
-        /* user routes */
-        Route::get('training-managers', array('as' => 'Users.index', 'uses' => 'UsersController@index'));
-        Route::post('training-managers', array('as' => 'Users.index', 'uses' => 'UsersController@index'));
-        Route::get('training-managers/add-new-training-managers', array('as' => 'Users.add', 'uses' => 'UsersController@add'));
-        Route::post('training-managers/add-new-training-managers', array('as' => 'Users.add', 'uses' => 'UsersController@save'));
-        Route::get('training-managers/edit-training-managers/{id}', array('as' => 'Users.edit', 'uses' => 'UsersController@edit'));
-        Route::post('training-managers/edit-training-managers/{id}', array('as' => 'Users.edit', 'uses' => 'UsersController@update'));
-        Route::get('training-managers/delete-training-managers/{id}', array('as' => 'Users.delete', 'uses' => 'UsersController@delete'));
-        Route::get('training-managers/view-training-managers/{id}', array('as' => 'Users.view', 'uses' => 'UsersController@view'));
-        Route::get('training-managers/update-training-managers-status/{id}/{status}', array('as' => 'Users.status', 'uses' => 'UsersController@changeStatus'));
-        Route::post('training-managers/import-training-managers', 'UsersController@importUsers')->name('import.training-managers');
-
-
-        /* user routes */
-        // Route::get('users', array('as' => 'Users.index', 'uses' => 'UsersController@index'));
-        // Route::post('users', array('as' => 'Users.index', 'uses' => 'UsersController@index'));
-        // Route::get('users/add-new-user', array('as' => 'Users.add', 'uses' => 'UsersController@add'));
-        // Route::post('users/add-new-user', array('as' => 'Users.add', 'uses' => 'UsersController@save'));
-        // Route::get('users/edit-user/{id}', array('as' => 'Users.edit', 'uses' => 'UsersController@edit'));
-        // Route::post('users/edit-user/{id}', array('as' => 'Users.edit', 'uses' => 'UsersController@update'));
-        // Route::get('users/delete-user/{id}', array('as' => 'Users.delete', 'uses' => 'UsersController@delete'));
-        // Route::get('users/view-user/{id}', array('as' => 'Users.view', 'uses' => 'UsersController@view'));
-        // Route::get('users/update-user-status/{id}/{status}', array('as' => 'Users.status', 'uses' => 'UsersController@changeStatus'));
-        // Route::post('users/import-users', 'UsersController@importUsers')->name('import.users');
-
-        /* user routes */
-        Route::get('trainers', array('as' => 'Trainers.index', 'uses' => 'TrainersController@index'));
-        Route::post('trainers', array('as' => 'Trainers.index', 'uses' => 'TrainersController@index'));
-        Route::get('trainers/add-new-trainer', array('as' => 'Trainers.add', 'uses' => 'TrainersController@add'));
-        Route::post('trainers/add-new-trainer', array('as' => 'Trainers.add', 'uses' => 'TrainersController@save'));
-        Route::get('trainers/edit-trainer/{id}', array('as' => 'Trainers.edit', 'uses' => 'TrainersController@edit'));
-        Route::post('trainers/edit-trainer/{id}', array('as' => 'Trainers.edit', 'uses' => 'TrainersController@update'));
-        Route::get('trainers/delete-trainer/{id}', array('as' => 'Trainers.delete', 'uses' => 'TrainersController@delete'));
-        Route::get('trainers/view-trainer/{id}', array('as' => 'Trainers.view', 'uses' => 'TrainersController@view'));
-        Route::get('trainers/update-trainer-status/{id}/{status}', array('as' => 'Trainers.status', 'uses' => 'TrainersController@changeStatus'));
-        Route::post('trainers/import-trainers', 'TrainersController@importTrainers')->name('import.trainers');
-        Route::get('trainers/export-trainers', 'TrainersController@exportTrainers')->name('export.trainers');
+        /* trainers routes */
+        Route::get('users/trainers', array('as' => 'Trainers.index', 'uses' => 'TrainersController@index'));
+        Route::post('users/trainers', array('as' => 'Trainers.index', 'uses' => 'TrainersController@index'));
+        Route::get('users/trainers/add-new-trainer', array('as' => 'Trainers.add', 'uses' => 'TrainersController@add'));
+        Route::post('users/trainers/add-new-trainer', array('as' => 'Trainers.add', 'uses' => 'TrainersController@save'));
+        Route::get('users/trainers/edit-trainer/{id}', array('as' => 'Trainers.edit', 'uses' => 'TrainersController@edit'));
+        Route::post('users/trainers/edit-trainer/{id}', array('as' => 'Trainers.edit', 'uses' => 'TrainersController@update'));
+        Route::get('users/trainers/delete-trainer/{id}', array('as' => 'Trainers.delete', 'uses' => 'TrainersController@delete'));
+        Route::get('users/trainers/view-trainer/{id}', array('as' => 'Trainers.view', 'uses' => 'TrainersController@view'));
+        Route::get('users/trainers/update-trainer-status/{id}/{status}', array('as' => 'Trainers.status', 'uses' => 'TrainersController@changeStatus'));
+        Route::post('users/trainers/import-trainers', 'TrainersController@importTrainers')->name('import.trainers');
+        Route::get('users/trainers/export-trainers', 'TrainersController@exportTrainers')->name('export.trainers');
 
 
         Route::controller(TraineesController::class)->group(function () {
@@ -376,9 +361,9 @@ Route::group(array('prefix' => 'admin'), function () {
 
         // grouping of rourtes
         Route::controller(ReportsController::class)->prefix('reports')->name('Reports.')->group(function () {
-            Route::get('reports/test', 'test')->name('test');
-            Route::post('reports/test', 'search')->name('search');
-            Route::get('reports/training', 'training')->name('training');
+            Route::get('test', 'test')->name('test');
+            Route::post('test', 'search')->name('search');
+            Route::get('training', 'training')->name('training');
             Route::get('downloads-report-test/{test_id}', 'downloadReport')->name('downloads');
             Route::get('downloads-report-training/{training_id}', 'downloadReportTraining')->name('downloads.training');
         });

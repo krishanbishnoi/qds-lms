@@ -95,7 +95,7 @@ class TestCategoryController extends BaseController
 
     public function add()
     {
-        
+
         return view("admin.TestCategory.add");
     }
 

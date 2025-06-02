@@ -113,7 +113,7 @@ class TraineesController extends BaseController
         // return $results; die;
 
         return  View::make("admin.Trainees.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string', 'designation'));
-    } 
+    }
 
     public function add()
     {
@@ -192,7 +192,7 @@ class TraineesController extends BaseController
             $password = 'Lms@1234';
 
             $route_url = match ($user->user_role_id) {
-                MANAGER_ROLE_ID => URL::to('/admin'),
+                MANAGER_ROLE_ID => URL::to('/admin/login'),
                 TRAINER_ROLE_ID => URL::to('/trainer'),
                 default => URL::to('/login'),
             };

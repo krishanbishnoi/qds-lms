@@ -55,7 +55,8 @@
                         <div class="box-header with-border pd-custom">
                             <div class="listing-btns">
                                 <h1 class="box-title">{{ $sectionName }} List</h1>
-                                <a href='{{ route("$modelName.add") }}' class="btn btn-success btn-small pull-right mb-2">
+                                <a href='{{ route('TestCategory.add') }}'
+                                    class="btn btn-success btn-small pull-right mb-2">
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                             </div>
                         </div>
@@ -164,7 +165,7 @@
                                     'training_manager',
                                     trans('Assign Test Manager') .
                                         '<span
-                                                                                                                                                                                                                                class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                    class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -209,7 +210,7 @@
                                     'training_trainer',
                                     trans('Assign Trainer') .
                                         '<span
-                                                                                                                                                                                                                                class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                    class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
