@@ -465,10 +465,6 @@ class TestController extends BaseController
         $export = new exportTests($filteredResult);
         return Excel::download($export, 'Test.xlsx');
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 072d4776309fa9d06d3ef55e74d71b5a5a791da8
     public function importTestsParticipants($test_id = 0)
     {
         $existQuestions = Question::where('test_id', $test_id)->exists();
