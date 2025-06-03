@@ -74,6 +74,7 @@ class EmailtemplateController extends BaseController
 	{
 		$Action_options	=	EmailAction::pluck('action', 'action');
 		return view('admin.emailtemplates.add', compact('Action_options'));
+		
 	}
 
 	public function saveTemplate(Request $request)

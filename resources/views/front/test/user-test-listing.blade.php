@@ -75,15 +75,15 @@
                                                                 <div class="actionGroup">
                                                                     @if (
                                                                         !$testResult || // If $testResult is null
-                                                                            ($testResult->result == 'Failed' &&
-                                                                                $testParticipant &&
-                                                                                ($testParticipant->status == 0 ||
-                                                                                    ($testParticipant->status == 1 &&
-                                                                                        $testParticipant->number_of_attempts > $testParticipant->user_attempts))))
+                                                                        ($testResult->result == 'Failed' &&
+                                                                        $testParticipant &&
+                                                                        ($testParticipant->status == 0 ||
+                                                                        ($testParticipant->status == 1 &&
+                                                                        $testParticipant->number_of_attempts > $testParticipant->user_attempts))))
                                                                         <a href="{{ route('userTestDetails.index', $test->id) }}"
                                                                             class="continueBtn"><img
-                                                                                src="{{ asset('front/img/continue-icon.svg') }}"
-                                                                                alt="img" width="47"height="28">
+                                                                            src="{{ asset('front/img/continue-icon.svg') }}"
+                                                                            alt="img" width="47"height="28">
                                                                         </a>
                                                                     @else
                                                                         <a href="javascript:void()"data-bs-toggle="tooltip"

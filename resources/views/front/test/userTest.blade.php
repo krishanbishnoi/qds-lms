@@ -1,429 +1,836 @@
- @extends('front.layouts.trainee-default')
- @section('content')
-     <?php
-     // $startTime = strtotime($testDetails->start_date_time);
-     $endTime = strtotime($testDetails->end_date_time); // get taining end dateTime
-     $currentDateTime = date('Y-m-d H:i:s'); //get current end dateTime
-     $currentTimestamp = strtotime($currentDateTime);
-     $difference = $endTime - $currentTimestamp;
-     $hours = floor($difference / (60 * 60));
-     $minutes = floor(($difference - $hours * 60 * 60) / 60);
-     $trainingId = request()->route('id');
-     ?>
+@extends('front.layouts.trainee-default')
+@section('content')
+    <?php
+    $endTime = strtotime($testDetails->end_date_time);
+    $currentDateTime = date('Y-m-d H:i:s');
+    $currentTimestamp = strtotime($currentDateTime);
+    $difference = $endTime - $currentTimestamp;
+    $hours = floor($difference / (60 * 60));
+    $minutes = floor(($difference - $hours * 60 * 60) / 60);
+    $trainingId = request()->route('id');
+    ?>
 
-     <body>
-         <header class="traineeHead">
-             <div class="container-fluid">
-                 <div class="d-flex flex-wrap align-items-center">
-                     <div class="logoSec">
-                         <a href="{{ route('front.dashboard') }}"><img src="../lms-img/qdegrees-logo.svg" alt="logo"
-                                 width="130" height="33px"></a>
-                     </div>
-                     <div class="courseName">
-                         <p class="mb-0">{{ $testDetails->title }}</p>
-                     </div>
-                     <div id="countdown-timer" class="counttimerGroup" style="color: #000">
-                         <div class="timerImg"><svg xmlns="http://www.w3.org/2000/svg" width="23.51" height="27.845"
-                                 viewBox="0 0 23.51 27.845">
-                                 <g id="_70fade71b5a52d187d0046af3cc3b5d2" data-name="70fade71b5a52d187d0046af3cc3b5d2"
-                                     transform="translate(-6.24 -1.46)">
-                                     <path id="Path_18436" data-name="Path 18436"
-                                         d="M27.056,6.5V4.118h1.368a1.329,1.329,0,0,0,0-2.658H7.567a1.329,1.329,0,0,0,0,2.658H8.911V6.5a13.4,13.4,0,0,0,2.548,7.481,11.611,11.611,0,0,0,1.176,1.4,12.031,12.031,0,0,0-1.176,1.409,13.4,13.4,0,0,0-2.548,7.481v2.375H7.567a1.329,1.329,0,0,0,0,2.658H28.4a1.329,1.329,0,0,0,0-2.658H27.033V24.272a13.4,13.4,0,0,0-2.548-7.481,12.031,12.031,0,0,0-1.153-1.409,11.611,11.611,0,0,0,1.176-1.4A13.4,13.4,0,0,0,27.056,6.5ZM21.6,16.75a11.183,11.183,0,0,1,3.278,7.522v2.375h-13.8V24.272a11.183,11.183,0,0,1,3.25-7.495,1.9,1.9,0,0,0,0-2.735,11.16,11.16,0,0,1-3.26-7.49V4.118h13.8V6.5a11.16,11.16,0,0,1-3.25,7.49A1.9,1.9,0,0,0,21.6,16.75Z"
-                                         transform="translate(0 0)" fill="currentColor" />
-                                     <path id="Path_18437" data-name="Path 18437"
-                                         d="M30.964,33.266H20v-.255c0-3.032,2.439-6.97,5.471-6.97s5.471,3.939,5.471,6.97ZM21.468,15.3h8.005v.155c0,1.846-1.792,4.267-4,4.267s-4-2.4-4-4.244Z"
-                                         transform="translate(-7.487 -7.531)" fill="currentColor" />
-                                     <circle id="Ellipse_589" data-name="Ellipse 589" cx="0.821" cy="0.821"
-                                         r="0.821" transform="translate(17.163 13.017)" fill="currentColor" />
-                                     <circle id="Ellipse_590" data-name="Ellipse 590" cx="1.076" cy="1.076"
-                                         r="1.076" transform="translate(16.908 15.506)" fill="currentColor" />
-                                 </g>
-                             </svg>
-                         </div>
-                         <span id="countdown"></span>
-                     </div>
-                     <div class="courseProgress">
-                         {{-- <div class="progress-main">
-                             <div class="progress-circle" data-progress="90"></div>
-                         </div> --}}
-                         {{-- <div class="progressText">
-                             <strong>Progress</strong>
-                             <span>1<i>/4</i></span>
-                         </div> --}}
-                         <button type="button" class="optionBtn d-lg-none"><img src="../front/img/option.svg"
-                                 alt="icon" width="23" height="23"></button>
-                         <a href="{{ route('front.dashboard') }}"><button type="button" class="exitBtn"><img
-                                     src="../front/img/exit.svg" alt="icon" width="23" height="23"></button></a>
-                     </div>
-                 </div>
-             </div>
-         </header>
-         <div class="d-flex flex-wrap paddingTop">
-             <div class="courseName trainingNameMobile d-lg-none w-100">
-                 <p class="mb-0">{{ $testDetails->title }}</p>
-             </div>
-             <div class="abouttraining">
-                 <div class="testGroup">
-                     <form id="questionForm">
-                         {{-- @csrf --}}
-                         <div class="testid d-flex justify-content-between">
-                             <h3>Test For Training : {{ $testDetails->title }}</h3>
-                             {{-- <span class="questionNum">1<i>/3</i></span> --}}
-                             <input type="hidden" name="test_id" value="{{ $testDetails->id }}">
-                         </div>
-                         @if (is_array($testQuestions) || is_object($testQuestions))
-                             @foreach ($testQuestions as $index => $question)
-                                 @if ($question->question_type == 'SCQ')
-                                     <div class="testQuestion">
-                                         <div class="clickType">Single Choice Question</div>
-                                         <h4>{{ $index + 1 }}. {{ $question->question }}</h4>
-                                         <div class="ansCheck">
-                                             @foreach ($question->questionAttributes as $option)
-                                                 <span>
-                                                     <input type="radio" id="radio{{ $option->id }}"
-                                                         name="answer_id-{{ $question->id }}" value="{{ $option->id }}"
-                                                         data-question-id="{{ $question->id }}" class="answer-checkbox">
-                                                     <label for="radio{{ $option->id }}">{{ $option->option }}</label>
-                                                 </span>
-                                                 {{-- <input type="hidden" name="option_id" value="{{ $option->id }}"> --}}
-                                             @endforeach
-                                         </div>
-                                     </div>
-                                 @elseif($question->question_type == 'MCQ')
-                                     <div class="testQuestion">
-                                         <div class="clickType">Multiple Choice Question</div>
-                                         <h4>{{ $index + 1 }}. {{ $question->question }}</h4>
-                                         <input type="hidden" name="question_id" value="{{ $question->id }}">
-                                         <div class="ansCheck">
-                                             @foreach ($question->questionAttributes as $option)
-                                                 <span>
-                                                     <input type="checkbox" id="checkbox{{ $option->id }}"
-                                                         name="answer_id-{{ $question->id }}" value="{{ $option->id }}"
-                                                         data-question-id="{{ $question->id }}" class="answer-radio">
-                                                     <label
-                                                         for="checkbox{{ $option->id }}">{{ $option->option }}</label>
-                                                     {{-- <input type="hidden" name="option_id" value="{{ $option->id }}"  data-question-id="{{ $question->id }}"> --}}
-                                                 </span>
-                                             @endforeach
-                                         </div>
-                                     </div>
-                                 @elseif($question->question_type == 'T/F')
-                                     <div class="testQuestion">
-                                         <div class="clickType">True False Question</div>
-                                         <h4>{{ $index + 1 }}. {{ $question->question }}</h4>
-                                         <input type="hidden" name="question_id" value="{{ $question->id }}">
-                                         <div class="ansCheck">
-                                             @foreach ($question->questionAttributes as $option)
-                                                 <span>
-                                                     <input type="radio" id="radio{{ $option->id }}"
-                                                         name="answer_id-{{ $question->id }}" value="{{ $option->id }}"
-                                                         data-question-id="{{ $question->id }}" class="answer-radio">
-                                                     <label for="radio{{ $option->id }}">{{ $option->option }}</label>
-                                                     {{-- <input type="hidden" name="option_id" value="{{ $option->id }}"  data-question-id="{{ $question->id }}"> --}}
-                                                 </span>
-                                             @endforeach
-                                         </div>
-                                     </div>
-                                 @elseif($question->question_type == 'FreeText')
-                                     <div class="testQuestion">
-                                         <div class="clickType">Free Text</div>
-                                         <h4>{{ $index + 1 }}. {{ $question->question }}</h4>
+    <!-- Test Instructions Modal -->
+    <div class="modal fade" id="testInstructionsModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h3 class="modal-title">Test Instructions</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="instruction-content">
+                        <h5 class="mb-3">Please read the instructions carefully before starting the test:</h5>
+                        <div class="instructions">
+                            {!! $testDetails->description !!}
+                        </div>
+                        <div class="test-details mt-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Test Name:</strong> {{ $testDetails->title }}</p>
+                                    <p><strong>Duration:</strong> {{ $testDetails->time_of_test }} minutes</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Total Questions:</strong> {{ count($testQuestions) }}</p>
+                                    <p><strong>Passing Score:</strong> {{ $testDetails->minimum_marks }}%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="startTestBtn">Start Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                         <div class="ansCheck pb-3">
-                                             <textarea class="form-control free-text-input" data-question-id="{{ $question->id }}"></textarea>
-                                             <div class="wordcounter w-100">0/150</div>
-                                         </div>
-                                     </div>
-                                 @endif
-                             @endforeach
-                         @endif
-                         <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-                         <div class="d-flex mt-2">
-                             <a href="javascript:voide()" data-bs-toggle="modal" data-bs-target="#confirmSubmit"><button
-                                     style="display: none" type="button"
-                                     class="btn btn-secondary smallBtn  py-2 px-4 view-result-button">Submit</button></a>
-                         </div>
-                     </form>
-                     <div class="completeQStauts d-flex ">
-                         <div class="progress-main ms-auto">
-                             {{-- <div class="progress-circle" data-progress="20"></div> --}}
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             <div class="courseContent" id="courseContent">
-                 <div class="courselisting">
-                     <strong>Test instruction </strong>
-                     <ul class="nav nav-tabs" id="nav-tab" role="tablist">
-                         <li>
-                             <a href="#question1" class="courseGroup active bg-transparent p-2" data-bs-toggle="tab"
-                                 aria-controls="nav-question1">
-                                 <p>{!! $testDetails->description !!}</p>
-                             </a>
-                         </li>
-                     </ul>
-                 </div>
-             </div>
-         </div>
-         <div class="overllayBg" id="overllayBg" style="display: none;"></div>
-         {{-- Varify Result Model --}}
-         <div class="modal fade " id="confirmSubmit" tabindex="-1" aria-hidden="true">
-             <div class="modal-dialog modal-dialog-centered">
-                 <div class="modal-content">
-                     <div class="modal-header">
-                         <h3 class="modal-title">Confirm ?</h3>
-                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                     </div>
-                     <div class="modal-body">
-                         <div class="selectUser">
-                             <div class="d-sm-flex justify-content-between">
-                                 <div class="fs-6 blue-text">Are you sure you want to Submit? Once submitted, you cannot
-                                     change your answers.
-                                 </div>
-                             </div>
-                             <hr>
-                             <div class="d-sm-flex justify-content-between">
-                                 <button type="button"data-bs-dismiss="modal" aria-label="Close"
-                                     class="btn btn-secondary smallBtn  py-2 px-4">Cancel</button>
-                                 <div class="d-flex mt-2">
-                                     <button type="button"
-                                         class="btn btn-secondary smallBtn  py-2 px-4 view-result-button"
-                                         onclick="openTestResultPage()">Confirm Submit</button>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-         </div>
-         {{-- Test Result Model --}}
-         {{-- <div class="modal fade " id="testresult" tabindex="-1" aria-hidden="true">
-             <div class="modal-dialog modal-dialog-centered">
-                 <div class="modal-content">
-                     <div class="modal-header">
-                         <h3 class="modal-title">Test Results</h3>
-                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                     </div>
-                     <div class="modal-body">
-                         <div class="selectUser">
-                             <div class="d-sm-flex justify-content-between">
-                                 <div class="fs-6 blue-text">Scored</div>
-                                 <div class="text-center">
-                                     <p class="greentxt fs-5 mb-0 text-start"><b id="percentage"></b><span
-                                             class="lightGreyTxt ms-1">out
-                                             of 100%</span></p>
-                                 </div>
-                             </div>
-                             <hr>
-                             <div class="d-sm-flex justify-content-between">
-                                 <div class=" fs-6 blue-text">Result</div>
-                                 <div class="text-center">
-                                     <p class="greentxt fs-5 mb-0 text-start"><b id="result"></b></p>
-                                 </div>
-                             </div>
-                             <hr>
-                             <div class="d-sm-flex justify-content-between">
-                                 <div class="fs-6 blue-text">Certificate</div>
-                                 <div class="text-center">
-                                     <div class="d-flex align-items-center justify-content-start gap-3 ">
-                                         <button type="button" class="btn btn-secondary smallBtn  py-1 px-4"
-                                             data-bs-toggle="modal" data-bs-target="#certificate-modal">View</button>
-                                         <a href=""><img src="{{ asset('front/img/download-btn.svg') }}"
-                                                 alt="" width="28"></a>
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-         </div> --}}
-         {{-- certificate for test model --}}
-         {{-- <div class="modal fade" id="certificate-modal" data-bs-backdrop="static" data-bs-keyboard="false"
-             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-             <div class="modal-dialog modal-dialog-centered modal-lg model-size">
-                 <div class="modal-content">
-                     <div class="modal-header">
-                         <h1 class="modal-title fs-5" id="staticBackdropLabel">Certificate</h1>
-                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                     </div>
-                     <div class="modal-body">
-                         <div class="innerBox">
-                             <div class="preview">
-                                 <div class="d-md-flex justify-content-between">
-                                     <img src="{{ asset('front/img/logo.svg') }}" alt="logo" width="90">
-                                     <p class="w-25 fs-12 lightGreyTxt">Lorem ipsum dolor sit amet consectetur
-                                         adipisicing
-                                         elit. Repellat,
-                                         fuga?</p>
-                                 </div>
-                                 <p class="fs-12 text-dark fw-medium mb-1">CERTIFICATION OF COMPLETION</p>
-                                 <h1 class="fs-3 text-dark">Lorem Ipsum is simply dummy text of the printing and
-                                     typesetting
-                                     industry.</h1>
-                                 <p class="fs-12 text-dark fw-medium">INSTRUCTOR : Mark Mathew</p>
-                                 <h2 class="text-dark fs-5 fw-bold mt-md-5 mt-3">Mark Mathews</h2>
-                                 <p class="text-dark mb-0">Date: <span class="fw-bold"> Mar 3, 2022</span></p>
-                                 <p class="text-dark">Length:<span class="fw-bold"> 3 Days</span></p>
-                             </div>
-                         </div>
-                         <p class="text-dark fs-12 pt-2">This certificate above verifies that <span
-                                 class="blue-text fw-bold">Vaibhav Saini</span> successfully completed the
-                             course<span class="blue-text fw-bold"> User
-                                 Experience Design Essentials - Adobe XD UI UX Design</span> on 03/03/2022 as taught
-                             by <span class="blue-text fw-bold"> Mark Mathew </span>on
-                             Udemy. The certificate indicates the entire course was completed as validated by the
-                             student.
-                             The course duration represents the total video hours of the course at time of most
-                             recent
-                             completion.</p>
-                     </div>
-                     <div class="modal-footer border-0">
-                         <a href=""><button type="button" class="btn btn-secondary fs-7"
-                                 data-bs-dismiss="modal">Back to
-                                 Home</button></a>
-                         <button type="button" class="btn btn-secondary fs-7">Download</button>
-                     </div>
-                 </div>
-             </div>
-         </div> --}}
-         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-         <?php
-         $totalQuestions = count($testQuestions);
-         ?>
-         <script>
-             // Submit test question answer in answer table Script
-             $(document).ready(function() {
-                 var answeredQuestions = [];
+    <!-- Test Interface -->
+    <div id="testInterface" style="display: none;">
+        <header class="traineeHead">
+            <div class="container-fluid">
+                <div class="d-flex flex-wrap align-items-center">
+                    <div class="logoSec">
+                        <a href="{{ route('front.dashboard') }}"><img src="../lms-img/qdegrees-logo.svg" alt="logo"
+                                width="130" height="33px"></a>
+                    </div>
+                    <div class="courseName">
+                        <p class="mb-0">{{ $testDetails->title }}</p>
+                    </div>
+                    <div id="countdown-timer" class="counttimerGroup">
+                        <div class="timerImg"><svg xmlns="http://www.w3.org/2000/svg" width="23.51" height="27.845"
+                                viewBox="0 0 23.51 27.845">
+                                <g id="_70fade71b5a52d187d0046af3cc3b5d2" data-name="70fade71b5a52d187d0046af3cc3b5d2"
+                                    transform="translate(-6.24 -1.46)">
+                                    <path id="Path_18436" data-name="Path 18436"
+                                        d="M27.056,6.5V4.118h1.368a1.329,1.329,0,0,0,0-2.658H7.567a1.329,1.329,0,0,0,0,2.658H8.911V6.5a13.4,13.4,0,0,0,2.548,7.481,11.611,11.611,0,0,0,1.176,1.4,12.031,12.031,0,0,0-1.176,1.409,13.4,13.4,0,0,0-2.548,7.481v2.375H7.567a1.329,1.329,0,0,0,0,2.658H28.4a1.329,1.329,0,0,0,0-2.658H27.033V24.272a13.4,13.4,0,0,0-2.548-7.481,12.031,12.031,0,0,0-1.153-1.409,11.611,11.611,0,0,0,1.176-1.4A13.4,13.4,0,0,0,27.056,6.5ZM21.6,16.75a11.183,11.183,0,0,1,3.278,7.522v2.375h-13.8V24.272a11.183,11.183,0,0,1,3.25-7.495,1.9,1.9,0,0,0,0-2.735,11.16,11.16,0,0,1-3.26-7.49V4.118h13.8V6.5a11.16,11.16,0,0,1-3.25,7.49A1.9,1.9,0,0,0,21.6,16.75Z"
+                                        transform="translate(0 0)" fill="currentColor" />
+                                    <path id="Path_18437" data-name="Path 18437"
+                                        d="M30.964,33.266H20v-.255c0-3.032,2.439-6.97,5.471-6.97s5.471,3.939,5.471,6.97ZM21.468,15.3h8.005v.155c0,1.846-1.792,4.267-4,4.267s-4-2.4-4-4.244Z"
+                                        transform="translate(-7.487 -7.531)" fill="currentColor" />
+                                    <circle id="Ellipse_589" data-name="Ellipse 589" cx="0.821" cy="0.821" r="0.821"
+                                        transform="translate(17.163 13.017)" fill="currentColor" />
+                                    <circle id="Ellipse_590" data-name="Ellipse 590" cx="1.076" cy="1.076" r="1.076"
+                                        transform="translate(16.908 15.506)" fill="currentColor" />
+                                </g>
+                            </svg>
+                        </div>
+                        <span id="countdown"></span>
+                    </div>
+                    <div class="courseProgress">
+                        <a href="{{ route('front.dashboard') }}" class="exitBtn">
+                            <img src="../front/img/exit.svg" alt="icon" width="23" height="23">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-                 function submitAnswer(questionId, answerId, answerText = null) {
-                     var userId = {{ Auth::user()->id }};
-                     var testId = {{ $testDetails->id }};
-                     var formData = {
-                         question_id: questionId,
-                         answer_id: answerId,
-                         answer_text: answerText,
-                         user_id: userId,
-                         test_id: testId,
-                         _token: '{{ csrf_token() }}' // Add the CSRF token here
-                     };
+        <div class="d-flex flex-wrap paddingTop">
+            <div class="courseName trainingNameMobile d-lg-none w-100">
+                <p class="mb-0">{{ $testDetails->title }}</p>
+            </div>
 
-                     $.ajaxSetup({
-                         headers: {
-                             'X-CSRF-TOKEN': formData._token
-                         }
-                     });
+            <div class="abouttraining">
+                <div class="testGroup">
+                    <form id="questionForm">
+                        <input type="hidden" name="test_id" value="{{ $testDetails->id }}">
+                        <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
 
-                     $.ajax({
-                         type: 'POST',
-                         url: '{{ URL('/submit-test-response') }}',
-                         data: formData,
-                         success: function(response) {
-                             console.log('Response submitted successfully', response);
-                             if (response.successRedirect) {
-                                 window.location.href = '{{ URL('/test-already-submitted') }}';
-                             }
-                         },
-                         error: function(jqXHR, textStatus, errorThrown) {
-                             console.error('Error submitting response:', errorThrown);
-                             alert(
-                                 'Error submitting this response. Please check your internet connection and re-click on the same question option.');
-                         }
-                     });
-                 }
+                        <div class="test-header">
+                            <h3 class="test-title">{{ $testDetails->title }}</h3>
+                            <div class="test-meta">
+                                <span class="question-counter">Question <span id="current-question-number">1</span> of
+                                    {{ count($testQuestions) }}</span>
+                                <div class="progress-container">
+                                    <div class="progress">
+                                        <div id="test-progress" class="progress-bar" role="progressbar" style="width: 0%"
+                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <span id="progress-percentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
 
-                 $('.answer-radio, .answer-checkbox').on('click', function() {
-                     var questionId = $(this).data('question-id');
-                     var answerId = $(this).val();
-                     if (!answeredQuestions.includes(questionId)) {
-                         answeredQuestions.push(questionId);
-                     }
-                     // Enable or disable the "View Result" button based on the number of answered questions
-                     var totalQuestions = {{ $totalQuestions }};
-                     var viewResultButton = $('.view-result-button');
-                     if (answeredQuestions.length === totalQuestions) {
-                         viewResultButton.show();
-                     } else {
-                         viewResultButton.hide();
-                     }
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- Question container -->
+                                <div id="question-container" class="question-container"></div>
 
-                     submitAnswer(questionId, answerId);
-                 });
+                                <!-- Navigation buttons -->
+                                <div class="navigation-buttons">
+                                    <button type="button" id="prev-btn" class="btn btn-outline-primary" disabled>
+                                        <i class="fas fa-arrow-left"></i> Previous
+                                    </button>
 
-                 // for FreeText questions
-                 $('.free-text-input').on('input', function() {
-                     var questionId = $(this).data('question-id');
-                     var answerText = $(this).val();
-
-                     if (!answeredQuestions.includes(questionId)) {
-                         answeredQuestions.push(questionId);
-                     }
-
-                     var totalQuestions = {{ $totalQuestions }};
-                     var viewResultButton = $('.view-result-button');
-
-                     if (answeredQuestions.length === totalQuestions) {
-                         viewResultButton.show();
-                     } else {
-                         viewResultButton.hide();
-                     }
-
-                     submitAnswer(questionId, null, answerText);
-                 });
-             });
+                                    <button type="button" id="next-btn" class="btn btn-primary">
+                                        Save & Next <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <button type="button" id="submit-btn" class="btn btn-success"
+                                        style="display: none;">
+                                        <i class="fas fa-check-circle"></i> Submit Test
+                                    </button>
+                                </div>
+                            </div>
 
 
 
-             //  // Show Test result in new page Script
-             function openTestResultPage() {
-                 window.location.href = '{{ route('user.test.result', $testDetails->id) }}';
-             }
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="courseContent" id="courseContent">
+                <div class="courselisting">
+                    <div>
+                        <div class="card sticky-top shadow-sm" style="top: 20px;">
+                            <!-- Card Header -->
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Test Instructions</h5>
+                            </div>
 
-             // Time Countdown view for $testDetails->time_of_test
-             $(document).ready(function() {
-                 var countdownElement = $('#countdown');
-                 var timerImgElement = $('.timerImg');
-                 var countdown = {{ $testDetails->time_of_test }} * 60;
-                 var timer = setInterval(function() {
-                     var minutes = Math.floor(countdown / 60);
-                     var seconds = countdown % 60;
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="instructions-sidebar mb-3">
+                                    {!! $testDetails->description !!}
+                                </div>
 
-                     var formattedMinutes = (minutes < 10) ? '0' + minutes : minutes;
-                     var formattedSeconds = (seconds < 10) ? '0' + seconds : seconds;
+                                <div class="test-summary">
+                                    <p class="mb-1"><strong>Duration:</strong> {{ $testDetails->time_of_test }} minutes
+                                    </p>
+                                    <p class="mb-1"><strong>Total Questions:</strong> {{ count($testQuestions) }}</p>
+                                    <p class="mb-0"><strong>Passing Score:</strong> {{ $testDetails->minimum_marks }}%
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                     countdownElement.text(formattedMinutes + 'm ' + formattedSeconds + 's');
+        </div>
 
-                     if (countdown <= 0) {
-                         clearInterval(timer);
+        <!-- Confirm Submit Modal -->
+        <div class="modal fade" id="confirmSubmit" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h3 class="modal-title">Confirm Submission</h3>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="selectUser">
+                            <div class="d-sm-flex justify-content-between">
+                                <div class="fs-6">
+                                    <p>Are you sure you want to submit your test?</p>
+                                    <p class="text-muted">Once submitted, you cannot change your answers.</p>
+                                </div>
+                            </div>
+                            <div class="test-summary mt-3">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Questions Answered:</strong> <span
+                                                id="answered-count">0</span>/{{ count($testQuestions) }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Time Remaining:</strong> <span id="time-remaining-display">0m 0s</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="final-submit-btn" class="btn btn-primary">Confirm Submission</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                         // Update the test_participants status in test_participants table
-                         var testId = {{ $testDetails->id }};
-                         $.ajax({
-                             type: 'POST',
-                             url: '{{ route('update.test.participant.status.attempts') }}',
-                             data: {
-                                 test_id: testId,
-                                 _token: '{{ csrf_token() }}'
-                             },
-                             success: function(response) {
-                                 console.log('Test status updated successfully');
-                                 //  window.location.href = '{{ route('front.dashboard') }}';
-                                 window.location.href = '{{ route('user.test.result', $testDetails->id) }}';
-                                },
-                             error: function(jqXHR, textStatus, errorThrown) {
-                                 console.error('Error updating test status:', errorThrown);
-                             }
-                         });
-                     } else if (countdown <= 300) { // 5 minutes or less (300 seconds)
-                         countdownElement.addClass('blinking');
-                         timerImgElement.addClass('redBorder');
-                     } else {
-                         countdownElement.removeClass('blinking');
-                         timerImgElement.removeClass('redBorder');
-                     }
+    <style>
+        /* Enhanced Test Interface Styles */
+        #testInterface {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
 
-                     countdown--;
-                 }, 1000); // Update the timer every 1 second
-             });
-         </script>
-     @stop
+        .traineeHead {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+        }
+
+        .testGroup {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .test-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .test-title {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .test-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .question-counter {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+            max-width: 300px;
+        }
+
+        .progress {
+            flex-grow: 1;
+            height: 8px;
+            border-radius: 4px;
+        }
+
+        .progress-bar {
+            background-color: #4e73df;
+            transition: width 0.3s ease;
+        }
+
+        #progress-percentage {
+            font-size: 0.85rem;
+            color: #6c757d;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .question-container {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .testQuestion {
+            margin-bottom: 0;
+        }
+
+        .clickType {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .testQuestion h4 {
+            font-size: 1.1rem;
+            color: #343a40;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .ansCheck {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ansCheck span {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .ansCheck span:hover {
+            border-color: #4e73df;
+            background-color: #f8f9fe;
+        }
+
+        .ansCheck input[type="radio"],
+        .ansCheck input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .ansCheck label {
+            cursor: pointer;
+            margin-bottom: 0;
+            flex-grow: 1;
+        }
+
+        .free-text-input {
+            min-height: 120px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+        }
+
+        .wordcounter {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Timer styles */
+        .counttimerGroup {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .timerImg {
+            display: flex;
+            align-items: center;
+        }
+
+        .timerImg.redBorder svg {
+            color: #e74c3c;
+        }
+
+        #countdown.blinking {
+            animation: blink 1s linear infinite;
+            color: #e74c3c;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Instruction modal styles */
+        #testInstructionsModal .modal-content {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #testInstructionsModal .modal-header {
+            border-bottom: none;
+        }
+
+        .instruction-content {
+            padding: 0 10px;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .test-details {
+            background: #f1f8fe;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        /* Sidebar instructions */
+        .instructions-sidebar {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .instructions-sidebar p {
+            margin-bottom: 10px;
+        }
+
+        .card-header {
+            border-bottom: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .test-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .progress-container {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .navigation-buttons {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .col-md-4 {
+                margin-top: 30px;
+            }
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            // Show instructions modal first
+            const testInstructionsModal = new bootstrap.Modal(document.getElementById('testInstructionsModal'));
+            testInstructionsModal.show();
+
+            // Initialize variables
+            const questions = {!! json_encode($testQuestions) !!};
+            const totalQuestions = questions.length;
+            let currentQuestionIndex = 0;
+            let userAnswers = {};
+            let testStarted = false;
+            let countdownInterval;
+
+            // Start test button handler
+            $('#startTestBtn').click(function() {
+                testInstructionsModal.hide();
+                $('#testInterface').show();
+                startTimer();
+                testStarted = true;
+            });
+
+            // Initialize the test by showing the first question
+            function initializeTest() {
+                showQuestion(currentQuestionIndex);
+                updateProgressBar();
+                updateNavigationButtons();
+                updateAnswerStatus();
+            }
+
+            // Function to display a question
+            function showQuestion(index) {
+                const question = questions[index];
+                const questionContainer = $('#question-container');
+                const questionNumber = $('#current-question-number');
+
+                // Update current question indicator
+                currentQuestionIndex = index;
+                questionNumber.text(index + 1);
+                questionContainer.empty();
+
+                // Build the question HTML based on type
+                let questionHtml = `
+                    <div class="testQuestion">
+                        <div class="clickType">${getQuestionTypeLabel(question.question_type)}</div>
+                        <h4>${question.question}</h4>
+                `;
+
+                if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
+                    questionHtml += `<div class="ansCheck">`;
+                    question.question_attributes.forEach(option => {
+                        const isChecked = userAnswers[question.id] &&
+                            (userAnswers[question.id].answer_id == option.id ||
+                                (Array.isArray(userAnswers[question.id].answer_id) &&
+                                    userAnswers[question.id].answer_id.includes(option.id.toString())));
+
+                        questionHtml += `
+                            <span>
+                                <input type="radio" id="option-${option.id}" 
+                                    name="answer-${question.id}" value="${option.id}" 
+                                    ${isChecked ? 'checked' : ''}>
+                                <label for="option-${option.id}">${option.option}</label>
+                            </span>
+                        `;
+                    });
+                    questionHtml += `</div>`;
+                } else if (question.question_type === 'MCQ') {
+                    questionHtml += `<div class="ansCheck">`;
+                    question.question_attributes.forEach(option => {
+                        const isChecked = userAnswers[question.id] &&
+                            (userAnswers[question.id].answer_id == option.id ||
+                                (Array.isArray(userAnswers[question.id].answer_id) &&
+                                    userAnswers[question.id].answer_id.includes(option.id.toString())));
+
+                        questionHtml += `
+                            <span>
+                                <input type="checkbox" id="option-${option.id}" 
+                                    name="answer-${question.id}[]" value="${option.id}" 
+                                    ${isChecked ? 'checked' : ''}>
+                                <label for="option-${option.id}">${option.option}</label>
+                            </span>
+                        `;
+                    });
+                    questionHtml += `</div>`;
+                } else if (question.question_type === 'FreeText') {
+                    const answerText = userAnswers[question.id] ? userAnswers[question.id].answer_text : '';
+                    questionHtml += `
+                        <div class="ansCheck pb-3">
+                            <textarea class="form-control free-text-input" name="answer-text-${question.id}">${answerText}</textarea>
+                            <div class="wordcounter w-100">${answerText.length}/150</div>
+                        </div>
+                    `;
+                }
+
+                questionHtml += `</div>`;
+                questionContainer.html(questionHtml);
+
+                // Update word counter for FreeText questions
+                if (question.question_type === 'FreeText') {
+                    $(`textarea[name="answer-text-${question.id}"]`).on('input', function() {
+                        const length = $(this).val().length;
+                        $(this).siblings('.wordcounter').text(`${length}/150`);
+                    });
+                }
+
+                // Update navigation buttons
+                updateNavigationButtons();
+                updateProgressBar();
+            }
+
+            // Helper function to get question type label
+            function getQuestionTypeLabel(type) {
+                switch (type) {
+                    case 'SCQ':
+                        return 'Single Choice Question';
+                    case 'MCQ':
+                        return 'Multiple Choice Question';
+                    case 'T/F':
+                        return 'True/False Question';
+                    case 'FreeText':
+                        return 'Free Text';
+                    default:
+                        return 'Question';
+                }
+            }
+
+            // Function to check if current question has an answer
+            function hasAnswerForCurrentQuestion() {
+                const question = questions[currentQuestionIndex];
+
+                if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
+                    return $(`input[name="answer-${question.id}"]:checked`).length > 0;
+                } else if (question.question_type === 'MCQ') {
+                    return $(`input[name="answer-${question.id}[]"]:checked`).length > 0;
+                } else if (question.question_type === 'FreeText') {
+                    return $(`textarea[name="answer-text-${question.id}"]`).val().trim().length > 0;
+                }
+
+                return false;
+            }
+
+            // Function to save the current answer
+            function saveCurrentAnswer() {
+                const question = questions[currentQuestionIndex];
+                let answerData = {};
+
+                if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
+                    const selectedOption = $(`input[name="answer-${question.id}"]:checked`).val();
+                    if (selectedOption) {
+                        answerData = {
+                            question_id: question.id,
+                            answer_id: selectedOption,
+                            answer_text: null
+                        };
+                    }
+                } else if (question.question_type === 'MCQ') {
+                    const selectedOptions = [];
+                    $(`input[name="answer-${question.id}[]"]:checked`).each(function() {
+                        selectedOptions.push($(this).val());
+                    });
+
+                    if (selectedOptions.length > 0) {
+                        answerData = {
+                            question_id: question.id,
+                            answer_id: selectedOptions.join(','),
+                            answer_text: null
+                        };
+                    }
+                } else if (question.question_type === 'FreeText') {
+                    const answerText = $(`textarea[name="answer-text-${question.id}"]`).val();
+                    if (answerText) {
+                        answerData = {
+                            question_id: question.id,
+                            answer_id: null,
+                            answer_text: answerText
+                        };
+                    }
+                }
+
+                // Only save if there's an answer
+                if (Object.keys(answerData).length > 0) {
+                    userAnswers[question.id] = answerData;
+                    updateAnswerStatus();
+                    return true;
+                }
+
+                return false;
+            }
+
+            // Function to navigate to the next question
+            function goToNextQuestion() {
+                // First try to save the current answer
+                if (!saveCurrentAnswer()) {
+                    // If no answer was selected, show alert and prevent navigation
+                    alert('Please select an answer before proceeding.');
+                    return;
+                }
+
+                if (currentQuestionIndex < totalQuestions - 1) {
+                    currentQuestionIndex++;
+                    showQuestion(currentQuestionIndex);
+                }
+            }
+
+            // Function to navigate to the previous question
+            function goToPreviousQuestion() {
+                if (currentQuestionIndex > 0) {
+                    // Save current answer if any
+                    saveCurrentAnswer();
+                    currentQuestionIndex--;
+                    showQuestion(currentQuestionIndex);
+                }
+            }
+
+            // Function to update navigation buttons state
+            function updateNavigationButtons() {
+                $('#prev-btn').prop('disabled', currentQuestionIndex === 0);
+
+                if (currentQuestionIndex === totalQuestions - 1) {
+                    $('#next-btn').hide();
+                    $('#submit-btn').show();
+                } else {
+                    $('#next-btn').show();
+                    $('#submit-btn').hide();
+                }
+            }
+
+            // Function to update progress bar
+            function updateProgressBar() {
+                const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+                $('#test-progress').css('width', progress + '%').attr('aria-valuenow', progress);
+                $('#progress-percentage').text(Math.round(progress) + '%');
+            }
+
+            // Function to update answer status indicators
+            function updateAnswerStatus() {
+                const answeredCount = Object.keys(userAnswers).length;
+
+                // Update answered count in confirmation modal
+                $('#answered-count').text(answeredCount);
+            }
+
+            // Function to start the timer
+            function startTimer() {
+                const countdownElement = $('#countdown');
+                const timerImgElement = $('.timerImg');
+                let countdown = {{ $testDetails->time_of_test }} * 60;
+
+                // Update time remaining in confirmation modal
+                function updateTimeRemainingDisplay(seconds) {
+                    const minutes = Math.floor(seconds / 60);
+                    const remainingSeconds = seconds % 60;
+                    $('#time-remaining-display').text(
+                        `${minutes}m ${remainingSeconds}s`
+                    );
+                }
+
+                updateTimeRemainingDisplay(countdown);
+
+                countdownInterval = setInterval(function() {
+                    const minutes = Math.floor(countdown / 60);
+                    const seconds = countdown % 60;
+
+                    countdownElement.text(
+                        (minutes < 10 ? '0' + minutes : minutes) + 'm ' +
+                        (seconds < 10 ? '0' + seconds : seconds) + 's'
+                    );
+
+                    updateTimeRemainingDisplay(countdown);
+
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        submitTest(); // Auto-submit when time expires
+                    } else if (countdown <= 300) { // 5 minutes or less
+                        countdownElement.addClass('blinking');
+                        timerImgElement.addClass('redBorder');
+                    }
+
+                    countdown--;
+                }, 1000);
+            }
+
+            // Function to submit the test
+            function submitTest() {
+                // Save the current answer before submitting
+                if (!saveCurrentAnswer()) {
+                    if (!confirm('You have not answered the current question. Are you sure you want to submit?')) {
+                        return;
+                    }
+                }
+
+                // Clear the timer
+                clearInterval(countdownInterval);
+
+                // Submit all answers to the server
+                const userId = {{ Auth::user()->id }};
+                const testId = {{ $testDetails->id }};
+                const csrfToken = '{{ csrf_token() }}';
+
+                // Prepare all answers for submission
+                const answersToSubmit = Object.values(userAnswers);
+
+                // Submit each answer
+                let submittedCount = 0;
+
+                function submitNextAnswer() {
+                    if (submittedCount < answersToSubmit.length) {
+                        const answer = answersToSubmit[submittedCount];
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ URL('/submit-test-response') }}',
+                            data: {
+                                question_id: answer.question_id,
+                                answer_id: answer.answer_id,
+                                answer_text: answer.answer_text,
+                                user_id: userId,
+                                test_id: testId,
+                                _token: csrfToken
+                            },
+                            success: function(response) {
+                                submittedCount++;
+                                if (response.successRedirect) {
+                                    window.location.href = '{{ URL('/test-already-submitted') }}';
+                                    return;
+                                }
+                                submitNextAnswer();
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                console.error('Error submitting response:', errorThrown);
+                                // Continue with next answer even if one fails
+                                submittedCount++;
+                                submitNextAnswer();
+                            }
+                        });
+                    } else {
+                        // All answers submitted, redirect to results page
+                        window.location.href = '{{ route('user.test.result', $testDetails->id) }}';
+                    }
+                }
+
+                // Start the submission process
+                submitNextAnswer();
+            }
+
+            // Event handlers
+            $('#prev-btn').click(goToPreviousQuestion);
+            $('#next-btn').click(goToNextQuestion);
+            $('#submit-btn').click(function() {
+                $('#confirmSubmit').modal('show');
+            });
+            $('#final-submit-btn').click(submitTest);
+
+            // Initialize the test when instructions modal is hidden
+            $('#testInstructionsModal').on('hidden.bs.modal', function() {
+                if (testStarted) {
+                    initializeTest();
+                }
+            });
+        });
+    </script>
+@stop
