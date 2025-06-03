@@ -171,7 +171,7 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::get('export-tests', 'exportTests')->name('Test.export.tests');
             Route::get('import-tests-participants/{id}', 'importTestsParticipants')->name('import.importregularTestsParticipants');
 
-            Route::post('import-tests-participants/{id}', 'importTests')->name('Test.import.tests');
+            Route::post('import-tests-participants/{id}', 'importTests')->name('import.tests');
             Route::post('assign-manager', 'AssignManager')->name('Test.AssignManager');
             Route::post('assign-trainer', 'AssignTrainer')->name('Test.AssignTrainer');
             Route::post('import-tests-participants-user/{id}', 'importTestsUsersDirectly')->name('Test.import.tests.usersDirectly');

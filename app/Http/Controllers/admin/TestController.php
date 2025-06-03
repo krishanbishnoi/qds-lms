@@ -648,7 +648,7 @@ class TestController extends BaseController
         $errors = $import->getErrors();
 
         if (count($errors) > 0) {
-            return view('errors.importTraineeError')->with('errors', $errors);
+            return view('errors.importTrai`neeError')->with('errors', $errors);
         }
         return redirect()->back()->with('success', 'Tests Participants Added Successfully!');
     }

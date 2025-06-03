@@ -473,10 +473,13 @@ class TrainingController extends BaseController
     public function importTrainingParticipants($training_id = 0)
     {
         try {
+            $projects = QDS_PROJECT_LIST;
+            $methods = ['fromExcel' => 'From Excel',  'fromUser' => 'From Users'];
+            $users = User::pluck('fullname', 'id')->toArray();
 
-            return  View::make("admin.Training.uploadTrainingParticipants", compact('training_id'));
+            return  View::make("admin.Training.uploadTrainingParticipants", compact('training_id', 'projects', 'methods', 'users'));
         } catch (\Exception $e) {
-
+            dd($e);
             return redirect()->back()->with('error', 'somthing went wrong');;
         }
     } // end add()
