@@ -20,4 +20,10 @@ class TrainingParticipants extends Eloquent
 
 
 	protected $fillable = ['training_id', 'trainee_id'];
+
+
+	public function user()
+	{
+		return $this->belongsTo(User::class, 'trainee_id');
+	}
 }// end TrainingParticipants class

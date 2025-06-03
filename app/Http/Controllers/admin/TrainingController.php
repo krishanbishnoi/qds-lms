@@ -481,11 +481,14 @@ class TrainingController extends BaseController
         try {
             $projects = QDS_PROJECT_LIST;
             $methods = ['fromExcel' => 'From Excel',  'fromUser' => 'From Users'];
-            $existingUserIds = TrainingParticipants::where('training_id', $training_id)->pluck('trainee_id');
-            $users = User::whereNotIn('id', $existingUserIds)->where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'employee_id')
+            $existingUserIds = TrainingParticipants::with('user')
+                ->where('training_id', $training_id)
+                ->get()
+                ->pluck('user.employee_id')
                 ->toArray();
-
-            return  View::make("admin.Training.uploadTrainingParticipants", compact('training_id', 'projects', 'methods', 'users'));
+            $users = User::where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'employee_id')
+                ->toArray();
+            return  View::make("admin.Training.uploadTrainingParticipants", compact('training_id', 'projects', 'methods', 'users', 'existingUserIds'));
         } catch (\Exception $e) {
             dd($e);
             return redirect()->back()->with('error', 'somthing went wrong');;
