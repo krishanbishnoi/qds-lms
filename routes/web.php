@@ -82,8 +82,8 @@ Route::group(array('prefix' => 'admin'), function () {
 
         Route::controller(TraineesController::class)->group(function () {
             Route::match(['get', 'post'], 'users', 'index')->name('Trainees.index');
-            Route::get('users/add-new-user', 'add')->name('Trainees.add');
-            Route::post('users/add-new-user', 'save')->name('Trainees.save');
+            Route::get('users/add-user', 'add')->name('Trainees.add');
+            Route::post('users/add-user', 'save')->name('Trainees.save');
             Route::get('users/edit-user/{id}', 'edit')->name('Trainees.edit');
             Route::get('users/delete-user/{id}', 'delete')->name('Trainees.delete');
             Route::get('users/view-user/{id}', 'view')->name('Trainees.view');

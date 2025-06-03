@@ -27,79 +27,82 @@
             <div class="col-lg-12 ">
                 <div class="card">
                     <div class="card-body">
-                        <div class="p-4 row">
-                            <!-- Project Selection -->
-                            <div class="col-md-6 mb-3">
-                                {!! Form::label('project', 'Select Product', ['class' => 'block font-bold mb-1']) !!}
-                                {!! Form::select('project', $projects, null, [
-                                    'id' => 'projectSelect',
-                                    'class' => 'form-control',
-                                    'placeholder' => '-- Choose Project --',
-                                ]) !!}
-                            </div>
+                        <div class="form-group">
+                            <div class="p-4 row">
+                                <!-- Project Selection -->
+                                <div class="mb-3 col-6">
+                                    {!! Form::label('project', 'Select Product', ['class' => 'block font-bold mb-1']) !!}
+                                    {!! Form::select('project', $projects, null, [
+                                        'id' => 'projectSelect',
+                                        'class' => 'form-control',
+                                        'placeholder' => '-- Choose Project --',
+                                    ]) !!}
+                                </div>
 
-                            <!-- Project-dependent fields -->
-                            <div id="retailiq-section" class="col-md-6 mb-3" style="display: none;">
-                                {!! Form::label('client_id', 'Select Client', ['class' => 'block font-bold mb-1']) !!}
-                                {!! Form::select('client_id', [], null, [
-                                    'id' => 'client_idSelect',
-                                    'class' => 'form-control',
-                                    'placeholder' => '-- Choose Client --',
-                                ]) !!}
-                            </div>
+                                <!-- Project-dependent fields -->
+                                <div id="retailiq-section" class="mb-3 col-6" style="display: none;">
+                                    {!! Form::label('client_id', 'Select Client', ['class' => 'block font-bold mb-1']) !!}
+                                    {!! Form::select('client_id', [], null, [
+                                        'id' => 'client_idSelect',
+                                        'class' => 'form-control',
+                                        'placeholder' => '-- Choose Client --',
+                                    ]) !!}
+                                </div>
 
-                            <div id="method-section" class="col-md-6 mb-3" style="display: none;">
-                                {!! Form::label('method', 'Select Method', ['class' => 'block font-bold mb-1']) !!}
-                                {!! Form::select('method', $methods, null, [
-                                    'id' => 'methodSelect',
-                                    'class' => 'form-control',
-                                    'placeholder' => '-- Choose Method --',
-                                ]) !!}
-                            </div>
+                                <div id="method-section" class="mb-3 col-6" style="display: none;">
+                                    {!! Form::label('method', 'Select Method', ['class' => 'block font-bold mb-1']) !!}
+                                    {!! Form::select('method', $methods, null, [
+                                        'id' => 'methodSelect',
+                                        'class' => 'form-control',
+                                        'placeholder' => '-- Choose Method --',
+                                    ]) !!}
+                                </div>
 
-                            <!-- Excel Upload -->
-                            <div id="excel-upload-section" class="box search-panel collapsed-box" style="display: none;">
-                                <div class="box-body mb-4 mt-3">
-                                    <form action="{{ route('import.training-participants', $training_id) }}" method="POST"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="d-flex flex-wrap align-items-center">
-                                            <!-- Download Sample File Button -->
-                                            <a href="{{ asset('sample-files/import-training-participants-sample.xlsx') }}"
-                                                class="btn btn-primary">
-                                                Download Sample File
-                                            </a>
+                                <!-- Excel Upload -->
+                                <div id="excel-upload-section" class="box search-panel collapsed-box"
+                                    style="display: none;">
+                                    <div class="box-body mb-4">
+                                        <form action="{{ route('import.training-participants', $training_id) }}"
+                                            method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="d-flex flex-wrap align-items-center">
+                                                <!-- Download Sample File Button -->
+                                                <a href="{{ asset('sample-files/import-training-participants-sample.xlsx') }}"
+                                                    class="btn btn-primary">
+                                                    Download Sample File
+                                                </a>
 
-                                            <!-- File Input and Upload Button aligned to the end -->
-                                            <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
-                                                <div class="col-md-5">
-                                                    <input type="file" name="file" class="form-control" required>
-                                                </div>
-                                                <div>
-                                                    <button class="btn btn-success" type="submit">Upload Users</button>
+                                                <!-- File Input and Upload Button aligned to the end -->
+                                                <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
+                                                    <div class="col-md-5">
+                                                        <input type="file" name="file" class="form-control" required>
+                                                    </div>
+                                                    <div>
+                                                        <button class="btn btn-success" type="submit">Upload Users</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+
+
+                                <!-- Placeholder for 'fromUser' future UI -->
+                                <div id="user-selection-section" class="" style="display: none;">
+                                    <form action="{{ route('Training.assgin-training-participants', $training_id) }}"
+                                        method="POST">
+                                        @csrf
+                                        {!! Form::hidden('training_id', $training_id) !!}
+                                        {!! Form::label('empIds', 'Select Users', ['class' => 'block font-bold mb-1']) !!}
+                                        {!! Form::select('empIds[]', $users, $existingUserIds, [
+                                            'class' => 'form-control select2-form',
+                                            'multiple' => 'multiple',
+                                            'id' => 'select2-users',
+                                        ]) !!}
+                                        <button class="btn btn-primary mt-3" type="submit">Upload Users</button>
                                     </form>
                                 </div>
-                            </div>
-
-
-
-                            <!-- Placeholder for 'fromUser' future UI -->
-                            <div id="user-selection-section" class="col-md-6 mt-4" style="display: none;">
-                                <form action="{{ route('Training.assgin-training-participants', $training_id) }}"
-                                    method="POST">
-                                    @csrf
-                                    {!! Form::hidden('training_id', $training_id) !!}
-                                    {!! Form::label('empIds', 'Select Users', ['class' => 'block font-bold mb-1']) !!}
-                                    {!! Form::select('empIds[]', $users, $existingUserIds, [
-                                        'class' => 'form-control select2-form',
-                                        'multiple' => 'multiple',
-                                        'id' => 'select2-users',
-                                    ]) !!}
-                                    <button class="btn btn-primary mt-3" type="submit">Upload Users</button>
-                                </form>
                             </div>
                         </div>
                     </div>

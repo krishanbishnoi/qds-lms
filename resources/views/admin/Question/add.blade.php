@@ -43,12 +43,16 @@
                         @endif
 
                         <div class="mws-panel-body no-padding tab-content row">
-                            @livewire('test-question-form', ['testId' => $test_id, 'questionId' => $model->id ?? null])
-
-                            <div class="col-md-12 mt-3">
+                            <div class="form-group">
+                                @livewire('test-question-form', ['testId' => $test_id, 'questionId' => $model->id ?? null])
+                            </div>
+                            <div class="col-md-12
+                                mt-3">
                                 <div class="form-group <?php echo $errors->first('body') ? 'has-error' : ''; ?>">
                                     {!! Html::decode(
-                                        Form::label('description', 'Hint or Any Other Description' . '<span class="requireRed"> * </span>', ['class' => 'mws-form-label']),
+                                        Form::label('description', 'Hint or Any Other Description' . '<span class="requireRed"> * </span>', [
+                                            'class' => 'mws-form-label',
+                                        ]),
                                     ) !!}
                                     <div class="mws-form-item">
                                         {{ Form::textarea('description', $model->description ?? null, ['class' => 'form-control', 'id' => 'body']) }}

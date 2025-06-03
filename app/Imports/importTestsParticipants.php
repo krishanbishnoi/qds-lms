@@ -57,27 +57,27 @@ class importTestsParticipants extends BaseController implements ToModel, WithHea
                     'type'     => 2,
                 ]);
 
-                // Send mail to trainees creater for credetials of new created trainee ( Krishan )
-                $settingsEmail             =    Config::get('Site.email');
-                $full_name                 =     $testAttendee->email;
-                $authEmail                 =     $trimEmail;
-                // $employeeId                =     $user->olms_id;
-                $employeeId                =     $trimEmail;
-                $linkId = $testAttendee->link_id;
-                $encryptedLinkId = Crypt::encrypt($linkId);
-                $route_url                 =     URL::to('test-details/' . $test_id . '/' . $encryptedLinkId);
-                $click_link                =     $route_url;
-                $emailActions              =     EmailAction::where('action', '=', 'product_status')->get()->toArray();
-                $emailTemplates            =     EmailTemplate::where('action', '=', 'product_status')->get(array('name', 'subject', 'action', 'body'))->toArray();
-                $cons                      =     explode(',', $emailActions[0]['options']);
-                $constants                 =     array();
-                foreach ($cons as $key => $val) {
-                    $constants[]           =     '{' . $val . '}';
-                }
-                $subject                   =     $emailTemplates[0]['subject'];
-                $rep_Array                 =     array($full_name, $employeeId, $employeeId, $click_link);
-                $messageBody               =     str_replace($constants, $rep_Array, $emailTemplates[0]['body']);
-                $mail                      =     $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
+                // // Send mail to trainees creater for credetials of new created trainee ( Krishan )
+                // $settingsEmail             =    Config::get('Site.email');
+                // $full_name                 =     $testAttendee->email;
+                // $authEmail                 =     $trimEmail;
+                // // $employeeId                =     $user->olms_id;
+                // $employeeId                =     $trimEmail;
+                // $linkId = $testAttendee->link_id;
+                // $encryptedLinkId = Crypt::encrypt($linkId);
+                // $route_url                 =     URL::to('test-details/' . $test_id . '/' . $encryptedLinkId);
+                // $click_link                =     $route_url;
+                // $emailActions              =     EmailAction::where('action', '=', 'product_status')->get()->toArray();
+                // $emailTemplates            =     EmailTemplate::where('action', '=', 'product_status')->get(array('name', 'subject', 'action', 'body'))->toArray();
+                // $cons                      =     explode(',', $emailActions[0]['options']);
+                // $constants                 =     array();
+                // foreach ($cons as $key => $val) {
+                //     $constants[]           =     '{' . $val . '}';
+                // }
+                // $subject                   =     $emailTemplates[0]['subject'];
+                // $rep_Array                 =     array($full_name, $employeeId, $employeeId, $click_link);
+                // $messageBody               =     str_replace($constants, $rep_Array, $emailTemplates[0]['body']);
+                // $mail                      =     $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
 
                 // return $testAttendee;
             } else {

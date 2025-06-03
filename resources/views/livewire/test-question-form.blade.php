@@ -1,7 +1,7 @@
 <div>
     <div class="row">
         <div class="col-md-12">
-            {{ Form::label('question', 'Question *') }}
+            {{ Form::label('question', 'Question *', ['class' => 'mws-form-label']) }}
             {{ Form::text('question', $question, [
                 'class' => 'form-control',
                 'wire:model' => 'question',
@@ -12,7 +12,7 @@
         </div>
 
         <div class="col-md-6 mt-3">
-            {{ Form::label('question_type', 'Question Type *') }}
+            {{ Form::label('question_type', 'Question Type *', ['class' => 'mws-form-label']) }}
             {{ Form::select('question_type', $questionTypes, $question_type, [
                 'class' => 'form-control',
                 'wire:model.live' => 'question_type',
@@ -25,7 +25,7 @@
         </div>
 
         <div class="col-md-6 mt-3">
-            {{ Form::label('marks', 'Marks *') }}
+            {{ Form::label('marks', 'Marks *', ['class' => 'mws-form-label']) }}
             {{ Form::text('marks', $marks, [
                 'class' => 'form-control',
                 'wire:model' => 'marks',
@@ -37,7 +37,7 @@
 
         @if (in_array($question_type, ['MCQ', 'SCQ', 'T/F']))
             <div class="col-md-12 mt-3">
-                {{ Form::label(null, 'Options', ['class' => 'form-label']) }}
+                {{ Form::label(null, 'Options', ['class' => 'mws-form-label']) }}
 
                 <div class="row g-2">
                     @foreach ($options as $index => $option)
