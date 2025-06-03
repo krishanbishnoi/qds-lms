@@ -6,9 +6,18 @@
 
 
     <script src="https://cdn.ckeditor.com/4.15.0/standard-all/ckeditor.js"></script>
+
+    @php
+        $flag = 0;
+        $heading = 'Add';
+        if (isset($model) && !empty($model)) {
+            $flag = 1;
+            $heading = 'Update';
+        }
+    @endphp
     <div class="content-wrapper">
         <div class="page-header">
-            <h2 class="page-title">Add New {{ $sectionNameSingular }}</h2>
+            <h2 class="page-title">{{ $heading }} New {{ $sectionNameSingular }}</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i>Dashboard</a>
@@ -17,7 +26,7 @@
                     <li class="breadcrumb-item"><a
                             href="{{ route($modelName . '.index', $test_id) }}">{{ $sectionName }}</a>
                     </li>
-                    <li class="breadcrumb-item active">Add New {{ $sectionNameSingular }}</li>
+                    <li class="breadcrumb-item active">{{ $heading }} New {{ $sectionNameSingular }}</li>
                 </ol>
             </nav>
         </div>
@@ -25,185 +34,71 @@
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        {{ Form::open(['role' => 'form', 'url' => route("$modelName.add", $test_id), 'class' => 'mws-form', 'files' => true, 'autocomplete' => 'off']) }}
 
-                        <div class="mws-panel-body no-padding tab-content">
+                        @if ($flag == 1)
+                            {{ Form::model($model, ['url' => route("$modelName.save", $test_id), 'id' => 'edit-plan-form', 'class' => 'row g-3', 'files' => true, 'autocomplete' => 'off']) }}
+                            {{ Form::hidden('id', $model->id ?? null) }}
+                        @else
+                            {{ Form::open(['url' => route("$modelName.save", $test_id), 'id' => 'add-plan-form', 'class' => 'row g-3', 'files' => true, 'autocomplete' => 'off']) }}
+                        @endif
 
+                        <div class="mws-panel-body no-padding tab-content row">
+                            @livewire('test-question-form', ['testId' => $test_id, 'questionId' => $model->id ?? null])
 
-                            <div class="form-group <?php echo $errors->first('question') ? 'has-error' : ''; ?>">
-                                <div class="mws-form-row">
+                            <div class="col-md-12 mt-3">
+                                <div class="form-group <?php echo $errors->first('body') ? 'has-error' : ''; ?>">
                                     {!! Html::decode(
-                                        Form::label(
-                                            'question',
-                                            trans('Question') .
-                                                '<span class="requireRed"> *
-                                                                                                        </span>',
-                                            ['class' => 'mws-form-label'],
-                                        ),
+                                        Form::label('description', 'Hint or Any Other Description' . '<span class="requireRed"> * </span>', ['class' => 'mws-form-label']),
                                     ) !!}
                                     <div class="mws-form-item">
-                                        {{ Form::text('question', '', ['class' => 'form-control small', 'id' => 'question']) }}
-                                        <div class="error-message help-inline">
-                                            <?php echo $errors->first('question'); ?>
-                                        </div>
+                                        {{ Form::textarea('description', $model->description ?? null, ['class' => 'form-control', 'id' => 'body']) }}
+                                        <span class="error-message help-inline">
+                                            <?php echo $errors->first('body'); ?>
+                                        </span>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-group <?php echo $errors->first('question_type') ? 'has-error' : ''; ?>">
-                                <div class="mws-form-row">
-                                    {!! Html::decode(
-                                        Form::label(
-                                            'question_type',
-                                            trans('Question Type') .
-                                                '<span
-                                                                                                            class="requireRed"> * </span>',
-                                            ['class' => 'mws-form-label'],
-                                        ),
-                                    ) !!}
-                                    <div class="mws-form-item">
-                                        {{ Form::select('question_type', question_type, '', ['class' => 'form-control small', 'id' => 'question_type', 'placeholder' => 'Please Select Question Type']) }}
-                                        <div class="error-message help-inline">
-                                            <?php echo $errors->first('question_type'); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php
-                            $question_type = !empty(Request::old('question_type')) ? Request::old('question_type') : '';
-                            ?>
-                            <!-- <div id="row_dim" class="question_type"> -->
-                            <div class=" project_detailSection">
-                                <div class="projectDetailsInnerSection ace_left_sec">
-                                    <table>
-                                        <tr>
-                                            <td width="700px">
-                                                <div class="form-group <?php echo $errors->first('option') ? 'has-error' : ''; ?>">
-                                                    {!! Html::decode(
-                                                        Form::label(
-                                                            'option',
-                                                            trans('Options') .
-                                                                '<span
-                                                                                                                                                                class="requireRed"> </span>',
-                                                            ['class' => 'mws-form-label'],
-                                                        ),
-                                                    ) !!}
-                                                    <div class="mws-form-item">
-                                                        {{ Form::text('data[1][option]', '', ['class' => 'form-control option']) }}
-                                                        <div class="error-message help-inline">
-                                                            <?php echo $errors->first('option'); ?>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td width="700px">
-                                                <div class="form-group <?php echo $errors->first('right_answer') ? 'has-error' : ''; ?>">
-                                                    {!! Html::decode(
-                                                        Form::label(
-                                                            'right_answer',
-                                                            trans('Right Answer') .
-                                                                '<span
-                                                                                                                                                                class="requireRed"> </span>',
-                                                            ['class' => 'mws-form-label'],
-                                                        ),
-                                                    ) !!}
-                                                    <div class="mws-form-item">
-
-                                                        {{ Form::checkbox('data[1][right_answer]', '1', false, ['class' => 'form-check-input ']) }}
-
-                                                        <div class="error-message help-inline">
-                                                            <?php echo $errors->first('right_answer'); ?>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-
-                                            <td style="padding-top: 23px;" width="10px">
-                                                <div class="form-group">
-                                                    <input type="hidden" name="count" value="1" id="add_more_count">
-                                                    <a href="javascript:void(0);" id="addMore"
-                                                        class="btn btn-primary add_new_btn add_more_new_supp"
-                                                        value="Add More">Add More</a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                            <!-- </div> -->
-                            <div class="form-group <?php echo $errors->first('marks') ? 'has-error' : ''; ?>">
-                                <div class="mws-form-row">
-                                    {!! Html::decode(
-                                        Form::label(
-                                            'marks',
-                                            trans('Marks') .
-                                                '<span class="requireRed"> *
-                                                                                                        </span>',
-                                            ['class' => 'mws-form-label'],
-                                        ),
-                                    ) !!}
-                                    <div class="mws-form-item">
-                                        {{ Form::text('marks', '', ['class' => 'form-control small', 'id' => 'marks', 'maxlength' => '10', 'oninput' => "this.value=this.value.replace(/[^0-9]/g,'');"]) }}
-                                        <div class="error-message help-inline">
-                                            <?php echo $errors->first('marks'); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- <div class="form-group <?php echo $errors->first('time_limit') ? 'has-error' : ''; ?>">
-                                    <div class="mws-form-row">
-                                        {!! Html::decode(
-                                            Form::label(
-                                                'time_limit',
-                                                trans('Time Limit') .
-                                                    '<span
-                                                                                                                class="requireRed"> * </span>',
-                                                ['class' => 'mws-form-label'],
-                                            ),
-                                        ) !!}
-                                        <div class="mws-form-item">
-                                            {{ Form::text('time_limit', '', ['class' => 'form-control small', 'id' => 'time_limit']) }}
-                                            <div class="error-message help-inline">
-                                                <?php echo $errors->first('time_limit'); ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-                            <div class="form-group <?php echo $errors->first('description') ? 'has-error' : ''; ?>">
-                                {!! Html::decode(
-                                    Form::label(
-                                        'description',
-                                        trans('Description') .
-                                            '<span class="requireRed">
-                                                                                                * </span>',
-                                        ['class' => 'mws-form-label'],
-                                    ),
-                                ) !!}
-                                <div class="mws-form-item">
-                                    {{ Form::textarea('description', '', ['class' => 'form-control textarea_resize', 'id' => 'description', 'rows' => 3, 'cols' => 3]) }}
-                                    <span class="error-message descriptionTypeError help-inline">
-                                        <?php echo $errors->first('description') ? $errors->first('description') : ''; ?>
-                                    </span>
-                                </div>
-                                <script>
-                                    var description =
-                                        CKEDITOR.replace('description', {
+                                    @error('description')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                    <script>
+                                        var body = CKEDITOR.replace('body', {
                                             extraAllowedContent: 'div',
                                             height: 300
                                         });
-                                </script>
+                                        body.on('instanceReady', function() {
+                                            this.dataProcessor.writer.selfClosingEnd = '>';
+
+                                            var dtd = CKEDITOR.dtd;
+                                            for (var e in CKEDITOR.tools.extend({}, dtd.$nonBodyContent, dtd.$block, dtd.$listItem, dtd
+                                                    .$tableContent)) {
+                                                this.dataProcessor.writer.setRules(e, {
+                                                    indent: true,
+                                                    breakBeforeOpen: true,
+                                                    breakAfterOpen: true,
+                                                    breakBeforeClose: true,
+                                                    breakAfterClose: true,
+                                                    filebrowserUploadUrl: '<?php echo URL::to('/admin/base/uploder'); ?>',
+                                                    filebrowserImageWindowWidth: '640',
+                                                    filebrowserImageWindowHeight: '480',
+                                                });
+                                            }
+                                        });
+                                    </script>
+                                </div>
                             </div>
-                            <div class="mws-button-row">
-                                <input type="submit" value="{{ trans('Save') }}" class="btn btn-danger">
-                                <a href="{{ route($modelName . '.add', $test_id) }}" class="btn btn-primary reset_form"><i
-                                        class=\"icon-refresh\"></i> {{ trans('Clear') }}</a>
-                                <a href="{{ route($modelName . '.index', $test_id) }}" class="btn btn-info"><i
-                                        class=\"icon-refresh\"></i> {{ trans('Cancel') }}</a>
-                            </div>
+                        </div>
+
+                        <div class="mws-button-row text-end mt-3">
+                            <input type="submit" value="{{ trans('Save') }}" class="btn btn-danger">
+                            <a href="{{ route($modelName . '.add', $test_id) }}" class="btn btn-primary reset_form"><i
+                                    class="icon-refresh"></i> {{ trans('Clear') }}</a>
+                            <a href="{{ route($modelName . '.index', $test_id) }}" class="btn btn-info"><i
+                                    class="icon-refresh"></i> {{ trans('Cancel') }}</a>
                         </div>
 
                         {{ Form::close() }}
                     </div>
                 </div>
+
             </div>
             <div>
                 <div>

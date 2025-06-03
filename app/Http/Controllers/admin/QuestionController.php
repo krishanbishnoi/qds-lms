@@ -9,14 +9,9 @@ use App\Models\Test;
 use App\Imports\importQuestions;
 use Maatwebsite\Excel\Facades\Excel;
 
-use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Input, Mail, Redirect, Request, Response, Session, URL, View, Validator;
+use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Input, Mail, Redirect, Response, Session, URL, View, Validator;
+use Illuminate\Http\Request;
 
-/**
- * QuestionController Controller
- *
- * Add your methods in the class below
- *
- */
 class QuestionController extends BaseController
 {
 
@@ -32,14 +27,8 @@ class QuestionController extends BaseController
         View::share('sectionNameSingular', $this->sectionNameSingular);
     }
 
-    /**
-     * Function for display all course modules
-     *
-     * @param null
-     *
-     * @return view page.
-     */
-    public function index($test_id = 0)
+
+    public function index(Request $request, $test_id = 0)
     {
         // $model				=	Question::find($test_id);
         // if(empty($model)) {
@@ -48,9 +37,9 @@ class QuestionController extends BaseController
 
         $DB                    =    Question::query();
         $searchVariable        =    array();
-        $inputGet            =    Request::all();
-        if ((Request::all())) {
-            $searchData            =    Request::all();
+        $inputGet            =    $request->all();
+        if (($request->all())) {
+            $searchData            =    $request->all();
             unset($searchData['display']);
             unset($searchData['_token']);
 
@@ -76,25 +65,17 @@ class QuestionController extends BaseController
             }
         }
         $DB->where("questions.test_id", $test_id)->where("questions.is_deleted", 0);
-        $sortBy = (Request::get('sortBy')) ? Request::get('sortBy') : 'created_at';
-        $order  = (Request::get('order')) ? Request::get('order')   : 'DESC';
+        $sortBy = ($request->get('sortBy')) ? $request->get('sortBy') : 'created_at';
+        $order  = ($request->get('order')) ? $request->get('order')   : 'DESC';
         $results = $DB->orderBy($sortBy, $order)->paginate(Config::get("Reading.records_per_page"));
-        $complete_string        =    Request::query();
+        $complete_string        =    $request->query();
         unset($complete_string["sortBy"]);
         unset($complete_string["order"]);
         $query_string            =    http_build_query($complete_string);
-        $results->appends(Request::all())->render();
-        return  View::make("admin.$this->model.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string', 'test_id'));
-    } // end index()
+        $results->appends($request->all())->render();
+        return view("admin.Question.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string', 'test_id'));
+    }
 
-
-    /**
-     * Function for add new course Question
-     *
-     * @param null
-     *
-     * @return view page.
-     */
     public function add($test_id)
     {
         $model                =    Test::find($test_id);
@@ -102,98 +83,88 @@ class QuestionController extends BaseController
             return Redirect::route("Test.index");
         }
 
+        return view("admin.Question.add", compact("test_id"));
+    }
 
-        return  View::make("admin.$this->model.add", compact("test_id"));
-    } // end add()
-
-    /**
-     * Function for save new Area
-     *
-     * @param null
-     *
-     * @return redirect page.
-     */
-    function save($test_id)
+    function save(Request $request, $test_id)
     {
-        $model                =    Test::find($test_id);
-        if (empty($model)) {
+        $test = Test::find($test_id);
+        if (empty($test)) {
             return Redirect::route("Test.index");
         }
 
-        Request::replace($this->arrayStripTags(Request::all()));
-        $thisData                    =    Request::all();
-        //  echo '<pre>'; print_r($thisData); die;
+        $request->replace($this->arrayStripTags($request->all()));
+        $data = $request->all();
 
-        $validator = Validator::make(
-            $thisData,
-            array(
-                'question'             => 'required',
-                'question_type'             => 'required',
-                'count'             => 'required',
-                'marks'             => 'required',
-                // 'time_limit' 			=> 'required',
-                //'description' 			=> 'required',
-
-            )
-        );
+        $validator = Validator::make($data, [
+            'question' => 'required',
+            'question_type' => 'required',
+            // 'count' => 'required',
+            'marks' => 'required',
+            // 'time_limit' => 'required',  // Uncomment if needed
+            //'description' => 'required', // Uncomment if needed
+        ]);
 
         if ($validator->fails()) {
-            return Redirect::back()
-                ->withErrors($validator)->withInput();
-        } else {
-            $obj = new Question;
-            $obj->test_id             = $test_id;
-            $obj->question             = Request::get('question');
-            $obj->question_type      = Request::get('question_type');
-            $obj->count               = Request::get('count');
-            $obj->marks               = Request::get('marks');
-            // $obj->time_limit	   	= Request::get('time_limit');
-            $obj->description       = Request::get('description');
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
+
+        try {
+            $question = Question::updateOrCreate(
+                ['id' => $request->id],  // condition for update
+                [
+                    'test_id' => $test_id,
+                    'question' => $request->question,
+                    'question_type' => $request->question_type,
+                    'count' => $request->count,
+                    'marks' => $request->marks,
+                    // 'time_limit' => $request->time_limit, // Uncomment if needed
+                    'description' => $request->description,
+                ]
+            );
 
 
-            $obj->save();
-            $question_id                    =    $obj->id;
-
-            if ($question_id) {
-                if (isset($thisData['data']) && !empty($thisData['data'])) {
-                    if (isset($thisData['data']) && !empty($thisData['data'])) {
-                        foreach ($thisData['data'] as $option) {
-                            if (isset($option['option']) && !empty($option['option'])) {
-                                $obj = new QuestionAttribute;
-                                $obj->question_id = $question_id;
-                                $optionValue = $option["option"];
-                                $obj->option = $optionValue;
-
-                                $isCorrect = isset($option['right_answer']) && !empty($option['right_answer']) && $option['right_answer'] == 1 ? 1 : 0;
-                                $obj->is_correct = $isCorrect;
-
-                                $obj->save();
-                            }
+            if (!empty($data['data'])) {
+                // Handle MCQ checkboxes and SCQ/T-F radios differently
+                QuestionAttribute::where('question_id', $question->id)->delete();
+                if (in_array($request->question_type, ['SCQ', 'T/F'])) {
+                    $selectedIndex = $request->input('data_right_answer');
+                    foreach ($data['data'] as $index => $option) {
+                        if (!empty($option['option'])) {
+                            QuestionAttribute::create([
+                                'question_id' => $question->id,
+                                'option' => $option['option'],
+                                'is_correct' => ($selectedIndex == $index) ? 1 : 0,
+                            ]);
+                        }
+                    }
+                } else {
+                    // For MCQ checkboxes
+                    foreach ($data['data'] as $option) {
+                        if (!empty($option['option'])) {
+                            QuestionAttribute::create([
+                                'question_id' => $question->id,
+                                'option' => $option['option'],
+                                'is_correct' => (isset($option['right_answer']) && $option['right_answer']) ? 1 : 0,
+                            ]);
                         }
                     }
                 }
             }
-            if (!$obj->save()) {
-
-                Session::flash('error', trans("Something went wrong."));
-                return Redirect::route($this->model . ".index", $test_id);
+            if (!$question) {
+                Session::flash('error', __(config('constants.REC_ADD_FAILED')));
             } else {
-                Session::flash('success', trans($this->sectionNameSingular . " has been added successfully"));
-                return Redirect::route($this->model . ".index", $test_id);
+                $message = $request->id ? __(config('constants.REC_UPDATE_SUCCESS'), ['section' => $this->sectionNameSingular])
+                    : __(config('constants.REC_ADD_SUCCESS'), ['section' => $this->sectionNameSingular]);
+                Session::flash('success', $message);
             }
+            return Redirect::route($this->model . ".index", $test_id);
+        } catch (\Exception $e) {
+            Session::flash('error', __(config('constants.FLASH_TRY_CATCH')));
+            return Redirect::route($this->model . ".index", $test_id);
         }
-    } //end save()
+    }
 
-
-
-    /**
-     * Function for update status
-     *
-     * @param $modelId as id of area
-     * @param $status as status of area
-     *
-     * @return redirect page.
-     */
     public function changeStatus($modelId = 0, $status = 0)
     {
         if ($status == 0) {
@@ -205,15 +176,8 @@ class QuestionController extends BaseController
         Test::where('id', $modelId)->update(array('is_active' => $status));
         Session::flash('flash_notice', $statusMessage);
         return Redirect::back();
-    } // end changeStatus()
+    }
 
-    /**
-     * Function for display page for edit area
-     *
-     * @param $modelId id  of area
-     *
-     * @return view page.
-     */
     public function edit($test_id, $modelId)
     {
         $test_id                =    Test::find($test_id);
@@ -229,17 +193,10 @@ class QuestionController extends BaseController
 
         $attribute =  DB::table('question_attributes')->where('question_id', $modelId)->get();
 
-        return  View::make("admin.$this->model.edit", compact('model', 'test_id', 'attribute'));
+        return view("admin.Question.add", compact('model', 'test_id', 'attribute'));
     } // end edit()
 
 
-    /**
-     * Function for display page for edit area
-     *
-     * @param $modelId id  of area
-     *
-     * @return view page.
-     */
     public function view($test_id, $modelId)
     {
         $test_id                =    Test::find($test_id);
@@ -256,103 +213,8 @@ class QuestionController extends BaseController
         $attribute =  DB::table('question_attributes')->where('question_id', $modelId)->get();
 
         return  View::make("admin.$this->model.view", compact('model', 'test_id', 'attribute'));
-    } // end edit()
+    }
 
-    /**
-     * Function for update area
-     *
-     * @param $modelId as id of area
-     *
-     * @return redirect page.
-     */
-    function update($test_id, $modelId)
-    {
-
-        $test_id                =    Test::find($test_id);
-        if (empty($test_id)) {
-            return Redirect::route("Test.index");
-        }
-
-        $model                    =    Question::findorFail($modelId);
-        if (empty($model)) {
-            return Redirect::back();
-        }
-
-
-        Request::replace($this->arrayStripTags(Request::all()));
-        $thisData                    =    Request::all();
-        // dd($thisData) 
-        $validator = Validator::make(
-            $thisData,
-            array(
-                'question'             => 'required',
-                'question_type'             => 'required',
-                'count'             => 'required',
-                'marks'             => 'required',
-                // 'time_limit' 			=> 'required',
-                //'description' 			=> 'required',
-            )
-        );
-
-        if ($validator->fails()) {
-            return Redirect::back()
-                ->withErrors($validator)->withInput();
-        } else {
-
-            $obj = $model;
-            // $obj->test_id 		=  $test_id;
-            $obj->question             = Request::get('question');
-            $obj->question_type      = Request::get('question_type');
-            $obj->count               = Request::get('count');
-            $obj->marks               = Request::get('marks');
-            // $obj->time_limit	   	= Request::get('time_limit');
-            $obj->description       = Request::get('description');
-
-            $obj->save();
-            $question_id                    =    $obj->id;
-
-            if ($question_id) {
-                if (isset($thisData['data']) && !empty($thisData['data'])) {
-                    QuestionAttribute::where('question_id', $question_id)->delete();
-                    foreach ($thisData['data'] as $option) {
-                        if (isset($option['option']) && !empty($option['option'])) {
-                            $obj = new QuestionAttribute;
-                            $obj->question_id = $question_id;
-                            $optionValue = $option["option"];
-                            $obj->option = $optionValue;
-
-                            $isCorrect = isset($option['right_answer']) && !empty($option['right_answer']) && $option['right_answer'] == 1 ? 1 : 0;
-                            $obj->is_correct = $isCorrect;
-
-                            $obj->save();
-                        }
-                    }
-                }
-            }
-            if (!$obj->save()) {
-
-                Session::flash('error', trans("Something went wrong."));
-                return Redirect::route($this->model . ".index", $test_id);
-            } else {
-
-
-                Session::flash('success', trans($this->sectionNameSingular . " has been Updated successfully"));
-                return Redirect::route($this->model . ".index", $test_id);
-            }
-        }
-    } // end update()
-
-
-
-
-
-    /**
-     * Function for mark a couse as deleted
-     *
-     * @param $userId as id of couse
-     *
-     * @return redirect page.
-     */
     function delete($modelId)
     {
 
@@ -367,14 +229,13 @@ class QuestionController extends BaseController
             Session::flash('flash_notice', trans($this->sectionNameSingular . " has been removed successfully"));
         }
         return Redirect::back();
-    } // end delete()
-
+    }
 
     public function addMoreOption()
     {
         $offset = $_POST['offset'];
         return  View::make("admin.$this->model.addMoreDetails", compact('offset', 'offset'));
-    } // end updateProjectStatus()
+    }
 
     public function deleteMoreOption()
     {
@@ -387,7 +248,8 @@ class QuestionController extends BaseController
         }
         echo $output;
         die;
-    } // end updateProjectStatus()
+    }
+
     public function downloadQuestionSample()
     {
         $filePath = public_path('sample-files/question-upload-format.xlsx');
@@ -412,4 +274,4 @@ class QuestionController extends BaseController
 
         return redirect()->back()->with('success', 'Questions imported successfully!');
     }
-}	// end QuestionController
+}
