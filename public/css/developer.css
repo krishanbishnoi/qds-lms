@@ -1,10 +1,19 @@
-.btn {
-	height: 46px;
+.form-control {
+	height: 36px !important;
+	border-radius: 4px;
 }
 
 select.form-control {
-	height: 46px;
+	height: 36px;
 	appearance: revert;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+	height: 36px !important;
+	border-radius: 4px !important;
+	padding: .4375rem .75rem !important;
+	border: 0 !important;
+	outline: 1px solid #B9B9B9 !important;
 }
 
 .mr-2 {
@@ -14,8 +23,13 @@ select.form-control {
 .custom_pagination {
 	border-radius: 0.25rem;
 }
+
 .cke_notification {
 	display: none !important;
+}
+
+form {
+	margin-top: 20px !important;
 }
 
 .custom_pagination li.active a,
@@ -58,6 +72,20 @@ table tr th a,
 	color: #004183 !important;
 	text-decoration: none;
 	font-weight: 500;
+}
+
+/* For input placeholders */
+input::placeholder {
+	color: #a3a3a3 !important;
+	opacity: 1 !important;
+}
+
+select:invalid {
+	color: #a3a3a3 !important;
+}
+
+select option[disabled] {
+	color: #a3a3a3 !important;
 }
 
 td.action-td a {

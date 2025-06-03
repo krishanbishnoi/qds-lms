@@ -5002,7 +5002,7 @@ progress {
 .col-form-label-sm {
     padding-top: calc(0.5rem + 1px);
     padding-bottom: calc(0.5rem + 1px);
-    font-size: 0.875rem;
+    font-size: 0.800rem;
 }
 
 .form-text {
@@ -5018,6 +5018,7 @@ progress {
     font-size: 0.8125rem;
     font-weight: 400;
     line-height: 1;
+    outline: 1px solid #B9B9B9;
     color: #212529;
     background-color: color(white);
     background-clip: padding-box;
@@ -5172,7 +5173,7 @@ progress {
 .form-control-sm {
     min-height: 2.575rem;
     padding: 0.5rem 0.81rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     border-radius: 0.2rem;
 }
 
@@ -5301,7 +5302,7 @@ textarea.form-control-lg {
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
     padding-left: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     border-radius: 0.2rem;
 }
 
@@ -5727,7 +5728,7 @@ textarea.form-control-lg {
 .input-group-sm>.input-group-text,
 .input-group-sm>.btn {
     padding: 0.5rem 0.81rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     border-radius: 0.2rem;
 }
 
@@ -5770,7 +5771,7 @@ textarea.form-control-lg {
     max-width: 100%;
     padding: 0.25rem 0.5rem;
     margin-top: .1rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     color: #fff;
     background-color: rgba(25, 135, 84, 0.9);
     border-radius: 0.25rem;
@@ -5883,7 +5884,7 @@ textarea.form-control.is-valid {
     max-width: 100%;
     padding: 0.25rem 0.5rem;
     margin-top: .1rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     color: #fff;
     background-color: rgba(220, 53, 69, 0.9);
     border-radius: 0.25rem;
@@ -5983,7 +5984,6 @@ textarea.form-control.is-invalid {
 .btn {
     display: inline-block;
     font-weight: 400;
-    line-height: 1;
     color: #343a40;
     text-align: center;
     text-decoration: none;
@@ -5995,9 +5995,9 @@ textarea.form-control.is-invalid {
     user-select: none;
     background-color: transparent;
     border: 1px solid transparent;
-    padding: 0.875rem 2.5rem;
-    font-size: 0.875rem;
-    border-radius: 0.1875rem;
+    padding: 12px 15px;
+    font-size: 0.800rem;
+    border-radius: 4px;
     -webkit-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -6759,14 +6759,14 @@ fieldset:disabled .btn {
 .btn-lg,
 .btn-group-lg>.btn {
     padding: 1rem 3rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     border-radius: 0.1875rem;
 }
 
 .btn-sm,
 .btn-group-sm>.btn {
     padding: 0.5rem 0.81rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     border-radius: 0.1875rem;
 }
 
@@ -7120,7 +7120,7 @@ fieldset:disabled .btn {
     display: block;
     padding: 0.5rem 1rem;
     margin-bottom: 0;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     color: #343a40;
     white-space: nowrap;
 }
@@ -8458,7 +8458,7 @@ fieldset:disabled .btn {
     flex-wrap: wrap;
     padding: 0.56rem 1.13rem;
     margin-bottom: 1rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     list-style: none;
     background-color: transparent;
 }
@@ -8573,7 +8573,7 @@ fieldset:disabled .btn {
 
 .pagination-sm .page-link {
     padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
 }
 
 .pagination-sm .page-item:first-child .page-link {
@@ -9256,7 +9256,7 @@ fieldset:disabled .btn {
 .toast {
     width: 350px;
     max-width: 100%;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     pointer-events: auto;
     background-color: rgba(255, 255, 255, 0.85);
     background-clip: padding-box;
@@ -9816,7 +9816,7 @@ fieldset:disabled .btn {
     word-spacing: normal;
     white-space: normal;
     line-break: auto;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     word-wrap: break-word;
     background-color: #fff;
     background-clip: padding-box;
@@ -16311,7 +16311,7 @@ h6,
 }
 
 p {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
 }
 
 h1,
@@ -16531,7 +16531,7 @@ code {
     color: #fe7c96;
     /* font-family: "ubuntu-light", sans-serif; */
     font-family: "Roboto Flex", sans-serif !important;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     border-radius: 4px;
 }
 
@@ -17537,16 +17537,6 @@ code {
     height: 18px;
 }
 
-/* Buttons */
-.btn {
-    font-size: 0.875rem;
-    line-height: 1;
-    font-family: "Roboto Flex", sans-serif !important;
-    /* font-family: "ubuntu-bold", sans-serif; */
-    /* Buttons with only icons */
-    /* Buttons with icon and text */
-}
-
 .btn i {
     font-size: 1rem;
 }
@@ -17561,12 +17551,12 @@ code {
 
 .btn.btn-sm,
 .btn-group-sm>.btn {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
 }
 
 .btn.btn-lg,
 .btn-group-lg>.btn {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
 }
 
 .btn.btn-xs {
@@ -18646,7 +18636,7 @@ code {
 }
 
 .breadcrumb .breadcrumb-item {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
 }
 
 .breadcrumb .breadcrumb-item.active {
@@ -18659,7 +18649,7 @@ code {
 }
 
 .breadcrumb.breadcrumb-custom .breadcrumb-item {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     background: #dbe3e6;
     padding: 0.56rem 10px;
     color: #000000;
@@ -19286,7 +19276,7 @@ code {
 .form-check .form-check-label {
     display: block;
     margin-left: 1.75rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     line-height: 1.5;
 }
 
@@ -19556,7 +19546,7 @@ code {
 
 .dropdown .dropdown-menu {
     margin-top: .75rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     -webkit-box-shadow: 0px 1px 15px 1px rgba(230, 234, 236, 0.35);
     box-shadow: 0px 1px 15px 1px rgba(230, 234, 236, 0.35);
 }
@@ -19609,11 +19599,11 @@ code {
 select.form-control {
     padding: .4375rem .75rem;
     border: 0;
-    outline: 1px solid #ebedf2;
+    outline: 1px solid #B9B9B9;
 }
 
 select.form-control:focus {
-    outline: 1px solid #ebedf2;
+    outline: 1px solid #B9B9B9;
 }
 
 select.form-control.border-primary {
@@ -19683,7 +19673,8 @@ select.form-control.border-dark:focus {
 }
 
 .form-group label {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
+    color: #004183;
     line-height: 1;
     vertical-align: top;
     margin-bottom: .5rem;
@@ -19719,7 +19710,7 @@ select.form-control.border-dark:focus {
     align-items: center;
     padding: 15px 15px;
     font-family: "ubuntu-regular", sans-serif;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
 }
 
 .icons-list>div i {
@@ -19735,7 +19726,7 @@ ul,
 ol,
 dl {
     padding-left: 1rem;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
 }
 
 ul li,
@@ -20071,7 +20062,7 @@ dl li {
 .table th,
 .table td {
     vertical-align: middle;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     line-height: 1;
     white-space: nowrap;
     padding: 0.9375rem;
@@ -20223,7 +20214,7 @@ dl li {
 }
 
 .auth form .auth-link {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
 }
 
 .auth form .auth-link:hover {
@@ -20347,30 +20338,30 @@ dl li {
 }
 
 .navbar .navbar-menu-wrapper .search-field .input-group input {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     padding: .5rem;
 }
 
 .navbar .navbar-menu-wrapper .search-field .input-group input:-ms-input-placeholder {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     color: #9c9fa6;
     font-family: "ubuntu-light", sans-serif;
 }
 
 .navbar .navbar-menu-wrapper .search-field .input-group input:-moz-placeholder {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     color: #9c9fa6;
     font-family: "ubuntu-light", sans-serif;
 }
 
 .navbar .navbar-menu-wrapper .search-field .input-group input::-moz-placeholder {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     color: #9c9fa6;
     font-family: "ubuntu-light", sans-serif;
 }
 
 .navbar .navbar-menu-wrapper .search-field .input-group input::-webkit-input-placeholder {
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     color: #9c9fa6;
     font-family: "ubuntu-light", sans-serif;
 }
@@ -20430,7 +20421,7 @@ dl li {
 
 .navbar .navbar-menu-wrapper .navbar-nav .nav-item .nav-link {
     color: inherit;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     margin-left: 1.5rem;
     margin-right: 1.5rem;
     height: 70px;
@@ -20987,7 +20978,7 @@ dl li {
 .sidebar .nav .nav-item .nav-link .menu-title {
     color: inherit;
     display: inline-block;
-    font-size: 0.875rem;
+    font-size: 0.800rem;
     line-height: 1;
     vertical-align: middle;
 }
@@ -21410,8 +21401,7 @@ dl li {
 .bootbox button.btn.btn-info {
     background: #004183;
     border: 1px solid transparent;
-    padding: 0.875rem 2.5rem;
-    width: 140px;
+    padding: 12px 15px;
 }
 
 .bootbox-close-button.close,
@@ -21449,7 +21439,7 @@ a.close {
 button.btn.btn-default.ml5 {
     background: #fe7c96;
     border: 1px solid transparent;
-    padding: 0.875rem 2.5rem;
+    padding: 12px 15px;
     color: #fff;
     width: 140px;
 }

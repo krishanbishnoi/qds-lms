@@ -73,10 +73,8 @@ define('ALLOWED_TAGS_XSS', '<a><strong><b><p><br><i><font><img><h1><h2><h3><h4><
 define('ADMIN_ID', 1);
 define('SUPER_ADMIN_ROLE_ID', 1);
 define('TRAINER_ROLE_ID', 2);
-define('TRAINEE_ROLE_ID', 3);
-
-define('SUB_ADMIN_ROLE_ID', 5);
 define('MANAGER_ROLE_ID', 4);
+define('TRAINEE_ROLE_ID', 3);
 
 
 
@@ -99,4 +97,5 @@ Config::set('per_page', array('10' => trans("Default"), '15' => '15', '20' => '2
 
 define('question_type', array('MCQ' => 'MCQ', 'SCQ' => 'SCQ', 'T/F' => 'T/F', 'FreeText' => 'FreeText'));
 
-define('QDS_PROJECT_LIST', array('RetailIQ' => 'RetailIQ', 'QAViews' => 'QAViews', 'SurveyCXM' => 'SurveyCXM', 'LMS' => 'All LMS'));
+define('QDS_PROJECT_LIST', array('RetailIQ' => 'RetailIQ', 'all' => 'Other All '));
+// define('QDS_PROJECT_LIST', array('RetailIQ' => 'RetailIQ', 'QAViews' => 'QAViews', 'SurveyCXM' => 'SurveyCXM', 'LMS' => 'All LMS'));

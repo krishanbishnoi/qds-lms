@@ -30,7 +30,7 @@
                         <div class="p-4 row">
                             <!-- Project Selection -->
                             <div class="col-md-6 mb-3">
-                                {!! Form::label('project', 'Select Project', ['class' => 'block font-bold mb-1']) !!}
+                                {!! Form::label('project', 'Select Product', ['class' => 'block font-bold mb-1']) !!}
                                 {!! Form::select('project', $projects, null, [
                                     'id' => 'projectSelect',
                                     'class' => 'form-control',
@@ -40,9 +40,12 @@
 
                             <!-- Project-dependent fields -->
                             <div id="retailiq-section" class="col-md-6 mb-3" style="display: none;">
-                                <label for="auction_id" class="block font-bold mb-1">Auction ID</label>
-                                <input type="text" name="auction_id" id="auction_id" class="form-control"
-                                    placeholder="Enter Auction ID">
+                                {!! Form::label('client_id', 'Select Client', ['class' => 'block font-bold mb-1']) !!}
+                                {!! Form::select('client_id', [], null, [
+                                    'id' => 'client_idSelect',
+                                    'class' => 'form-control',
+                                    'placeholder' => '-- Choose Client --',
+                                ]) !!}
                             </div>
 
                             <div id="method-section" class="col-md-6 mb-3" style="display: none;">
@@ -56,26 +59,32 @@
 
                             <!-- Excel Upload -->
                             <div id="excel-upload-section" class="box search-panel collapsed-box" style="display: none;">
-                                <div class="box-body mb-4">
+                                <div class="box-body mb-4 mt-3">
                                     <form action="{{ route('import.training-participants', $training_id) }}" method="POST"
                                         enctype="multipart/form-data">
                                         @csrf
-                                        <div class="col-md-6 col-sm-2">
-                                            <div class="form-group">
-                                                <input type="file" name="file" class="form-control" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-md-flex justify-content-between align-items-center gap-5"
-                                            style="display: block !important">
-                                            <button class="btn btn-primary" type="submit">Upload Users</button>
+                                        <div class="d-flex flex-wrap align-items-center">
+                                            <!-- Download Sample File Button -->
                                             <a href="{{ asset('sample-files/import-training-participants-sample.xlsx') }}"
-                                                class="btn btn-primary" style="margin-left:100px">Download sample
-                                                file</a>
+                                                class="btn btn-primary">
+                                                Download Sample File
+                                            </a>
+
+                                            <!-- File Input and Upload Button aligned to the end -->
+                                            <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
+                                                <div class="col-md-5">
+                                                    <input type="file" name="file" class="form-control" required>
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-success" type="submit">Upload Users</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
                             </div>
+
+
 
                             <!-- Placeholder for 'fromUser' future UI -->
                             <div id="user-selection-section" class="col-md-6 mt-4" style="display: none;">

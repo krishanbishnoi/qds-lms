@@ -112,11 +112,11 @@ class TrainingController extends BaseController
             // Get managers and trainers for dropdowns
             $training_manager = User::where("is_deleted", 0)
                 ->where("user_role_id", MANAGER_ROLE_ID)
-                ->pluck('first_name', 'id');
+                ->pluck('fullname', 'id');
 
             $trainers = User::where("is_deleted", 0)
                 ->where("user_role_id", TRAINER_ROLE_ID)
-                ->pluck('first_name', 'id');
+                ->pluck('fullname', 'id');
 
             return view("admin.Training.index", compact(
                 'results',
@@ -360,12 +360,12 @@ class TrainingController extends BaseController
 
             $trainingCategory = TrainingCategory::pluck('name', 'id')->toArray();
             $TrainingType = TrainingType::pluck('type', 'id')->toArray();
-            $trainees = User::where("is_deleted", 0)->pluck('first_name', 'id')->toArray();
+            $trainees = User::where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'id')->toArray();
             $selected_trainees = TrainingParticipants::where('training_id', $modelId)->pluck('trainee_id');
-            $training_manager = User::where("is_deleted", 0)->where("user_role_id", MANAGER_ROLE_ID)->pluck('first_name', 'id')->toArray();
+            $training_manager = User::where("is_deleted", 0)->where("user_role_id", MANAGER_ROLE_ID)->pluck('fullname', 'id')->toArray();
             $selected_training_manager = ManagerTrainings::where('training_id', $modelId)->pluck('user_id');
 
-            $trainers = User::where("is_deleted", 0)->where("user_role_id", TRAINER_ROLE_ID)->pluck('first_name', 'id')->toArray();
+            $trainers = User::where("is_deleted", 0)->where("user_role_id", TRAINER_ROLE_ID)->pluck('fullname', 'id')->toArray();
             $selected_training_trainers = TrainerTrainings::where('training_id', $modelId)->pluck('user_id');
 
             return  View::make("admin.Training.add", compact('model', 'trainingCategory', 'TrainingType', 'trainees', 'selected_trainees', 'training_manager', 'selected_training_manager', 'trainers', 'selected_training_trainers'));
@@ -475,7 +475,7 @@ class TrainingController extends BaseController
         try {
             $projects = QDS_PROJECT_LIST;
             $methods = ['fromExcel' => 'From Excel',  'fromUser' => 'From Users'];
-            $users = User::pluck('fullname', 'id')->toArray();
+            $users = User::where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'id')->toArray();
 
             return  View::make("admin.Training.uploadTrainingParticipants", compact('training_id', 'projects', 'methods', 'users'));
         } catch (\Exception $e) {
