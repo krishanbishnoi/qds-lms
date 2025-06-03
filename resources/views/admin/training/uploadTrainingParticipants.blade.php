@@ -60,7 +60,7 @@
                                     <form action="{{ route('import.training-participants', $training_id) }}" method="POST"
                                         enctype="multipart/form-data">
                                         @csrf
-                                        <div class="col-md-6 col-sm-2">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <input type="file" name="file" class="form-control" required>
                                             </div>
@@ -79,12 +79,18 @@
 
                             <!-- Placeholder for 'fromUser' future UI -->
                             <div id="user-selection-section" class="col-md-6 mt-4" style="display: none;">
-                                {!! Form::label('user_ids', 'Select Users', ['class' => 'block font-bold mb-1']) !!}
-                                {!! Form::select('user_ids[]', $users, null, [
-                                    'class' => 'form-control select2-form',
-                                    'multiple' => 'multiple',
-                                    'id' => 'select2-users',
-                                ]) !!}
+                                <form action="{{ route('Training.assgin-training-participants', $training_id) }}"
+                                    method="POST">
+                                    @csrf
+                                    {!! Form::hidden('training_id', $training_id) !!}
+                                    {!! Form::label('empIds', 'Select Users', ['class' => 'block font-bold mb-1']) !!}
+                                    {!! Form::select('empIds[]', $users, null, [
+                                        'class' => 'form-control select2-form',
+                                        'multiple' => 'multiple',
+                                        'id' => 'select2-users',
+                                    ]) !!}
+                                    <button class="btn btn-primary mt-3" type="submit">Upload Users</button>
+                                </form>
                             </div>
                         </div>
                     </div>

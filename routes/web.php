@@ -114,6 +114,7 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::get('training/export-tainings', 'exportTraining')->name('export.training');
             Route::get('training/import-training-participants/{id}', 'importTrainingParticipants')->name('import.importTrainingParticipants');
             Route::post('training/import-training-participants/{id}', 'importTraining')->name('import.training-participants');
+            Route::post('training/assgin-training-participants', 'assginTrainingParticipants')->name('Training.assgin-training-participants');
         });
 
         /* training category modules routes */
