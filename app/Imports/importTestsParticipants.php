@@ -79,7 +79,7 @@ class importTestsParticipants extends BaseController implements ToModel, WithHea
                 // $messageBody               =     str_replace($constants, $rep_Array, $emailTemplates[0]['body']);
                 // $mail                      =     $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
 
-                // return $testAttendee;
+                return $testAttendee;
             } else {
                 $this->errors[] = "User with Email {$trimEmail} is already exists in this Test.";
             }
@@ -112,24 +112,24 @@ class importTestsParticipants extends BaseController implements ToModel, WithHea
                 ];
                 Notification::send($user, new AssignTestNotification($details));
                 // Send mail to trainees creater for credetials of new created trainee ( Krishan )
-                $settingsEmail             =    Config::get('Site.email');
-                $full_name                 =     $user->email;
-                $authEmail                 =     $user->email;
-                // $employeeId                =     $user->olms_id;
-                $employeeId                =     $user->email;
-                $route_url                 =     URL::to('/login');
-                $click_link                =     $route_url;
-                $emailActions              =     EmailAction::where('action', '=', 'product_status')->get()->toArray();
-                $emailTemplates            =     EmailTemplate::where('action', '=', 'product_status')->get(array('name', 'subject', 'action', 'body'))->toArray();
-                $cons                      =     explode(',', $emailActions[0]['options']);
-                $constants                 =     array();
-                foreach ($cons as $key => $val) {
-                    $constants[]           =     '{' . $val . '}';
-                }
-                $subject                   =     $emailTemplates[0]['subject'];
-                $rep_Array                 =     array($full_name, $employeeId, $employeeId, $click_link);
-                $messageBody               =     str_replace($constants, $rep_Array, $emailTemplates[0]['body']);
-                $mail                      =     $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
+                // $settingsEmail             =    Config::get('Site.email');
+                // $full_name                 =     $user->email;
+                // $authEmail                 =     $user->email;
+                // // $employeeId                =     $user->olms_id;
+                // $employeeId                =     $user->email;
+                // $route_url                 =     URL::to('/login');
+                // $click_link                =     $route_url;
+                // $emailActions              =     EmailAction::where('action', '=', 'product_status')->get()->toArray();
+                // $emailTemplates            =     EmailTemplate::where('action', '=', 'product_status')->get(array('name', 'subject', 'action', 'body'))->toArray();
+                // $cons                      =     explode(',', $emailActions[0]['options']);
+                // $constants                 =     array();
+                // foreach ($cons as $key => $val) {
+                //     $constants[]           =     '{' . $val . '}';
+                // }
+                // $subject                   =     $emailTemplates[0]['subject'];
+                // $rep_Array                 =     array($full_name, $employeeId, $employeeId, $click_link);
+                // $messageBody               =     str_replace($constants, $rep_Array, $emailTemplates[0]['body']);
+                // $mail                      =     $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
                 return $participant;
             }
         }

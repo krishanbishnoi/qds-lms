@@ -21,25 +21,94 @@
                 <div class="modal-body">
                     <div class="instruction-content">
                         <h5 class="mb-3">Please read the instructions carefully before starting the test:</h5>
-                        <div class="instructions">
-                            {!! $testDetails->description !!}
-                        </div>
-                        <div class="test-details mt-4">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Test Name:</strong> {{ $testDetails->title }}</p>
-                                    <p><strong>Duration:</strong> {{ $testDetails->time_of_test }} minutes</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Total Questions:</strong> {{ count($testQuestions) }}</p>
-                                    <p><strong>Passing Score:</strong> {{ $testDetails->minimum_marks }}%</p>
-                                </div>
+                        <div style="max-height: 60vh; overflow-y: auto;" id="instructionContent">
+                            <div class="mb-3">
+                                <ul class="list-group list-group-flush mb-3">
+                                    <li class="list-group-item">⏳ <strong>Test Duration:</strong>
+                                        {{ $testDetails->time_of_test }} minutes</li>
+                                    <li class="list-group-item">❓ <strong>Total Questions:</strong>
+                                        {{ count($testQuestions) }}</li>
+                                    <li class="list-group-item">✅ <strong>Passing Score:</strong>
+                                        {{ $testDetails->minimum_marks }}%</li>
+
+                                    <!-- New: Question types -->
+                                    <li class="list-group-item">🧾 <strong>Question Types:</strong> The test consists of
+                                        MCQs (Multiple Choice Questions), SCQs (Single Correct Questions), and True/False
+                                        type questions.</li>
+                                    <!-- New: Answer all questions -->
+                                    <li class="list-group-item">✍️ <strong>All Questions Are Mandatory:</strong> You must
+                                        answer every question before submitting. Unanswered questions will prevent final
+                                        submission.</li>
+                                    <!-- New: No negative marking -->
+                                    <li class="list-group-item">➕ <strong>No Negative Marking:</strong> There is no penalty
+                                        for incorrect answers, so attempt all questions confidently.</li>
+                                    <!-- Anti-cheating -->
+                                    {{-- <li class="list-group-item">🔒 <strong>Single Attempt Only:</strong> You are allowed
+                                        only one attempt. Once started, the test must be completed.</li> --}}
+                                    <li class="list-group-item">🌐 <strong>Stable Internet Required:</strong> Any network
+                                        disconnection may automatically submit your test and log the activity.</li>
+                                    <li class="list-group-item">🧭 <strong>Stay on Test Page:</strong> Switching to another
+                                        tab or minimizing the browser will trigger warnings. Multiple violations will
+                                        auto-submit your test.</li>
+                                    <li class="list-group-item">🚫 <strong>Do Not Refresh:</strong> Reloading, pressing F5,
+                                        or clicking the back button will end your test immediately.</li>
+                                    <li class="list-group-item">🎥 <strong>Webcam Must Stay On:</strong> Your webcam must
+                                        detect your face during the entire test. Obstructed or absent face = test
+                                        terminated.</li>
+                                    <li class="list-group-item">🎤 <strong>Mic Access May Be Monitored:</strong> Your
+                                        microphone may be used to monitor ambient noise levels to detect suspicious
+                                        behavior.</li>
+                                    <li class="list-group-item">📵 <strong>No Mobile Devices:</strong> Using your phone,
+                                        smartwatches, or other digital devices is strictly prohibited during the test.</li>
+                                    <li class="list-group-item">🧠 <strong>No External Help:</strong> This is an individual
+                                        assessment. Collaboration or help from others will result in disqualification.</li>
+                                    <li class="list-group-item">🕵️‍♂️ <strong>AI Surveillance Active:</strong> Face, tab,
+                                        and activity monitoring tools are in use to ensure test integrity. Every action is
+                                        logged.</li>
+                                    <li class="list-group-item">🔍 <strong>Copy/Paste Disabled:</strong> Right-click,
+                                        inspect element, or using keyboard shortcuts like Ctrl+C/Ctrl+V is disabled and
+                                        logged.</li>
+                                    <li class="list-group-item">👁️ <strong>System Focus Monitoring:</strong> Unusual mouse
+                                        movements or inactivity may be flagged as suspicious.</li>
+                                    <li class="list-group-item">📝 <strong>Time-Managed Questions:</strong> Allocate your
+                                        time wisely. Some questions may be time-bound within the test.</li>
+                                    <li class="list-group-item">⚠️ <strong>Zero Tolerance Policy:</strong> Any attempt to
+                                        bypass restrictions will result in immediate test submission and logging of the
+                                        attempt.</li>
+                                    {{-- <li class="list-group-item">🔁 <strong>No Retake Requests:</strong> Once submitted or
+                                        terminated due to policy violation, no retake will be allowed.</li> --}}
+                                    <li class="list-group-item">📈 <strong>Result Review:</strong> Results will be reviewed
+                                        before finalization. Suspicious attempts may be invalidated.</li>
+                                </ul>
+
                             </div>
+
+                            @if (!empty($testDetails->description))
+                                <div class="mb-3">
+                                    <h5>Test Title:</h5>
+                                    <div class="instructions">
+                                        {!! $testDetails->title !!}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <h5>📚 Test Description:</h5>
+                                    <div class="instructions">
+                                        {!! $testDetails->description !!}
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="startTestBtn">Start Test</button>
+                    <div class="text-center mt-3">
+                        <p class="text-danger fw-bold">
+                            🚨 You are being monitored. Any kind of malpractice will lead to auto-submission,
+                            disqualification, and improper behavior will result in automatic test termination.
+                        </p>
+                    </div>
+                    <button type="button" id="startTestBtn" class="btn btn-success" disabled>✅ I’ve Read & Start
+                        Test</button>
                 </div>
             </div>
         </div>
@@ -104,8 +173,9 @@
                                     {{ count($testQuestions) }}</span>
                                 <div class="progress-container">
                                     <div class="progress">
-                                        <div id="test-progress" class="progress-bar" role="progressbar" style="width: 0%"
-                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div id="test-progress" class="progress-bar" role="progressbar"
+                                            style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
                                     </div>
                                     <span id="progress-percentage">0%</span>
                                 </div>
@@ -485,6 +555,18 @@
             let userAnswers = {};
             let testStarted = false;
             let countdownInterval;
+            const instructionContent = document.getElementById('instructionContent');
+            const startTestBtn = document.getElementById('startTestBtn');
+
+            // Enable Start Test button after full scroll
+            instructionContent.addEventListener('scroll', function() {
+                const isScrolledToBottom = instructionContent.scrollTop + instructionContent.clientHeight >=
+                    instructionContent.scrollHeight - 20;
+                if (isScrolledToBottom) {
+                    startTestBtn.disabled = false;
+                }
+            });
+
 
             // Start test button handler
             $('#startTestBtn').click(function() {
@@ -832,5 +914,57 @@
                 }
             });
         });
+    </script>
+    {{-- // // cheating restrict scripts --}}
+    <script>
+        //  Prevent Page Refresh (F5 / Ctrl+R / Right-click Reload)
+        window.addEventListener("keydown", function(e) {
+            if ((e.key === "F5") || (e.ctrlKey && e.key === "r")) {
+                e.preventDefault();
+            }
+        });
+        window.addEventListener("beforeunload", function(e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+
+        // Block Tab / Window Switching\
+        let tabSwitchCount = 0;
+
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                tabSwitchCount++;
+
+                if (tabSwitchCount === 1) {
+                    alert(
+                        "Tab switch detected!\nYou've left the test tab. This has been recorded.\nIf you switch tabs again, your test will be at risk."
+                    );
+                } else if (tabSwitchCount === 2) {
+                    alert(
+                        "Final Warning!\nYou've switched tabs again.\nOne more attempt and your test will be auto-submitted."
+                    );
+                } else if (tabSwitchCount >= 3) {
+                    alert(
+                        "Final Warning!\nYou've switched tabs again.\nOne more attempt and your test will be auto-submitted."
+                    );
+                    // Auto-submit the test form
+                    // document.getElementById('test-form').submit(); // Replace 'test-form' with your actual form ID
+                }
+            }
+        });
+
+
+        // Disable Right Click and Keyboard Shortcuts (Copy/Paste, View Source)
+        document.addEventListener("contextmenu", function(e) {
+            e.preventDefault();
+        });
+        document.onkeydown = function(e) {
+            if (
+                e.ctrlKey && (e.key === "c" || e.key === "v" || e.key === "u") ||
+                e.key === "F12"
+            ) {
+                return false;
+            }
+        };
     </script>
 @stop
