@@ -5,7 +5,7 @@
     <div class="content-wrapper">
         <div class="page-header">
             <h1>
-                {{ $sectionName }}
+                {{ $trainingName . ' ' . $sectionName }}
             </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -49,14 +49,14 @@
                     <div class="card-body">
                         <div class="box-header with-border pd-custom">
                             <div class="listing-btns">
-                                <h1 class="box-title">{{ $sectionName }}'s List</h1>
+                                <h1 class="box-title"> {{ $trainingName . ' ' . $sectionName }}'s List</h1>
 
                                 <a href='{{ route("$modelName.add", $training_id) }}'
                                     class="btn btn-success btn-small pull-right mb-2">
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                             </div>
                         </div>
-                            <table class="table table-hover brdrclr mt-2">
+                        <table class="table table-hover brdrclr mt-2">
                             <thead class="theadLight">
 
                                 <tr>
@@ -84,44 +84,6 @@
                                     <th width="10%">
                                         {{ link_to_route(
                                             "$modelName.index",
-                                            trans('Start Date'),
-                                            [
-                                                'sortBy' => 'start_date_time',
-                                                'order' => $sortBy == 'start_date_time' && $order == 'desc' ? 'asc' : 'desc',
-                                                $query_string,
-                                            ],
-                                            [
-                                                'class' =>
-                                                    $sortBy == 'start_date_time' && $order == 'desc'
-                                                        ? 'sorting desc'
-                                                        : ($sortBy == 'start_date_time' && $order == 'asc'
-                                                            ? 'sorting asc'
-                                                            : 'sorting'),
-                                            ],
-                                        ) }}
-                                    </th>
-                                    <th width="10%">
-                                        {{ link_to_route(
-                                            "$modelName.index",
-                                            trans('End Date'),
-                                            [
-                                                'sortBy' => 'end_date_time',
-                                                'order' => $sortBy == 'end_date_time' && $order == 'desc' ? 'asc' : 'desc',
-                                                $query_string,
-                                            ],
-                                            [
-                                                'class' =>
-                                                    $sortBy == 'end_date_time' && $order == 'desc'
-                                                        ? 'sorting desc'
-                                                        : ($sortBy == 'end_date_time' && $order == 'asc'
-                                                            ? 'sorting asc'
-                                                            : 'sorting'),
-                                            ],
-                                        ) }}
-                                    </th>
-                                    <th width="10%">
-                                        {{ link_to_route(
-                                            "$modelName.index",
                                             trans('Modified'),
                                             [
                                                 'sortBy' => 'updated_at',
@@ -146,25 +108,23 @@
                                     @foreach ($results as $result)
                                         <tr class="items-inner">
                                             <td data-th='question'>{{ $result->title }}</td>
-                                            <td data-th='question'>{{ $result->start_date_time }}</td>
-                                            <td data-th='question'>{{ $result->end_date_time }}</td>
                                             <td data-th="{{ trans('Modified') }}">
                                                 {{ date(Config::get('Reading.date_format'), strtotime($result->updated_at)) }}
                                             </td>
                                             <!-- <td  data-th=''>
-              @if ($result->is_active == 1)
+                                                                      @if ($result->is_active == 1)
     <span class="label label-success" >{{ trans('Activated') }}</span>
 @else
     <span class="label label-warning" >{{ trans('Deactivated') }}</span>
     @endif
-             </td>								 -->
+                                                                     </td>								 -->
                                             <td data-th='' class="action-td">
                                                 <!-- @if ($result->is_active == 1)
     <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$result->id, 0]) }}' class="btn btn-success btn-small status_any_item"><span class="fas fa-ban"></span>
-               </a>
+                                                                       </a>
 @else
     <a title="Click To Activate" href='{{ route("$modelName.status", [$result->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fas fa-check"></span>
-               </a>
+                                                                       </a>
     @endif  -->
                                                 <a href='{{ route("$modelName.edit", [$training_id, $result->id]) }}'
                                                     class="btn btn-primary" title="Edit"> <span

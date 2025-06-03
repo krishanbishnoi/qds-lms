@@ -10,10 +10,11 @@ use Eloquent, Session;
 
 class TrainingType extends Eloquent
 {
-	protected $fillable = [
-		'id',        
-		'type',
-		'is_active',
-	];
+
+	/**
+	 * The database table used by the model.
+	 *
+	 * @var string
+	 */
 	protected $table = 'training_types';
-}
+}// end TrainingType class

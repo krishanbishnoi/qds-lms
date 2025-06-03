@@ -1,25 +1,47 @@
 @extends('admin.layouts.default')
 @section('content')
-    <div class="box search-panel collapsed-box">
-        <div class="box-body mb-4">
-            <form action="{{ route('import.training-participants', $training_id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="col-md-2 col-sm-2">
-                    <div class="form-group ">
-                        <input type="file" name="file" required>
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>
+                Assign Training
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ URL::to('admin/dashboard') }}"><i class="fa fa-dashboard"></i>
+                            Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ URL::to('admin/trainings') }}"><i class="fa fa-dashboard"></i>
+                            Trainings</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Assign</li>
+
+                </ol>
+            </nav>
+        </div>
+        <livewire:upload-training-participant />
+
+        {{-- <div class="box search-panel collapsed-box">
+            <div class="box-body mb-4">
+                <form action="{{ route('import.training-participants', $training_id) }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="col-md-2 col-sm-2">
+                        <div class="form-group ">
+                            <input type="file" name="file" required>
+                        </div>
+
+                    </div>@auth
+
+                    @endauth
+                    <div class="d-md-flex justify-content-between align-items-center gap-5"
+                        style="display: block !important">
+                        <button class="btn btn-primary" type="submit">Upload Users</button>
+                        <a href="{{ asset('sample-files/import-training-participants-sample.xlsx') }}"
+                            class="btn btn-primary" style="margin-left:100px"> Download sample file</a>
                     </div>
 
-                </div>@auth
+                </form>
 
-                @endauth
-                <div class="d-md-flex justify-content-between align-items-center gap-5" style="display: block !important">
-                    <button class="btn btn-primary" type="submit">Upload Users</button>
-                    <a href="{{ asset('sample-files/import-training-participants-sample.xlsx') }}" class="btn btn-primary" style="margin-left:100px" > Download sample file</a>
-                </div>
-
-            </form>
-
-        </div>
+            </div>
+        </div> --}}
     </div>
     <script>
         function downloadFile() {

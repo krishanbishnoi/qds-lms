@@ -17,7 +17,21 @@ class Training extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'trainings';
-
+	protected $fillable = [
+		'category_id',
+		'title',
+		'type',
+		'minimum_marks',
+		'number_of_attempts',
+		'skip',
+		'test_id',
+		'start_date_time',
+		'end_date_time',
+		'thumbnail',
+		'description',
+		'user_id',
+		// Add any other columns you want to be mass assignable here
+	];
 
 	public function getImageAttribute($value = "")
 	{

@@ -25,7 +25,7 @@
         </div>
         <div class="box search-panel collapsed-box">
             <div class="box-body">
-                {{ Form::open(['method' => 'get', 'role' => 'form', 'route' => "$modelName.index", 'class' => 'row mws-form']) }}
+                {{ Form::open(['method' => 'get', 'role' => 'form', 'route' => 'TrainingCategory.index', 'class' => 'row mws-form']) }}
                 {{ Form::hidden('display') }}
                 <div class="col-md-2 col-sm-2">
                     <div class="form-group ">
@@ -39,7 +39,8 @@
                 <div class="col-md-4 col-sm-4 paddingtop">
                     <div class="d-flex">
                         <button class="btn btn-primary mr-2 px-4"><i class='fa fa-search '></i> Search</button>
-                        <a href='{{ route("$modelName.index") }}' class="btn btn-primary"> <i class="fa fa-refresh "></i>
+                        <a href='{{ route('TrainingCategory.index') }}' class="btn btn-primary"> <i
+                                class="fa fa-refresh "></i>
                             {{ trans('Clear Search') }}</a>
                     </div>
                 </div>
@@ -54,7 +55,8 @@
                         <div class="box-header with-border pd-custom">
                             <div class="listing-btns">
                                 <h1 class="box-title">{{ $sectionName }} List</h1>
-                                <a href='{{ route("$modelName.add") }}' class="btn btn-success btn-small pull-right mb-2">
+                                <a href='{{ route('TrainingCategory.add') }}'
+                                    class="btn btn-success btn-small pull-right mb-2">
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                             </div>
                         </div>
@@ -63,7 +65,7 @@
                                 <tr>
                                     <th width="30%">
                                         {{ link_to_route(
-                                            "$modelName.index",
+                                            'TrainingCategory.index',
                                             trans('Name'),
                                             [
                                                 'sortBy' => 'name',
@@ -82,7 +84,7 @@
                                     </th>
                                     <th width="30%">
                                         {{ link_to_route(
-                                            "$modelName.index",
+                                            'TrainingCategory.index',
                                             trans('Modified'),
                                             [
                                                 'sortBy' => 'updated_at',
@@ -110,7 +112,7 @@
 
                                             <td data-th="{{ trans('Page Name') }}">{{ $record->updated_at }}</td>
                                             <td data-th='' class="action-td">
-                                                <a href='{{ route("$modelName.edit", "$record->id") }}'
+                                                <a href='{{ route('TrainingCategory.edit', "$record->id") }}'
                                                     class="btn btn-primary" title="Edit"> <span
                                                         class="fas fa-edit"></span></a>
                                             </td>
@@ -158,7 +160,7 @@
                                     'training_manager',
                                     trans('Assign Test Manager') .
                                         '<span
-                                                                                                                                            class="requireRed"></span>',
+                                                                                                                                                                                                                                class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -203,7 +205,7 @@
                                     'training_trainer',
                                     trans('Assign Trainer') .
                                         '<span
-                                                                                                                                            class="requireRed"></span>',
+                                                                                                                                                                                                                                class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -332,4 +334,4 @@
             /* Adjust this value if needed */
         }
     </style>
-@stop
+    @stop

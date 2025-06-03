@@ -18,6 +18,9 @@ use App\Http\Controllers\admin\TestController;
 use App\Http\Controllers\admin\TraineesController;
 use App\Http\Controllers\admin\TrainingTypeController;
 use App\Http\Controllers\admin\UsersController;
+use App\Http\Controllers\admin\CoursesController;
+use App\Http\Controllers\admin\TrainingCategoryController;
+use App\Http\Controllers\admin\TrainingController;
 
 include_once(app_path() . '/global_constants.php');
 include_once(app_path() . '/settings.php');
@@ -28,7 +31,6 @@ use Illuminate\Support\Facades\Route;
 
 //crons url
 Route::get('crone/move-status-to-publish', 'CroneController@moveStatusToPublish');
-
 Route::group(array('prefix' => 'admin'), function () {
     Route::group(array('middleware' => ['App\Http\Middleware\GuestAdmin', 'PreventBackHistory'], 'namespace' => 'admin'), function () {
 
@@ -104,53 +106,46 @@ Route::group(array('prefix' => 'admin'), function () {
 
 
         /** settings routing**/
-        Route::get('trainings', array('as' => 'Training.index', 'uses' => 'TrainingController@index'));
-        Route::post('trainings', array('as' => 'Training.index', 'uses' => 'TrainingController@index'));
-        Route::get('trainings/add-new-training', array('as' => 'Training.add', 'uses' => 'TrainingController@add'));
-        Route::post('trainings/add-new-training', array('as' => 'Training.add', 'uses' => 'TrainingController@save'));
-        Route::get('trainings/edit-training/{id}', array('as' => 'Training.edit', 'uses' => 'TrainingController@edit'));
-        Route::post('trainings/edit-training/{id}', array('as' => 'Training.edit', 'uses' => 'TrainingController@update'));
-        Route::get('trainings/delete-training/{id}', array('as' => 'Training.delete', 'uses' => 'TrainingController@delete'));
-        Route::get('trainings/view-training/{id}', array('as' => 'Training.view', 'uses' => 'TrainingController@view'));
-        Route::get('trainings/update-training-status/{id}/{status}', array('as' => 'Training.status', 'uses' => 'TrainingController@changeStatus'));
-
-        Route::get('training/export-tainings', 'TrainingController@exportTraining')->name('export.training');
-
-        Route::post('trainings/import-questions/{test_id}', 'QuestionController@importQuestions')->name('import.questions');
-        Route::get('/download-sample-file-questions', 'QuestionController@downloadQuestionSample')->name('download.sample.file.questions');
-
-        Route::get('training/import-training-participants/{id}', 'TrainingController@importTrainingParticipants')->name('import.importTrainingParticipants');
-        Route::post('training/import-training-participants/{id}', 'TrainingController@importTraining')->name('import.training-participants');
-
-        /* Ai Create Trainings routes */
-        Route::get('trainings/add-new-training-with-ai', 'TrainingController@addAi')->name('training.add.ai');
-        Route::post('trainings/add-new-training-with-ai', 'TrainingController@saveAi')->name('training.submit.ai');
+        Route::controller(TrainingController::class)->group(function () {
+            Route::get('trainings', 'index')->name('Training.index');
+            Route::post('trainings', 'index')->name('Training.index'); // same name, different method
+            Route::get('trainings/add-new-training', 'add')->name('Training.add');
+            Route::post('trainings/add-new-training', 'save')->name('Training.add');
+            Route::get('trainings/edit-training/{id}', 'edit')->name('Training.edit');
+            Route::post('trainings/edit-training/{id}', 'update')->name('Training.edit');
+            Route::get('trainings/delete-training/{id}', 'delete')->name('Training.delete');
+            Route::get('trainings/view-training/{id}', 'view')->name('Training.view');
+            Route::get('trainings/update-training-status/{id}/{status}', 'changeStatus')->name('Training.status');
+            Route::get('training/export-tainings', 'exportTraining')->name('export.training');
+            Route::get('training/import-training-participants/{id}', 'importTrainingParticipants')->name('import.importTrainingParticipants');
+            Route::post('training/import-training-participants/{id}', 'importTraining')->name('import.training-participants');
+        });
 
         /* training category modules routes */
-        Route::get('trainings/category', array('as' => 'TrainingCategory.index', 'uses' => 'TrainingCategoryController@index'));
-        Route::post('trainings/category', array('as' => 'TrainingCategory.index', 'uses' => 'TrainingCategoryController@index'));
-        Route::get('trainings/add-category', array('as' => 'TrainingCategory.add', 'uses' => 'TrainingCategoryController@add'));
-        Route::post('trainings/add-category', array('as' => 'TrainingCategory.add', 'uses' => 'TrainingCategoryController@save'));
-        Route::get('trainings/edit-category/{id}', array('as' => 'TrainingCategory.edit', 'uses' => 'TrainingCategoryController@edit'));
-        Route::post('trainings/edit-category/{id}', array('as' => 'TrainingCategory.edit', 'uses' => 'TrainingCategoryController@update'));
-        Route::get('trainings/delete-category/{id}', array('as' => 'TrainingCategory.delete', 'uses' => 'TrainingCategoryController@delete'));
-        Route::get('trainings/view-category/{id}', array('as' => 'TrainingCategory.view', 'uses' => 'TrainingCategoryController@view'));
-        // Route::get('trainings/update-training-status/{id}/{status}', array('as' => 'TrainingCategory.status', 'uses' => 'TrainingController@changeStatus'));
+        Route::controller(TrainingCategoryController::class)->group(function () {
+            Route::get('trainings/category', 'index')->name('TrainingCategory.index');
+            Route::post('trainings/category', 'index')->name('TrainingCategory.index');
+            Route::get('trainings/add-category', 'add')->name('TrainingCategory.add');
+            Route::post('trainings/add-category', 'save')->name('TrainingCategory.add');
+            Route::get('trainings/edit-category/{id}', 'edit')->name('TrainingCategory.edit');
+            Route::get('trainings/delete-category/{id}', 'delete')->name('TrainingCategory.delete');
+            Route::get('trainings/view-category/{id}', 'view')->name('TrainingCategory.view');
+            // Route::get('trainings/update-training-status/{id}/{status}', 'changeStatus')->name('TrainingCategory.status);
+        });
 
         /* course modules routes */
-        Route::get('trainings/courses/{training_id}', array('as' => 'Course.index', 'uses' => 'CoursesController@index'));
-        Route::post('trainings/courses/{training_id}', array('as' => 'Course.index', 'uses' => 'CoursesController@index'));
-        Route::get('trainings/courses/add-new-course/{training_id}', array('as' => 'Course.add', 'uses' => 'CoursesController@add'));
-        Route::post('trainings/courses/add-new-course/{training_id}', array('as' => 'Course.add', 'uses' => 'CoursesController@save'));
-        Route::get('trainings/courses/edit-course/{training_id}/{id}', array('as' => 'Course.edit', 'uses' => 'CoursesController@edit'));
-        Route::post('trainings/courses/edit-course/{training_id}/{id}', array('as' => 'Course.edit', 'uses' => 'CoursesController@update'));
-        Route::get('trainings/courses/delete-course/{id}', array('as' => 'Course.delete', 'uses' => 'CoursesController@delete'));
-        Route::get('trainings/courses/view-course/{training_id}/{id}', array('as' => 'Course.view', 'uses' => 'CoursesController@view'));
-        Route::get('trainings/courses/update-course-status/{id}/{status}', array('as' => 'Course.status', 'uses' => 'CoursesController@changeStatus'));
-        Route::post('courses/add-more-document', array('as' => 'Course.addMoreDocument', 'uses', 'uses' => 'CoursesController@addMoreDocument'));
-        Route::post('courses/delete-more-document', array('as' => 'Course.deleteMoreDocument', 'uses', 'uses' => 'CoursesController@deleteMoreDocument'));
-        Route::post('trainings/assign-manager', array('as' => 'Training.AssignManager', 'uses' => 'TrainingController@AssignManager'));
-        Route::post('trainings/assign-trainer', array('as' => 'Training.AssignTrainer', 'uses' => 'TrainingController@AssignTrainer'));
+        Route::controller(CoursesController::class)->group(function () {
+            Route::get('trainings/courses/{training_id}', 'index')->name('Course.index');
+            Route::post('trainings/courses/{training_id}', 'index')->name('Course.index');
+            Route::get('trainings/courses/add-new-course/{training_id}', 'add')->name('Course.add');
+            Route::post('trainings/courses/add-new-course/{training_id}', 'save')->name('Course.add');
+            Route::get('trainings/courses/edit-course/{training_id}/{id}', 'edit')->name('Course.edit');
+            Route::get('trainings/courses/delete-course/{id}', 'delete')->name('Course.delete');
+            Route::get('trainings/courses/view-course/{training_id}/{id}', 'view')->name('Course.view');
+            Route::get('trainings/courses/update-course-status/{id}/{status}', 'changeStatus')->name('Course.status');
+            Route::post('courses/add-more-document', 'addMoreDocument')->name('Course.addMoreDocument');
+            Route::post('courses/delete-more-document', 'deleteMoreDocument')->name('Course.deleteMoreDocument');
+        });
 
 
 

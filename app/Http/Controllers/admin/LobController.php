@@ -47,7 +47,6 @@ class LobController extends BaseController
 			if (isset($searchData['page'])) {
 				unset($searchData['page']);
 			}
-
 			foreach ($searchData as $fieldName => $fieldValue) {
 				if ($fieldValue != "") {
 					if ($fieldName == "is_active") {

@@ -264,7 +264,6 @@
                             </ul>
                         </div>
                     </li>
-
                     @if (Auth::user()->user_role_id == SUPER_ADMIN_ROLE_ID)
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="collapse" href="#cms" aria-expanded="false"
