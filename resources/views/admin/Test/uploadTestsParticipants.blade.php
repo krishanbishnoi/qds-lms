@@ -12,7 +12,7 @@
                         <h4 class="mt-2">
                             Upload test participants directly using emails </h4>
                         <hr>
-                        {{ Form::open(['role' => 'form', 'route' => ['import.tests.usersDirectly', $test_id], 'class' => 'forms-sample', 'files' => true, 'autocomplete' => 'off']) }}
+                        {{ Form::open(['role' => 'form', 'route' => ['Test.import.tests.usersDirectly', $test_id], 'class' => 'forms-sample', 'files' => true, 'autocomplete' => 'off']) }}
                         <div class="form-group {{ $errors->has('trainees') ? 'has-error' : '' }}">
                             {!! Form::label('trainees', trans('Enter Users Emails (comma-separated)'), ['class' => 'mws-form-label']) !!}
                             <div class="mws-form-item">

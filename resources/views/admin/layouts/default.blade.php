@@ -8,7 +8,7 @@
     <title>@php echo Config::get('Site.title'); @endphp</title>
 
     <!-- plugins:css -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    {{--  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>  --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('vendors/mdi/css/materialdesignicons.min.css') }}">
@@ -46,8 +46,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css" />
     <script src="https://cdn.ckeditor.com/4.15.0/standard-all/ckeditor.js"></script>
     @livewireStyles
-    @livewireScripts
-
 </head>
 
 <body>
@@ -413,6 +411,7 @@
 
     <script src="{{ URL::asset('old/css/notification/jquery.toastmessage.js') }}"></script>
     <!-- End custom js for this page -->
+    @livewireScripts
 
 </body>
 
