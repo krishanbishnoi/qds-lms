@@ -21,12 +21,18 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Response;
 use App\ApiService;
+use App\Models\EmailAction;
+use App\Models\EmailTemplate;
+use App\Notifications\AssignTrainingNotification;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -475,7 +481,9 @@ class TrainingController extends BaseController
         try {
             $projects = QDS_PROJECT_LIST;
             $methods = ['fromExcel' => 'From Excel',  'fromUser' => 'From Users'];
-            $users = User::where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'id')->toArray();
+            $existingUserIds = TrainingParticipants::where('training_id', $training_id)->pluck('trainee_id');
+            $users = User::whereNotIn('id', $existingUserIds)->where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'employee_id')
+                ->toArray();
 
             return  View::make("admin.Training.uploadTrainingParticipants", compact('training_id', 'projects', 'methods', 'users'));
         } catch (\Exception $e) {
@@ -607,4 +615,105 @@ class TrainingController extends BaseController
             return redirect()->back()->with('error', 'somthing went wrong');;
         }
     }
-}// end TrainingController
+
+
+    public function assginTrainingParticipants(Request $request)
+    {
+        $training_id = $request->training_id;
+
+        DB::beginTransaction();
+
+        try {
+            $trainingDetail = Training::findOrFail($training_id);
+            $courses = DB::table('courses')->where('training_id', $training_id)->get();
+
+            $allDocuments = [];
+            foreach ($courses as $course) {
+                $documents = DB::table('training_documents')
+                    ->where('course_id', $course->id)
+                    ->get();
+
+                foreach ($documents as $doc) {
+                    $allDocuments[] = [
+                        'course_id' => $course->id,
+                        'document_id' => $doc->id,
+                        'type' => $doc->type,
+                    ];
+                }
+            }
+
+            foreach ($request->empIds as $empId) {
+                $user = User::where('olms_id', $empId)->first();
+
+                if (!$user) {
+                    continue;
+                }
+
+                // Create participant
+                TrainingParticipants::create([
+                    'training_id' => $training_id,
+                    'trainee_id' => $user->id,
+                ]);
+
+                // Assign documents
+                $documentsToInsert = [];
+                foreach ($allDocuments as $doc) {
+                    $documentsToInsert[] = [
+                        'user_id' => $user->id,
+                        'training_id' => $training_id,
+                        'course_id' => $doc['course_id'],
+                        'document_id' => $doc['document_id'],
+                        'type' => $doc['type'],
+                        'status' => 0,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+
+                if (!empty($documentsToInsert)) {
+                    DB::table('trainee_assigned_training_documents')->insert($documentsToInsert);
+                }
+
+                // Send notification
+                $actionUrl = route('userTraining.index');
+                $details = [
+                    'greeting' => 'New Training Available',
+                    'message' => 'New Training Available',
+                    'body' => 'You have been assigned a ' . $trainingDetail->title . ' training.',
+                    'actionText' => 'View Training',
+                    'actionURL' => $actionUrl,
+                    'training_id' => $training_id,
+                ];
+                Notification::send($user, new AssignTrainingNotification($details));
+
+                // Send email
+                $settingsEmail = Config::get('Site.email');
+                $full_name = $user->fullname;
+                $authEmail = $user->email;
+                $click_link = $actionUrl;
+
+                $emailActions = EmailAction::where('action', 'training_assigned')->first();
+                $emailTemplates = EmailTemplate::where('action', 'training_assigned')->first();
+
+                if ($emailActions && $emailTemplates) {
+                    $constants = array_map(function ($val) {
+                        return '{' . trim($val) . '}';
+                    }, explode(',', $emailActions->options));
+
+                    $rep_Array = [$full_name, $authEmail, $authEmail, $click_link];
+                    $subject = $emailTemplates->subject;
+                    $messageBody = str_replace($constants, $rep_Array, $emailTemplates->body);
+
+                    $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
+                }
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Training participants assigned and notified successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e);
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+}
