@@ -100,7 +100,7 @@ class TestController extends BaseController
         $user = User::find(Auth::user()->id);
         $notifications = $user->notifications->where('read_at', '');
 
-        return View::make("front.$this->model.user-test-listing", compact('ongoing', 'upcoming', 'completedTests', 'notifications'));
+        return view("front.test.user-test-listing", compact('ongoing', 'upcoming', 'completedTests', 'notifications'));
     }
 
     /**
@@ -149,7 +149,7 @@ class TestController extends BaseController
             }
             $totalTrainees = DB::table('test_participants')->where('test_id', $test_id)
                 ->count();
-            return View::make("front.$this->model.userTest", compact('test_id', 'testDetails', 'testQuestions', 'totalTrainees'));
+            return view("front.test.userTest", compact('test_id', 'testDetails', 'testQuestions', 'totalTrainees'));
         } else {
             return redirect()->back()->with('This test not found. Contact to admin.');
         }
@@ -223,6 +223,9 @@ class TestController extends BaseController
             return response()->json(['success' => true]);
         }
     }
+
+
+
     public function userTestResult($id)
     {
         $userId = Auth::user()->id;
