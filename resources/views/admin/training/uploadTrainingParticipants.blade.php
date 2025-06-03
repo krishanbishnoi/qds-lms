@@ -93,7 +93,7 @@
                                     @csrf
                                     {!! Form::hidden('training_id', $training_id) !!}
                                     {!! Form::label('empIds', 'Select Users', ['class' => 'block font-bold mb-1']) !!}
-                                    {!! Form::select('empIds[]', $users, null, [
+                                    {!! Form::select('empIds[]', $users, $existingUserIds, [
                                         'class' => 'form-control select2-form',
                                         'multiple' => 'multiple',
                                         'id' => 'select2-users',
