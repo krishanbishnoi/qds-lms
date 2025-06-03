@@ -46,6 +46,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css" />
     <script src="https://cdn.ckeditor.com/4.15.0/standard-all/ckeditor.js"></script>
     @livewireStyles
+    @livewireScripts
 </head>
 
 <body>
@@ -98,10 +99,14 @@
                         $segment2 = request()->segment(2);
                         $segment3 = request()->segment(3);
                         $segment4 = request()->segment(4);
+
+                        $dashboardRoutes = ['dashboard'];
+                        $isActiveDashboardMenu = isActiveMenu($dashboardRoutes);
                     @endphp
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}">
+                        <a class="nav-link {{ $isActiveDashboardMenu ? 'active' : '' }}"
+                            href="{{ route('dashboard') }}">
                             <span class="menu-title">Dashboard</span>
                             <i class="mdi mdi-home menu-icon    "></i>
                         </a>

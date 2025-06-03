@@ -201,6 +201,8 @@ Route::group(array('prefix' => 'admin'), function () {
                 Route::get('delete/{id}', 'delete')->name('Question.delete');
                 Route::get('view/{test_id}/{id}', 'view')->name('Question.view');
                 Route::get('update-status/{id}/{status}', 'changeStatus')->name('Question.status');
+                Route::post('import-questions/{test_id}', 'importQuestions')->name('import.questions');
+                Route::get('/download-sample-file-questions', 'downloadQuestionSample')->name('download.sample.file.questions');
             });
 
         Route::controller(QuestionController::class)
@@ -256,12 +258,12 @@ Route::group(array('prefix' => 'admin'), function () {
         /** email-manager routing**/
 
         Route::controller(EmailtemplateController::class)->prefix('email-manager')->group(function () {
-                Route::get('/', 'listTemplate')->name('EmailTemplate.index');
-                Route::get('add-template', 'addTemplate')->name('EmailTemplate.add');
-                Route::post('save', 'saveTemplate')->name('EmailTemplate.save');
-                Route::get('edit-template/{id}', 'editTemplate')->name('EmailTemplate.edit');
-                Route::post('get-constant', 'getConstant')->name('EmailTemplate.getConstant');
-            });
+            Route::get('/', 'listTemplate')->name('EmailTemplate.index');
+            Route::get('add-template', 'addTemplate')->name('EmailTemplate.add');
+            Route::post('save', 'saveTemplate')->name('EmailTemplate.save');
+            Route::get('edit-template/{id}', 'editTemplate')->name('EmailTemplate.edit');
+            Route::post('get-constant', 'getConstant')->name('EmailTemplate.getConstant');
+        });
 
         ### Email Logs Manager routing
         Route::get('/email-logs', array('as' => 'EmailLogs.listEmail', 'uses' => 'EmailLogsController@listEmail'));
