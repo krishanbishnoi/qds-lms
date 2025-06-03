@@ -55,7 +55,8 @@
                         <table class="table table-hover brdrclr mt-2">
                             <thead class="theadLight">
                                 <tr>
-                                    <th width="25%">
+                                    <th>SN</th>
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Circle'),
@@ -74,7 +75,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="25%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Region'),
@@ -93,8 +94,8 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="25%">Status</th>
-                                    <th width="40%">
+                                    <th>Status</th>
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Modified'),
@@ -118,8 +119,12 @@
                             </thead>
                             <tbody id="powerwidgets">
                                 @if (!$results->isEmpty())
+                                    @php
+                                        $sn = ($results->currentPage() - 1) * $results->perPage() + 1;
+                                    @endphp
                                     @foreach ($results as $record)
                                         <tr class="items-inner">
+                                            <td>{{ $sn++ }}</td>
                                             <td data-th='{{ trans('Page Name') }}'>{{ $record->circle }}</td>
                                             <td data-th='{{ trans('Page Name') }}'>{{ $record->region_id }}</td>
                                             <td> <span

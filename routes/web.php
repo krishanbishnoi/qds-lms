@@ -86,14 +86,11 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::get('users/delete-user/{id}', 'delete')->name('Trainees.delete');
             Route::get('users/view-user/{id}', 'view')->name('Trainees.view');
             Route::get('users/update-user-status/{id}/{status}', 'changeStatus')->name('Trainees.status');
-
             Route::get('users/report/{id}', 'traineeWiseReport')->name('Trainees.report');
             Route::get('users/{user_id}/test/{test_id}/report', 'traineeTestWiseReport')->name('Trainees.Test.report');
-
             // Bulk operations
             Route::post('users/change-designation', 'ChangeDesignation')->name('Trainees.ChangeDesignation');
             Route::post('users/delete-multiple', 'DeleteMultiple')->name('Trainees.DeleteMultiple');
-
             Route::post('trainees/import-trainees', 'importTrainees')->name('import.trainees');
             Route::get('trainees/export-trainees', 'exportTrainees')->name('export.trainees');
             Route::get('trainees/export-all-trainees', 'exportTraineesAll')->name('export.trainees.all');
@@ -101,8 +98,6 @@ Route::group(array('prefix' => 'admin'), function () {
 
         Route::post('users/import-change-designation', [UsersController::class, 'importChangeDesignation'])
             ->name('import.change.designation');
-
-
 
         /** settings routing**/
         Route::controller(TrainingController::class)->group(function () {

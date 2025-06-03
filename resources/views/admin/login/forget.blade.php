@@ -1,6 +1,6 @@
 @extends('layouts.admin-login')
 @section('content')
-    <div class="content-wrapper d-flex align-items-center auth">
+    <div class="content-wrapper d-flex align-items-center auth  ms-0">
         <div class="row flex-grow">
             <div class="col-lg-4 mx-auto">
                 <div class="auth-form-light text-left p-5">
@@ -13,9 +13,9 @@
                         </div>
                     @endif
                     @error('email')
-                    <div class="alert alert-danger">
-                        {{ $message }}
-                    </div>
+                        <div class="alert alert-danger">
+                            {{ $message }}
+                        </div>
                     @enderror
                     <h4>Foregt Password</h4>
                     {{-- <h6 class="font-weight-light">Sign in to continue.</h6> --}}

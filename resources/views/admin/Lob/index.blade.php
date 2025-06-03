@@ -55,7 +55,8 @@
                         <table class="table table-hover brdrclr mt-2">
                             <thead class="theadLight">
                                 <tr>
-                                    <th width="25%">
+                                    <th>SN</th>
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Lob'),
@@ -74,8 +75,8 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="25%">Status</th>
-                                    {{-- <th width="25%">
+                                    <th>Status</th>
+                                    {{-- <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Status'),
@@ -97,7 +98,7 @@
 
 
 
-                                    <th width="40%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Modified'),
@@ -121,8 +122,12 @@
                             </thead>
                             <tbody id="powerwidgets">
                                 @if (!$results->isEmpty())
+                                    @php
+                                        $sn = ($results->currentPage() - 1) * $results->perPage() + 1;
+                                    @endphp
                                     @foreach ($results as $record)
                                         <tr class="items-inner">
+                                            <td>{{ $sn++ }}</td>
                                             <td data-th='{{ trans('Page Name') }}'>{{ $record->lob }}</td>
                                             <td> <span
                                                     class="badge {{ $record->is_active ? 'text-success' : 'text-danger' }}">
@@ -144,9 +149,9 @@
                                                         class="fas fa-edit"></span></a>
 
                                                 <!--
-                                <a href='{{ route("$modelName.delete", "$record->id") }}' data-delete="delete"  class="delete_any_item btn btn-danger" title="Delete" data-confirm = 'Are you sure?' >
-                                 <span class="fas fa-trash-alt   "></span>
-                                </a>  -->
+                                                                            <a href='{{ route("$modelName.delete", "$record->id") }}' data-delete="delete"  class="delete_any_item btn btn-danger" title="Delete" data-confirm = 'Are you sure?' >
+                                                                             <span class="fas fa-trash-alt   "></span>
+                                                                            </a>  -->
                                             </td>
                                         </tr>
                                     @endforeach

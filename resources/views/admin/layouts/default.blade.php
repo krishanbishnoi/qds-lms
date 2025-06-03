@@ -96,13 +96,11 @@
             <nav class="sidebar sidebar-offcanvas sidebarScroll" id="sidebar">
                 <ul class="nav">
                     @php
-                        $segment1 = Request::segment(1);
-                        $segment2 = Request::segment(2);
-                        $segment3 = Request::segment(3);
-                        $segment4 = Request::segment(4);
-                        // dd($segment1, $segment2, $segment3, $segment4);
+                        $segment1 = request()->segment(1);
+                        $segment2 = request()->segment(2);
+                        $segment3 = request()->segment(3);
+                        $segment4 = request()->segment(4);
                     @endphp
-
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('dashboard') }}">
@@ -111,200 +109,206 @@
                         </a>
 
                     </li>
-
+                    {{-- Users Management --}}
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#users" aria-expanded="false"
-                            aria-controls="ui-basic">
+                            aria-controls="users">
                             <span class="menu-title">Users Management</span>
                             <i class="menu-arrow"></i>
-                            <i class="mdi mdi-account menu-icon "></i>
+                            <i class="mdi mdi-account menu-icon"></i>
                         </a>
-                        <div class="collapse @php $segment2 ==  'users' ? 'show' : ''; @endphp" id="users">
+
+                        <div class="collapse @if ($segment2 == 'users') show @endif" id="users">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item" @if ($segment2 == 'users') class="active" @endif>
+                                <li class="nav-item @if ($segment2 == 'users' && !$segment3) active @endif">
                                     <a class="nav-link" href="{{ route('Trainees.index') }}">All Users</a>
                                 </li>
-                                <li class="nav-item" @if ($segment2 == 'users' && $segment3 == 'training-managers') class="active" @endif>
+                                <li class="nav-item @if ($segment2 == 'users' && $segment3 == 'training-managers') active @endif">
                                     <a class="nav-link" href="{{ route('Users.index') }}">Training Managers</a>
                                 </li>
-                                <li class="nav-item" @if ($segment2 == 'users' && $segment3 == 'trainers') class="active" @endif>
+                                <li class="nav-item @if ($segment2 == 'users' && $segment3 == 'trainers') active @endif">
                                     <a class="nav-link" href="{{ route('Trainers.index') }}">Trainers Managers</a>
                                 </li>
-
                             </ul>
                         </div>
                     </li>
 
-                    <li class="nav-item tests @php echo request()->segment(2) === 'tests' ? 'active' : ''; @endphp">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#testManagement" aria-expanded="false"
-                            aria-controls="ui-basic">
+                    {{-- Test Management --}}
+                    <li class="nav-item tests @if ($segment2 === 'tests') active @endif">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#testManagement"
+                            aria-expanded="{{ $segment2 === 'tests' ? 'true' : 'false' }}"
+                            aria-controls="testManagement">
                             <span class="menu-title">{{ trans('Test Management') }}</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-calendar-question menu-icon"></i>
                         </a>
-                        <div class="collapse @php echo request()->segment(2) === 'tests' ? 'show' : ''; @endphp"
-                            id="testManagement">
+                        <div class="collapse @if ($segment2 === 'tests') show @endif" id="testManagement">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('TestCategory.index') }}">Tests Categories</a>
+                                    <a class="nav-link  @if ($segment2 === 'tests' && $segment3 === 'category') active @endif"
+                                        href="{{ route('TestCategory.index') }}">Tests Categories</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('Test.index') }}">Tests</a>
+                                    <a class="nav-link  @if ($segment2 === 'tests' && $segment3 === null) active @endif"
+                                        href="{{ route('Test.index') }}">Tests</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('Feedback.index') }}">Feedback</a>
+                                    <a class="nav-link  @if ($segment2 === 'tests' && $segment3 === 'feedback') active @endif"
+                                        href="{{ route('Feedback.index') }}">Feedback</a>
                                 </li>
                             </ul>
                         </div>
                     </li>
-                    <li
-                        class="nav-item trainings  @php echo request()->segment(2) === 'trainings' ? 'active' : ''; @endphp">
+
+                    {{-- Training Management --}}
+                    <li class="nav-item trainings @if ($segment2 === 'trainings') active @endif">
                         <a class="nav-link" data-bs-toggle="collapse" href="#trainingManagement"
-                            aria-expanded="false" aria-controls="ui-basic-training">
+                            aria-expanded="{{ $segment2 === 'trainings' ? 'true' : 'false' }}"
+                            aria-controls="trainingManagement">
                             <span class="menu-title">{{ trans('Training Management') }}</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-bulletin-board menu-icon"></i>
                         </a>
-                        <div class="collapse @php echo request()->segment(2) === 'trainings' ? 'show' : ''; @endphp"
-                            id="trainingManagement">
+                        <div class="collapse @if ($segment2 === 'trainings') show @endif" id="trainingManagement">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('TrainingCategory.index') }}">
-                                        {{ trans('Trainings Categories') }}
-                                    </a>
+                                    <a class="nav-link  @if ($segment2 === 'trainings' && $segment3 === 'category') active @endif"
+                                        href="{{ route('TrainingCategory.index') }}">{{ trans('Trainings Categories') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('Training.index') }}">
-                                        {{ trans('Trainings') }}
-                                    </a>
+                                    <a class="nav-link  @if ($segment2 === 'trainings' && $segment3 === null) active @endif"
+                                        href="{{ route('Training.index') }}">{{ trans('Trainings') }}</a>
                                 </li>
-                                {{-- <li class="nav-item">
-                                <a class="nav-link" href="{{ route('training.add.ai') }}">
-                                    {{ trans('Create Training With AI') }}
-                                </a>
-                                      </li> --}}
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#reportsMgmt" aria-expanded="false"
-                            aria-controls="ui-basic">
+
+                    {{-- Reports Management --}}
+                    <li class="nav-item @if ($segment2 === 'reports') active @endif">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#reportsMgmt"
+                            aria-expanded="{{ $segment2 === 'reports' ? 'true' : 'false' }}"
+                            aria-controls="reportsMgmt">
                             <span class="menu-title">Reports Management</span>
                             <i class="menu-arrow"></i>
-                            <i class="mdi mdi-file-check menu-icon "></i>
+                            <i class="mdi mdi-file-check menu-icon"></i>
                         </a>
-                        <div class="collapse@php echo request()->segment(3) === 'reports' ? 'active' : ''; @endphp"
-                            id="reportsMgmt">
+                        <div class="collapse @if ($segment2 === 'reports') show @endif" id="reportsMgmt">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item" @if ($segment3 == 'reports' && $segment4 == 'test') class="active" @endif>
+                                <li class="nav-item @if ($segment2 === 'reports' && $segment3 === 'test') active @endif">
                                     <a class="nav-link" href="{{ route('Reports.test') }}">Test Report</a>
                                 </li>
-                                <li class="nav-item" @if ($segment3 == 'reports' && $segment3 == 'training') class="active" @endif>
+                                <li class="nav-item @if ($segment2 === 'reports' && $segment3 === 'training') active @endif">
                                     <a class="nav-link" href="{{ route('Reports.training') }}">Training Report</a>
                                 </li>
                             </ul>
                         </div>
                     </li>
 
+
                     @if (Auth::user()->user_role_id == SUPER_ADMIN_ROLE_ID)
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#email" aria-expanded="false"
-                                aria-controls="ui-basic">
+                        {{-- Email Template --}}
+                        <li class="nav-item @if ($segment2 === 'email-manager') active @endif">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#email"
+                                aria-expanded="{{ $segment2 === 'email-manager' ? 'true' : 'false' }}"
+                                aria-controls="email">
                                 <span class="menu-title">Email Template</span>
                                 <i class="menu-arrow"></i>
                                 <i class="mdi mdi-email menu-icon"></i>
                             </a>
-                            <div class="collapse @php echo request()->segment(2) === 'email-manager' ? 'show' : ''; @endphp"
-                                id="email">
+                            <div class="collapse @if ($segment2 === 'email-manager') show @endif" id="email">
                                 <ul class="nav flex-column sub-menu">
-                                    <li class="nav-item" @if ($segment1 == 'settings' && $segment3 == 'Site') class="active" @endif>
+                                    <li class="nav-item @if (Route::is('EmailTemplate.index')) active @endif">
                                         <a class="nav-link" href="{{ route('EmailTemplate.index') }}">Email
                                             Template</a>
                                     </li>
-                                    <li class="nav-item" @if ($segment1 == 'settings' && $segment3 == 'Site') class="active" @endif>
+                                    <li class="nav-item @if (Route::is('EmailLogs.listEmail')) active @endif">
                                         <a class="nav-link" href="{{ route('EmailLogs.listEmail') }}">Email Logs</a>
                                     </li>
-
                                 </ul>
                             </div>
                         </li>
                     @endif
 
-                    <li class="nav-item">
-                        <a class="nav-link @php echo request()->segment(2) === 'masters' ? 'active' : ''; @endphp"
-                            data-bs-toggle="collapse" href="#Masters" aria-expanded="false"
-                            aria-controls="ui-basic">
+                    {{-- Masters Management --}}
+                    <li class="nav-item @if ($segment2 === 'masters') active @endif">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#Masters"
+                            aria-expanded="{{ $segment2 === 'masters' ? 'true' : 'false' }}" aria-controls="Masters">
                             <span class="menu-title">Masters Management</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-book-open-page-variant menu-icon"></i>
                         </a>
-                        <div class="collapse @php echo request()->segment(2) === 'masters' ? 'show' : ''; @endphp"
-                            id="Masters">
+                        <div class="collapse @if ($segment2 === 'masters') show @endif" id="Masters">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item" @if ($segment1 == 'lobs' && $segment3 == 'Site') class="active" @endif> <a
+                                <li class="nav-item @if ($segment1 == 'lobs') active @endif"><a
                                         class="nav-link" href="{{ route('Lob.index') }}">LOB Management</a></li>
-                                <li class="nav-item" @if ($segment1 == 'designation' && $segment3 == 'Site') class="active" @endif> <a
+                                <li class="nav-item @if ($segment1 == 'designation') active @endif"><a
                                         class="nav-link" href="{{ route('Designation.index') }}">Designation
                                         Management</a></li>
-                                <li class="nav-item" @if ($segment1 == 'regions' && $segment3 == 'Site') class="active" @endif> <a
+                                <li class="nav-item @if ($segment1 == 'regions') active @endif"><a
                                         class="nav-link" href="{{ route('Region.index') }}">Region Management</a>
                                 </li>
-                                <li class="nav-item" @if ($segment1 == 'circles' && $segment3 == 'Site') class="active" @endif> <a
+                                <li class="nav-item @if ($segment1 == 'circles') active @endif"><a
                                         class="nav-link" href="{{ route('Circle.index') }}">Circle Management</a>
                                 </li>
-                                <li class="nav-item" @if ($segment1 == 'training-types' && $segment3 == 'Site') class="active" @endif> <a
+                                <li class="nav-item @if ($segment1 == 'training-types') active @endif"><a
                                         class="nav-link" href="{{ route('TrainingType.index') }}">TrainingType
                                         Management</a></li>
-                                <li class="nav-item" @if ($segment1 == 'partners' && $segment3 == 'Site') class="active" @endif> <a
+                                <li class="nav-item @if ($segment1 == 'partners') active @endif"><a
                                         class="nav-link" href="{{ route('Partner.index') }}">Partner Management</a>
                                 </li>
-                                <li class="nav-item" @if ($segment1 == 'domains' && $segment3 == 'Site') class="active" @endif> <a
+                                <li class="nav-item @if ($segment1 == 'domains') active @endif"><a
                                         class="nav-link" href="{{ route('Domain.index') }}">Domain Management</a>
                                 </li>
-
                             </ul>
                         </div>
                     </li>
+
                     @if (Auth::user()->user_role_id == SUPER_ADMIN_ROLE_ID)
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#cms" aria-expanded="false"
-                                aria-controls="ui-basic">
+                        {{-- Page Management --}}
+                        {{-- <li class="nav-item @if ($segment1 == 'cms') active @endif">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#cms"
+                                aria-expanded="{{ $segment1 == 'cms' ? 'true' : 'false' }}" aria-controls="cms">
                                 <span class="menu-title">Page Management</span>
                                 <i class="menu-arrow"></i>
                                 <i class="mdi mdi-book-open-page-variant menu-icon"></i>
                             </a>
-                            <div class="collapse" id="cms">
+                            <div class="collapse @if ($segment1 == 'cms') show @endif" id="cms">
                                 <ul class="nav flex-column sub-menu">
-                                    <li class="nav-item" @if ($segment1 == 'settings' && $segment3 == 'Site') class="active" @endif> <a
-                                            class="nav-link" href="{{ route('Cms.index') }}">Cms Page Management</a>
+                                    <li class="nav-item @if (Route::is('Cms.index')) active @endif">
+                                        <a class="nav-link" href="{{ route('Cms.index') }}">CMS Page Management</a>
                                     </li>
                                 </ul>
                             </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#settings" aria-expanded="false"
-                                aria-controls="ui-basic">
+                        </li> --}}
+
+                        {{-- Settings --}}
+                        {{-- <li class="nav-item @if ($segment1 == 'settings') active @endif">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#settings"
+                                aria-expanded="{{ $segment1 == 'settings' ? 'true' : 'false' }}"
+                                aria-controls="settings">
                                 <span class="menu-title">Settings</span>
                                 <i class="menu-arrow"></i>
-                                <i class="mdi mdi-settings
-                            menu-icon"></i>
+                                <i class="mdi mdi-settings menu-icon"></i>
                             </a>
-                            <div class="collapse" id="settings">
+                            <div class="collapse @if ($segment1 == 'settings') show @endif" id="settings">
                                 <ul class="nav flex-column sub-menu">
-                                    <li class="nav-item" @if ($segment1 == 'settings' && $segment3 == 'Site') class="active" @endif> <a
-                                            class="nav-link" href="{{ URL('admin/settings/prefix/Site') }}">Site
-                                            Setting</a></li>
-                                    <li class="nav-item" @if ($segment1 == 'settings' && $segment3 == 'Site') class="active" @endif> <a
-                                            class="nav-link"
-                                            href="{{ URL('admin/settings/prefix/Reading') }}">Reading Setting</a></li>
-                                    <!-- <li class="nav-item" @if ($segment1 == 'settings' && $segment3 == 'Site') class="active" @endif> <a class="nav-link"  href="{{ URL('admin/settings/prefix/Social') }}">Social Setting</a></li> -->
-                                    <li class="nav-item" @if ($segment1 == 'settings' && $segment3 == 'Site') class="active" @endif> <a
-                                            class="nav-link"
-                                            href="{{ URL('admin/settings/prefix/Contact') }}">Contect Setting</a></li>
+                                    <li class="nav-item @if (request()->fullUrlIs(url('admin/settings/prefix/Site'))) active @endif">
+                                        <a class="nav-link" href="{{ url('admin/settings/prefix/Site') }}">Site
+                                            Setting</a>
+                                    </li>
+                                    <li class="nav-item @if (request()->fullUrlIs(url('admin/settings/prefix/Reading'))) active @endif">
+                                        <a class="nav-link" href="{{ url('admin/settings/prefix/Reading') }}">Reading
+                                            Setting</a>
+                                    </li>
+                                    <li class="nav-item @if (request()->fullUrlIs(url('admin/settings/prefix/Contact'))) active @endif">
+                                        <a class="nav-link" href="{{ url('admin/settings/prefix/Contact') }}">Contact
+                                            Setting</a>
+                                    </li>
                                 </ul>
                             </div>
-                        </li>
+                        </li> --}}
                     @endif
+
 
                 </ul>
             </nav>
