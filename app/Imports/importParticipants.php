@@ -88,25 +88,25 @@ class importParticipants extends BaseController implements ToModel, WithHeadingR
                 ];
                 Notification::send($user, new AssignTrainingNotification($details));
 
-                $settingsEmail             =    Config::get('Site.email');
-                $full_name                 =    $user->fullname;
-                $authEmail                 =    $user->email;
-                // $employeeId                =     $user->olms_id;
-                $employeeId                =    $user->email;
-                $route_url                 =     URL::route('userTraining.index');
-                $click_link                =     $route_url;
-                $emailActions              =     EmailAction::where('action', '=', 'training_assigned')->get()->toArray();
-                //  dd($emailActions);
-                $emailTemplates            =     EmailTemplate::where('action', '=', 'training_assigned')->get(array('name', 'subject', 'action', 'body'))->toArray();
-                $cons                      =     explode(',', $emailActions[0]['options']);
-                $constants                 =     array();
-                foreach ($cons as $key => $val) {
-                    $constants[]           =     '{' . $val . '}';
-                }
-                $subject                   =     $emailTemplates[0]['subject'];
-                $rep_Array                 =     array($full_name, $employeeId, $employeeId, $click_link);
-                $messageBody               =     str_replace($constants, $rep_Array, $emailTemplates[0]['body']);
-                $mail                      =     $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
+                // $settingsEmail             =    Config::get('Site.email');
+                // $full_name                 =    $user->fullname;
+                // $authEmail                 =    $user->email;
+                // // $employeeId                =     $user->olms_id;
+                // $employeeId                =    $user->email;
+                // $route_url                 =     URL::route('userTraining.index');
+                // $click_link                =     $route_url;
+                // $emailActions              =     EmailAction::where('action', '=', 'training_assigned')->get()->toArray();
+                // //  dd($emailActions);
+                // $emailTemplates            =     EmailTemplate::where('action', '=', 'training_assigned')->get(array('name', 'subject', 'action', 'body'))->toArray();
+                // $cons                      =     explode(',', $emailActions[0]['options']);
+                // $constants                 =     array();
+                // foreach ($cons as $key => $val) {
+                //     $constants[]           =     '{' . $val . '}';
+                // }
+                // $subject                   =     $emailTemplates[0]['subject'];
+                // $rep_Array                 =     array($full_name, $employeeId, $employeeId, $click_link);
+                // $messageBody               =     str_replace($constants, $rep_Array, $emailTemplates[0]['body']);
+                // $mail                      =     $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
 
                 return $participant;
             }

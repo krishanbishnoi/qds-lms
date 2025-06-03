@@ -24,61 +24,105 @@
                         <div style="max-height: 60vh; overflow-y: auto;" id="instructionContent">
                             <div class="mb-3">
                                 <ul class="list-group list-group-flush mb-3">
-                                    <li class="list-group-item">⏳ <strong>Test Duration:</strong>
-                                        {{ $testDetails->time_of_test }} minutes</li>
-                                    <li class="list-group-item">❓ <strong>Total Questions:</strong>
-                                        {{ count($testQuestions) }}</li>
-                                    <li class="list-group-item">✅ <strong>Passing Score:</strong>
-                                        {{ $testDetails->minimum_marks }}%</li>
-
-                                    <!-- New: Question types -->
-                                    <li class="list-group-item">🧾 <strong>Question Types:</strong> The test consists of
-                                        MCQs (Multiple Choice Questions), SCQs (Single Correct Questions), and True/False
-                                        type questions.</li>
-                                    <!-- New: Answer all questions -->
-                                    <li class="list-group-item">✍️ <strong>All Questions Are Mandatory:</strong> You must
-                                        answer every question before submitting. Unanswered questions will prevent final
-                                        submission.</li>
-                                    <!-- New: No negative marking -->
-                                    <li class="list-group-item">➕ <strong>No Negative Marking:</strong> There is no penalty
-                                        for incorrect answers, so attempt all questions confidently.</li>
-                                    <!-- Anti-cheating -->
-                                    {{-- <li class="list-group-item">🔒 <strong>Single Attempt Only:</strong> You are allowed
-                                        only one attempt. Once started, the test must be completed.</li> --}}
-                                    <li class="list-group-item">🌐 <strong>Stable Internet Required:</strong> Any network
-                                        disconnection may automatically submit your test and log the activity.</li>
-                                    <li class="list-group-item">🧭 <strong>Stay on Test Page:</strong> Switching to another
-                                        tab or minimizing the browser will trigger warnings. Multiple violations will
-                                        auto-submit your test.</li>
-                                    <li class="list-group-item">🚫 <strong>Do Not Refresh:</strong> Reloading, pressing F5,
-                                        or clicking the back button will end your test immediately.</li>
-                                    <li class="list-group-item">🎥 <strong>Webcam Must Stay On:</strong> Your webcam must
-                                        detect your face during the entire test. Obstructed or absent face = test
-                                        terminated.</li>
-                                    <li class="list-group-item">🎤 <strong>Mic Access May Be Monitored:</strong> Your
-                                        microphone may be used to monitor ambient noise levels to detect suspicious
-                                        behavior.</li>
-                                    <li class="list-group-item">📵 <strong>No Mobile Devices:</strong> Using your phone,
-                                        smartwatches, or other digital devices is strictly prohibited during the test.</li>
-                                    <li class="list-group-item">🧠 <strong>No External Help:</strong> This is an individual
-                                        assessment. Collaboration or help from others will result in disqualification.</li>
-                                    <li class="list-group-item">🕵️‍♂️ <strong>AI Surveillance Active:</strong> Face, tab,
-                                        and activity monitoring tools are in use to ensure test integrity. Every action is
-                                        logged.</li>
-                                    <li class="list-group-item">🔍 <strong>Copy/Paste Disabled:</strong> Right-click,
-                                        inspect element, or using keyboard shortcuts like Ctrl+C/Ctrl+V is disabled and
-                                        logged.</li>
-                                    <li class="list-group-item">👁️ <strong>System Focus Monitoring:</strong> Unusual mouse
-                                        movements or inactivity may be flagged as suspicious.</li>
-                                    <li class="list-group-item">📝 <strong>Time-Managed Questions:</strong> Allocate your
-                                        time wisely. Some questions may be time-bound within the test.</li>
-                                    <li class="list-group-item">⚠️ <strong>Zero Tolerance Policy:</strong> Any attempt to
-                                        bypass restrictions will result in immediate test submission and logging of the
-                                        attempt.</li>
-                                    {{-- <li class="list-group-item">🔁 <strong>No Retake Requests:</strong> Once submitted or
-                                        terminated due to policy violation, no retake will be allowed.</li> --}}
-                                    <li class="list-group-item">📈 <strong>Result Review:</strong> Results will be reviewed
-                                        before finalization. Suspicious attempts may be invalidated.</li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">⏳</span>
+                                        <span><strong>Test Duration:</strong> {{ $testDetails->time_of_test }}
+                                            minutes</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">❓</span>
+                                        <span><strong>Total Questions:</strong> {{ count($testQuestions) }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">✅</span>
+                                        <span><strong>Passing Score:</strong> {{ $testDetails->minimum_marks }}%</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">🧾</span>
+                                        <span><strong>Question Types:</strong> The test consists of MCQs (Multiple Choice
+                                            Questions), SCQs (Single Correct Questions), and True/False type
+                                            questions.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">✍️</span>
+                                        <span><strong>All Questions Are Mandatory:</strong> You must answer every question
+                                            before submitting. Unanswered questions will prevent final submission.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">➕</span>
+                                        <span><strong>No Negative Marking:</strong> There is no penalty for incorrect
+                                            answers, so attempt all questions confidently.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">🌐</span>
+                                        <span><strong>Stable Internet Required:</strong> Any network disconnection may
+                                            automatically submit your test and log the activity.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">🧭</span>
+                                        <span><strong>Stay on Test Page:</strong> Switching to another tab or minimizing the
+                                            browser will trigger warnings. Multiple violations will auto-submit your
+                                            test.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">🚫</span>
+                                        <span><strong>Do Not Refresh:</strong> Reloading, pressing F5, or clicking the back
+                                            button will end your test immediately.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">🎥</span>
+                                        <span><strong>Webcam Must Stay On:</strong> Your webcam must detect your face during
+                                            the entire test. Obstructed or absent face = test terminated.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">🎤</span>
+                                        <span><strong>Mic Access May Be Monitored:</strong> Your microphone may be used to
+                                            monitor ambient noise levels to detect suspicious behavior.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">📵</span>
+                                        <span><strong>No Mobile Devices:</strong> Using your phone, smartwatches, or other
+                                            digital devices is strictly prohibited during the test.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">🧠</span>
+                                        <span><strong>No External Help:</strong> This is an individual assessment.
+                                            Collaboration or help from others will result in disqualification.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">🕵️‍♂️</span>
+                                        <span><strong>AI Surveillance Active:</strong> Face, tab, and activity monitoring
+                                            tools are in use to ensure test integrity. Every action is logged.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">🔍</span>
+                                        <span><strong>Copy/Paste Disabled:</strong> Right-click, inspect element, or using
+                                            keyboard shortcuts like Ctrl+C/Ctrl+V is disabled and logged.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">👁️</span>
+                                        <span><strong>System Focus Monitoring:</strong> Unusual mouse movements or
+                                            inactivity may be flagged as suspicious.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">📝</span>
+                                        <span><strong>Time-Managed Questions:</strong> Allocate your time wisely. Some
+                                            questions may be time-bound within the test.</span>
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">⚠️</span>
+                                        <span><strong>Zero Tolerance Policy:</strong> Any attempt to bypass restrictions
+                                            will result in immediate test submission and logging of the attempt.</span>
+                                    </li>
+                                    {{-- <li class="list-group-item d-flex align-items-start">
+        <span class="me-2">🔁</span>
+        <span><strong>No Retake Requests:</strong> Once submitted or terminated due to policy violation, no retake will be allowed.</span>
+    </li> --}}
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <span class="me-2">📈</span>
+                                        <span><strong>Result Review:</strong> Results will be reviewed before finalization.
+                                            Suspicious attempts may be invalidated.</span>
+                                    </li>
                                 </ul>
 
                             </div>
@@ -97,16 +141,16 @@
                                     </div>
                                 </div>
                             @endif
+                            <div class="text-center mt-3">
+                                <p class="text-danger fw-bold">
+                                    🚨 You are being monitored. Any kind of malpractice will lead to auto-submission,
+                                    disqualification, and improper behavior will result in automatic test termination.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <div class="text-center mt-3">
-                        <p class="text-danger fw-bold">
-                            🚨 You are being monitored. Any kind of malpractice will lead to auto-submission,
-                            disqualification, and improper behavior will result in automatic test termination.
-                        </p>
-                    </div>
                     <button type="button" id="startTestBtn" class="btn btn-success" disabled>✅ I’ve Read & Start
                         Test</button>
                 </div>
@@ -139,8 +183,8 @@
                                         transform="translate(-7.487 -7.531)" fill="currentColor" />
                                     <circle id="Ellipse_589" data-name="Ellipse 589" cx="0.821" cy="0.821" r="0.821"
                                         transform="translate(17.163 13.017)" fill="currentColor" />
-                                    <circle id="Ellipse_590" data-name="Ellipse 590" cx="1.076" cy="1.076" r="1.076"
-                                        transform="translate(16.908 15.506)" fill="currentColor" />
+                                    <circle id="Ellipse_590" data-name="Ellipse 590" cx="1.076" cy="1.076"
+                                        r="1.076" transform="translate(16.908 15.506)" fill="currentColor" />
                                 </g>
                             </svg>
                         </div>
