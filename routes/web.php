@@ -19,6 +19,7 @@ use App\Http\Controllers\admin\TraineesController;
 use App\Http\Controllers\admin\TrainingTypeController;
 use App\Http\Controllers\admin\UsersController;
 use App\Http\Controllers\admin\CoursesController;
+use App\Http\Controllers\admin\EmailtemplateController;
 use App\Http\Controllers\admin\TrainingCategoryController;
 use App\Http\Controllers\admin\TrainingController;
 
@@ -253,20 +254,19 @@ Route::group(array('prefix' => 'admin'), function () {
         Route::get('cms-manager/update-status/{id}/{status}', 'CmspagesController@updateCmsStatus');
 
         /** email-manager routing**/
-        Route::get('/email-manager', array('as' => 'EmailTemplate.index', 'uses' => 'EmailtemplateController@listTemplate'));
-        Route::get('/email-manager/add-template', array('as' => 'EmailTemplate.add', 'uses' => 'EmailtemplateController@addTemplate'));
-        Route::post('/email-manager/add-template', 'EmailtemplateController@saveTemplate');
-        Route::get('/email-manager/edit-template/{id}', array('as' => 'EmailTemplate.edit', 'uses' => 'EmailtemplateController@editTemplate'));
-        Route::post('/email-manager/edit-template/{id}', 'EmailtemplateController@updateTemplate');
-        Route::post('/email-manager/get-constant', 'EmailtemplateController@getConstant');
+
+        Route::controller(EmailtemplateController::class)->prefix('email-manager')->group(function () {
+                Route::get('/', 'listTemplate')->name('EmailTemplate.index');
+                Route::get('add-template', 'addTemplate')->name('EmailTemplate.add');
+                Route::post('save', 'saveTemplate')->name('EmailTemplate.save');
+                Route::get('edit-template/{id}', 'editTemplate')->name('EmailTemplate.edit');
+                Route::post('get-constant', 'getConstant')->name('EmailTemplate.getConstant');
+            });
 
         ### Email Logs Manager routing
         Route::get('/email-logs', array('as' => 'EmailLogs.listEmail', 'uses' => 'EmailLogsController@listEmail'));
         Route::any('/email-logs/email_details/{id}', 'EmailLogsController@EmailDetail');
         /** email-manager routing**/
-
-
-
 
 
         ### contact manager routing
