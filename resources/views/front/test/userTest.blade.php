@@ -209,12 +209,13 @@
                     </form>
                 </div>
             </div>
+            <!-- Test Instructions Card -->
             <div class="courseContent" id="courseContent">
                 <div class="courselisting">
                     <div>
                         <div class="card sticky-top shadow-sm" style="top: 20px;">
                             <!-- Card Header -->
-                            <div class="card-header bg-primary text-white">
+                            <div class="card-header">
                                 <h5 class="mb-0">Test Instructions</h5>
                             </div>
 
@@ -225,17 +226,27 @@
                                 </div>
 
                                 <div class="test-summary">
-                                    <p class="mb-1"><strong>Duration:</strong> {{ $testDetails->time_of_test }} minutes
-                                    </p>
-                                    <p class="mb-1"><strong>Total Questions:</strong> {{ count($testQuestions) }}</p>
-                                    <p class="mb-0"><strong>Passing Score:</strong> {{ $testDetails->minimum_marks }}%
-                                    </p>
+                                    <div class="summary-item">
+                                        <div class="summary-label">Duration:</div>
+                                        <div class="summary-value">{{ $testDetails->time_of_test }} minutes</div>
+                                    </div>
+                                    <div class="summary-item">
+                                        <div class="summary-label">Total Questions:</div>
+                                        <div class="summary-value">{{ count($testQuestions) }}</div>
+                                    </div>
+                                    <div class="summary-item">
+                                        <div class="summary-label">Passing Score:</div>
+                                        <div class="summary-value">{{ $testDetails->minimum_marks }}%</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+
 
         </div>
 
@@ -380,12 +391,13 @@
         }
 
         .ansCheck {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            /* 2 columns per row */
             gap: 12px;
         }
 
-        .ansCheck span {
+        .ansCheck .form-check {
             display: flex;
             align-items: center;
             padding: 12px 15px;
@@ -393,9 +405,10 @@
             border: 1px solid #dee2e6;
             border-radius: 6px;
             transition: all 0.2s;
+            width: 100%;
         }
 
-        .ansCheck span:hover {
+        .ansCheck .form-check:hover {
             border-color: #4e73df;
             background-color: #f8f9fe;
         }
@@ -503,19 +516,66 @@
         }
 
         /* Sidebar instructions */
+        :root {
+            --blue: #007bff;
+            /* fallback */
+        }
+
+        /* Card Header Styling */
+        .card-header {
+            background-color: var(--blue);
+            color: #fff;
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 1.3rem;
+            padding: 1rem 1.25rem;
+        }
+
+        /* Scrollable Instructions Area */
         .instructions-sidebar {
             max-height: 300px;
             overflow-y: auto;
             padding-right: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #333;
         }
 
         .instructions-sidebar p {
             margin-bottom: 10px;
         }
 
-        .card-header {
-            border-bottom: none;
+        /* Summary Section */
+        .test-summary {
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: #222;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
+
+        /* Label-Value Pair (Row) */
+        .summary-item {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Label (fixed width) */
+        .summary-label {
+            width: 140px;
+            font-weight: 600;
+            color: var(--blue);
+        }
+
+        /* Value (grows to fill) */
+        .summary-value {
+            flex-grow: 1;
+            font-weight: 500;
+            color: #555;
+        }
+
+
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -584,7 +644,6 @@
                 updateAnswerStatus();
             }
 
-            // Function to display a question
             function showQuestion(index) {
                 const question = questions[index];
                 const questionContainer = $('#question-container');
@@ -595,15 +654,15 @@
                 questionNumber.text(index + 1);
                 questionContainer.empty();
 
-                // Build the question HTML based on type
+                // Build the question HTML
                 let questionHtml = `
-                    <div class="testQuestion">
-                        <div class="clickType">${getQuestionTypeLabel(question.question_type)}</div>
-                        <h4>${question.question}</h4>
-                `;
+        <div class="testQuestion">
+            <div class="clickType mb-2">${getQuestionTypeLabel(question.question_type)}</div>
+            <h4 class="mb-3">${question.question}</h4>
+    `;
 
                 if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
-                    questionHtml += `<div class="ansCheck">`;
+                    questionHtml += `<div class="ansCheck ">`;
                     question.question_attributes.forEach(option => {
                         const isChecked = userAnswers[question.id] &&
                             (userAnswers[question.id].answer_id == option.id ||
@@ -611,17 +670,20 @@
                                     userAnswers[question.id].answer_id.includes(option.id.toString())));
 
                         questionHtml += `
-                            <span>
-                                <input type="radio" id="option-${option.id}" 
-                                    name="answer-${question.id}" value="${option.id}" 
-                                    ${isChecked ? 'checked' : ''}>
-                                <label for="option-${option.id}">${option.option}</label>
-                            </span>
-                        `;
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio"
+                            id="option-${option.id}" name="answer-${question.id}" value="${option.id}"
+                            ${isChecked ? 'checked' : ''}>
+                        <label class="form-check-label" for="option-${option.id}">
+                            ${option.option}
+                        </label>
+                    </div>
+            `;
                     });
                     questionHtml += `</div>`;
+
                 } else if (question.question_type === 'MCQ') {
-                    questionHtml += `<div class="ansCheck">`;
+                    questionHtml += `<div class="ansCheck ">`;
                     question.question_attributes.forEach(option => {
                         const isChecked = userAnswers[question.id] &&
                             (userAnswers[question.id].answer_id == option.id ||
@@ -629,23 +691,26 @@
                                     userAnswers[question.id].answer_id.includes(option.id.toString())));
 
                         questionHtml += `
-                            <span>
-                                <input type="checkbox" id="option-${option.id}" 
-                                    name="answer-${question.id}[]" value="${option.id}" 
-                                    ${isChecked ? 'checked' : ''}>
-                                <label for="option-${option.id}">${option.option}</label>
-                            </span>
-                        `;
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                            id="option-${option.id}" name="answer-${question.id}[]" value="${option.id}"
+                            ${isChecked ? 'checked' : ''}>
+                        <label class="form-check-label" for="option-${option.id}">
+                            ${option.option}
+                        </label>
+                    </div>
+            `;
                     });
                     questionHtml += `</div>`;
+
                 } else if (question.question_type === 'FreeText') {
                     const answerText = userAnswers[question.id] ? userAnswers[question.id].answer_text : '';
                     questionHtml += `
-                        <div class="ansCheck pb-3">
-                            <textarea class="form-control free-text-input" name="answer-text-${question.id}">${answerText}</textarea>
-                            <div class="wordcounter w-100">${answerText.length}/150</div>
-                        </div>
-                    `;
+            <div class="ansCheck pb-3">
+                <textarea class="form-control free-text-input mb-2" name="answer-text-${question.id}" rows="4" maxlength="150">${answerText}</textarea>
+                <div class="wordcounter text-end">${answerText.length}/150</div>
+            </div>
+        `;
                 }
 
                 questionHtml += `</div>`;
@@ -663,6 +728,7 @@
                 updateNavigationButtons();
                 updateProgressBar();
             }
+
 
             // Helper function to get question type label
             function getQuestionTypeLabel(type) {
