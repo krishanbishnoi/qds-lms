@@ -10,6 +10,7 @@ use App\Http\Controllers\admin\DomainController;
 use App\Http\Controllers\admin\FeedbackController;
 use App\Http\Controllers\admin\LobController;
 use App\Http\Controllers\admin\PartnerController;
+use App\Http\Controllers\admin\QuestionController;
 use App\Http\Controllers\admin\RegionController;
 use App\Http\Controllers\admin\ReportsController;
 use App\Http\Controllers\admin\TestCategoryController;
@@ -183,19 +184,42 @@ Route::group(array('prefix' => 'admin'), function () {
         });
 
         /* test questions routes */
-        Route::get('tests/questions/{test_id}', array('as' => 'Question.index', 'uses' => 'QuestionController@index'));
-        Route::post('tests/questions/{test_id}', array('as' => 'Question.index', 'uses' => 'QuestionController@index'));
-        Route::get('tests/questions/add-new-question/{test_id}', array('as' => 'Question.add', 'uses' => 'QuestionController@add'));
-        Route::post('tests/questions/add-new-question/{test_id}', array('as' => 'Question.add', 'uses' => 'QuestionController@save'));
-        Route::get('tests/questions/edit-question/{test_id}/{id}', array('as' => 'Question.edit', 'uses' => 'QuestionController@edit'));
-        Route::post('tests/questions/edit-question/{test_id}/{id}', array('as' => 'Question.edit', 'uses' => 'QuestionController@update'));
-        Route::get('tests/questions/delete-question/{id}', array('as' => 'Question.delete', 'uses' => 'QuestionController@delete'));
-        Route::get('tests/questions/view-question/{test_id}/{id}', array('as' => 'Question.view', 'uses' => 'QuestionController@view'));
-        Route::get('tests/questions/update-question-status/{id}/{status}', array('as' => 'Question.status', 'uses' => 'QuestionController@changeStatus'));
-        Route::post('questions/add-more-option', array('as' => 'Contests.addMoreOption', 'uses', 'uses' => 'QuestionController@addMoreOption'));
-        Route::post('questions/delete-more-option', array('as' => 'Contests.deleteMoreOption', 'uses', 'uses' => 'QuestionController@deleteMoreOption'));
+        // Route::get('tests/questions/{test_id}', array('as' => 'Question.index', 'uses' => 'QuestionController@index'));
+        // Route::post('tests/questions/{test_id}', array('as' => 'Question.index', 'uses' => 'QuestionController@index'));
+        // Route::get('tests/questions/add-new-question/{test_id}', array('as' => 'Question.add', 'uses' => 'QuestionController@add'));
+        // Route::post('tests/questions/add-new-question/{test_id}', array('as' => 'Question.add', 'uses' => 'QuestionController@save'));
+        // Route::get('tests/questions/edit-question/{test_id}/{id}', array('as' => 'Question.edit', 'uses' => 'QuestionController@edit'));
+        // Route::post('tests/questions/edit-question/{test_id}/{id}', array('as' => 'Question.edit', 'uses' => 'QuestionController@update'));
+        // Route::get('tests/questions/delete-question/{id}', array('as' => 'Question.delete', 'uses' => 'QuestionController@delete'));
+        // Route::get('tests/questions/view-question/{test_id}/{id}', array('as' => 'Question.view', 'uses' => 'QuestionController@view'));
+        // Route::get('tests/questions/update-question-status/{id}/{status}', array('as' => 'Question.status', 'uses' => 'QuestionController@changeStatus'));
+        // Route::post('questions/add-more-option', array('as' => 'Contests.addMoreOption', 'uses', 'uses' => 'QuestionController@addMoreOption'));
+        // Route::post('questions/delete-more-option', array('as' => 'Contests.deleteMoreOption', 'uses', 'uses' => 'QuestionController@deleteMoreOption'));
         /* test report routes */
+
+
+
+        Route::controller(QuestionController::class)
+            ->prefix('tests/questions')
+            ->group(function () {
+                Route::match(['get', 'post'], '/{test_id}', 'index')->name('Question.index');
+                Route::get('add/{test_id}', 'add')->name('Question.add');
+                Route::post('save/{test_id}', 'save')->name('Question.save');
+                Route::get('edit/{test_id}/{id}', 'edit')->name('Question.edit');
+                Route::get('delete/{id}', 'delete')->name('Question.delete');
+                Route::get('view/{test_id}/{id}', 'view')->name('Question.view');
+                Route::get('update-status/{id}/{status}', 'changeStatus')->name('Question.status');
+            });
+
+        Route::controller(QuestionController::class)
+            ->prefix('questions')
+            ->group(function () {
+                Route::post('add-more-option', 'addMoreOption')->name('Contests.addMoreOption');
+                Route::post('delete-more-option', 'deleteMoreOption')->name('Contests.deleteMoreOption');
+            });
+
         Route::get('test/{test_id}', array('as' => 'Test.report', 'uses' => 'TestController@testReport'));
+
 
         /* Feedback modules routes */
 

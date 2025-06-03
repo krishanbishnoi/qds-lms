@@ -6,6 +6,14 @@ return [
         1 => 'Active',
         0 => 'Inactive',
     ],
+
+    'QuestionType' => [
+        'MCQ' => 'Multiple Choice',
+        'SCQ' => 'Single Choice',
+        'T/F' => 'True / False',
+        'FreeText' => 'Free Text',
+    ],
+    
     'FLASH_TRY_CATCH'               => '🚧 Uh-oh! Something unexpected happened. We’re on it! 🛠️',
 
     'REC_NOT_FOUND'            => 'Record not found',
