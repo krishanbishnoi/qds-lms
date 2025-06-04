@@ -690,25 +690,25 @@ class TrainingController extends BaseController
                 Notification::send($user, new AssignTrainingNotification($details));
 
                 // Send email
-                $settingsEmail = Config::get('Site.email');
-                $full_name = $user->fullname;
-                $authEmail = $user->email;
-                $click_link = $actionUrl;
+                // $settingsEmail = Config::get('Site.email');
+                // $full_name = $user->fullname;
+                // $authEmail = $user->email;
+                // $click_link = $actionUrl;
 
-                $emailActions = EmailAction::where('action', 'training_assigned')->first();
-                $emailTemplates = EmailTemplate::where('action', 'training_assigned')->first();
+                // $emailActions = EmailAction::where('action', 'training_assigned')->first();
+                // $emailTemplates = EmailTemplate::where('action', 'training_assigned')->first();
 
-                if ($emailActions && $emailTemplates) {
-                    $constants = array_map(function ($val) {
-                        return '{' . trim($val) . '}';
-                    }, explode(',', $emailActions->options));
+                // if ($emailActions && $emailTemplates) {
+                //     $constants = array_map(function ($val) {
+                //         return '{' . trim($val) . '}';
+                //     }, explode(',', $emailActions->options));
 
-                    $rep_Array = [$full_name, $authEmail, $authEmail, $click_link];
-                    $subject = $emailTemplates->subject;
-                    $messageBody = str_replace($constants, $rep_Array, $emailTemplates->body);
+                //     $rep_Array = [$full_name, $authEmail, $authEmail, $click_link];
+                //     $subject = $emailTemplates->subject;
+                //     $messageBody = str_replace($constants, $rep_Array, $emailTemplates->body);
 
-                    $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
-                }
+                //     $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
+                // }
             }
 
             DB::commit();

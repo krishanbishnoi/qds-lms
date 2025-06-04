@@ -16,6 +16,7 @@ use App\Models\Answer;
 use App\Models\TestResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator, PDF;;
 
 /**
@@ -100,7 +101,7 @@ class TestController extends BaseController
         $user = User::find(Auth::user()->id);
         $notifications = $user->notifications->where('read_at', '');
 
-        return View::make("front.$this->model.user-test-listing", compact('ongoing', 'upcoming', 'completedTests', 'notifications'));
+        return view("front.test.user-test-listing", compact('ongoing', 'upcoming', 'completedTests', 'notifications'));
     }
 
     /**
@@ -121,6 +122,17 @@ class TestController extends BaseController
     public function userTestDetails($test_id = 0)
     {
         $testDetails = Test::where('tests.id', $test_id)->first();
+        $startDateTime   = Carbon::parse($testDetails->start_date_time);
+        $endDateTime     = Carbon::parse($testDetails->end_date_time);
+        $currentDateTime = Carbon::now();
+
+        // Check if the current time is within the start and end times
+        if ($currentDateTime->lt($startDateTime)) {
+            return redirect()->back()->with('error', 'The test has not started yet. Please come back at ' . $startDateTime->format('Y-m-d h:i:s A') . '.');
+        }
+        if ($currentDateTime->gt($endDateTime)) {
+            return redirect()->back()->with('error', 'The test time is over. It ended at ' . $endDateTime->format('Y-m-d h:i:s A') . '.');
+        }
         if ($testDetails) {
             $questionsAlreadyAssigned = UserAssignedTestQuestion::where('test_id', $test_id)
                 ->where('trainee_id', Auth::user()->id)
@@ -149,7 +161,7 @@ class TestController extends BaseController
             }
             $totalTrainees = DB::table('test_participants')->where('test_id', $test_id)
                 ->count();
-            return View::make("front.$this->model.userTest", compact('test_id', 'testDetails', 'testQuestions', 'totalTrainees'));
+            return view("front.test.userTest", compact('test_id', 'testDetails', 'testQuestions', 'totalTrainees'));
         } else {
             return redirect()->back()->with('This test not found. Contact to admin.');
         }
@@ -223,6 +235,9 @@ class TestController extends BaseController
             return response()->json(['success' => true]);
         }
     }
+
+
+
     public function userTestResult($id)
     {
         $userId = Auth::user()->id;

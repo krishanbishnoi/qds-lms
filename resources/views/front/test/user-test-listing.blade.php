@@ -66,9 +66,9 @@
                                                                 |
                                                                 {{ \Carbon\Carbon::parse($test->start_date_time)->format('h:i') }}
                                                             </td>
-                                                            <td>{{ \Carbon\Carbon::parse($test->start_date_time)->format('Y-m-d') }}
+                                                            <td>{{ \Carbon\Carbon::parse($test->end_date_time)->format('Y-m-d') }}
                                                                 |
-                                                                {{ \Carbon\Carbon::parse($test->start_date_time)->format('h:i') }}
+                                                                {{ \Carbon\Carbon::parse($test->end_date_time)->format('h:i') }}
                                                             </td>
                                                             <td>{{ $test->minimum_marks }}</td>
                                                             <td class="text-center">

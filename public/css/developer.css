@@ -3,6 +3,10 @@
 	border-radius: 4px;
 }
 
+.badge {
+	font-size: 0.800rem;
+}
+
 select.form-control {
 	height: 36px;
 	appearance: revert;

@@ -53,7 +53,7 @@
                                                 'employee_id',
                                                 trans('Employee ID') .
                                                     '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"> * </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    class="requireRed"> * </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -74,7 +74,7 @@
                                                 'first_name',
                                                 trans('First Name') .
                                                     '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        class="requireRed"> * </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                class="requireRed"> * </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -95,7 +95,7 @@
                                                 'last_name',
                                                 trans('Last Name') .
                                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        * </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -116,7 +116,7 @@
                                                 'email',
                                                 trans('Email') .
                                                     '<span class="requireRed"> *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -137,7 +137,7 @@
                                                 'mobile_number',
                                                 trans('Mobile Number') .
                                                     '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                class="requireRed"> * </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        class="requireRed"> * </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -158,7 +158,7 @@
                                                 'designation',
                                                 trans('Designation') .
                                                     '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                class="requireRed"> * </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        class="requireRed"> * </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -194,7 +194,7 @@
                                                 'region',
                                                 trans('Region') .
                                                     '<span class="requireRed"> *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -215,7 +215,7 @@
                                                 'circle',
                                                 trans('Circle') .
                                                     '<span class="requireRed"> *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -229,7 +229,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group <?php echo $errors->first('gender') ? 'has-error' : ''; ?>">
+                                <div class="form-group {{ $errors->has('gender') ? 'has-error' : '' }}">
                                     <div class="mws-form-row">
                                         {!! Form::label(
                                             'gender',
@@ -237,22 +237,29 @@
                                             ['class' => 'mws-form-label'],
                                             false,
                                         ) !!}
-                                        <div class="mws-form-item">
-                                            {!! Form::radio('gender', 'male', null, ['id' => 'gender_male']) !!}
-                                            {!! Form::label('gender_male', 'Male') !!}
-
-                                            {!! Form::radio('gender', 'female', null, ['id' => 'gender_female']) !!}
-                                            {!! Form::label('gender_female', 'Female') !!}
-
-                                            <div class="error-message help-inline">
-                                                <?php echo $errors->first('gender'); ?>
-                                            </div>
+                                        <div class="mws-form-item d-flex align-items-center">
+                                            <label class="me-4 d-flex align-items-center"
+                                                style="font-size:15px; color:#000">
+                                                {!! Form::radio('gender', 'male', null, ['class' => 'form-check-input me-2', 'id' => 'gender_male']) !!}
+                                                Male
+                                            </label>
+                                            <label class="me-4 d-flex align-items-center"
+                                                style="font-size:15px; color:#000">
+                                                {!! Form::radio('gender', 'female', null, ['class' => 'form-check-input me-2', 'id' => 'gender_female']) !!}
+                                                Female
+                                            </label>
+                                        </div>
+                                        <div class="error-message help-inline">
+                                            {!! $errors->first('gender') !!}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
+                            <style>
+                                .form-check-input {
+                                    transform: scale(1.1);
+                                }
+                            </style>
                             <div class="row text-end">
                                 <div class="col-md-12">
                                     <input type="submit" value="{{ trans('Save') }}" class="btn btn-danger">

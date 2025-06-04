@@ -641,18 +641,22 @@ class TestController extends BaseController
         $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
     }
 
-    public function importTests($test_id = 0)
+    public function importTests($test_id = 0, Request $request)
     {
+
         $import = new importTestsParticipants($test_id);
-        Excel::import($import, request()->file('file'));
+        Excel::import($import, $request->file('file')); // Correct way
+
         $errors = $import->getErrors();
 
         if (count($errors) > 0) {
-            return view('errors.importTrai`neeError')->with('errors', $errors);
+            return view('errors.importTraineeError')->with('errors', $errors);
         }
+
         return redirect()->back()->with('success', 'Tests Participants Added Successfully!');
     }
-    public function AssignManager()
+
+    public function AssignManager(Request $request)
     {
 
         $thisData = $request->all();
