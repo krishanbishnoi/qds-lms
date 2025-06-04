@@ -54,7 +54,7 @@
                                 'Select Status',
                                 trans('Select Status') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -68,7 +68,7 @@
                                 'olms_id',
                                 trans('Id') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -76,13 +76,13 @@
                     </div>
                 </div>
                 <!-- <div class="col-md-2 col-sm-2">
-                                                                                                                        <div class="form-group ">
-                                                                                                                            {!! Html::decode(
-                                                                                                                                Form::label('email', trans('Email') . '<span class="requireRed"> </span>', ['class' => 'mws-form-label']),
-                                                                                                                            ) !!}
-                                                                                                                            {{ Form::text('email', isset($searchVariable['email']) ? $searchVariable['email'] : '', ['class' => ' form-control', 'placeholder' => 'Email']) }}
-                                                                                                                        </div>
-                                                                                                                    </div> -->
+                                                                                                                                                                        <div class="form-group ">
+                                                                                                                                                                            {!! Html::decode(
+                                                                                                                                                                                Form::label('email', trans('Email') . '<span class="requireRed"> </span>', ['class' => 'mws-form-label']),
+                                                                                                                                                                            ) !!}
+                                                                                                                                                                            {{ Form::text('email', isset($searchVariable['email']) ? $searchVariable['email'] : '', ['class' => ' form-control', 'placeholder' => 'Email']) }}
+                                                                                                                                                                        </div>
+                                                                                                                                                                    </div> -->
                 <div class="col-md-2 col-sm-2">
                     <div class="form-group ">
                         {!! Html::decode(
@@ -90,7 +90,7 @@
                                 'mobile_number',
                                 trans('Mobile Number') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -156,16 +156,16 @@
                                     title="Release Selected Games" id="trigger_event">Delete Users</button>
                             </div>
                         </div>
-                        <table class="table table-hover brdrclr mt-2 " width="100%">
+                        <table class="table table-hover table table-bordered mt-2 " width="100%">
                             <thead class="theadLight">
                                 <tr>
-                                    <th width=:15%;> <input type="checkbox" id="checkAll" class='check_box_all'>All</th>
+                                    <th> <input type="checkbox" id="checkAll" class='check_box_all'>All</th>
 
-                                    <th width="5%">{{ trans('Sr.') }}</th>
+                                    <th>{{ trans('SN.') }}</th>
                                     <th>
                                         {{ link_to_route(
                                             "$modelName.index",
-                                            trans('Id'),
+                                            trans('ID'),
                                             [
                                                 'sortBy' => 'olms_id',
                                                 'order' => $sortBy == 'olms_id' && $order == 'desc' ? 'asc' : 'desc',
@@ -316,7 +316,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="25%">{{ trans('Action') }}</th>
+                                    <th>{{ trans('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody id="powerwidgets">

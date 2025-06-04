@@ -60,10 +60,10 @@
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                             </div>
                         </div>
-                        <table class="table table-hover brdrclr mt-2">
+                        <table class="table table-hover table table-bordered mt-2 ">
                             <thead class="theadLight">
                                 <tr>
-                                    <th width="30%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Name'),
@@ -82,8 +82,8 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="25%"> Status</th>
-                                    <th width="30%">
+                                    <th> Status</th>
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Modified'),
@@ -102,7 +102,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="30%">{{ trans('Action') }}</th>
+                                    <th>{{ trans('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody id="powerwidgets">
@@ -165,7 +165,7 @@
                                     'training_manager',
                                     trans('Assign Test Manager') .
                                         '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                    class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -210,7 +210,7 @@
                                     'training_trainer',
                                     trans('Assign Trainer') .
                                         '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                    class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}

@@ -52,7 +52,7 @@
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                             </div>
                         </div>
-                        <table class="table table-hover brdrclr mt-2">
+                        <table class="table table-hover table table-bordered mt-2 ">
                             <thead class="theadLight">
                                 <tr>
                                     <th>SN</th>
@@ -149,9 +149,9 @@
                                                         class="fas fa-edit"></span></a>
 
                                                 <!--
-                                                                            <a href='{{ route("$modelName.delete", "$record->id") }}' data-delete="delete"  class="delete_any_item btn btn-danger" title="Delete" data-confirm = 'Are you sure?' >
-                                                                             <span class="fas fa-trash-alt   "></span>
-                                                                            </a>  -->
+                                                                                <a href='{{ route("$modelName.delete", "$record->id") }}' data-delete="delete"  class="delete_any_item btn btn-danger" title="Delete" data-confirm = 'Are you sure?' >
+                                                                                 <span class="fas fa-trash-alt   "></span>
+                                                                                </a>  -->
                                             </td>
                                         </tr>
                                     @endforeach

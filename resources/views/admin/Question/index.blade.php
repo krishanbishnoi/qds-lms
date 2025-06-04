@@ -22,10 +22,10 @@
                 {{ Form::open(['method' => 'get', 'role' => 'form', 'url' => route("$modelName.index", $test_id), 'class' => 'row mws-form']) }}
                 {{ Form::hidden('display') }}
                 <!-- <div class="col-md-2 col-sm-2">
-                                                        <div class="form-group ">
-                                                            {{ Form::select('is_active', ['' => trans('All'), 1 => trans('Active'), 0 => trans('Inactive')], isset($searchVariable['is_active']) ? $searchVariable['is_active'] : '', ['class' => 'form-control']) }}
-                                                        </div>
-                                                    </div> -->
+                                                                            <div class="form-group ">
+                                                                                {{ Form::select('is_active', ['' => trans('All'), 1 => trans('Active'), 0 => trans('Inactive')], isset($searchVariable['is_active']) ? $searchVariable['is_active'] : '', ['class' => 'form-control']) }}
+                                                                            </div>
+                                                                        </div> -->
                 <div class="col-md-2 col-sm-2">
                     <div class="form-group ">
                         {{ Form::text('question', isset($searchVariable['question']) ? $searchVariable['question'] : '', ['class' => ' form-control', 'placeholder' => 'Title']) }}
@@ -73,10 +73,10 @@
                                 {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                         </div>
                     </div>
-                    <table class="table table-hover brdrclr mt-2">
+                    <table class="table table-hover table table-bordered mt-2 ">
                         <thead class="theadLight">
                             <tr>
-                                <th width="25%">
+                                <th>
                                     {{ link_to_route(
                                         "$modelName.index",
                                         trans('Question'),
@@ -95,26 +95,26 @@
                                         ],
                                     ) }}
                                 </th>
-                                <!-- <th width="10%">
-                                                                                {{ link_to_route(
-                                                                                    "$modelName.index",
-                                                                                    trans('Time Limit'),
-                                                                                    [
-                                                                                        'sortBy' => 'time_limit',
-                                                                                        'order' => $sortBy == 'time_limit' && $order == 'desc' ? 'asc' : 'desc',
-                                                                                        $query_string,
-                                                                                    ],
-                                                                                    [
-                                                                                        'class' =>
-                                                                                            $sortBy == 'time_limit' && $order == 'desc'
-                                                                                                ? 'sorting desc'
-                                                                                                : ($sortBy == 'time_limit' && $order == 'asc'
-                                                                                                    ? 'sorting asc'
-                                                                                                    : 'sorting'),
-                                                                                    ],
-                                                                                ) }}
-                                                                            </th> -->
-                                <th width="10%">
+                                <!-- <th>
+                                                                                                    {{ link_to_route(
+                                                                                                        "$modelName.index",
+                                                                                                        trans('Time Limit'),
+                                                                                                        [
+                                                                                                            'sortBy' => 'time_limit',
+                                                                                                            'order' => $sortBy == 'time_limit' && $order == 'desc' ? 'asc' : 'desc',
+                                                                                                            $query_string,
+                                                                                                        ],
+                                                                                                        [
+                                                                                                            'class' =>
+                                                                                                                $sortBy == 'time_limit' && $order == 'desc'
+                                                                                                                    ? 'sorting desc'
+                                                                                                                    : ($sortBy == 'time_limit' && $order == 'asc'
+                                                                                                                        ? 'sorting asc'
+                                                                                                                        : 'sorting'),
+                                                                                                        ],
+                                                                                                    ) }}
+                                                                                                </th> -->
+                                <th>
                                     {{ link_to_route(
                                         "$modelName.index",
                                         trans('Marks'),
@@ -133,7 +133,7 @@
                                         ],
                                     ) }}
                                 </th>
-                                <th width="10%">
+                                <th>
                                     {{ link_to_route(
                                         "$modelName.index",
                                         trans('Modified'),
@@ -152,7 +152,7 @@
                                         ],
                                     ) }}
                                 </th>
-                                <th width="10%">{{ trans('Action') }}</th>
+                                <th{ trans('Action') }}</th>
                             </tr>
                         </thead>
                         <tbody id="powerwidgets">
@@ -166,19 +166,19 @@
                                             {{ date(Config::get('Reading.date_format'), strtotime($result->updated_at)) }}
                                         </td>
                                         <!-- <td  data-th=''>
-                                                  @if ($result->is_active == 1)
+                                                                      @if ($result->is_active == 1)
     <span class="label label-success" >{{ trans('Activated') }}</span>
 @else
     <span class="label label-warning" >{{ trans('Deactivated') }}</span>
     @endif
-                                                 </td>								 -->
+                                                                     </td>								 -->
                                         <td data-th='' class="action-td">
                                             <!-- @if ($result->is_active == 1)
     <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$result->id, 0]) }}' class="btn btn-success btn-small status_any_item"><span class="fas fa-ban"></span>
-                                                   </a>
+                                                                       </a>
 @else
     <a title="Click To Activate" href='{{ route("$modelName.status", [$result->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fas fa-check"></span>
-                                                   </a>
+                                                                       </a>
     @endif  -->
                                             <a href='{{ route("$modelName.edit", [$test_id, $result->id]) }}'
                                                 class="btn btn-primary" title="Edit"> <span

@@ -36,7 +36,7 @@
                                 'Select Status',
                                 trans('Select Status') .
                                     '<span class="requireRed">
-                                                                                                                    </span>',
+                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -50,7 +50,7 @@
                                 'fullname',
                                 trans('Full Name') .
                                     '<span class="requireRed">
-                                                                                                                    </span>',
+                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -72,7 +72,7 @@
                                 'mobile_number',
                                 trans('Mobile Number') .
                                     '<span class="requireRed">
-                                                                                                                    </span>',
+                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -93,28 +93,28 @@
             </div>
         </div>
         <!-- <div class="box search-panel collapsed-box">
-                        <div class="box-body mb-4">
-                                <form action="{{ route('import.trainers') }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="col-md-2 col-sm-2">
-                                        <div class="form-group ">
-                                            <input type="file" name="file" required>
+                                        <div class="box-body mb-4">
+                                                <form action="{{ route('import.trainers') }}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="col-md-2 col-sm-2">
+                                                        <div class="form-group ">
+                                                            <input type="file" name="file" required>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="d-md-flex justify-content-between align-items-center gap-3">
+                                                        <button class="btn btn-primary" type="submit">Import Users</button>
+                                                    <a class="btn btn-primary" onclick="downloadFile()"> Download sample file</a>
+
+                                                    <a class="btn btn-success" href="{{ route('export.trainers') }}">Export Trainers</a>
+                                                </div>
+
+                                                </form>
+
+
+
                                         </div>
-
-                                    </div>
-                                    <div class="d-md-flex justify-content-between align-items-center gap-3">
-                                        <button class="btn btn-primary" type="submit">Import Users</button>
-                                    <a class="btn btn-primary" onclick="downloadFile()"> Download sample file</a>
-
-                                    <a class="btn btn-success" href="{{ route('export.trainers') }}">Export Trainers</a>
-                                </div>
-
-                                </form>
-
-
-
-                        </div>
-                    </div> -->
+                                    </div> -->
         <div class="row">
             <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
@@ -127,10 +127,10 @@
                                 {{ trans('Add New ') }}{{ $sectionNameSingular }} </a> --}}
                             </div>
                         </div>
-                        <table class="table table-hover brdrclr mt-2" width="100%">
+                        <table class="table table-hover table table-bordered mt-2 " width="100%">
                             <thead class="theadLight">
                                 <tr>
-                                    <th width="5%">{{ trans('Sr.') }}</th>
+                                    <th>{{ trans('SN.') }}</th>
                                     <th>
                                         {{ link_to_route(
                                             "$modelName.index",
@@ -265,7 +265,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="25%">{{ trans('Action') }}</th>
+                                    <th>{{ trans('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody id="powerwidgets">

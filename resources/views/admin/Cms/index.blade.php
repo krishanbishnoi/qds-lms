@@ -23,15 +23,15 @@
                 {{ Form::hidden('display') }}
                 <!-- <div class="col-md-2 col-sm-2">
 
-        <div class="form-group ">
-        {!! Html::decode(
-            Form::label('Select Status', trans('Select Status') . '<span class="requireRed"> </span>', [
-                'class' => 'mws-form-label',
-            ]),
-        ) !!}
-         {{ Form::select('is_active', ['' => trans('All'), 1 => trans('Active'), 0 => trans('Inactive')], isset($searchVariable['is_active']) ? $searchVariable['is_active'] : '', ['class' => 'form-control']) }}
-        </div>
-       </div> -->
+                    <div class="form-group ">
+                    {!! Html::decode(
+                        Form::label('Select Status', trans('Select Status') . '<span class="requireRed"> </span>', [
+                            'class' => 'mws-form-label',
+                        ]),
+                    ) !!}
+                     {{ Form::select('is_active', ['' => trans('All'), 1 => trans('Active'), 0 => trans('Inactive')], isset($searchVariable['is_active']) ? $searchVariable['is_active'] : '', ['class' => 'form-control']) }}
+                    </div>
+                   </div> -->
                 <div class="col-md-2 col-sm-2">
                     <div class="form-group ">
                         {!! Html::decode(
@@ -63,10 +63,10 @@
                                     class="btn btn-success btn-small pull-right mb-2"> {{ trans('Add New Cms') }}</a>
                             </div>
                         </div>
-                            <table class="table table-hover brdrclr mt-2">
+                        <table class="table table-hover table table-bordered mt-2 ">
                             <thead class="theadLight">
 
-                                <th width="25%">
+                                <th>
                                     {{ link_to_route(
                                         'Cms.index',
                                         trans('Title'),
@@ -85,7 +85,7 @@
                                         ],
                                     ) }}
                                 </th>
-                                <th width="25%">
+                                <th>
                                     {{ link_to_route(
                                         'Cms.index',
                                         trans('Name'),
@@ -104,7 +104,7 @@
                                         ],
                                     ) }}
                                 </th>
-                                <th width="20%">{{ trans('Description') }}</th>
+                                <th>{{ trans('Description') }}</th>
                                 <?php /* <th>
                                     							{{
                                     								link_to_route(
@@ -120,7 +120,7 @@
                                     							}}
                                     						</th> */
                                 ?>
-                                <th width="40%">
+                                <th>
                                     {{ link_to_route(
                                         'Cms.index',
                                         trans('Modified'),

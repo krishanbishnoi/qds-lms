@@ -64,10 +64,10 @@
                                     </a>
                                 </div>
                             </div>
-                            <table class="table table-hover brdrclr mt-2">
+                            <table class="table table-hover table table-bordered mt-2 ">
                                 <thead class="theadLight">
                                     <tr>
-                                        <th width="5%">{{ trans('Sr.') }}</th>
+                                        <th width="5%">{{ trans('SN.') }}</th>
                                         <th>
                                             {{ link_to_route(
                                                 'EmailTemplate.index',

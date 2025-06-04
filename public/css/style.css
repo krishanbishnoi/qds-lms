@@ -4783,7 +4783,19 @@ progress {
     margin-bottom: 1rem;
     color: #212529;
     vertical-align: top;
-    border-color: #ebedf2;
+    border-color: #e4e1e1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
+    border-color: #e4e1e1 !important;
+    border-style: solid !important;
 }
 
 .table> :not(caption)>*>* {
@@ -21396,6 +21408,7 @@ dl li {
 .auth-form-light.text-left.p-5 {
     text-align: center;
 }
+
 
 
 .bootbox button.btn.btn-info {

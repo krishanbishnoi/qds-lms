@@ -2,46 +2,48 @@
 @section('content')
 
 
-<div class="content-wrapper">
-    <div class="page-header">
-        <h1>
-            {{ $sectionName }}
-        </h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{URL::to('trainer/dashboard')}}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ $sectionName }}</li>
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h1>
+                {{ $sectionName }}
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ URL::to('trainer/dashboard') }}"><i class="fa fa-dashboard"></i>
+                            Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ $sectionName }}</li>
 
-            </ol>
-        </nav>
-    </div>
-    <div class="box search-panel collapsed-box">
+                </ol>
+            </nav>
+        </div>
+        <div class="box search-panel collapsed-box">
 
-        <div class="box-body">
-            {{ Form::open(['method' => 'get','role' => 'form','url' => route("$modelName.index",$training_id),'class' => 'row mws-form']) }}
-            {{ Form::hidden('display') }}
+            <div class="box-body">
+                {{ Form::open(['method' => 'get', 'role' => 'form', 'url' => route("$modelName.index", $training_id), 'class' => 'row mws-form']) }}
+                {{ Form::hidden('display') }}
 
-            <div class="col-md-2 col-sm-2">
-                <div class="form-group ">
-                    {{ Form::text('title',((isset($searchVariable['title'])) ? $searchVariable['title'] : ''), ['class' => ' form-control','placeholder'=>'Title']) }}
+                <div class="col-md-2 col-sm-2">
+                    <div class="form-group ">
+                        {{ Form::text('title', isset($searchVariable['title']) ? $searchVariable['title'] : '', ['class' => ' form-control', 'placeholder' => 'Title']) }}
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4 col-sm-4 ">
+                <div class="col-md-4 col-sm-4 ">
 
+                    <div class="d-flex">
+                        <button class="btn btn-primary mr-2 px-4"><i class='fa fa-search '></i> Search</button>
+                        <a href='{{ route("$modelName.index", $training_id) }}' class="btn btn-primary"> <i
+                                class="fa fa-refresh "></i> {{ trans('Clear Search') }}</a>
+                    </div>
+                </div>
+                {{ Form::close() }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="box-body">
                 <div class="d-flex">
-                    <button class="btn btn-primary mr-2 px-4"><i class='fa fa-search '></i> Search</button>
-                    <a href='{{ route("$modelName.index",$training_id)}}' class="btn btn-primary"> <i class="fa fa-refresh "></i> {{ trans('Clear Search') }}</a>
+
                 </div>
             </div>
-            {{ Form::close() }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="box-body">
-            <div class="d-flex">
-
-            </div>
-        </div>
             <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
@@ -49,16 +51,18 @@
                             <div class="listing-btns">
                                 <h1 class="box-title">{{ $sectionName }}'s List</h1>
 
-                                <a href='{{route("$modelName.add",$training_id)}}' class="btn btn-success btn-small pull-right mb-2"> {{ trans("Add New ") }}{{ $sectionNameSingular }} </a>
+                                <a href='{{ route("$modelName.add", $training_id) }}'
+                                    class="btn btn-success btn-small pull-right mb-2">
+                                    {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                             </div>
                         </div>
-                            <table class="table table-hover brdrclr mt-2">
+                        <table class="table table-hover table table-bordered mt-2 ">
                             <thead class="theadLight">
                                 <tr>
 
                                     <th width="15%">
                                         {{ link_to_route(
-                                           "$modelName.index",
+                                            "$modelName.index",
                                             trans('Title'),
                                             [
                                                 'sortBy' => 'title',
@@ -78,7 +82,7 @@
 
                                     <th width="10%">
                                         {{ link_to_route(
-                                           "$modelName.index",
+                                            "$modelName.index",
                                             trans('Start Date'),
                                             [
                                                 'sortBy' => 'start_date_time',
@@ -97,7 +101,7 @@
                                     </th>
                                     <th width="10%">
                                         {{ link_to_route(
-                                           "$modelName.index",
+                                            "$modelName.index",
                                             trans('End Date'),
                                             [
                                                 'sortBy' => 'end_date_time',
@@ -116,7 +120,7 @@
                                     </th>
                                     <th width="10%">
                                         {{ link_to_route(
-                                           "$modelName.index",
+                                            "$modelName.index",
                                             trans('Modified'),
                                             [
                                                 'sortBy' => 'updated_at',
@@ -138,42 +142,48 @@
                             </thead>
                             <tbody id="powerwidgets">
                                 @if (!$results->isEmpty())
-                                @foreach($results as $result)
-                                <tr class="items-inner">
-                                    <td data-th='question'>{{ $result->title }}</td>
-                                    <td data-th='question'>{{ $result->start_date_time }}</td>
-                                    <td data-th='question'>{{ $result->end_date_time }}</td>
-                                    <td data-th="{{ trans('Modified') }}">
-                                        {{ date(Config::get('Reading.date_format'), strtotime($result->updated_at)) }}
-                                    </td>
-                                    <!-- <td  data-th=''>
-										@if($result->is_active	== 1)
-											<span class="label label-success" >{{ trans("Activated") }}</span>
-										@else
-											<span class="label label-warning" >{{ trans("Deactivated") }}</span>
-										@endif
-									</td>								 -->
-                                    <td data-th='' class="action-td">
-                                        <!-- @if($result->is_active == 1)
-											<a  title="Click To Deactivate" href='{{route("$modelName.status",array($result->id,0))}}' class="btn btn-success btn-small status_any_item"><span class="fas fa-ban"></span>
-											</a>
-										@else
-											<a title="Click To Activate" href='{{route("$modelName.status",array($result->id,1))}}' class="btn btn-warning btn-small status_any_item"><span class="fas fa-check"></span>
-											</a>
-										@endif  -->
-                                        <a href='{{route("$modelName.edit",[$training_id,$result->id])}}' class="btn btn-primary" title="Edit"> <span class="fas fa-edit"></span></a>
-                                        <a href='{{route("$modelName.delete","$result->id")}}' data-delete="delete" class="delete_any_item btn btn-danger" title="Delete">
-                                            <span class="fas fa-trash-alt"></span></a>
-                                        <a href='{{route("$modelName.view",[$training_id,$result->id])}}' class="btn btn-success" title="View Training Courses"> <span class="fas fa-eye"></span></a>
+                                    @foreach ($results as $result)
+                                        <tr class="items-inner">
+                                            <td data-th='question'>{{ $result->title }}</td>
+                                            <td data-th='question'>{{ $result->start_date_time }}</td>
+                                            <td data-th='question'>{{ $result->end_date_time }}</td>
+                                            <td data-th="{{ trans('Modified') }}">
+                                                {{ date(Config::get('Reading.date_format'), strtotime($result->updated_at)) }}
+                                            </td>
+                                            <!-- <td  data-th=''>
+              @if ($result->is_active == 1)
+    <span class="label label-success" >{{ trans('Activated') }}</span>
+@else
+    <span class="label label-warning" >{{ trans('Deactivated') }}</span>
+    @endif
+             </td>								 -->
+                                            <td data-th='' class="action-td">
+                                                <!-- @if ($result->is_active == 1)
+    <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$result->id, 0]) }}' class="btn btn-success btn-small status_any_item"><span class="fas fa-ban"></span>
+               </a>
+@else
+    <a title="Click To Activate" href='{{ route("$modelName.status", [$result->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fas fa-check"></span>
+               </a>
+    @endif  -->
+                                                <a href='{{ route("$modelName.edit", [$training_id, $result->id]) }}'
+                                                    class="btn btn-primary" title="Edit"> <span
+                                                        class="fas fa-edit"></span></a>
+                                                <a href='{{ route("$modelName.delete", "$result->id") }}'
+                                                    data-delete="delete" class="delete_any_item btn btn-danger"
+                                                    title="Delete">
+                                                    <span class="fas fa-trash-alt"></span></a>
+                                                <a href='{{ route("$modelName.view", [$training_id, $result->id]) }}'
+                                                    class="btn btn-success" title="View Training Courses"> <span
+                                                        class="fas fa-eye"></span></a>
 
 
-                                    </td>
-                                </tr>
-                                @endforeach
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 @else
-                                <tr>
-                                    <td class="alignCenterClass" colspan="4">{{ trans('No Record Found') }}</td>
-                                </tr>
+                                    <tr>
+                                        <td class="alignCenterClass" colspan="4">{{ trans('No Record Found') }}</td>
+                                    </tr>
                                 @endif
                             </tbody>
 
@@ -196,4 +206,4 @@
             padding-top: 20px;
         }
     </style>
-    @stop
+@stop

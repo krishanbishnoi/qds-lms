@@ -1,6 +1,6 @@
 @extends('trainer.layouts.default')
 @section('content')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>
 
 
 
@@ -56,7 +56,7 @@
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                             </div>
                         </div>
-                        <table class="table table-hover brdrclr mt-2">
+                        <table class="table table-hover table table-bordered mt-2 ">
                             <thead class="theadLight">
                                 <tr>
                                     <th width="12%">
@@ -100,43 +100,43 @@
                                         </th>
                                     @endif
                                     <!-- <th width="12%">
-                                            {{ link_to_route(
-                                                "$modelName.index",
-                                                trans('Training Type'),
-                                                [
-                                                    'sortBy' => 'type',
-                                                    'order' => $sortBy == 'type' && $order == 'desc' ? 'asc' : 'desc',
-                                                    $query_string,
-                                                ],
-                                                [
-                                                    'class' =>
-                                                        $sortBy == 'type' && $order == 'desc'
-                                                            ? 'sorting desc'
-                                                            : ($sortBy == 'type' && $order == 'asc'
-                                                                ? 'sorting asc'
-                                                                : 'sorting'),
-                                                ],
-                                            ) }}
-                                        </th> -->
+                                                {{ link_to_route(
+                                                    "$modelName.index",
+                                                    trans('Training Type'),
+                                                    [
+                                                        'sortBy' => 'type',
+                                                        'order' => $sortBy == 'type' && $order == 'desc' ? 'asc' : 'desc',
+                                                        $query_string,
+                                                    ],
+                                                    [
+                                                        'class' =>
+                                                            $sortBy == 'type' && $order == 'desc'
+                                                                ? 'sorting desc'
+                                                                : ($sortBy == 'type' && $order == 'asc'
+                                                                    ? 'sorting asc'
+                                                                    : 'sorting'),
+                                                    ],
+                                                ) }}
+                                            </th> -->
                                     <!-- <th width="12%">
-                                            {{ link_to_route(
-                                                "$modelName.index",
-                                                trans('Minimum Marks'),
-                                                [
-                                                    'sortBy' => 'minimum_marks',
-                                                    'order' => $sortBy == 'minimum_marks' && $order == 'desc' ? 'asc' : 'desc',
-                                                    $query_string,
-                                                ],
-                                                [
-                                                    'class' =>
-                                                        $sortBy == 'minimum_marks' && $order == 'desc'
-                                                            ? 'sorting desc'
-                                                            : ($sortBy == 'minimum_marks' && $order == 'asc'
-                                                                ? 'sorting asc'
-                                                                : 'sorting'),
-                                                ],
-                                            ) }}
-                                        </th> -->
+                                                {{ link_to_route(
+                                                    "$modelName.index",
+                                                    trans('Minimum Marks'),
+                                                    [
+                                                        'sortBy' => 'minimum_marks',
+                                                        'order' => $sortBy == 'minimum_marks' && $order == 'desc' ? 'asc' : 'desc',
+                                                        $query_string,
+                                                    ],
+                                                    [
+                                                        'class' =>
+                                                            $sortBy == 'minimum_marks' && $order == 'desc'
+                                                                ? 'sorting desc'
+                                                                : ($sortBy == 'minimum_marks' && $order == 'asc'
+                                                                    ? 'sorting asc'
+                                                                    : 'sorting'),
+                                                    ],
+                                                ) }}
+                                            </th> -->
                                     <th width="15%">
                                         {{ link_to_route(
                                             "$modelName.index",
@@ -246,10 +246,10 @@
                                             <td data-th='' class="action-td">
                                                 <!-- @if ($record->is_active == 1)
     <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$record->id, 0]) }}' class="btn btn-success btn-small status_any_item "><span class="fa fa-ban"></span>
-                 </a>
+                     </a>
 @else
     <a title="Click To Activate" href='{{ route("$modelName.status", [$record->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fa fa-check"></span>
-                 </a>
+                     </a>
     @endif  -->
                                                 <a href='{{ route("$modelName.edit", "$record->id") }}'
                                                     class="btn btn-primary" title="Edit"> <span
@@ -305,7 +305,7 @@
             padding-top: 20px;
         }
     </style>
-     <script>
+    <script>
         var clipboard = new ClipboardJS('#copyButton');
 
         clipboard.on('success', function(e) {

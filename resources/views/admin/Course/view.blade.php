@@ -79,7 +79,7 @@
                                             <tr>
 
 
-                                                <th>{{ trans('Sr.') }}</th>
+                                                <th>{{ trans('SN.') }}</th>
 
                                                 <th>{{ trans('Title') }}</th>
                                                 <th>{{ trans('Document Type') }}</th>
@@ -157,8 +157,8 @@
                                                                             src="{{ TRAINING_DOCUMENT_URL . $course_document->document }}"
                                                                             type="video/mp4">
                                                                         <!-- <source
-                                                                            src="{{ TRAINING_DOCUMENT_URL . $course_document->document }}"
-                                                                            type="video/mp4"> -->
+                                                                                src="{{ TRAINING_DOCUMENT_URL . $course_document->document }}"
+                                                                                type="video/mp4"> -->
 
                                                                         Your browser does not support the video tag.
 
