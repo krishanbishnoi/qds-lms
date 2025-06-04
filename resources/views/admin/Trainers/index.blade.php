@@ -54,7 +54,7 @@
                                 'Select Status',
                                 trans('Select Status') .
                                     '<span class="requireRed">
-                                                                                                                                            </span>',
+                                                                                                                                                                                                                                            </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -68,7 +68,7 @@
                                 'olms_id',
                                 trans('Id') .
                                     '<span class="requireRed">
-                                                                                                                                            </span>',
+                                                                                                                                                                                                                                            </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -76,13 +76,13 @@
                     </div>
                 </div>
                 <!-- <div class="col-md-2 col-sm-2">
-                                            <div class="form-group ">
-                                                {!! Html::decode(
-                                                    Form::label('email', trans('Email') . '<span class="requireRed"> </span>', ['class' => 'mws-form-label']),
-                                                ) !!}
-                                                {{ Form::text('email', isset($searchVariable['email']) ? $searchVariable['email'] : '', ['class' => ' form-control', 'placeholder' => 'Email']) }}
-                                            </div>
-                                        </div> -->
+                                                            <div class="form-group ">
+                                                                {!! Html::decode(
+                                                                    Form::label('email', trans('Email') . '<span class="requireRed"> </span>', ['class' => 'mws-form-label']),
+                                                                ) !!}
+                                                                {{ Form::text('email', isset($searchVariable['email']) ? $searchVariable['email'] : '', ['class' => ' form-control', 'placeholder' => 'Email']) }}
+                                                            </div>
+                                                        </div> -->
                 <div class="col-md-2 col-sm-2">
                     <div class="form-group ">
                         {!! Html::decode(
@@ -90,7 +90,7 @@
                                 'mobile_number',
                                 trans('Mobile Number') .
                                     '<span class="requireRed">
-                                                                                                                                            </span>',
+                                                                                                                                                                                                                                            </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -133,10 +133,10 @@
                         <div class="box-header with-border pd-custom">
                             <div class="listing-btns">
                                 <h1 class="box-title">{{ $sectionName }}'s List</h1>
-                                <a href='{{ route("$modelName.add") }}' class="btn btn-success btn-small pull-right mb-2">
+                                {{-- <a href='{{ route("$modelName.add") }}' class="btn btn-success btn-small pull-right mb-2">
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                                 <button type="submit" name="submit" class="btn btn-danger pull-right trigger_event mb-2"
-                                    title="Release Selected Games" id="trigger_event">Delete Users</button>
+                                    title="Release Selected Games" id="trigger_event">Delete Users</button> --}}
                             </div>
                         </div>
                         <table class="table table-hover brdrclr mt-2" width="100%">
@@ -341,25 +341,25 @@
                                             <td data-th='' class="action-td">
                                                 @if ($result->is_active == 1)
                                                     <a title="Click To Deactivate"
-                                                        href='{{ route("$modelName.status", [$result->id, 0]) }}'
+                                                        href='{{ route('Trainees.status', [$result->id, 0]) }}'
                                                         data-confirm='Are you sure?'
                                                         class="btn btn-success btn-small status_any_item "><span
                                                             class="fa fa-ban"></span>
                                                     </a>
                                                 @else
                                                     <a title="Click To Activate"
-                                                        href='{{ route("$modelName.status", [$result->id, 1]) }}'
+                                                        href='{{ route('Trainees.status', [$result->id, 1]) }}'
                                                         data-confirm='Are you sure?'
                                                         class="btn btn-warning btn-small status_any_item"><span
                                                             class="fa fa-check"></span>
                                                     </a>
                                                 @endif
-                                                <a href='{{ route("$modelName.edit", "$result->id") }}'
+                                                <a href='{{ route('Trainees.edit', "$result->id") }}'
                                                     class="btn btn-primary" title="Edit"> <span class="fas fa-edit">
                                                     </span></a>
-                                                <a href='{{ route("$modelName.view", "$result->id") }}'
-                                                    class="btn btn-info" title="View"> <span class="fa fa-eye"></span></a>
-                                                <a href='{{ route("$modelName.delete", "$result->id") }}'
+                                                <a href='{{ route('Trainees.view', "$result->id") }}' class="btn btn-info"
+                                                    title="View"> <span class="fa fa-eye"></span></a>
+                                                <a href='{{ route('Trainees.delete', "$result->id") }}'
                                                     data-delete="delete" class="delete_any_item btn btn-danger"
                                                     title="Delete" data-confirm='Are you sure?'>
                                                     <span class="fas fa-trash-alt   "></span>
@@ -455,7 +455,7 @@
         function downloadFileChangeDesignation() {
             var fileUrl =
                 '{{ asset('
-                                                                                sample - files / change - designation - sample.xlsx ') }}';
+                                                                                                                                                sample - files / change - designation - sample.xlsx ') }}';
             var link = document.createElement('a');
             link.href = fileUrl;
             link.download = 'change-designation-sample-file.xlsx';

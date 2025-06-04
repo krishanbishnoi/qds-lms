@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\ApiService;
 use App\Models\EmailAction;
 use App\Models\EmailTemplate;
+use App\Models\RetailAssignedTraining;
 use App\Notifications\AssignTrainingNotification;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
@@ -488,12 +489,20 @@ class TrainingController extends BaseController
                 ->toArray();
             $users = User::where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'employee_id')
                 ->toArray();
-            return  View::make("admin.Training.uploadTrainingParticipants", compact('training_id', 'projects', 'methods', 'users', 'existingUserIds'));
+
+            // API call to RetailIQ
+
+            $clientResponse = Http::withOptions([
+                'verify' => false, // Disable SSL cert check
+            ])->get('https://retailanalytics.qdegrees.com/api/get_client_list');
+
+            $clients = $clientResponse->successful() ? $clientResponse['data'] : [];
+
+            return  View::make("admin.Training.uploadTrainingParticipants", compact('training_id', 'projects', 'methods', 'users', 'existingUserIds', 'clients'));
         } catch (\Exception $e) {
-            dd($e);
             return redirect()->back()->with('error', 'somthing went wrong');;
         }
-    } // end add()
+    }
 
 
     public function importTraining($training_id = 0)
@@ -718,5 +727,72 @@ class TrainingController extends BaseController
             dd($e);
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
+    }
+
+    public function fetchRetailCampaigns(Request $request)
+    {
+        $clientId = $request->input('client_id');
+
+        if (!$clientId) {
+            return response()->json(['status' => 0, 'message' => 'Client ID is required'], 400);
+        }
+
+        try {
+            $response = Http::withOptions([
+                'verify' => false,
+            ])->post('https://retailanalytics.qdegrees.com/api/get_camp_list', [
+                'client_id' => $clientId,
+            ]);
+            if ($response->successful() && $response['status'] == 1) {
+                return response()->json(['status' => 1, 'campaigns' => $response['data']]);
+            }
+
+            return response()->json(['status' => 0, 'message' => 'No campaigns found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 0, 'message' => 'API call failed'], 500);
+        }
+    }
+    public function fetchRetailCampaignsStore(Request $request)
+    {
+        $campaignId = $request->input('campaign_id');
+
+        if (!$campaignId) {
+            return response()->json(['status' => 0, 'message' => 'Store ID is required'], 400);
+        }
+
+        try {
+            $response = Http::withOptions([
+                'verify' => false,
+            ])->post('https://retailanalytics.qdegrees.com/api/get-store-codes', [
+                'campaign_id' => $campaignId,
+            ]);
+
+            if ($response->successful() && $response['success'] == true) {
+                // dd($response);
+                // return response()->json(['status' => 1, 'stores' => $response['data']]);
+                return response()->json($response->json());
+            }
+
+            return response()->json(['status' => 0, 'message' => 'No Store found'], 404);
+        } catch (\Exception $e) {
+            dd($e);
+            return response()->json(['status' => 0, 'message' => 'API call failed'], 500);
+        }
+    }
+    public function retailAssignTraining(Request $request)
+    {
+        $request->validate([
+            'client_id' => 'required|integer',
+            'campaign_id' => 'required|integer',
+        ]);
+
+        RetailAssignedTraining::create([
+            'training_id' => $request->training_id, // or pass it from hidden input
+            'client_id' => $request->client_id,
+            'campaign_id' => $request->campaign_id,
+            'store_code' => $request->store_code,
+        ]);
+
+        return redirect()->back()->with('success', 'Training successfully assigned to RetailIQ Campaign.');
     }
 }

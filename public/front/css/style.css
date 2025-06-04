@@ -555,7 +555,7 @@ textarea.form-control {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0px 15px 15px;
+    /* padding: 15px 0px 15px 15px; */
 }
 
 .logoutbox a {
@@ -570,6 +570,43 @@ textarea.form-control {
     overflow: hidden;
     margin-right: 10px;
     vertical-align: middle;
+}
+
+.profile-box {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    min-width: 250px;
+    color: #000;
+    transition: all 0.2s ease-in-out;
+}
+
+.profile-box:hover {
+    background-color: #f9f9f9;
+    border-color: #999;
+    text-decoration: none;
+}
+
+.employee-initials {
+    width: 36px;
+    height: 36px;
+    background-color: #e0e0e0;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    border: 1px solid #ccc;
+}
+
+.logoutbox .dropdown-menu {
+    min-width: 180px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    /* Space above the profile box */
 }
 
 .logoutbox button {
@@ -2714,10 +2751,6 @@ a:hover{
         padding-right: 0;
         transition: 0.3s all;
 
-    }
-
-    .logoutbox {
-        padding-right: 15px;
     }
 
     .logoDiv {

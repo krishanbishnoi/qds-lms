@@ -20,13 +20,15 @@
                                 <div class="d-flex align-items-center">
                                     <div class="position-relative">
                                         @if (!empty(Auth::user()->image))
-                                            <i><img src="{{ USER_IMAGE_URL . Auth::user()->image }}" alt="img"
-                                                    width="110" style="border-radius:55px"></i>
+                                            <i><img src="{{ Auth::user()->image }}" alt="img" width="110"
+                                                    style="border-radius:55px"></i>
                                         @else
                                             @php
                                                 $first_letter = strtoupper(substr($userProfile->fullname, 0, 1));
                                                 $space_index = strpos($userProfile->fullname, ' ');
-                                                $second_letter = strtoupper(substr($userProfile->fullname, $space_index + 1, 1));
+                                                $second_letter = strtoupper(
+                                                    substr($userProfile->fullname, $space_index + 1, 1),
+                                                );
                                             @endphp
                                             <span class="employeeFirstLetter">
                                                 {{ $first_letter . '' . $second_letter }}</span>

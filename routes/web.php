@@ -116,6 +116,10 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::get('training/import-training-participants/{id}', 'importTrainingParticipants')->name('import.importTrainingParticipants');
             Route::post('training/import-training-participants/{id}', 'importTraining')->name('import.training-participants');
             Route::post('training/assgin-training-participants', 'assginTrainingParticipants')->name('Training.assgin-training-participants');
+
+            Route::post('/training/fetch-campaigns', 'fetchRetailCampaigns')->name('fetch.retail.campaigns');
+            Route::post('/training/fetch-store', 'fetchRetailCampaignsStore')->name('fetch.retail.campaigns.store');
+            Route::post('/training/retail-assign', 'retailAssignTraining')->name('retail.assign-training');
         });
 
         /* training category modules routes */

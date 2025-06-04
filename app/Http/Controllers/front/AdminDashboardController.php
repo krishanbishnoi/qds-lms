@@ -177,20 +177,12 @@ class AdminDashboardController extends BaseController
         }
     }
 
-    /**
-     *
-     * Function for update front bank detail update
-     *
-     * @param null
-     *
-     * @return redirect page.
-     */
-    public function bankdetailUpdate()
+    public function bankdetailUpdate(Request $request)
     {
-        $thisData                =    Request::all();
+        $thisData                =    $request->all();
         //dd($thisData);
         //print_r($thisData); die;
-        Request::replace($this->arrayStripTags($thisData));
+        $request->replace($this->arrayStripTags($thisData));
         $ValidationRule = array(
             'account_holder_name' => 'required|Regex:/\A(?!.*[:;]-\))[ -~]+\z/',
             'bank_name' => 'required|Regex:/\A(?!.*[:;]-\))[ -~]+\z/',
@@ -198,102 +190,76 @@ class AdminDashboardController extends BaseController
             'account_type' => 'required|Regex:/\A(?!.*[:;]-\))[ -~]+\z/',
             'iban_number' => 'required|numeric|regex:/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/',
         );
-        $validator                 =     Validator::make(Request::all(), $ValidationRule);
+        $validator                 =     Validator::make($request->all(), $ValidationRule);
         if ($validator->fails()) {
             return Redirect::to('/bankdetail')
                 ->withErrors($validator)->withInput();
         } else {
             $user                         =     BankDetail::where('user_id', Auth::user()->id)->first();
-            $user->account_holder_name    =     Request::get('account_holder_name');
-            $user->bank_name            =   Request::get('bank_name');
-            $user->account_number        =   Request::get('account_number');
-            $user->account_type             =     Request::get('account_type');
-            $user->iban_number            =   Request::get('iban_number');
+            $user->account_holder_name    =     $request->get('account_holder_name');
+            $user->bank_name            =   $request->get('bank_name');
+            $user->account_number        =   $request->get('account_number');
+            $user->account_type             =     $request->get('account_type');
+            $user->iban_number            =   $request->get('iban_number');
 
             if ($user->save()) {
                 return Redirect::intended('/bankdetail')
                     ->with('success', 'Information updated successfully.');
             }
         }
-    } // end bankdetails()
-    /**
-     * Function for changedPassword
-     *
-     * @param null
-     *
-     * @return redirect page.
-     */
-    public function changedPassword()
+    }
+    public function changedPassword(Request $request)
     {
-        $thisData                =    Request::all();
-        Request::replace($this->arrayStripTags($thisData));
-        $old_password            =     Request::get('old_password');
-        $password                 =     Request::get('new_password');
-        $confirm_password         =     Request::get('confirm_password');
+        // Add custom validation rule
         Validator::extend('custom_password', function ($attribute, $value, $parameters) {
-            if (preg_match('#[0-9]#', $value) && preg_match('#[a-zA-Z]#', $value) && preg_match('#[\W]#', $value)) {
-                return true;
-            } else {
-                return false;
-            }
+            return preg_match('/[0-9]/', $value) && preg_match('/[a-zA-Z]/', $value) && preg_match('/[\W]/', $value);
         });
-        $rules                      =     array(
-            'old_password'         =>    'required|max:255',
-            'new_password'        =>    'required|min:8|max:255|custom_password',
-            'confirm_password'  =>    'required|max:255|same:new_password'
-        );
-        $validator                 =     Validator::make(
-            Request::all(),
-            $rules,
-            array(
-                "new_password.custom_password"    =>    "Password must have combination of numeric, alphabet and special characters.",
-            )
-        );
+
+        // Define validation rules
+        $rules = [
+            'old_password' => 'required|max:255',
+            'new_password' => 'required|min:8|max:255|custom_password',
+            'confirm_password' => 'required|same:new_password|max:255',
+        ];
+
+        // Custom error messages
+        $messages = [
+            'new_password.custom_password' => 'Password must contain at least one letter, one number, and one special character.',
+            'confirm_password.same' => 'Confirm password must match the new password.',
+        ];
+
+        // Validate the request
+        $validator = Validator::make($request->all(), $rules, $messages);
+
         if ($validator->fails()) {
-            return Redirect::to('/change-password')
-                ->withErrors($validator)->withInput();
-        } else {
-            $user                 = User::find(Auth::user()->id);
-            $old_password         = Request::get('old_password');
-            $password             = Request::get('new_password');
-            $confirm_password     = Request::get('confirm_password');
-            if ($old_password != '') {
-                if (!Hash::check($old_password, $user->password)) {
-                    /* return Redirect::intended('change-password')
-						->with('error', 'Your old password is incorrect.');
-						 */
-                    Session::flash('error', trans("Your old password is incorrect."));
-                    return Redirect::to('/change-password');
-                }
-            }
-            if (!empty($old_password) && !empty($password) && !empty($confirm_password)) {
-                if (Hash::check($old_password, $user->password)) {
-                    $user->password = Hash::make($password);
-                    // save the new password
-                    if ($user->save()) {
-                        Session::flash('success', trans("Password changed successfully."));
-                        return Redirect::to('/change-password');
-                    }
-                } else {
-                    /* return Redirect::intended('change-password')
-						->with('error', 'Your old password is incorrect.'); */
-                    Session::flash('error', trans("Your old password is incorrect."));
-                    return Redirect::to('/change-password');
-                }
-            } else {
-                $user->username = $username;
-                if ($user->save()) {
-                    Session::flash('success', trans("Password changed successfully."));
-                    return Redirect::to('/change-password');
-                    /* return Redirect::intended('change-password')
-						->with('success', 'Password changed successfully.'); */
-                }
-            }
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
-    } // end myaccountUpdate()
+
+        // Get current user
+        $user = Auth::user();
+
+        // Check old password
+        if (!Hash::check($request->old_password, $user->password)) {
+            return redirect()->back()->with('message', 'Your old password is incorrect.');
+        }
+
+        // Prevent using old password as new password
+        if ($request->old_password === $request->new_password) {
+            return redirect()->back()->with('message', 'New password cannot be the same as the old password.');
+        }
+
+        // Update password
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return redirect()->back()->with('message', 'Password changed successfully.');
+    }
+
     /*
-* For User Listing Demo
-*/
+    * For User Listing Demo
+    */
     public function usersListing()
     {
         return View::make('front.user.user');

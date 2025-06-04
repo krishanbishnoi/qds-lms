@@ -69,24 +69,38 @@
 
         </ul>
     </div>
-    <div class="logoutbox">
-        <a href="{{ route('trainee.profile') }}"> <span class="d-flex align-items-center gap-2">
+    <div class="logoutbox dropup"> <!-- Use dropup instead of dropdown -->
+        <a href="#" class="profile-box d-flex align-items-center justify-content-between text-decoration-none"
+            id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="d-flex align-items-center">
                 @if (!empty(Auth::user()->image))
-                    <i><img src="{{ USER_IMAGE_URL . Auth::user()->image }}" alt="img"></i>
+                    <img src="{{ Auth::user()->image }}" alt="Profile" class="rounded-circle me-2" width="36"
+                        height="36">
                 @else
                     @php
                         $first_letter = strtoupper(substr(Auth::user()->fullname, 0, 1));
                         $space_index = strpos(Auth::user()->fullname, ' ');
-                        $second_letter = strtoupper(substr(Auth::user()->fullname, $space_index + 1, 1));
+                        $second_letter =
+                            $space_index !== false
+                                ? strtoupper(substr(Auth::user()->fullname, $space_index + 1, 1))
+                                : '';
                     @endphp
-                    <i class="employeeFirstLetter">
-                        {{ $first_letter . '' . $second_letter }}</i>
+                    <div class="employee-initials rounded-circle me-2">
+                        {{ $first_letter . $second_letter }}
+                    </div>
                 @endif
-                {{ ucwords(Auth::user()->first_name . ' ' . Auth::user()->last_name) }}
-            </span></a>
-        <button type="button"><a href="{{ URL('logout') }}">
-                <img src="{{ asset('front/img/logout-icon.svg') }}" alt="logout"></a>
-        </button>
+                <span
+                    class="fw-semibold">{{ ucwords(Auth::user()->first_name . ' ' . Auth::user()->last_name) }}</span>
+            </div>
+            <i class="bi bi-caret-up-fill ms-3"></i> <!-- Gap using ms-3 -->
+        </a>
 
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border mt-1" aria-labelledby="profileDropdown">
+            <li><a class="dropdown-item py-2 text-danger" href="{{ URL('logout') }}">🚪 Logout</a></li>
+            <li><a class="dropdown-item py-2" href="{{ url('/change-password') }}">🔒 Change Password</a></li>
+            <li><a class="dropdown-item py-2" href="{{ route('trainee.profile') }}">👤 My Profile</a></li>
+        </ul>
     </div>
+
+
 </div>

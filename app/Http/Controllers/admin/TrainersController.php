@@ -290,7 +290,7 @@ class TrainersController extends BaseController
         $lob = Lob::pluck('lob', 'lob')->toArray();
         $circle = Circle::pluck('circle', 'circle')->toArray();
         $designation = Designation::pluck('designation', 'designation')->toArray();
-        return  View::make("admin.$this->model.edit", compact('model', 'region', 'lob', 'circle', 'designation'));
+        return  View::make("admin.trainees.edit", compact('model', 'region', 'lob', 'circle', 'designation'));
     } // end edit()
 
 
