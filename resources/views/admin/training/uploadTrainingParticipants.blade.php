@@ -97,7 +97,7 @@
                                         {!! Form::hidden('training_id', $training_id) !!}
 
                                         {!! Form::label('client_id', 'Select Client', ['class' => 'block font-bold mb-1']) !!}
-                                        <select name="client_id" id="client_idSelect" class="form-control">
+                                        <select name="client_id" id="clientSelect" class="form-control">
                                             <option value="">-- Choose Client --</option>
                                             @foreach ($clients as $client)
                                                 <option value="{{ $client['id'] }}">{{ $client['company_name'] }}</option>
@@ -176,7 +176,7 @@
             }
         });
 
-        $('#client_idSelect').on('change', function() {
+        $('#clientSelect').on('change', function() {
             const clientId = $(this).val();
             const $campaignSelect = $('#campaignSelect');
 
