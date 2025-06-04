@@ -60,7 +60,7 @@
          </header>
          <div class="d-flex flex-wrap paddingTop">
              <div class="courseName trainingNameMobile d-lg-none w-100">
-                 <p class="mb-0">{{ $testDetails->title }}</p>
+                 <p class="mb-0">{{ $testDetails->title }}</p>   
              </div>
              <div class="abouttraining">
                  <div class="testGroup">

@@ -8,7 +8,7 @@
     <title>@php echo Config::get('Site.title'); @endphp</title>
 
     <!-- plugins:css -->
-    {{--  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>  --}}
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('vendors/mdi/css/materialdesignicons.min.css') }}">
@@ -29,6 +29,7 @@
     <!-- <link href="{{ asset('old/css/font-awesome.min.css') }}" rel="stylesheet"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <link href="{{ asset('old/css/notification/jquery.toastmessage.css') }}" rel="stylesheet" />
     <link href="{{ URL::asset('old/css/daterangepicker/daterangepicker-bs3.css') }}" rel="stylesheet" />
@@ -45,6 +46,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/fontawesome.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css" />
     <script src="https://cdn.ckeditor.com/4.15.0/standard-all/ckeditor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @livewireStyles
     @livewireScripts
 </head>
