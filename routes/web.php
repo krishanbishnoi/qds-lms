@@ -202,7 +202,7 @@ Route::group(array('prefix' => 'admin'), function () {
                 Route::get('view/{test_id}/{id}', 'view')->name('Question.view');
                 Route::get('update-status/{id}/{status}', 'changeStatus')->name('Question.status');
                 Route::post('import-questions/{test_id}', 'importQuestions')->name('import.questions');
-                Route::get('/download-sample-file-questions', 'downloadQuestionSample')->name('download.sample.file.questions');
+                Route::get('download/sample-file-question', 'downloadQuestionSample')->name('download.sample.file.questions');
             });
 
         Route::controller(QuestionController::class)
