@@ -489,7 +489,18 @@ class TestController extends BaseController
 
             // Convert the array to a comma-separated string
             $existingEmails = implode(', ', $existingEmails);
-            return View::make("admin.$this->model.uploadTestsParticipants", compact('test_id', 'existingEmails'));
+
+            $projects = QDS_PROJECT_LIST;
+            $methods = ['fromExcel' => 'From Excel',  'fromUser' => 'From Users'];
+            $existingUserIds = TestParticipants::with('user')
+                ->where('test_id', $test_id)
+                ->get()
+                ->pluck('user.employee_id')
+                ->toArray();
+            $users = User::where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'employee_id')
+                ->toArray();
+
+            return View::make("admin.$this->model.uploadTestsParticipants", compact('test_id', 'existingEmails', 'projects', 'methods', 'existingUserIds', 'users'));
         } else {
             Session::flash('success', 'Please add questions to this test before uploading participants.');
             return Redirect::back();
@@ -792,6 +803,40 @@ class TestController extends BaseController
                 'result' => $resultStatus,
                 'user_attempts' => 1,
             ]);
+        }
+    }
+
+    public function assginTestParticipants(Request $request)
+    {
+        $test_id = $request->test_id;
+
+        DB::beginTransaction();
+
+        try {
+            $test = Test::findOrFail($test_id);
+
+            foreach ($request->empIds as $empId) {
+                $user = User::where('olms_id', $empId)->first();
+
+                if (!$user) {
+                    continue;
+                }
+
+                // Create participant
+                TestParticipants::create([
+                    'test_id' => $test_id,
+                    'trainee_id' => $user->id,
+                    'number_of_attempts' => $test->number_of_attempts,
+
+                ]);
+                $this->sendNotificationAndMail($user, $test_id);
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Test participants assigned and notified successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
 }

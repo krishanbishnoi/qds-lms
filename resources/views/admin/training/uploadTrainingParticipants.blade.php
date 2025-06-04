@@ -28,7 +28,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group">
-                            <div class="p-4 row">
+                            <div class="row">
                                 <!-- Project Selection -->
                                 <div class="mb-3 col-6">
                                     {!! Form::label('project', 'Select Product', ['class' => 'block font-bold mb-1']) !!}
@@ -74,7 +74,7 @@
 
                                                 <!-- File Input and Upload Button aligned to the end -->
                                                 <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
-                                                    <div class="col-md-5">
+                                                    <div class="col-md-8">
                                                         <input type="file" name="file" class="form-control" required>
                                                     </div>
                                                     <div>

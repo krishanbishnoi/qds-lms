@@ -276,18 +276,8 @@
                                                 @endif
                                             </td>
 
-                                            {{-- <td data-th='{{ trans('Modified') }}'>
-                                {{ date(Config::get('Reading.date_format'), strtotime($record->updated_at)) }}
-                                </td> --}}
+                                            
                                             <td data-th='' class="action-td">
-                                                <!-- @if ($record->is_active == 1)
-    <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$record->id, 0]) }}' class="btn btn-success btn-small status_any_item "><span class="fa fa-ban"></span>
-                     </a>
-@else
-    <a title="Click To Activate" href='{{ route("$modelName.status", [$record->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fa fa-check"></span>
-                     </a>
-    @endif  -->
-
                                                 <a href='{{ route("$modelName.edit", "$record->id") }}'
                                                     class="btn btn-primary" title="Edit"> <span
                                                         class="fas fa-edit"></span></a>
