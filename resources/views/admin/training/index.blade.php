@@ -145,24 +145,24 @@
                                     </th>
 
                                     <!-- <th width="12%">
-                                                                {{ link_to_route(
-                                                                    'Training.index',
-                                                                    trans('Minimum Marks'),
-                                                                    [
-                                                                        'sortBy' => 'minimum_marks',
-                                                                        'order' => $sortBy == 'minimum_marks' && $order == 'desc' ? 'asc' : 'desc',
-                                                                        $query_string,
-                                                                    ],
-                                                                    [
-                                                                        'class' =>
-                                                                            $sortBy == 'minimum_marks' && $order == 'desc'
-                                                                                ? 'sorting desc'
-                                                                                : ($sortBy == 'minimum_marks' && $order == 'asc'
-                                                                                    ? 'sorting asc'
-                                                                                    : 'sorting'),
-                                                                    ],
-                                                                ) }}
-                                                            </th> -->
+                                                                                                                                                {{ link_to_route(
+                                                                                                                                                    'Training.index',
+                                                                                                                                                    trans('Minimum Marks'),
+                                                                                                                                                    [
+                                                                                                                                                        'sortBy' => 'minimum_marks',
+                                                                                                                                                        'order' => $sortBy == 'minimum_marks' && $order == 'desc' ? 'asc' : 'desc',
+                                                                                                                                                        $query_string,
+                                                                                                                                                    ],
+                                                                                                                                                    [
+                                                                                                                                                        'class' =>
+                                                                                                                                                            $sortBy == 'minimum_marks' && $order == 'desc'
+                                                                                                                                                                ? 'sorting desc'
+                                                                                                                                                                : ($sortBy == 'minimum_marks' && $order == 'asc'
+                                                                                                                                                                    ? 'sorting asc'
+                                                                                                                                                                    : 'sorting'),
+                                                                                                                                                    ],
+                                                                                                                                                ) }}
+                                                                                                                                            </th> -->
                                     <th width="15%">
                                         {{ link_to_route(
                                             'Training.index',
@@ -262,11 +262,11 @@
                                             <td data-th="{{ trans('Page Name') }}">{{ $record->end_date_time }}</td>
                                             <td data-th='{{ trans('Status') }}'>
                                                 @if ($record->status == 0)
-                                                    <span class="btn btn-danger px-4">{{ trans('Upcoming') }}</span>
+                                                    <span class="badge text-danger">Upcoming</span>
                                                 @elseif($record->status == 1)
-                                                    <span class="btn btn-warning px-4">{{ trans('Ongoing ') }}</span>
+                                                    <span class="badge text-warning">Ongoing</span>
                                                 @else
-                                                    <span class="btn btn-success px-4">{{ trans('Completed') }}</span>
+                                                    <span class="badge text-success">Completed</span>
                                                 @endif
                                             </td>
 
@@ -276,10 +276,10 @@
                                             <td data-th='' class="action-td">
                                                 <!-- @if ($record->is_active == 1)
     <a  title="Click To Deactivate" href='{{ route('Training.status', [$record->id, 0]) }}' class="btn btn-success btn-small status_any_item "><span class="fa fa-ban"></span>
-                                                                                    </a>
+                                                                                                                                                                    </a>
 @else
     <a title="Click To Activate" href='{{ route('Training.status', [$record->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fa fa-check"></span>
-                                                                                    </a>
+                                                                                                                                                                    </a>
     @endif  -->
                                                 <a href='{{ route('Training.edit', "$record->id") }}'
                                                     class="btn btn-primary" title="Edit"> <span
@@ -371,7 +371,7 @@
                                     'training_manager',
                                     trans('Assign Training Manager') .
                                         '<span
-                                                                                                                                                                                                    class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}

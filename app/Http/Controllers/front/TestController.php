@@ -16,6 +16,7 @@ use App\Models\Answer;
 use App\Models\TestResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator, PDF;;
 
 /**
@@ -121,6 +122,17 @@ class TestController extends BaseController
     public function userTestDetails($test_id = 0)
     {
         $testDetails = Test::where('tests.id', $test_id)->first();
+        $startDateTime   = Carbon::parse($testDetails->start_date_time);
+        $endDateTime     = Carbon::parse($testDetails->end_date_time);
+        $currentDateTime = Carbon::now();
+
+        // Check if the current time is within the start and end times
+        if ($currentDateTime->lt($startDateTime)) {
+            return redirect()->back()->with('error', 'The test has not started yet. Please come back at ' . $startDateTime->format('Y-m-d h:i:s A') . '.');
+        }
+        if ($currentDateTime->gt($endDateTime)) {
+            return redirect()->back()->with('error', 'The test time is over. It ended at ' . $endDateTime->format('Y-m-d h:i:s A') . '.');
+        }
         if ($testDetails) {
             $questionsAlreadyAssigned = UserAssignedTestQuestion::where('test_id', $test_id)
                 ->where('trainee_id', Auth::user()->id)

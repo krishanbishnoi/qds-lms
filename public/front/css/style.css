@@ -7,7 +7,8 @@
 :root {
     --white: #ffffff;
     --black: #000000;
-    --blue: #00407E;
+    --blue: #00438C;
+    /* --blue: #00407E; */
     --blueBg100: rgba(0, 64, 126, .2);
     --blueBg200: #354C9E33;
     --blueBg300: #EAF2FD;
@@ -3185,7 +3186,7 @@ a:hover{
 }
 
 .question-container {
-    margin: 0px 0;
+    margin: 25px 0;
     padding: 20px;
     background: #f8fafc;
     border-radius: 8px;
@@ -3339,7 +3340,7 @@ a:hover{
 
 /* Sidebar instructions */
 :root {
-    --blue: #007bff;
+    --blue: #00438C;
     /* fallback */
 }
 
