@@ -54,7 +54,7 @@
                                 'Select Status',
                                 trans('Select Status') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -68,21 +68,21 @@
                                 'olms_id',
                                 trans('Id') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
                         {{ Form::text('olms_id', isset($searchVariable['olms_id']) ? $searchVariable['olms_id'] : '', ['class' => ' form-control', 'placeholder' => 'Id']) }}
                     </div>
                 </div>
-                <!-- <div class="col-md-2 col-sm-2">
-                                                                                                                        <div class="form-group ">
-                                                                                                                            {!! Html::decode(
-                                                                                                                                Form::label('email', trans('Email') . '<span class="requireRed"> </span>', ['class' => 'mws-form-label']),
-                                                                                                                            ) !!}
-                                                                                                                            {{ Form::text('email', isset($searchVariable['email']) ? $searchVariable['email'] : '', ['class' => ' form-control', 'placeholder' => 'Email']) }}
-                                                                                                                        </div>
-                                                                                                                    </div> -->
+                {{--  <div class="col-md-2 col-sm-2">
+                    <div class="form-group ">
+                        {!! Html::decode(
+                            Form::label('email', trans('Email') . '<span class="requireRed"> </span>', ['class' => 'mws-form-label']),
+                        ) !!}
+                        {{ Form::text('email', isset($searchVariable['email']) ? $searchVariable['email'] : '', ['class' => ' form-control', 'placeholder' => 'Email']) }}
+                    </div>
+                </div>  --}}
                 <div class="col-md-2 col-sm-2">
                     <div class="form-group ">
                         {!! Html::decode(
@@ -90,7 +90,7 @@
                                 'mobile_number',
                                 trans('Mobile Number') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -110,7 +110,8 @@
                 {{ Form::close() }}
             </div>
         </div>
-        <div class="box search-panel collapsed-box">
+        @livewire('user-bulk')
+        {{--  <div class="box search-panel collapsed-box">
             <div class="box-body mb-4">
                 <form action="{{ route('import.trainees') }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -126,7 +127,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div>  --}}
         {{-- <hr>
         <div class="box search-panel collapsed-box">
             <div class="box-body mb-4">

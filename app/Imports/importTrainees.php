@@ -46,7 +46,7 @@ class importTrainees extends BaseController implements ToModel, WithHeadingRow
         } else {
 
 
-            $userAlreadyExist            =     db::table("users")->where('olms_id', $employeeId)->first();
+            $userAlreadyExist  =  db::table("users")->where('olms_id', $employeeId)->first();
 
             if ($userAlreadyExist) {
                 // Add the error and fields to the error arrays
@@ -76,7 +76,7 @@ class importTrainees extends BaseController implements ToModel, WithHeadingRow
                         $this->skippedRows[] = $row;
                         // return; // Skip inserting this row and continue to the next row
                     } else {
-                        $validateString                            =  md5(time() . $trimEmail);
+                        $validateString =  md5(time() . $trimEmail);
 
                         // Get the value from the Excel file or assign null if empty
 
