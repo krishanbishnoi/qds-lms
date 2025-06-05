@@ -784,14 +784,28 @@ class TrainingController extends BaseController
         $request->validate([
             'client_id' => 'required|integer',
             'campaign_id' => 'required|integer',
+            'store_code' => 'required|array',
+            'training_id' => 'required|integer',
         ]);
 
-        RetailAssignedTraining::create([
-            'training_id' => $request->training_id, // or pass it from hidden input
-            'client_id' => $request->client_id,
-            'campaign_id' => $request->campaign_id,
-            'store_code' => $request->store_code,
-        ]);
+        $existing = RetailAssignedTraining::where('client_id', $request->client_id)
+            ->where('campaign_id', $request->campaign_id)
+            ->where('training_id', $request->training_id)
+            ->first();
+
+        if ($existing) {
+            // Save new store list (remove unselected, add new)
+            $existing->store_code = implode(',', $request->store_code);
+            $existing->save();
+        } else {
+            // Create new record
+            RetailAssignedTraining::create([
+                'training_id' => $request->training_id,
+                'client_id' => $request->client_id,
+                'campaign_id' => $request->campaign_id,
+                'store_code' => implode(',', $request->store_code),
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Training successfully assigned to RetailIQ Campaign.');
     }
