@@ -39,7 +39,7 @@
                                 <div class="tab-pane fade show active" id="allTab" role="tabpanel">
                                     <div class="box p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-hover brdrclr mt-2">
+                                            <table class="table table-hover table table-bordered mt-2 ">
                                                 <thead class="theadLight">
                                                     <tr>
                                                         <th>Test Name</th>
@@ -72,7 +72,8 @@
                                                                     {{ count($test->test_results) ?? '0' }}
                                                                 </td>
                                                                 <td class="text-center">
-                                                                    {{ count($test->test_results->where('result','Passed')) ?? '0' }}</td>
+                                                                    {{ count($test->test_results->where('result', 'Passed')) ?? '0' }}
+                                                                </td>
                                                                 <td class="text-center">
                                                                     <div class="actionGroup"><a
                                                                             href="{{ route('Reports.downloads', $test->id) }}"
@@ -119,7 +120,7 @@
                                 <div class="tab-pane fade show active" id="allTab" role="tabpanel">
                                     <div class="box p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-hover brdrclr mt-2">
+                                            <table class="table table-hover table table-bordered mt-2 ">
                                                 <thead class="theadLight">
                                                     <tr>
                                                         <th>Training Name</th>
@@ -137,10 +138,14 @@
                                                         @foreach ($allTraining as $training)
                                                             @php
                                                                 // Count the number of training courses with a not-null "test_id"
-                                                                $countCoursesWithTestId = $training->training_courses->whereNotNull('test_id')->count();
-                                                                $averageMinimumMarks = $training->training_courses->whereNotNull('test_id')
+                                                                $countCoursesWithTestId = $training->training_courses
+                                                                    ->whereNotNull('test_id')
+                                                                    ->count();
+                                                                $averageMinimumMarks = $training->training_courses
+                                                                    ->whereNotNull('test_id')
                                                                     ->avg(function ($course) {
-                                                                        return optional($course->test)->minimum_marks ?? 0;
+                                                                        return optional($course->test)->minimum_marks ??
+                                                                            0;
                                                                     });
                                                             @endphp
                                                             <tr>

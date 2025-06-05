@@ -157,16 +157,16 @@
                                     title="Release Selected Games" id="trigger_event">Delete Users</button>
                             </div>
                         </div>
-                        <table class="table table-hover brdrclr mt-2 " width="100%">
+                        <table class="table table-hover table table-bordered mt-2 " width="100%">
                             <thead class="theadLight">
                                 <tr>
-                                    <th width=:15%;> <input type="checkbox" id="checkAll" class='check_box_all'>All</th>
+                                    <th> <input type="checkbox" id="checkAll" class='check_box_all'>All</th>
 
-                                    <th width="5%">{{ trans('Sr.') }}</th>
+                                    <th>{{ trans('SN.') }}</th>
                                     <th>
                                         {{ link_to_route(
                                             "$modelName.index",
-                                            trans('Id'),
+                                            trans('ID'),
                                             [
                                                 'sortBy' => 'olms_id',
                                                 'order' => $sortBy == 'olms_id' && $order == 'desc' ? 'asc' : 'desc',
@@ -317,7 +317,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="25%">{{ trans('Action') }}</th>
+                                    <th>{{ trans('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody id="powerwidgets">

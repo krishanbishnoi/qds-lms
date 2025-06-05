@@ -97,7 +97,7 @@
                                         {!! Form::hidden('training_id', $training_id) !!}
 
                                         {!! Form::label('client_id', 'Select Client', ['class' => 'block font-bold mb-1']) !!}
-                                        <select name="client_id" id="client_idSelect" class="form-control">
+                                        <select name="client_id" id="clientSelect" class="form-control">
                                             <option value="">-- Choose Client --</option>
                                             @foreach ($clients as $client)
                                                 <option value="{{ $client['id'] }}">{{ $client['company_name'] }}</option>
@@ -115,15 +115,26 @@
 
                                 <div class="mb-3 col-6" id="store-section" style="display: none;">
                                     {!! Form::label('store_code', 'Select Store', ['class' => 'block font-bold mb-1']) !!}
-                                    {!! Form::select('store_code', [], null, [
+
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            id="selectAllStores">Select All Stores</button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            id="clearAllStores">Clear All</button>
+                                    </div>
+
+                                    {!! Form::select('store_code[]', [], null, [
                                         'id' => 'storeSelect',
-                                        'class' => 'form-control',
-                                        'placeholder' => '-- Choose Store --',
+                                        'class' => 'form-control select2-form',
+                                        'multiple' => 'multiple',
                                     ]) !!}
+
                                     <div class="col-12 text-end">
                                         <button class="btn btn-primary mt-3" type="submit">Attach Training</button>
                                     </div>
                                 </div>
+
+
 
 
 
@@ -176,7 +187,7 @@
             }
         });
 
-        $('#client_idSelect').on('change', function() {
+        $('#clientSelect').on('change', function() {
             const clientId = $(this).val();
             const $campaignSelect = $('#campaignSelect');
 
@@ -211,48 +222,73 @@
                 $campaignSelect.empty();
             }
         });
-        $('#campaignSelect').on('change', function() {
-            const campaignId = $(this).val();
+
+        $('#storeSelect').select2({
+            width: '100%',
+        });
+        $(document).ready(function() {
             const $storeSelect = $('#storeSelect');
 
-            if (campaignId) {
-                $('#store-section').show();
-                $storeSelect.empty().append('<option>Loading...</option>');
-
-                $.ajax({
-                    url: '{{ route('fetch.retail.campaigns.store') }}',
-                    method: 'POST',
-                    data: {
-                        campaign_id: campaignId,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        if (response.success && response.store_codes.length > 0) {
-                            $('#storeSelect').empty().append(
-                                '<option value="">-- Choose Store --</option>');
-
-                            response.store_codes.forEach(function(store) {
-                                $('#storeSelect').append(
-                                    $('<option>', {
-                                        value: store.store_code,
-                                        text: store.store_code
-                                    })
-                                );
-                            });
-
-                            $('#store-section').show();
-                        } else {
-                            $('#storeSelect').empty().append('<option>No stores found</option>');
-                        }
-                    },
-                    error: function() {
-                        $storeSelect.empty().append('<option>Error loading stores</option>');
+            // Select All button
+            $('#selectAllStores').on('click', function() {
+                let allValues = [];
+                $storeSelect.find('option').each(function() {
+                    if ($(this).val()) {
+                        allValues.push($(this).val());
                     }
                 });
-            } else {
-                $('#store-section').hide();
-                $storeSelect.empty();
-            }
+                $storeSelect.val(allValues).trigger('change');
+            });
+
+            // Clear All button
+            $('#clearAllStores').on('click', function() {
+                $storeSelect.val(null).trigger('change');
+            });
+
+            // Campaign change logic
+            $('#campaignSelect').on('change', function() {
+                const campaignId = $(this).val();
+
+                if (campaignId) {
+                    $('#store-section').show();
+                    $storeSelect.empty().append('<option>Loading...</option>');
+
+                    $.ajax({
+                        url: '{{ route('fetch.retail.campaigns.store') }}',
+                        method: 'POST',
+                        data: {
+                            campaign_id: campaignId,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if (response.success && response.store_codes.length > 0) {
+                                $storeSelect.empty(); // clear old
+                                response.store_codes.forEach(function(store) {
+                                    $storeSelect.append(
+                                        $('<option>', {
+                                            value: store.store_code,
+                                            text: store.store_code
+                                        })
+                                    );
+                                });
+
+                                // Re-initialize Select2 to recognize new options
+                                $storeSelect.trigger('change');
+
+                            } else {
+                                $storeSelect.empty().append('<option>No stores found</option>');
+                            }
+                        },
+                        error: function() {
+                            $storeSelect.empty().append(
+                                '<option>Error loading stores</option>');
+                        }
+                    });
+                } else {
+                    $('#store-section').hide();
+                    $storeSelect.empty();
+                }
+            });
         });
     </script>
 

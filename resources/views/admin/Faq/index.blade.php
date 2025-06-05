@@ -23,15 +23,15 @@
                 {{ Form::hidden('display') }}
                 <!-- <div class="col-md-2 col-sm-2">
 
-        <div class="form-group ">
-        {!! Html::decode(
-            Form::label('Select Status', trans('Select Status') . '<span class="requireRed"> </span>', [
-                'class' => 'mws-form-label',
-            ]),
-        ) !!}
-         {{ Form::select('is_active', ['' => trans('All'), 1 => trans('Active'), 0 => trans('Inactive')], isset($searchVariable['is_active']) ? $searchVariable['is_active'] : '', ['class' => 'form-control']) }}
-        </div>
-       </div> -->
+            <div class="form-group ">
+            {!! Html::decode(
+                Form::label('Select Status', trans('Select Status') . '<span class="requireRed"> </span>', [
+                    'class' => 'mws-form-label',
+                ]),
+            ) !!}
+             {{ Form::select('is_active', ['' => trans('All'), 1 => trans('Active'), 0 => trans('Inactive')], isset($searchVariable['is_active']) ? $searchVariable['is_active'] : '', ['class' => 'form-control']) }}
+            </div>
+           </div> -->
                 <div class="col-md-3 col-sm-3">
                     <div class="form-group ">
                         {!! Html::decode(
@@ -64,7 +64,7 @@
                                     class="btn btn-success btn-small pull-right mb-2"> {{ trans('Add Faq') }}</a>
                             </div>
                         </div>
-                        <table class="table table-hover brdrclr mt-2">
+                        <table class="table table-hover table table-bordered mt-2 ">
                             <thead class="theadLight">
                                 <th width="">
                                     {{ link_to_route(
@@ -87,25 +87,25 @@
                                 </th>
                                 <th width="">{{ trans('Answer') }}</th>
                                 <!-- <th width="10%">
-            {{ link_to_route(
-                'Faq.index',
-                trans('Answer'),
-                [
-                    'sortBy' => 'answer',
-                    'order' => $sortBy == 'answer' && $order == 'desc' ? 'asc' : 'desc',
-                    $query_string,
-                ],
-                [
-                    'class' =>
-                        $sortBy == 'answer' && $order == 'desc'
-                            ? 'sorting desc'
-                            : ($sortBy == 'answer' && $order == 'asc'
-                                ? 'sorting asc'
-                                : 'sorting'),
-                ],
-            ) }}
-           </th>
-           <th width="25%">{{ trans('Arabic Answer') }}</th> -->
+                {{ link_to_route(
+                    'Faq.index',
+                    trans('Answer'),
+                    [
+                        'sortBy' => 'answer',
+                        'order' => $sortBy == 'answer' && $order == 'desc' ? 'asc' : 'desc',
+                        $query_string,
+                    ],
+                    [
+                        'class' =>
+                            $sortBy == 'answer' && $order == 'desc'
+                                ? 'sorting desc'
+                                : ($sortBy == 'answer' && $order == 'asc'
+                                    ? 'sorting asc'
+                                    : 'sorting'),
+                    ],
+                ) }}
+               </th>
+               <th width="25%">{{ trans('Arabic Answer') }}</th> -->
                                 <?php /* <th>
 								{{
 									link_to_route(
@@ -150,7 +150,7 @@
                                             <td>{!! strip_tags(wordwrap($record->question, 25, "<br>\n")) !!}</td>
                                             <td>{!! strip_tags(wordwrap($record->answer, 25, "<br>\n")) !!}</td>
                                             <!-- <td >{{ strip_tags(Str::limit($record->ar_question, 50)) }}</td>
-            <td >{{ strip_tags(Str::limit($record->ar_answer, 50)) }}</td> -->
+                <td >{{ strip_tags(Str::limit($record->ar_answer, 50)) }}</td> -->
                                             <?php /* <td data-th='{{ trans("Status") }}'>
 								@if($record->is_active	== 1)
 									<span class="label label-success" >{{ trans("Activated") }}</span>

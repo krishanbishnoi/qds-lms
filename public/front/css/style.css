@@ -3168,7 +3168,6 @@ a:hover{
 }
 
 .test-header {
-    margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 1px solid #eee;
 }
@@ -3219,7 +3218,7 @@ a:hover{
 }
 
 .question-container {
-    margin: 25px 0;
+    margin: 0px 0;
     padding: 20px;
     background: #f8fafc;
     border-radius: 8px;

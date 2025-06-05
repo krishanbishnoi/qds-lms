@@ -62,10 +62,10 @@
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                             </div>
                         </div>
-                        <table class="table table-hover brdrclr mt-2">
+                        <table class="table table-hover table table-bordered mt-2 ">
                             <thead class="theadLight">
                                 <tr>
-                                    <th width="12%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Title'),
@@ -84,7 +84,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="8%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Test Category'),
@@ -104,7 +104,7 @@
                                         ) }}
                                     </th>
                                     @if (Auth::user()->user_role_id == SUPER_ADMIN_ROLE_ID)
-                                        <th width="8%">
+                                        <th>
                                             {{ link_to_route(
                                                 "$modelName.index",
                                                 trans('Created By'),
@@ -124,7 +124,7 @@
                                             ) }}
                                         </th>
                                     @endif
-                                    <th width="8%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Test Type'),
@@ -144,26 +144,25 @@
                                         ) }}
                                     </th>
 
-                                    <!-- <th width="%">
-                                                                                                {{ link_to_route(
-                                                                                                    "$modelName.index",
-                                                                                                    trans('Minimum Marks'),
-                                                                                                    [
-                                                                                                        'sortBy' => 'minimum_marks',
-                                                                                                        'order' => $sortBy == 'minimum_marks' && $order == 'desc' ? 'asc' : 'desc',
-                                                                                                        $query_string,
-                                                                                                    ],
-                                                                                                    [
-                                                                                                        'class' =>
-                                                                                                            $sortBy == 'minimum_marks' && $order == 'desc'
-                                                                                                                ? 'sorting desc'
-                                                                                                                : ($sortBy == 'minimum_marks' && $order == 'asc'
-                                                                                                                    ? 'sorting asc'
-                                                                                                                    : 'sorting'),
-                                                                                                    ],
-                                                                                                ) }}
-                                                                                            </th> -->
-                                    <th width="15%">
+                                    <!-- <th                                                                                               {{ link_to_route(
+                                        "$modelName.index",
+                                        trans('Minimum Marks'),
+                                        [
+                                            'sortBy' => 'minimum_marks',
+                                            'order' => $sortBy == 'minimum_marks' && $order == 'desc' ? 'asc' : 'desc',
+                                            $query_string,
+                                        ],
+                                        [
+                                            'class' =>
+                                                $sortBy == 'minimum_marks' && $order == 'desc'
+                                                    ? 'sorting desc'
+                                                    : ($sortBy == 'minimum_marks' && $order == 'asc'
+                                                        ? 'sorting asc'
+                                                        : 'sorting'),
+                                        ],
+                                    ) }}
+                                                                                                                    </th> -->
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Start Date Time'),
@@ -182,7 +181,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="15%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('End Date Time'),
@@ -201,7 +200,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="8%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Status'),
@@ -221,7 +220,7 @@
                                         ) }}
                                     </th>
 
-                                    {{-- <th  width="10%" >
+                                    {{-- <th  >
                                         {{ link_to_route(
                                            "$modelName.index",
                                             trans('Modified'),
@@ -240,7 +239,7 @@
                                             ],
                                         ) }}
                                 </th> --}}
-                                    <th width="30%">{{ trans('Action') }}</th>
+                                    <th>{{ trans('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody id="powerwidgets">
@@ -282,10 +281,10 @@
                                             <td data-th='' class="action-td">
                                                 <!-- @if ($record->is_active == 1)
     <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$record->id, 0]) }}' class="btn btn-success btn-small status_any_item "><span class="fa fa-ban"></span>
-                                                                     </a>
+                                                                                             </a>
 @else
     <a title="Click To Activate" href='{{ route("$modelName.status", [$record->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fa fa-check"></span>
-                                                                     </a>
+                                                                                             </a>
     @endif  -->
 
                                                 <a href='{{ route("$modelName.edit", "$record->id") }}'
@@ -377,7 +376,7 @@
                                     'training_manager',
                                     trans('Assign Test Manager') .
                                         '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                    class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -423,7 +422,7 @@
                                     'training_trainer',
                                     trans('Assign Trainer') .
                                         '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                    class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}

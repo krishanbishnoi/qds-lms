@@ -68,7 +68,7 @@ $(function(){
 
 	<div class="box">
 		<div class="box-body ">
-			    <table class="table table-hover brdrclr mt-2">
+			    <table class="table table-hover table table-bordered mt-2 ">
                             <thead class="theadLight">
 					<tr>
 						<th width="10%" >

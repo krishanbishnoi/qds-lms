@@ -144,12 +144,12 @@
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                             </div>
                         </div>
-                            <table class="table table-hover brdrclr mt-2">
+                        <table class="table table-hover table table-bordered mt-2 ">
                             <thead class="theadLight">
 
                                 <tr>
-                                    <th width="5%">{{ trans('Sr.') }}</th>
-                                    <th width="5%">
+                                    <th>{{ trans('SN.') }}</th>
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Contest Id'),
@@ -168,7 +168,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="10%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Name'),
@@ -187,7 +187,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="10%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Category'),
@@ -207,7 +207,7 @@
                                         ) }}
                                     </th>
 
-                                    <th width="5%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Entry Fee'),
@@ -227,7 +227,7 @@
                                         ) }}
                                     </th>
 
-                                    <th width="10%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Publish Date'),
@@ -246,7 +246,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="10%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Registration Start Date'),
@@ -265,7 +265,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="10%">
+                                    <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Registration Close Date'),
@@ -284,7 +284,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="10%" class="action-th">
+                                    <th class="action-th">
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Status'),
@@ -303,8 +303,8 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th width="15%">{{ trans('Change Status') }}</th>
-                                    <th width="15%">{{ trans('Action') }}</th>
+                                    <th>{{ trans('Change Status') }}</th>
+                                    <th>{{ trans('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody id="powerwidgets">

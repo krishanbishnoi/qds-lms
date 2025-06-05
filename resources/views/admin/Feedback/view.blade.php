@@ -1,6 +1,6 @@
 @extends('admin.layouts.default')
 @section('content')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>
 
     <script>
         jQuery(document).ready(function() {
@@ -28,7 +28,7 @@
                         <a href="{{ route($modelName . '.index') }}">
                             Users</a>
                     </li>
-                    <li class="active"> / View {{ $sectionNameSingular  }}</li>
+                    <li class="active"> / View {{ $sectionNameSingular }}</li>
                 </ol>
             </nav>
         </div>
@@ -38,7 +38,8 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between gap-1 align-items-center mb-3">
                             <h3 class="box-title">Test Details</h3>
-                            <a id="copyButton" class="btn btn-primary px-3" data-clipboard-text="{{ route('userTestDetails.index.link.copied', $model->id) }}">
+                            <a id="copyButton" class="btn btn-primary px-3"
+                                data-clipboard-text="{{ route('userTestDetails.index.link.copied', $model->id) }}">
                                 Get Test Link
                                 <span class="fas fa-link" style="margin-left:10px"></span>
                             </a>
@@ -72,7 +73,15 @@
                                 </tr>
                                 <tr>
                                     <th width="30%" class="text-right txtFntSze">Type</th>
-                                    <td data-th='Category Name' class="txtFntSze">@if($model->type == "training_test")Training Test @elseif($model->type == "feedback_test")Feedback Test @else Regular Test @endif</td>
+                                    <td data-th='Category Name' class="txtFntSze">
+                                        @if ($model->type == 'training_test')
+                                            Training Test
+                                        @elseif($model->type == 'feedback_test')
+                                            Feedback Test
+                                        @else
+                                            Regular Test
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th width="30%" class="text-right txtFntSze">Is Active</th>
@@ -110,7 +119,7 @@
                                             <tr>
 
 
-                                                <th>{{ trans('Sr.') }}</th>
+                                                <th>{{ trans('SN.') }}</th>
 
                                                 <th>{{ trans('Question') }}</th>
                                                 <th>{{ trans('Type') }}</th>
@@ -154,7 +163,7 @@
                                             <tr>
 
 
-                                                <th>{{ trans('Sr.') }}</th>
+                                                <th>{{ trans('SN.') }}</th>
 
                                                 <th>{{ trans('Name') }}</th>
                                                 <th>{{ trans('Email') }}</th>
@@ -200,7 +209,7 @@
                                             <tr>
 
 
-                                                <th>{{ trans('Sr.') }}</th>
+                                                <th>{{ trans('SN.') }}</th>
 
                                                 <th>{{ trans('Name') }}</th>
                                                 <th>{{ trans('Email') }}</th>
@@ -242,7 +251,7 @@
                                     <table class="table table-hover brdrclr" width="100%">
                                         <thead>
                                             <tr>
-                                                <th>{{ trans('Sr.') }}</th>
+                                                <th>{{ trans('SN.') }}</th>
                                                 <th>{{ trans('Employee Id') }}</th>
 
                                                 <th>{{ trans('Name') }}</th>

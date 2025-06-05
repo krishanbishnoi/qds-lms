@@ -39,7 +39,7 @@
                                 <div class="tab-pane fade show active" id="allTab" role="tabpanel">
                                     <div class="box p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-hover brdrclr mt-2">
+                                            <table class="table table-hover table table-bordered mt-2 ">
                                                 <thead class="theadLight">
                                                     <tr>
                                                         <th>Test Name</th>
@@ -120,7 +120,7 @@
                                 <div class="tab-pane fade show active" id="allTab" role="tabpanel">
                                     <div class="box p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-hover brdrclr mt-2">
+                                            <table class="table table-hover table table-bordered mt-2 ">
                                                 <thead class="theadLight">
                                                     <tr>
                                                         <th>Training Name</th>

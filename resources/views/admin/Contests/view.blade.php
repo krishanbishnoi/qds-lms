@@ -24,7 +24,7 @@
                     <div class="card-body">
                         <table class="table table-hover brdrclr" width="100%">
                             <h2>
-                                 {{ $sectionName }} Details
+                                {{ $sectionName }} Details
                             </h2>
                             <tbody>
                                 <tr>
@@ -133,7 +133,7 @@
                         <table class="table table-hover brdrclr" width="100%">
                             <h2>
                                 Payout Details
-                           </h2>
+                            </h2>
                             <thead>
                                 <tr>
                                     <th width="5%">{{ trans('Position.') }}</th>
@@ -164,7 +164,7 @@
                         <table class="table table-hover brdrclr" width="100%">
                             <h2>
                                 Stock Details
-                           </h2>
+                            </h2>
                             <thead>
                                 <tr>
                                     <th width="5%">{{ trans('Name.') }}</th>
@@ -199,7 +199,7 @@
                         <table class="table table-striped table-responsive">
                             <thead>
                                 <tr>
-                                    <th>{{ trans('Sr.') }}</th>
+                                    <th>{{ trans('SN.') }}</th>
                                     <th>{{ trans('Game') }}</th>
                                     <th>{{ trans('Question') }}</th>
                                     <th>{{ trans('Option 1') }}</th>
@@ -298,7 +298,7 @@
                         <table class="table table-striped table-responsive">
                             <thead>
                                 <tr>
-                                    <th width="5%">{{ trans('Sr.') }}</th>
+                                    <th width="5%">{{ trans('SN.') }}</th>
                                     <th width="15%">{{ trans('Username') }}</th>
                                     <th width="15%">{{ trans('email') }}</th>
                                     <th width="15%">{{ trans('Status') }}</th>

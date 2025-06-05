@@ -69,11 +69,11 @@
         {{ Form::close() }}
         <div class="box">
             <div class="box-body">
-                <table class="table table-hover brdrclr mt-2">
+                <table class="table table-hover table table-bordered mt-2 ">
                     <thead class="theadLight">
                         <tr>
-                            <th width="5%">{{ trans('Sr.') }}</th>
-                            <th width="10%">
+                            <th>{{ trans('SN.') }}</th>
+                            <th>
                                 {!! link_to_route(
                                     "$modelName.index",
                                     trans('Name'),
@@ -92,7 +92,7 @@
                                     ],
                                 ) !!}
                             </th>
-                            <th width="15%">
+                            <th>
                                 {!! link_to_route(
                                     "$modelName.index",
                                     trans('Email'),
@@ -110,10 +110,10 @@
                                     ],
                                 ) !!}
                             </th>
-                            <th width="15%">{{ trans('Subject') }}</th>
-                            <th width="20%">{{ trans('Issue') }}</th>
-                            <th width="10%">{{ trans('Status') }}</th>
-                            <th width="10%">{{ trans('Action') }}</th>
+                            <th>{{ trans('Subject') }}</th>
+                            <th>{{ trans('Issue') }}</th>
+                            <th>{{ trans('Status') }}</th>
+                            <th>{{ trans('Action') }}</th>
                         </tr>
                     </thead>
                     <tbody>
