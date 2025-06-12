@@ -61,6 +61,7 @@
                                             <table class="table">
                                                 <thead>
                                                     <tr>
+                                                        <th>SN.</th>
                                                         <th>Test Name</th>
                                                         <th>Type</th>
                                                         <th class="text-center">Passing Score</th>
@@ -73,6 +74,7 @@
                                                 <tbody>
                                                     @forelse ($allTest as $test)
                                                         <tr>
+                                                            <td>{{ $loop->iteration }}</td>
                                                             <td class="text-wrap">
                                                                 {{-- Show test title for both types --}}
                                                                 {{ isset($test->test) ? $test->test->title : $test->title ?? 'N/A' }}

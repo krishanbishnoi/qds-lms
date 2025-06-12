@@ -13,9 +13,14 @@ use App\Exports\exportParticipants;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\TrainingDocument;
 use App\Models\CourseType;
+use App\Models\ManagerTrainings;
+use App\Models\Question;
+use App\Models\QuestionAttribute;
 use App\Models\TrainingParticipants;
 use App\Models\Test;
 use App\Models\StateDescription;
+use App\Models\TestCategory;
+use App\Models\TrainerTrainings;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -118,184 +123,343 @@ class CoursesController extends BaseController
     public function add($training_id = 0)
     {
         try {
+            // $test_id = '376';
+            // $DB                    =    Question::query();
+            // $results = $DB->orderBy('created_at', 'DESC')->paginate(Config::get("Reading.records_per_page"));
+            // $model                =    Test::find($test_id);
             $test = Test::where('type', 'training_test')->pluck('title', 'id')->toArray();
             // $CourseType = CourseType::pluck('type','id')->toArray();
             $trainees = User::where("is_deleted", 0)->pluck('first_name', 'id')->toArray();
-            return  view("admin.Course.add", compact('trainees', 'test', 'training_id'));
+            return  view("admin.Course.add", compact('trainees', 'test',  'training_id'));
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->back()->with('error', 'somthing went wrong');;
         }
     }
 
     public function save(Request $request, $training_id = 0)
     {
+        $step = $request->input('current_step', 1);
+        $trainingId = $request->input('training_id');
+        $request->replace($this->arrayStripTags($request->all()));
+
         try {
-            // Sanitize input data
-            $request->replace($this->arrayStripTags($request->all()));
+            if ($step == 1) {
+                $validated = $request->validate([
+                    'title' => 'required',
+                    'description' => 'required',
+                ]);
 
-            // Validation rules
-            $validator = Validator::make($request->all(), [
-                'title' => 'required',
-                'skip' => 'required',
-            ]);
+                $courseData = [
+                    'title' => $request->title,
+                    'skip' => $request->skip,
+                    'test_id' => $request->filled('test_id') ? $request->test_id : null,
+                    'training_id' => $request->training_id,
+                    'start_date_time' => $request->start_date_time,
+                    'end_date_time' => $request->end_date_time,
+                    'description' => $request->description,
+                ];
 
-            if ($validator->fails()) {
-                return redirect()->back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
+                $course = Course::updateOrCreate(
+                    ['id' => $request->id],
+                    $courseData
+                );
 
-            // Handle thumbnail upload
-            $fileName = null;
-            if ($request->hasFile('thumbnail')) {
-                // Delete old thumbnail if exists
-                if ($request->id) {  // Changed from $modelId to $request->id
-                    $oldCourse = Course::find($request->id);
-                    if ($oldCourse && $oldCourse->thumbnail) {
-                        $oldThumbnailPath = TRAINING_DOCUMENT_ROOT_PATH . $oldCourse->thumbnail;
-                        if (File::exists($oldThumbnailPath)) {
-                            File::delete($oldThumbnailPath);
+                if (!$course) {
+                    return redirect()->route("Course.index", $trainingId)
+                        ->with('error', trans("Something went wrong."));
+                }
+
+                if ($request->filled('data')) {
+                    // First get existing documents for this course
+                    $existingDocuments = TrainingDocument::where('course_id', $course->id)->get();
+
+                    foreach ($request->data as $documentData) {
+                        $document = [
+                            'course_id' => $course->id,
+                            'title' => $documentData['title'] ?? null,
+                            'length' => $documentData['length'] ?? null,
+                        ];
+
+                        // Check if we have an existing document (for edit)
+                        $existingDocument = null;
+                        if (isset($documentData['entryID'])) {
+                            $existingDocument = $existingDocuments->where('id', $documentData['entryID'])->first();
+                        }
+
+                        // Handle file upload if new file is provided
+                        if (isset($documentData['document']) && $documentData['document']) {
+                            // Delete old file if exists
+                            if ($existingDocument && $existingDocument->document) {
+                                $oldFilePath = TRAINING_DOCUMENT_ROOT_PATH . $existingDocument->document;
+                                if (File::exists($oldFilePath)) {
+                                    File::delete($oldFilePath);
+                                }
+                            }
+
+                            $extension = $documentData['document']->getClientOriginalExtension();
+                            $docFileName = time() . '-' . uniqid() . '-document.' . $extension;
+                            $folderName = strtoupper(date('M') . date('Y')) . "/";
+                            $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
+
+                            if (!File::exists($folderPath)) {
+                                File::makeDirectory($folderPath, 0777, true);
+                            }
+
+                            $document['document_type'] = $extension;
+
+                            if ($documentData['document']->move($folderPath, $docFileName)) {
+                                $document['document'] = $folderName . $docFileName;
+                            }
+
+                            // Determine file type
+                            $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'ico'];
+                            $videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'mkv', 'flv', 'mpeg', 'mpg'];
+                            $fileExtensions = ['doc', 'pdf', 'txt', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'odt'];
+
+                            if (in_array($extension, $imageExtensions)) {
+                                $document['type'] = 'image';
+                            } elseif (in_array($extension, $videoExtensions)) {
+                                $document['type'] = 'video';
+                            } elseif (in_array($extension, $fileExtensions)) {
+                                $document['type'] = 'doc';
+                            }
+                        } elseif ($existingDocument) {
+                            // Keep the existing file if no new file is uploaded
+                            $document['document'] = $existingDocument->document;
+                            $document['document_type'] = $existingDocument->document_type;
+                            $document['type'] = $existingDocument->type;
+                        }
+
+                        // Update or create the document
+                        if ($existingDocument) {
+                            $existingDocument->update($document);
+                        } else {
+                            TrainingDocument::create($document);
                         }
                     }
-                }
 
-                $extension = $request->file('thumbnail')->getClientOriginalExtension();
-                $fileName = time() . '-thumbnail.' . $extension;
-                $folderName = strtoupper(date('M') . date('Y')) . "/";
-                $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
+                    // Delete any documents that were removed from the form
+                    $submittedDocumentIds = collect($request->data)
+                        ->filter(function ($item) {
+                            return isset($item['entryID']);
+                        })
+                        ->pluck('entryID')
+                        ->toArray();
 
-                if (!File::exists($folderPath)) {
-                    File::makeDirectory($folderPath, 0777, true);
-                }
-                $request->file('thumbnail')->move($folderPath, $fileName);
-                $fileName = $folderName . $fileName;
-            }
-
-            // Create or update course
-            $courseData = [
-                'title' => $request->title,
-                'skip' => $request->skip,
-                'test_id' => $request->filled('test_id') ? $request->test_id : null,
-                'training_id' => $request->training_id,
-                'start_date_time' => $request->start_date_time,
-                'end_date_time' => $request->end_date_time,
-                'description' => $request->description,
-            ];
-
-            if ($fileName) {
-                $courseData['thumbnail'] = $fileName;
-            }
-
-            $course = Course::updateOrCreate(
-                ['id' => $request->id],  // Changed from $modelId to $request->id
-                $courseData
-            );
-            if (!$course) {
-                return redirect()->route("Course.index", $training_id)
-                    ->with('error', trans("Something went wrong."));
-            }
-
-            // Handle training documents
-            if ($request->filled('data')) {
-                // First get existing documents for this course
-                $existingDocuments = TrainingDocument::where('course_id', $course->id)->get();
-
-                foreach ($request->data as $documentData) {
-                    $document = [
-                        'course_id' => $course->id,
-                        'title' => $documentData['title'] ?? null,
-                        'length' => $documentData['length'] ?? null,
-                    ];
-
-                    // Check if we have an existing document (for edit)
-                    $existingDocument = null;
-                    if (isset($documentData['entryID'])) {
-                        $existingDocument = $existingDocuments->where('id', $documentData['entryID'])->first();
-                    }
-
-                    // Handle file upload if new file is provided
-                    if (isset($documentData['document']) && $documentData['document']) {
-                        // Delete old file if exists
-                        if ($existingDocument && $existingDocument->document) {
-                            $oldFilePath = TRAINING_DOCUMENT_ROOT_PATH . $existingDocument->document;
-                            if (File::exists($oldFilePath)) {
-                                File::delete($oldFilePath);
+                    $documentsToDelete = $existingDocuments->whereNotIn('id', $submittedDocumentIds);
+                    foreach ($documentsToDelete as $docToDelete) {
+                        if ($docToDelete->document) {
+                            $filePath = TRAINING_DOCUMENT_ROOT_PATH . $docToDelete->document;
+                            if (File::exists($filePath)) {
+                                File::delete($filePath);
                             }
                         }
-
-                        $extension = $documentData['document']->getClientOriginalExtension();
-                        $docFileName = time() . '-' . uniqid() . '-document.' . $extension;
-                        $folderName = strtoupper(date('M') . date('Y')) . "/";
-                        $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
-
-                        if (!File::exists($folderPath)) {
-                            File::makeDirectory($folderPath, 0777, true);
-                        }
-
-                        $document['document_type'] = $extension;
-
-                        if ($documentData['document']->move($folderPath, $docFileName)) {
-                            $document['document'] = $folderName . $docFileName;
-                        }
-
-                        // Determine file type
-                        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'ico'];
-                        $videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'mkv', 'flv', 'mpeg', 'mpg'];
-                        $fileExtensions = ['doc', 'pdf', 'txt', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'odt'];
-
-                        if (in_array($extension, $imageExtensions)) {
-                            $document['type'] = 'image';
-                        } elseif (in_array($extension, $videoExtensions)) {
-                            $document['type'] = 'video';
-                        } elseif (in_array($extension, $fileExtensions)) {
-                            $document['type'] = 'doc';
-                        }
-                    } elseif ($existingDocument) {
-                        // Keep the existing file if no new file is uploaded
-                        $document['document'] = $existingDocument->document;
-                        $document['document_type'] = $existingDocument->document_type;
-                        $document['type'] = $existingDocument->type;
+                        $docToDelete->delete();
                     }
+                }
 
-                    // Update or create the document
-                    if ($existingDocument) {
-                        $existingDocument->update($document);
+                Session::put('course_id', $course->id);
+
+
+                if ($request->add_test_option == 'existing') {
+                    return redirect()->route('Course.index', $trainingId);
+                }
+                return response()->json(['success' => true]);
+            } elseif ($step == 2) {
+                $validated = $request->validate([
+                    // 'category_id' => 'required',
+                    'title' => 'required',
+                    // 'type' => 'required',
+                    'minimum_marks' => 'required',
+                    'number_of_attempts' => 'required',
+                    // 'time_of_test' => 'required',
+                    'start_date_time' => 'required',
+                    'end_date_time' => 'required',
+                    'thumbnail' => $request->id ? 'nullable' : 'required',
+                    'publish_result' => 'required',
+                ]);
+
+                $data = [
+                    'category_id' => $request->category_id,
+                    'title' => $request->title,
+                    'type' => 'training_test',
+                    'minimum_marks' => $request->minimum_marks,
+                    'user_id' => Auth::id(),
+                    'number_of_attempts' => $request->number_of_attempts,
+                    'time_of_test' => $request->time_of_test,
+                    'number_of_questions' => $request->number_of_questions ?? '0',
+                    'region' => $request->region,
+                    'circle' => $request->circle,
+                    'lob' => $request->lob,
+                    'start_date_time' => $request->start_date_time,
+                    'end_date_time' => $request->end_date_time,
+                    'publish_result' => $request->publish_result,
+                    'description' => $request->description,
+                ];
+
+                // Handle file upload if exists
+                if ($request->hasFile('thumbnail')) {
+                    $extension = $request->file('thumbnail')->getClientOriginalExtension();
+                    $fileName = time() . '-thumbnail.' . $extension;
+
+                    $folderName = strtoupper(date('M') . date('Y')) . "/";
+                    $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
+                    if (!File::exists($folderPath)) {
+                        File::makeDirectory($folderPath, 0777, true);
+                    }
+                    if ($request->file('thumbnail')->move($folderPath, $fileName)) {
+                        $data['thumbnail'] = $folderName . $fileName;
+                    }
+                }
+
+                $test = Test::updateOrCreate(
+                    ['id' => $request->id],
+                    $data
+                );
+
+                $courseId = Session::get('course_id');
+                $course = Course::where('id', $courseId)->first();
+
+                if ($course) {
+                    $course->test_id = $test->id;
+                    $course->save();
+                }
+
+                $test_id = $test->id;
+                Session::put('current_test_id', $test_id);
+
+                if ($test_id) {
+                    if (isset($thisData['training_manager']) && !empty($thisData['training_manager'])) {
+                        ManagerTrainings::where('test_id', $test_id)->delete();
+                        foreach ($thisData['training_manager'] as $user_id) {
+                            $object = new ManagerTrainings;
+                            $object->test_id = $test_id;
+                            $object->user_id = $user_id;
+                            $object->save();
+                        }
                     } else {
-                        TrainingDocument::create($document);
+                        ManagerTrainings::where('test_id', $test_id)->delete();
+                    }
+
+                    if (isset($thisData['training_trainer']) && !empty($thisData['training_trainer'])) {
+                        TrainerTrainings::where('test_id', $test_id)->delete();
+                        foreach ($thisData['training_trainer'] as $user_id) {
+                            $object = new TrainerTrainings;
+                            $object->test_id = $test_id;
+                            $object->user_id = $user_id;
+                            $object->save();
+                        }
+                    } else {
+                        TrainerTrainings::where('test_id', $test_id)->delete();
                     }
                 }
 
-                // Delete any documents that were removed from the form
-                $submittedDocumentIds = collect($request->data)
-                    ->filter(function ($item) {
-                        return isset($item['entryID']);
-                    })
-                    ->pluck('entryID')
-                    ->toArray();
 
-                $documentsToDelete = $existingDocuments->whereNotIn('id', $submittedDocumentIds);
-                foreach ($documentsToDelete as $docToDelete) {
-                    if ($docToDelete->document) {
-                        $filePath = TRAINING_DOCUMENT_ROOT_PATH . $docToDelete->document;
-                        if (File::exists($filePath)) {
-                            File::delete($filePath);
+                return response()->json([
+                    'success' => true,
+                    'test_id' => $test->id
+                ]);
+            } elseif ($step == 3) {
+                $test_id = $request->input('test_id') ?? Session::get('current_test_id');
+
+                if (!$test_id) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Test ID not provided'
+                    ], 404);
+                }
+
+                $test = Test::find($test_id);
+
+                if (empty($test)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Test not found'
+                    ], 404);
+                }
+
+                // For AJAX requests (when saving a question)
+                if ($request->wantsJson()) {
+                    $request->replace($this->arrayStripTags($request->all()));
+                    $data = $request->all();
+
+                    $validator = Validator::make($data, [
+                        'question' => 'required',
+                        'question_type' => 'required',
+                        'marks' => 'required',
+                    ]);
+
+                    if ($validator->fails()) {
+                        return response()->json([
+                            'success' => false,
+                            'errors' => $validator->errors()
+                        ], 422);
+                    }
+
+                    $question = Question::updateOrCreate(
+                        ['id' => $request->id],
+                        [
+                            'test_id' => $test_id,
+                            'question' => $request->question,
+                            'question_type' => $request->question_type,
+                            'count' => $request->count,
+                            'marks' => $request->marks,
+                            'description' => $request->description,
+                        ]
+                    );
+
+                    // Handle question attributes (keep your existing code)
+                    if (!empty($data['data'])) {
+                        QuestionAttribute::where('question_id', $question->id)->delete();
+
+                        if (in_array($request->question_type, ['SCQ', 'T/F'])) {
+                            $selectedIndex = $request->input('data_right_answer');
+                            foreach ($data['data'] as $index => $option) {
+                                if (!empty($option['option'])) {
+                                    QuestionAttribute::create([
+                                        'question_id' => $question->id,
+                                        'option' => $option['option'],
+                                        'is_correct' => ($selectedIndex == $index) ? 1 : 0,
+                                    ]);
+                                }
+                            }
+                        } else {
+                            foreach ($data['data'] as $option) {
+                                if (!empty($option['option'])) {
+                                    QuestionAttribute::create([
+                                        'question_id' => $question->id,
+                                        'option' => $option['option'],
+                                        'is_correct' => (isset($option['right_answer']) && $option['right_answer']) ? 1 : 0,
+                                    ]);
+                                }
+                            }
                         }
                     }
-                    $docToDelete->delete();
+
+                    return response()->json(['success' => true]);
                 }
+
+                // For page reload (non-AJAX)
+                // Session::put('current_test_id', $test_id);
+                // $questions = Question::where('test_id', $test_id)->get();
+
+                // return view('your.main.view', [
+                //     'current_step' => 3,
+                //     'test_id' => $test_id,
+                //     'questions' => $questions
+                // ]);
             }
-
-            $message = $request->id  // Changed from $modelId to $request->id
-                ? trans($this->sectionNameSingular . " has been updated successfully")
-                : trans($this->sectionNameSingular . " has been added successfully");
-
-            return redirect()->route("Course.index", $training_id)
-                ->with('success', $message);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
-            dd($e);
-            return redirect()->back()
-                ->withInput()
-                ->with('error', trans('Something went wrong. Please try again.'));
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -333,7 +497,7 @@ class CoursesController extends BaseController
 
             $documents =  DB::table('training_documents')->where('course_id', $modelId)->get();
 
-            return  view("admin.Course.add", compact('model', 'documents', 'test', 'training_id'));
+            return  view("admin.Course.edit", compact('model', 'documents', 'test', 'training_id'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'somthing went wrong');
         }

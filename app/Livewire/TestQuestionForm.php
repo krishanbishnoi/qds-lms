@@ -55,6 +55,20 @@ class TestQuestionForm extends Component
         }
     }
 
+
+    public function resetFields()
+    {
+        dd('1');
+        $this->reset([
+            'question',
+            'question_type',
+            'marks',
+            'options',
+            'correct_answers',
+            // add any other fields you need to reset
+        ]);
+    }
+
     public function updatedQuestionType()
     {
         $this->selected_scq = null;

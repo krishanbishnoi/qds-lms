@@ -392,7 +392,7 @@
                 let questionHtml = `
         <div class="testQuestion">
             <div class="clickType mb-2">${getQuestionTypeLabel(question.question_type)}</div>
-            <h4 class="mb-3">${question.question}</h4>
+            <h4 class="mb-3">${index + 1}. ${question.question}</h4>
     `;
 
                 if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
@@ -481,6 +481,21 @@
             }
 
             // Function to check if current question has an answer
+            // function hasAnswerForCurrentQuestion() {
+            //     const question = questions[currentQuestionIndex];
+
+            //     if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
+            //         return $(`input[name="answer-${question.id}"]:checked`).length > 0;
+            //     } else if (question.question_type === 'MCQ') {
+            //         return $(`input[name="answer-${question.id}[]"]:checked`).length > 0;
+            //     } else if (question.question_type === 'FreeText') {
+            //         return $(`textarea[name="answer-text-${question.id}"]`).val().trim().length > 0;
+            //     }
+
+            //     return false;
+            // }
+
+
             function hasAnswerForCurrentQuestion() {
                 const question = questions[currentQuestionIndex];
 
@@ -589,8 +604,21 @@
             }
 
             // Function to update answer status indicators
+            // function updateAnswerStatus() {
+            //     const answeredCount = Object.keys(userAnswers).length;
+
+            //     // Update answered count in confirmation modal
+            //     $('#answered-count').text(answeredCount);
+            // }
+
             function updateAnswerStatus() {
-                const answeredCount = Object.keys(userAnswers).length;
+                let answeredCount = Object.keys(userAnswers).length;
+
+                // Check if current question is answered (even if not saved yet)
+                const currentQuestion = questions[currentQuestionIndex];
+                if (hasAnswerForCurrentQuestion() && !userAnswers[currentQuestion.id]) {
+                    answeredCount++;
+                }
 
                 // Update answered count in confirmation modal
                 $('#answered-count').text(answeredCount);
@@ -702,7 +730,15 @@
             // Event handlers
             $('#prev-btn').click(goToPreviousQuestion);
             $('#next-btn').click(goToNextQuestion);
+            // $('#submit-btn').click(function() {
+            //     $('#confirmSubmit').modal('show');
+            // });
             $('#submit-btn').click(function() {
+                // Save the current answer before showing the modal
+                saveCurrentAnswer();
+                // Update the answered count in the modal
+                updateAnswerStatus();
+                // Then show the modal
                 $('#confirmSubmit').modal('show');
             });
             $('#final-submit-btn').click(submitTest);
