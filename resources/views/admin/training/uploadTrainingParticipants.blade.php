@@ -1,7 +1,7 @@
 @extends('admin.layouts.default')
 @section('content')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     <div class="content-wrapper">
@@ -43,9 +43,11 @@
                                         'placeholder' => '-- Choose Method --',
                                     ]) !!}
                                 </div>
+
                                 <!-- Excel Upload -->
                                 <div id="excel-upload-section" class="box search-panel collapsed-box"
                                     style="display: none;">
+
                                     <div class="box-body mb-4">
                                         <form action="{{ route('import.training-participants', $training_id) }}"
                                             method="POST" enctype="multipart/form-data">
@@ -78,9 +80,8 @@
                                         {!! Form::hidden('training_id', $training_id) !!}
                                         {!! Form::label('empIds', 'Select Users', ['class' => 'block font-bold mb-1']) !!}
                                         {!! Form::select('empIds[]', $users, $existingUserIds, [
-                                            'class' => 'form-control select2-form',
+                                            'class' => 'form-control select2-users',
                                             'multiple' => 'multiple',
-                                            'id' => 'select2-users',
                                         ]) !!}
                                         <button class="btn btn-primary mt-3" type="submit">Upload Users</button>
                                     </form>
@@ -89,29 +90,45 @@
                                 <!-- retailiq Project fields -->
 
                                 <div class="mb-3 col-6" id="retailiq-section" style="display: none;">
-
-
                                     <form action="{{ route('retail.assign-training', $training_id) }}" method="POST"
                                         class="mt-0">
                                         @csrf
+
                                         {!! Form::hidden('training_id', $training_id) !!}
 
-                                        {!! Form::label('client_id', 'Select Client', ['class' => 'block font-bold mb-1']) !!}
-                                        <select name="client_id" id="clientSelect" class="form-control">
-                                            <option value="">-- Choose Client --</option>
-                                            @foreach ($clients as $client)
-                                                <option value="{{ $client['id'] }}">{{ $client['company_name'] }}</option>
-                                            @endforeach
-                                        </select>
+                                        {!! Form::label('client_id', 'Select Client', ['class' => 'block font-bold mb-1 required']) !!}
+                                        {!! Form::select('client_id', $clients, null, [
+                                            'id' => 'clientSelect',
+                                            'class' => 'form-control',
+                                            'placeholder' => '-- Choose Client --',
+                                        ]) !!}
+                                </div>
+                                <div class="mb-3 col-6" id="store-section" style="display: none;">
+                                    {!! Form::label('assginTo', 'Assgin To', ['class' => 'block font-bold mb-1 required']) !!}
+                                    {!! Form::select('assginTo', $assginTo, null, [
+                                        'class' => 'form-control',
+                                        'placeholder' => '-- Choose --',
+                                    ]) !!}
+                                </div>
+                                <div class="mb-3 col-6" id="store-section" style="display: none;">
+                                    {!! Form::label('validity', 'Training Validity', ['class' => 'block font-bold mb-1 required']) !!}
+                                    {!! Form::date('validity', null, [
+                                        'class' => 'form-control',
+                                        'id' => 'validityy',
+                                        'min' => \Carbon\Carbon::tomorrow()->format('Y-m-d'), // Disables past and today's dates
+                                    ]) !!}
                                 </div>
                                 <div id="campaign-section" class="mb-3 col-6" style="display: none;">
                                     {!! Form::label('campaign_id', 'Select Campaign', ['class' => 'block font-bold mb-1']) !!}
-                                    {!! Form::select('campaign_id', [], null, [
+                                    {!! Form::select('campaign_id[]', [], $campaignData ?? null, [
                                         'id' => 'campaignSelect',
-                                        'class' => 'form-control',
-                                        'placeholder' => '-- Choose Campaign --',
+                                        'class' => 'form-control campaign-users',
+                                        'multiple' => true,
+                                        'data-placeholder' => '-- Choose Campaign --',
                                     ]) !!}
+
                                 </div>
+
 
                                 <div class="mb-3 col-6" id="store-section" style="display: none;">
                                     {!! Form::label('store_code', 'Select Store', ['class' => 'block font-bold mb-1']) !!}
@@ -133,11 +150,6 @@
                                         <button class="btn btn-primary mt-3" type="submit">Attach Training</button>
                                     </div>
                                 </div>
-
-
-
-
-
                                 </form>
                             </div>
                         </div>
@@ -146,10 +158,31 @@
             </div>
         </div>
     </div>
-    </div>
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 5px;
+            margin: 3px 5px 3px 0;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            background-color: #f4f4f4;
+            font-size: 14px;
+            line-height: 1.2;
+            position: relative;
+        }
 
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            margin-right: 5px;
+            position: relative;
+            top: auto;
+            left: auto;
+            line-height: 1;
+            font-size: 12px;
+        }
+    </style>
     <script>
-        $('#select2-users').select2({
+        $('.select2-users').select2({
             width: '100%',
         });
 
@@ -187,43 +220,11 @@
             }
         });
 
-        $('#clientSelect').on('change', function() {
-            const clientId = $(this).val();
-            const $campaignSelect = $('#campaignSelect');
-
-            if (clientId) {
-                $('#campaign-section').show();
-                $campaignSelect.empty().append('<option>Loading...</option>');
-
-                $.ajax({
-                    url: '{{ route('fetch.retail.campaigns') }}',
-                    method: 'POST',
-                    data: {
-                        client_id: clientId,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        if (response.status === 1) {
-                            $campaignSelect.empty().append(
-                                '<option value="">-- Choose Campaign --</option>');
-                            response.campaigns.forEach(function(camp) {
-                                $campaignSelect.append(new Option(camp.name, camp.id));
-                            });
-                        } else {
-                            $campaignSelect.empty().append('<option>No campaigns found</option>');
-                        }
-                    },
-                    error: function() {
-                        $campaignSelect.empty().append('<option>Error loading campaigns</option>');
-                    }
-                });
-            } else {
-                $('#campaign-section').hide();
-                $campaignSelect.empty();
-            }
-        });
 
         $('#storeSelect').select2({
+            width: '100%',
+        });
+        $('.campaign-users').select2({
             width: '100%',
         });
         $(document).ready(function() {
@@ -245,53 +246,137 @@
                 $storeSelect.val(null).trigger('change');
             });
 
-            // Campaign change logic
-            $('#campaignSelect').on('change', function() {
-                const campaignId = $(this).val();
+            $('#clientSelect').on('change', function() {
+                const clientId = $(this).val();
+                const $campaignSelect = $('#campaignSelect'); // Use consistent ID
 
-                if (campaignId) {
-                    $('#store-section').show();
-                    $storeSelect.empty().append('<option>Loading...</option>');
+                if (clientId) {
+                    $('#campaign-section, #store-section').show();
+                    $campaignSelect.empty().append('<option>Loading...</option>');
 
                     $.ajax({
-                        url: '{{ route('fetch.retail.campaigns.store') }}',
+                        url: '{{ route('fetch.retail.campaigns') }}',
                         method: 'POST',
                         data: {
-                            campaign_id: campaignId,
+                            client_id: clientId,
                             _token: '{{ csrf_token() }}'
                         },
                         success: function(response) {
-                            if (response.success && response.store_codes.length > 0) {
-                                $storeSelect.empty(); // clear old
-                                response.store_codes.forEach(function(store) {
-                                    $storeSelect.append(
-                                        $('<option>', {
-                                            value: store.store_code,
-                                            text: store.store_code
-                                        })
-                                    );
+                            if (response.status === 1) {
+                                $campaignSelect.empty().append(
+                                    '<option value="">-- Choose Campaign --</option>');
+                                response.campaigns.forEach(function(camp) {
+                                    $campaignSelect.append(new Option(camp.name, camp
+                                        .id));
                                 });
 
-                                // Re-initialize Select2 to recognize new options
-                                $storeSelect.trigger('change');
-
                             } else {
-                                $storeSelect.empty().append('<option>No stores found</option>');
+                                $campaignSelect.empty().append(
+                                    '<option>No campaigns found</option>');
                             }
                         },
                         error: function() {
-                            $storeSelect.empty().append(
-                                '<option>Error loading stores</option>');
+                            $campaignSelect.empty().append(
+                                '<option>Error loading campaigns</option>');
                         }
                     });
                 } else {
-                    $('#store-section').hide();
-                    $storeSelect.empty();
+                    $('#campaign-section, #store-section').hide();
+                    $campaignSelect.empty();
+                }
+            });
+
+
+        });
+        $('#campaignSelect').on('change', function() {
+            const selectedCampaignIds = $(this).val();
+            const $storeSelect = $('#storeSelect');
+
+            if (selectedCampaignIds && selectedCampaignIds.length > 0) {
+                $('#store-section').show();
+
+                $.ajax({
+                    url: '{{ route('fetch.retail.campaigns.store') }}',
+                    method: 'POST',
+                    data: {
+                        campaign_ids: selectedCampaignIds,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    beforeSend: function() {
+                        // Don't clear existing if already data exists in storeSelect
+                        if ($storeSelect.find('option').length === 0) {
+                            $storeSelect.append('<option>Loading...</option>');
+                        }
+                    },
+                    success: function(response) {
+                        if (response.status === 1 && response.stores.length > 0) {
+                            $storeSelect.empty(); // Only clear when valid data is incoming
+
+                            response.stores.forEach(function(store) {
+                                $storeSelect.append(new Option(store.code, store.code));
+                            });
+
+                            $storeSelect.select2({
+                                width: '100%'
+                            }); // Reinit only if data updated
+                        } else {
+                            // Keep previous store list, just optionally show a toast or alert
+                            console.warn('No new stores found for selected campaigns.');
+                        }
+                    },
+                    error: function() {
+                        console.error('Failed to load stores.');
+                    }
+                });
+            } else {
+                $('#store-section').hide();
+                $storeSelect.empty();
+            }
+        });
+        $(document).ready(function() {
+            // Set minimum date to tomorrow (disables past dates and today)
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const minDate = tomorrow.toISOString().split('T')[0];
+            $('#validityy').attr('min', minDate);
+
+            // Clear any existing value
+            $('#validityy').val('');
+
+            // Validate on change
+            $('#validityy').on('change', function() {
+                const selectedDate = new Date($(this).val());
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (!$(this).val()) {
+                    $('#validity-error').hide();
+                    return;
+                }
+
+                // Check if date is in past or today
+                if (selectedDate <= today) {
+                    // Use SweetAlert if available, otherwise fall back to regular alert
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid Date',
+                            text: 'Past dates and today\'s date are not allowed. Please choose a future date.',
+                        });
+                    } else {
+                        alert(
+                            'Error: Past dates and today\'s date are not allowed. Please choose a future date.'
+                        );
+                    }
+
+                    $('#validity-error').show();
+                    $(this).val('');
+                } else {
+                    $('#validity-error').hide();
                 }
             });
         });
     </script>
-
 
     <script>
         function downloadFile() {

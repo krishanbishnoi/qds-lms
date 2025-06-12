@@ -472,7 +472,6 @@ class TrainingController extends BaseController
             $export = new exportParticipants($filteredResult);
             return Excel::download($export, 'Training.xlsx');
         } catch (\Exception $e) {
-
             return redirect()->back()->with('error', 'somthing went wrong');;
         }
     }
@@ -489,16 +488,18 @@ class TrainingController extends BaseController
                 ->toArray();
             $users = User::where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'employee_id')
                 ->toArray();
-
+            $assginTo = ['Freelancer' => 'Freelancer', 'In-House' => 'In-House'];
             // API call to RetailIQ
 
             $clientResponse = Http::withOptions([
                 'verify' => false, // Disable SSL cert check
             ])->get('https://retailanalytics.qdegrees.com/api/get_client_list');
 
-            $clients = $clientResponse->successful() ? $clientResponse['data'] : [];
+            $clients = $clientResponse->successful()
+                ? collect($clientResponse['data'])->pluck('company_name', 'id')->toArray()
+                : [];
 
-            return  View::make("admin.Training.uploadTrainingParticipants", compact('training_id', 'projects', 'methods', 'users', 'existingUserIds', 'clients'));
+            return  View::make("admin.Training.uploadTrainingParticipants", compact('assginTo', 'training_id', 'projects', 'methods', 'users', 'existingUserIds', 'clients'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'somthing went wrong');;
         }
@@ -723,8 +724,8 @@ class TrainingController extends BaseController
             DB::commit();
             return redirect()->back()->with('success', 'Training participants assigned and notified successfully.');
         } catch (\Exception $e) {
-            DB::rollBack();
             dd($e);
+            DB::rollBack();
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
@@ -754,59 +755,87 @@ class TrainingController extends BaseController
     }
     public function fetchRetailCampaignsStore(Request $request)
     {
-        $campaignId = $request->input('campaign_id');
+        $campaignIds = $request->input('campaign_ids');
 
-        if (!$campaignId) {
-            return response()->json(['status' => 0, 'message' => 'Store ID is required'], 400);
+        if (empty($campaignIds) || !is_array($campaignIds)) {
+            return response()->json(['status' => 0, 'message' => 'Campaign ID(s) required'], 400);
         }
+        $allStores = [];
 
         try {
-            $response = Http::withOptions([
-                'verify' => false,
-            ])->post('https://retailanalytics.qdegrees.com/api/get-store-codes', [
-                'campaign_id' => $campaignId,
-            ]);
+            foreach ($campaignIds as $campaignId) {
+                $response = Http::withOptions([
+                    'verify' => false,
+                ])->post('https://retailanalytics.qdegrees.com/api/get-store-codes', [
+                    'campaign_id' => $campaignId,
+                ]);
 
-            if ($response->successful() && $response['success'] == true) {
-                // dd($response);
-                // return response()->json(['status' => 1, 'stores' => $response['data']]);
-                return response()->json($response->json());
+                if ($response->successful() && $response['success'] === true) {
+                    foreach ($response['store_codes'] as $store) {
+                        $allStores[] = [
+                            'code' => $store['store_code'],
+                            'campaign_id' => $campaignId,
+                        ];
+                    }
+                }
+            }
+            if (!empty($allStores)) {
+                // Remove duplicate store codes (optional)
+                $uniqueStores = collect($allStores)->unique('code')->values()->all();
+
+                return response()->json([
+                    'status' => 1,
+                    'stores' => $uniqueStores,
+                ]);
             }
 
-            return response()->json(['status' => 0, 'message' => 'No Store found'], 404);
+            return response()->json(['status' => 0, 'message' => 'No stores found'], 404);
         } catch (\Exception $e) {
-            dd($e);
-            return response()->json(['status' => 0, 'message' => 'API call failed'], 500);
+            return response()->json([
+                'status' => 0,
+                'message' => 'API call failed',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
+
     public function retailAssignTraining(Request $request)
     {
         $request->validate([
-            'client_id' => 'required|integer',
-            'campaign_id' => 'required|integer',
-            'store_code' => 'required|array',
-            'training_id' => 'required|integer',
+            'client_id'    => 'required|integer',
+            'training_id'  => 'required|integer',
+            'validity'  => 'required',
+            'assginTo'  => 'required',
         ]);
 
-        $existing = RetailAssignedTraining::where('client_id', $request->client_id)
-            ->where('campaign_id', $request->campaign_id)
-            ->where('training_id', $request->training_id)
-            ->first();
+        $campaignId = $request->filled('campaign_id') ? $request->campaign_id : null;
+        $storeCodes = is_array($request->store_code) ? implode(',', $request->store_code) : null;
+
+        $query = RetailAssignedTraining::where('client_id', $request->client_id)
+            ->where('training_id', $request->training_id);
+
+        if (!is_null($campaignId)) {
+            $query->where('campaign_id', $campaignId);
+        } else {
+            $query->whereNull('campaign_id');
+        }
+
+        $existing = $query->first();
 
         if ($existing) {
-            // Save new store list (remove unselected, add new)
-            $existing->store_code = implode(',', $request->store_code);
+            $existing->store_code = $storeCodes;
             $existing->save();
         } else {
-            // Create new record
             RetailAssignedTraining::create([
                 'training_id' => $request->training_id,
-                'client_id' => $request->client_id,
-                'campaign_id' => $request->campaign_id,
-                'store_code' => implode(',', $request->store_code),
+                'client_id'   => $request->client_id,
+                'campaign_id' => implode(',', $campaignId),
+                'store_code'  => $storeCodes,
+                'assginTo'  => $request->assginTo,
+                'validity'  => $request->validity,
             ]);
         }
 
-        return redirect()->back()->with('success', 'Training successfully assigned to RetailIQ Campaign.');
+        return redirect()->back()->with('success', 'Training successfully assigned to the client.');
     }
 }

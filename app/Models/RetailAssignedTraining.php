@@ -24,6 +24,8 @@ class RetailAssignedTraining extends Eloquent
         'client_id',
         'campaign_id',
         'store_code',
+        'assginTo',
+        'validity',
     ];
 
     public function training()

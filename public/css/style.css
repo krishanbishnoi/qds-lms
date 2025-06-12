@@ -20059,6 +20059,12 @@ dl li {
     margin-bottom: 0;
 }
 
+.required::after {
+    content: "*";
+    color: red;
+    margin-left: 2px;
+}
+
 .table thead th {
     border-top: 0;
     border-bottom-width: 1px;
