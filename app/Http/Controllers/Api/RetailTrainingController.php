@@ -46,11 +46,7 @@ class RetailTrainingController extends BaseController
 
 				if (!$training) continue;
 
-				$courses = Course::where('training_id', $training->id)
-					->with(['test:id,course_id,title,number_of_questions,duration']) // assuming this is the relation
-					->select('id', 'training_id', 'title', 'description')->with('CourseContentAndDocument')
-					->get();
-
+				 
 				$data[] = [
 					'training' => $training,
 					'training_courses' => $courses,

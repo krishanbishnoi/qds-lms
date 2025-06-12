@@ -14,6 +14,25 @@ return [
         'FreeText' => 'Free Text',
     ],
 
+    'ADDTEST' => [
+        'existing' => 'Select from existing tests',
+        'new' => 'Create new test'
+    ],
+
+    'STEP_FORM' => [
+        'course_info' => 1,
+        'test_info' => 2,
+        'questions' => 3
+    ],
+
+    'QuestionType' => [
+        'MCQ' => 'Multiple Choice (Multiple Answers)',
+        'SCQ' => 'Single Choice (Single Answer)',
+        'T/F' => 'True/False',
+        'FITB' => 'Fill in the Blank',
+        'Essay' => 'Essay Question'
+    ],
+
     'FLASH_TRY_CATCH'               => '🚧 Uh-oh! Something unexpected happened. We’re on it! 🛠️',
 
     'REC_NOT_FOUND'            => 'Record not found',

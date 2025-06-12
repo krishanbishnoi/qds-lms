@@ -23,137 +23,88 @@
         <div class="row">
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
-                    <div class="card-body">
-                        {{ Form::open(['role' => 'form', 'url' => route("$modelName.edit", [$training_id, $model->id]), 'class' => 'mws-form', 'files' => true, 'autocomplete' => 'off']) }}
+                    <div class="card-body ">
+                        {{ Form::open(['role' => 'form', 'url' => route("$modelName.add", [$training_id]), 'class' => 'mws-form', 'files' => true, 'autocomplete' => 'off']) }}
                         <input type="hidden" name="training_id" value="{{ $training_id }}">
+                        <input type="hidden" name="add_test_option" value="existing">
+                        <input type="hidden" name="id" value="{{ $model->id }}">
 
-                        <div class="mws-panel-body no-padding tab-content">
-                            <div class=" form-group <?php echo $errors->first('title') ? 'has-error' : ''; ?>">
-                                <div class="mws-form-row">
-                                    {!! Html::decode(
-                                        Form::label(
-                                            'title',
-                                            trans('Title') .
-                                                '<span class="requireRed">*
-                                                                                                        </span>',
-                                            ['class' => 'mws-form-label'],
-                                        ),
-                                    ) !!}
-                                    <div class="mws-form-item">
-                                        {{ Form::text('title', $model->title, ['class' => 'form-control']) }}
-                                        <div class="error-message help-inline">
-                                            <?php echo $errors->first('title'); ?>
+                        <div class="mws-panel-body no-padding tab-content row">
+                            <div class="col-md-6">
+                                <div class=" form-group <?php echo $errors->first('title') ? 'has-error' : ''; ?>">
+                                    <div class="mws-form-row">
+                                        {!! Html::decode(
+                                            Form::label(
+                                                'title',
+                                                trans('Title') .
+                                                    '<span class="requireRed">*
+                                                                                                                                                                                        </span>',
+                                                ['class' => 'mws-form-label'],
+                                            ),
+                                        ) !!}
+                                        <div class="mws-form-item">
+                                            {{ Form::text('title', $model->title, ['class' => 'form-control']) }}
+                                            <div class="error-message help-inline">
+                                                <?php echo $errors->first('title'); ?>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group <?php echo $errors->first('test_id') ? 'has-error' : ''; ?>">
-                                <div class="mws-form-row">
-                                    {!! Html::decode(
-                                        Form::label('test_id', trans('Select Test') . '<span class="requireRed"> *</span>', ['class' => 'mws-form-label']),
-                                    ) !!}
-                                    <div class="mws-form-item">
-                                        {{ Form::select('test_id', ['' => 'Don\'t want test in this course'] + $test, $model->test_id, ['class' => 'form-control']) }}
-                                        <div class="error-message help-inline">
-                                            <?php echo $errors->first('test_id'); ?>
+                            <div class="col-md-6">
+                                <div class="form-group <?php echo $errors->first('test_id') ? 'has-error' : ''; ?>">
+                                    <div class="mws-form-row">
+                                        {!! Html::decode(
+                                            Form::label('test_id', trans('Select Test') . '<span class="requireRed"> *</span>', ['class' => 'mws-form-label']),
+                                        ) !!}
+                                        <div class="mws-form-item">
+                                            {{ Form::select('test_id', ['' => 'Don\'t want test in this course'] + $test, $model->test_id, ['class' => 'form-control']) }}
+                                            <div class="error-message help-inline">
+                                                <?php echo $errors->first('test_id'); ?>
+                                            </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group <?php echo $errors->first('skip') ? 'has-error' : ''; ?>">
+                                    <div class="mws-form-row">
+                                        {!! Html::decode(
+                                            Form::label(
+                                                'skip',
+                                                trans('Skip Video') .
+                                                    '<span class="requireRed"> *
+                                                                                                                                                                                        </span>',
+                                                ['class' => 'mws-form-label'],
+                                            ),
+                                        ) !!}
+                                        <div class="mws-form-item">
+                                            <input class="form-check-input" type="radio" name="skip" id="0"
+                                                value="0" {{ $model->skip == '0' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="0">
+                                                yes
+                                            </label>
+                                            <input class="form-check-input" type="radio" name="skip" id="1"
+                                                value="1" {{ $model->skip == '1' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="1">
+                                                no
+                                            </label>
+                                            <div class="error-message help-inline">
+                                                <?php echo $errors->first('skip'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
 
-                            <div class="form-group <?php echo $errors->first('start_date_time') ? 'has-error' : ''; ?>" id="live_date">
-                                <div class="mws-form-row">
-                                    {!! Html::decode(
-                                        Form::label(
-                                            'start_date_time',
-                                            trans('Start Date') .
-                                                '<span
-                                                                                                            class="requireRed"> * </span>',
-                                            ['class' => 'mws-form-label'],
-                                        ),
-                                    ) !!}
-                                    <div class="mws-form-item">
-                                        {{ Form::text('start_date_time', $model->start_date_time, ['class' => 'form-control small', 'id' => 'start_date_time']) }}
-                                        <div class="error-message help-inline">
-                                            <?php echo $errors->first('start_date_time'); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group <?php echo $errors->first('end_date_time') ? 'has-error' : ''; ?>" id="live_date">
-                                <div class="mws-form-row">
-                                    {!! Html::decode(
-                                        Form::label(
-                                            'end_date_time',
-                                            trans('End Date') .
-                                                '<span
-                                                                                                            class="requireRed"> * </span>',
-                                            ['class' => 'mws-form-label'],
-                                        ),
-                                    ) !!}
-                                    <div class="mws-form-item">
-                                        {{ Form::text('end_date_time', $model->end_date_time, ['class' => 'form-control small', 'id' => 'end_date_time']) }}
-                                        <div class="error-message help-inline">
-                                            <?php echo $errors->first('end_date_time'); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group <?php echo $errors->first('skip') ? 'has-error' : ''; ?>">
-                                <div class="mws-form-row">
-                                    {!! Html::decode(
-                                        Form::label(
-                                            'skip',
-                                            trans('Skip Video') .
-                                                '<span class="requireRed"> *
-                                                                                                        </span>',
-                                            ['class' => 'mws-form-label'],
-                                        ),
-                                    ) !!}
-                                    <div class="mws-form-item">
-                                        <input class="form-check-input" type="radio" name="skip" id="0"
-                                            value="0" {{ $model->skip == '0' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="0">
-                                            yes
-                                        </label>
-                                        <input class="form-check-input" type="radio" name="skip" id="1"
-                                            value="1" {{ $model->skip == '1' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="1">
-                                            no
-                                        </label>
-                                        <div class="error-message help-inline">
-                                            <?php echo $errors->first('skip'); ?>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="form-group <?php echo $errors->first('thumbnail') ? 'has-error' : ''; ?>">
-                                <div class="mws-form-row">
-                                    {!! HTML::decode(
-                                        Form::label(
-                                            'thumbnail',
-                                            trans('Thumbnail') .
-                                                '<span class="requireRed">
-                                                                                                            *
-                                                                                                        </span>',
-                                            ['class' => 'mws-form-label'],
-                                        ),
-                                    ) !!}
-                                    <div class="mws-form-item">
-                                        {{ Form::file('thumbnail', ['class' => '']) }}
-                                        <div class="error-message help-inline">
-                                            <?php echo $errors->first('thumbnail'); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             {!! Html::decode(
                                 Form::label(
                                     'training_documents',
                                     trans('Training Documents') .
                                         '<span
-                                                                                    class="requireRed"> * </span>',
+                                                                                                                                            class="requireRed"> * </span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -172,7 +123,7 @@
                                                                     'title',
                                                                     trans('Title') .
                                                                         '<span
-                                                                                                                                                                            class="requireRed"> </span>',
+                                                                                                                                                                                                                                                                                                    class="requireRed"> </span>',
                                                                     ['class' => 'mws-form-label'],
                                                                 ),
                                                             ) !!}
@@ -191,7 +142,7 @@
                                                                     'document',
                                                                     trans('Document') .
                                                                         '<span
-                                                                                                                                                                            class="requireRed"> </span>',
+                                                                                                                                                                                                                                                                                                    class="requireRed"> </span>',
                                                                     ['class' => 'mws-form-label'],
                                                                 ),
                                                             ) !!}
@@ -213,7 +164,7 @@
                                                                     'length',
                                                                     trans('Length') .
                                                                         '<span
-                                                                                                                                                                            class="requireRed"> </span>',
+                                                                                                                                                                                                                                                                                                    class="requireRed"> </span>',
                                                                     ['class' => 'mws-form-label'],
                                                                 ),
                                                             ) !!}
@@ -306,28 +257,6 @@
                                                     @endif
 
                                                 </tr>
-                                                <tr>
-                                                    <td></td>
-                                                    <td>
-
-                                                        <!-- @if ($document->document != '')
-    @if ($document->type == 'image')
-    <img height="50" width="50" src="{{ TRAINING_DOCUMENT_URL . $document->document }}" />
-@elseif($document->type == 'video')
-    <br />
-                                                        <video width="400" controls>
-                                                        <source src="{{ TRAINING_DOCUMENT_URL . $document->document }}" type="video/mp4">
-
-                                                        </video>
-@else
-    <iframe  eight="50" width="50" src="{{ TRAINING_DOCUMENT_URL . $document->document }}" frameborder="0"></iframe>
-    @endif
-    @endif -->
-
-
-                                                    </td>
-                                                    <td></td>
-                                                </tr>
                                             </table>
                                         </div>
                                     @endforeach
@@ -344,7 +273,7 @@
                                                                 'title',
                                                                 trans('Title') .
                                                                     '<span
-                                                                                                                                                                    class="requireRed"> </span>',
+                                                                                                                                                                                                                                                                                    class="requireRed"> </span>',
                                                                 ['class' => 'mws-form-label'],
                                                             ),
                                                         ) !!}
@@ -363,7 +292,7 @@
                                                                 'document',
                                                                 trans('Document') .
                                                                     '<span
-                                                                                                                                                                    class="requireRed"> </span>',
+                                                                                                                                                                                                                                                                                    class="requireRed"> </span>',
                                                                 ['class' => 'mws-form-label'],
                                                             ),
                                                         ) !!}
@@ -390,10 +319,7 @@
                                     </div>
                                     <input type="hidden" name="count" value="1" id="add_more_count">
                                 @endif
-<<<<<<< HEAD
-=======
-
->>>>>>> 072d4776309fa9d06d3ef55e74d71b5a5a791da8
+                               
                             </div>
                             <div class="form-group <?php echo $errors->first('description') ? 'has-error' : ''; ?>">
                                 {!! Html::decode(
@@ -401,7 +327,7 @@
                                         'description',
                                         trans('Description') .
                                             '<span class="requireRed">
-                                                                                                * </span>',
+                                                                                                                                                                * </span>',
                                         ['class' => 'mws-form-label'],
                                     ),
                                 ) !!}

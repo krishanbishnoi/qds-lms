@@ -42,6 +42,7 @@
                                             <table class="table">
                                                 <thead>
                                                     <tr>
+                                                        <th>SN.</th>
                                                         <th>Training Name</th>
                                                         {{-- <th class="text-center">Training Status</th> --}}
                                                         <th class="text-center">Course count</th>
@@ -83,6 +84,7 @@
                                                                 }
                                                             @endphp
                                                             <tr>
+                                                                <td>{{ $loop->iteration }}</td>
                                                                 <td class="text-wrap">{{ $training->title }} </td>
                                                                 {{-- @if ($training->status == 0)
                                                                     <td class="text-center">Ongoing </td>

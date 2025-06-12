@@ -216,7 +216,6 @@ class TestController extends BaseController
                     ManagerTrainings::where('test_id', $test_id)->delete();
                 }
 
-                // Manage related training trainers
                 if (isset($thisData['training_trainer']) && !empty($thisData['training_trainer'])) {
                     TrainerTrainings::where('test_id', $test_id)->delete();
                     foreach ($thisData['training_trainer'] as $user_id) {
@@ -226,7 +225,6 @@ class TestController extends BaseController
                         $object->save();
                     }
                 } else {
-                    // If no training_trainer sent, delete old relations
                     TrainerTrainings::where('test_id', $test_id)->delete();
                 }
             }
@@ -240,7 +238,6 @@ class TestController extends BaseController
             }
             return redirect()->route('Test.index');
         } catch (\Exception $e) {
-            dd($e);
             Session::flash('error', __(config('constants.FLASH_TRY_CATCH')));
             return redirect()->route('Test.index');
         }
@@ -523,13 +520,17 @@ class TestController extends BaseController
                 ->withErrors($validator)
                 ->withInput();
         }
-
         // Split the trainees string into an array of emails
         $emails = array_map('trim', explode(',', $thisData['trainees']));
         $errors = [];
         $TestNumberOfAttempts = Test::find($test_id);
 
         foreach ($emails as $email) {
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                return redirect()->back()->with('error', "This user Already Registered in LMS assign test form above.");
+            }
+
             $trimEmail = trim($email);
             $userAlreadyExist = DB::table('users')->where('email', $trimEmail)->first();
 
@@ -709,7 +710,6 @@ class TestController extends BaseController
                 }
             }
         }
-
         Session::flash('flash_notice', trans(" Trainer has been Assign successfully"));
         return Redirect::back();
     }

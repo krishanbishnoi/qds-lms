@@ -65,6 +65,7 @@
                         <table class="table table-hover table table-bordered mt-2 ">
                             <thead class="theadLight">
                                 <tr>
+                                    <th>SN.</th>
                                     <th>
                                         {{ link_to_route(
                                             "$modelName.index",
@@ -161,7 +162,7 @@
                                                         : 'sorting'),
                                         ],
                                     ) }}
-                                                                                                                    </th> -->
+                                                                                                                        </th> -->
                                     <th>
                                         {{ link_to_route(
                                             "$modelName.index",
@@ -244,8 +245,12 @@
                             </thead>
                             <tbody id="powerwidgets">
                                 @if (!$results->isEmpty())
+                                    @php
+                                        $sn = ($results->currentPage() - 1) * $results->perPage() + 1;
+                                    @endphp
                                     @foreach ($results as $record)
                                         <tr class="items-inner">
+                                            <td>{{ $sn++ }}</td>
                                             <td data-th="{{ trans('Page Name') }}">{{ $record->title }}</td>
 
                                             <td data-th="{{ trans('Page Name') }}">{{ $record->category_name }}</td>
@@ -281,10 +286,10 @@
                                             <td data-th='' class="action-td">
                                                 <!-- @if ($record->is_active == 1)
     <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$record->id, 0]) }}' class="btn btn-success btn-small status_any_item "><span class="fa fa-ban"></span>
-                                                                                             </a>
+                                                                                                 </a>
 @else
     <a title="Click To Activate" href='{{ route("$modelName.status", [$record->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fa fa-check"></span>
-                                                                                             </a>
+                                                                                                 </a>
     @endif  -->
 
                                                 <a href='{{ route("$modelName.edit", "$record->id") }}'
@@ -376,7 +381,7 @@
                                     'training_manager',
                                     trans('Assign Test Manager') .
                                         '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -422,7 +427,7 @@
                                     'training_trainer',
                                     trans('Assign Trainer') .
                                         '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}

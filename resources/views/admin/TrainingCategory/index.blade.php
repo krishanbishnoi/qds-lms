@@ -63,6 +63,7 @@
                         <table class="table table-hover table table-bordered mt-2 ">
                             <thead class="theadLight">
                                 <tr>
+                                    <th>SN.</th>
                                     <th width="30%">
                                         {{ link_to_route(
                                             'TrainingCategory.index',
@@ -106,8 +107,12 @@
                             </thead>
                             <tbody id="powerwidgets">
                                 @if (!$results->isEmpty())
+                                    @php
+                                        $sn = ($results->currentPage() - 1) * $results->perPage() + 1;
+                                    @endphp
                                     @foreach ($results as $record)
                                         <tr class="items-inner">
+                                            <td>{{ $sn++ }}</td>
                                             <td data-th="{{ trans('Page Name') }}">{{ $record->name }}</td>
 
                                             <td data-th="{{ trans('Page Name') }}">{{ $record->updated_at }}</td>
@@ -160,7 +165,7 @@
                                     'training_manager',
                                     trans('Assign Test Manager') .
                                         '<span
-                                                                                                                                                                                                                                                            class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                        class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -205,7 +210,7 @@
                                     'training_trainer',
                                     trans('Assign Trainer') .
                                         '<span
-                                                                                                                                                                                                                                                            class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                        class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
