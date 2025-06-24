@@ -111,7 +111,7 @@ class QuestionController extends BaseController
 
         try {
             $question = Question::updateOrCreate(
-                ['id' => $request->id],  // condition for update
+                ['id' => $request->id],  
                 [
                     'test_id' => $test_id,
                     'question' => $request->question,

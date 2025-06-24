@@ -126,7 +126,7 @@
     <a title="Click To Activate" href='{{ route("$modelName.status", [$result->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fas fa-check"></span>
                                                                                    </a>
     @endif  -->
-                                                <a href='{{ route("$modelName.edit", [$training_id, $result->id]) }}'
+                                                <a href='{{ route("Course.edit", [$training_id, $result->id]) }}'
                                                     class="btn btn-primary" title="Edit"> <span
                                                         class="fas fa-edit"></span></a>
                                                 <a href='{{ route("$modelName.delete", "$result->id") }}'

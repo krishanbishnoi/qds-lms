@@ -21492,3 +21492,18 @@ button.btn.btn-default.ml5 {
 .input-group .input-group-text {
     border-left: 0;
 }
+
+
+ .step-wizard .step {
+        width: 32%;
+        text-align: center;
+        padding: 10px;
+        background: #f1f1f1;
+        border-radius: 4px;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+    .step-wizard .step.active {
+        background: #007bff;
+        color: #fff;
+    }
