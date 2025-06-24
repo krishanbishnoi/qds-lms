@@ -630,6 +630,105 @@ class TrainingController extends BaseController
     }
 
 
+    // public function assginTrainingParticipants(Request $request)
+    // {
+    //     $training_id = $request->training_id;
+
+    //     DB::beginTransaction();
+
+    //     try {
+    //         $trainingDetail = Training::findOrFail($training_id);
+    //         $courses = DB::table('courses')->where('training_id', $training_id)->get();
+
+    //         $allDocuments = [];
+    //         foreach ($courses as $course) {
+    //             $documents = DB::table('training_documents')
+    //                 ->where('course_id', $course->id)
+    //                 ->get();
+
+    //             foreach ($documents as $doc) {
+    //                 $allDocuments[] = [
+    //                     'course_id' => $course->id,
+    //                     'document_id' => $doc->id,
+    //                     'type' => $doc->type,
+    //                 ];
+    //             }
+    //         }
+
+    //         foreach ($request->empIds as $empId) {
+    //             $user = User::where('olms_id', $empId)->first();
+
+    //             if (!$user) {
+    //                 continue;
+    //             }
+
+    //             // Create participant
+    //             TrainingParticipants::create([
+    //                 'training_id' => $training_id,
+    //                 'trainee_id' => $user->id,
+    //             ]);
+
+    //             // Assign documents
+    //             $documentsToInsert = [];
+    //             foreach ($allDocuments as $doc) {
+    //                 $documentsToInsert[] = [
+    //                     'user_id' => $user->id,
+    //                     'training_id' => $training_id,
+    //                     'course_id' => $doc['course_id'],
+    //                     'document_id' => $doc['document_id'],
+    //                     'type' => $doc['type'],
+    //                     'status' => 0,
+    //                     'created_at' => now(),
+    //                     'updated_at' => now(),
+    //                 ];
+    //             }
+
+    //             if (!empty($documentsToInsert)) {
+    //                 DB::table('trainee_assigned_training_documents')->insert($documentsToInsert);
+    //             }
+
+    //             // Send notification
+    //             $actionUrl = route('userTraining.index');
+    //             $details = [
+    //                 'greeting' => 'New Training Available',
+    //                 'message' => 'New Training Available',
+    //                 'body' => 'You have been assigned a ' . $trainingDetail->title . ' training.',
+    //                 'actionText' => 'View Training',
+    //                 'actionURL' => $actionUrl,
+    //                 'training_id' => $training_id,
+    //             ];
+    //             Notification::send($user, new AssignTrainingNotification($details));
+
+    //             // Send email
+    //             // $settingsEmail = Config::get('Site.email');
+    //             // $full_name = $user->fullname;
+    //             // $authEmail = $user->email;
+    //             // $click_link = $actionUrl;
+
+    //             // $emailActions = EmailAction::where('action', 'training_assigned')->first();
+    //             // $emailTemplates = EmailTemplate::where('action', 'training_assigned')->first();
+
+    //             // if ($emailActions && $emailTemplates) {
+    //             //     $constants = array_map(function ($val) {
+    //             //         return '{' . trim($val) . '}';
+    //             //     }, explode(',', $emailActions->options));
+
+    //             //     $rep_Array = [$full_name, $authEmail, $authEmail, $click_link];
+    //             //     $subject = $emailTemplates->subject;
+    //             //     $messageBody = str_replace($constants, $rep_Array, $emailTemplates->body);
+
+    //             //     $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
+    //             // }
+    //         }
+
+    //         DB::commit();
+    //         return redirect()->back()->with('success', 'Training participants assigned and notified successfully.');
+    //     } catch (\Exception $e) {
+    //         dd($e);
+    //         DB::rollBack();
+    //         return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+    //     }
+    // }
     public function assginTrainingParticipants(Request $request)
     {
         $training_id = $request->training_id;
@@ -639,6 +738,10 @@ class TrainingController extends BaseController
         try {
             $trainingDetail = Training::findOrFail($training_id);
             $courses = DB::table('courses')->where('training_id', $training_id)->get();
+
+            // Delete existing participants and their assigned documents
+            TrainingParticipants::where('training_id', $training_id)->delete();
+            DB::table('trainee_assigned_training_documents')->where('training_id', $training_id)->delete();
 
             $allDocuments = [];
             foreach ($courses as $course) {
@@ -724,7 +827,6 @@ class TrainingController extends BaseController
             DB::commit();
             return redirect()->back()->with('success', 'Training participants assigned and notified successfully.');
         } catch (\Exception $e) {
-            dd($e);
             DB::rollBack();
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
@@ -808,7 +910,7 @@ class TrainingController extends BaseController
             'assginTo'  => 'required',
         ]);
 
-        $campaignId = $request->filled('campaign_id') ? $request->campaign_id : null;
+        $campaignId = $request->filled('campaign_id') ? implode(',', $request->campaign_id) : null;
         $storeCodes = is_array($request->store_code) ? implode(',', $request->store_code) : null;
 
         $query = RetailAssignedTraining::where('client_id', $request->client_id)
@@ -829,7 +931,7 @@ class TrainingController extends BaseController
             RetailAssignedTraining::create([
                 'training_id' => $request->training_id,
                 'client_id'   => $request->client_id,
-                'campaign_id' => implode(',', $campaignId),
+                'campaign_id' => $campaignId,
                 'store_code'  => $storeCodes,
                 'assginTo'  => $request->assginTo,
                 'validity'  => $request->validity,
