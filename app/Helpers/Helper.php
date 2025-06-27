@@ -1,80 +1,96 @@
-<?php 
-function genRandomValue($length=5,$type='digit',$prefix=null){
-    if($type=='digit'){
-        $characters = date('Ymd').'123456789987654321564738291918273645953435764423'.time();
+<?php
+
+use App\Models\Course;
+use App\Models\TraineeAssignedTrainingDocument;
+use App\Models\TrainingDocument;
+use App\Models\TrainingTestParticipants;
+use Illuminate\Support\Facades\Auth;
+
+function genRandomValue($length = 5, $type = 'digit', $prefix = null)
+{
+    if ($type == 'digit') {
+        $characters = date('Ymd') . '123456789987654321564738291918273645953435764423' . time();
     } else {
-        $characters = date('Ymd').'192837465TransactionRandomId987654321AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz111xxxBheemSwamixxx9OO14568O8xxxBikanerRajasthan34OO1'.time();
+        $characters = date('Ymd') . '192837465TransactionRandomId987654321AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz111xxxBheemSwamixxx9OO14568O8xxxBikanerRajasthan34OO1' . time();
     }
     $charactersLength = strlen($characters);
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {
         $randomString .= $characters[rand(0, $charactersLength - 1)];
     }
-    return $prefix.$randomString;
+    return $prefix . $randomString;
 }
 
-function addSubDate($isDate, $val, $date, $format='d-m-Y', $adsSub='days'){
+function addSubDate($isDate, $val, $date, $format = 'd-m-Y', $adsSub = 'days')
+{
     //$isDate: +,- | $val: numericVal | $adsSub: days, months, year
-    return date($format, strtotime($date. $isDate.$val.' '.$adsSub));
+    return date($format, strtotime($date . $isDate . $val . ' ' . $adsSub));
 }
 
-function timeAgo($date) {
-   $timestamp = strtotime($date);   
-   
-   $strTime = ["second", "minute", "hour", "day", "month", "year"];
-   $length = ["60","60","24","30","12","10"];
+function timeAgo($date)
+{
+    $timestamp = strtotime($date);
 
-   $currentTime = time();
-   if($currentTime >= $timestamp) {
-        $diff     = time()- $timestamp;
-        for($i = 0; $diff >= $length[$i] && $i < count($length)-1; $i++) {
+    $strTime = ["second", "minute", "hour", "day", "month", "year"];
+    $length = ["60", "60", "24", "30", "12", "10"];
+
+    $currentTime = time();
+    if ($currentTime >= $timestamp) {
+        $diff     = time() - $timestamp;
+        for ($i = 0; $diff >= $length[$i] && $i < count($length) - 1; $i++) {
             $diff = $diff / $length[$i];
         }
 
         $diff = round($diff);
-        if($diff < 10){
+        if ($diff < 10) {
             return dateConvert($date, 'Y-m-d h:i');
         }
         return $diff . " " . $strTime[$i] . "(s) ago ";
-   }
+    }
 }
-function dateConvert($date=null,$format=null){
-    if($date==null)
+function dateConvert($date = null, $format = null)
+{
+    if ($date == null)
         return date($format);
-    if($format==null)
-        return date('d-m-Y',strtotime($date));
-    else 
-        return date($format,strtotime($date));
+    if ($format == null)
+        return date('d-m-Y', strtotime($date));
+    else
+        return date($format, strtotime($date));
 }
-function timeConvert($time,$format=null){
-    if($format==null)
-        return date('H:i:s',strtotime($time));
-    else 
-        return date($format,strtotime($time));
+function timeConvert($time, $format = null)
+{
+    if ($format == null)
+        return date('H:i:s', strtotime($time));
+    else
+        return date($format, strtotime($time));
 }
-function splitText($string=null, $splitBy = ','){
-    if($string==null || $string==''){
+function splitText($string = null, $splitBy = ',')
+{
+    if ($string == null || $string == '') {
         return [];
     }
     return explode($splitBy, $string);
 }
 
-function limit_text($text, $limit) {
-  if (strlen($text) > $limit) {
+function limit_text($text, $limit)
+{
+    if (strlen($text) > $limit) {
         $text = substr($text, 0, $limit) . '...';
-  }
-  return $text;
+    }
+    return $text;
 }
 
-function limit_words($string, $word_limit) {
+function limit_words($string, $word_limit)
+{
     if (str_word_count($string, 0) > $word_limit) {
-        $words = explode(" ",$string);
-        return implode(" ",array_splice($words,0,$word_limit)).'...';
+        $words = explode(" ", $string);
+        return implode(" ", array_splice($words, 0, $word_limit)) . '...';
     }
     return $string;
 }
 
-function numberFormat($num){
+function numberFormat($num)
+{
     if (is_numeric($num)) {
         return sprintf("%.2f", (float) $num);
     } else {
@@ -83,7 +99,8 @@ function numberFormat($num){
 }
 
 // Function to check if the value exists in a 2D array
-function findInArray($array, $key, $value) {
+function findInArray($array, $key, $value)
+{
     foreach ($array as $item) {
         if ($item[$key] === $value) {
             return $item; // Return the entire row if the value exists
@@ -92,15 +109,19 @@ function findInArray($array, $key, $value) {
     return null; // Return null if the value doesn't exist
 }
 
-function checkboxTickOrNot($value, $val_from=null){
-    if($val_from=='view'){
-        if($value == 1) return true; else return false;
+function checkboxTickOrNot($value, $val_from = null)
+{
+    if ($val_from == 'view') {
+        if ($value == 1) return true;
+        else return false;
     } else {
-        if($value == 'on') return 1; else return 0;
+        if ($value == 'on') return 1;
+        else return 0;
     }
 }
 
-function numFormat($num){
+function numFormat($num)
+{
     if (is_numeric($num)) {
         return sprintf("%.2f", (float) $num);
     } else {
@@ -109,7 +130,8 @@ function numFormat($num){
 }
 
 if (!function_exists('isActiveMenu')) {
-    function isActiveMenu(array $routes, $class = 'show') {
+    function isActiveMenu(array $routes, $class = 'show')
+    {
         //return request()->is($pattern) ? $class : '';
         foreach ($routes as $route) {
             if (request()->routeIs($route)) {
@@ -120,7 +142,8 @@ if (!function_exists('isActiveMenu')) {
     }
 }
 if (!function_exists('isActiveRoute')) {
-    function isActiveRoute(array $routes, $class = 'active') {
+    function isActiveRoute(array $routes, $class = 'active')
+    {
         foreach ($routes as $route) {
             if (request()->routeIs($route)) {
                 return $class;
@@ -128,4 +151,34 @@ if (!function_exists('isActiveRoute')) {
         }
         return '';
     }
+}
+
+function checkIfCourseCompleted($courseId)
+{
+    $userId = Auth::id();
+
+    // Get all content for this course
+    $contents = TrainingDocument::where('course_id', $courseId)->get();
+
+    foreach ($contents as $content) {
+        $completed = TraineeAssignedTrainingDocument::where('user_id', $userId)
+            ->where('document_id', $content->id)
+            ->where('status', 1)
+            ->exists();
+
+        if (!$completed) {
+            return false;
+        }
+    }
+
+    // Check test completion if course has test
+    $course = Course::find($courseId);
+    if ($course->test_id) {
+        return TrainingTestParticipants::where('trainee_id', $userId)
+            ->where('test_id', $course->test_id)
+            ->where('status', 1)
+            ->exists();
+    }
+
+    return true;
 }

@@ -7,46 +7,46 @@
 :root {
     --white: #ffffff;
     --black: #000000;
-    --blue: #00438C;
+    --blue: #00438c;
     /* --blue: #00407E; */
-    --blueBg100: rgba(0, 64, 126, .2);
-    --blueBg200: #354C9E33;
-    --blueBg300: #EAF2FD;
-    --danger: #E90000;
+    --blueBg100: rgba(0, 64, 126, 0.2);
+    --blueBg200: #354c9e33;
+    --blueBg300: #eaf2fd;
+    --danger: #e90000;
     --lightGray: #949494;
-    --darkGray: #3E4146;
-    --darkGrayText: #3E4146;
-    --lightBorder: #AFB5EF;
+    --darkGray: #3e4146;
+    --darkGrayText: #3e4146;
+    --lightBorder: #afb5ef;
     --lightBorderOpacity01: #dddddd;
-    --lightBg: #E5EBF2;
+    --lightBg: #e5ebf2;
     --lightBg100: #858997;
-    --lightBg200: #D1D1D1;
-    --progress-bg: #B2B2B2;
-    --progress-secondary-bg: #3E4146;
+    --lightBg200: #d1d1d1;
+    --progress-bg: #b2b2b2;
+    --progress-secondary-bg: #3e4146;
     --grayBorder: #707070;
-    --darkBlueText: #3F4168;
-    --blueProgressBg: #00407E;
-    --lightProgressBg: #EEEEEE;
-    --greenProgressBg: #5EC49F;
-    --redProgressBg: #FFE1E7;
-    --lightProgressBg: #EEEEEE;
-    --lightText: #B2B2B2;
+    --darkBlueText: #3f4168;
+    --blueProgressBg: #00407e;
+    --lightProgressBg: #eeeeee;
+    --greenProgressBg: #5ec49f;
+    --redProgressBg: #ffe1e7;
+    --lightProgressBg: #eeeeee;
+    --lightText: #b2b2b2;
     --lightText400: #858997;
-    --successText: #5EC49F;
-    --dangerText: #FE4163;
-    --darkDangerText: #E90000;
+    --successText: #5ec49f;
+    --dangerText: #fe4163;
+    --darkDangerText: #e90000;
     --lightButton: #858997;
     --placeholderColor: #bebfc1;
-    --blueLightBg: rgba(53, 76, 158, .4);
+    --blueLightBg: rgba(53, 76, 158, 0.4);
     --blueLightBg100: rgba(38, 168, 255, 0.15);
-    --blueLightBg200: #E3E5FF;
-    --curiousBlueBg: #2395C9;
-    --greenBg: #2FBE7E;
-    --lightPink: #FF8D8D;
-    --GreenTxt: #25D500;
-    --Orangebg: #F47321;
-    --OrangeText: #F47321;
-    --lightYellow: #FFF9E6;
+    --blueLightBg200: #e3e5ff;
+    --curiousBlueBg: #2395c9;
+    --greenBg: #2fbe7e;
+    --lightPink: #ff8d8d;
+    --GreenTxt: #25d500;
+    --Orangebg: #f47321;
+    --OrangeText: #f47321;
+    --lightYellow: #fff9e6;
 }
 
 .blacktxt {
@@ -100,7 +100,7 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 14px;
     line-height: 20px;
     color: var(--darkGray);
@@ -123,7 +123,7 @@ a {
     background-color: var(--black);
     border-color: var(--black);
     color: var(--white);
-    transition: .5s;
+    transition: 0.5s;
     padding: 10px 30px;
     border-radius: 8px;
 }
@@ -138,7 +138,7 @@ a {
     background-color: var(--blue);
     border-color: var(--blue);
     color: var(--white);
-    transition: .5s;
+    transition: 0.5s;
     padding: 10px 30px;
     border-radius: 8px;
 }
@@ -153,7 +153,7 @@ a {
     background-color: var(--lightButton);
     border-color: var(--lightButton);
     color: var(--white);
-    transition: .5s;
+    transition: 0.5s;
     padding: 10px 30px;
     border-radius: 8px;
 }
@@ -174,7 +174,6 @@ a {
     padding: 0 15px;
     color: var(--darkGray);
     border-radius: 8px;
-
 }
 
 textarea.form-control {
@@ -201,7 +200,7 @@ textarea.form-control {
     font-weight: 400;
 }
 
-.bootstrap-select>.dropdown-toggle:after {
+.bootstrap-select > .dropdown-toggle:after {
     margin-top: -1px;
     border: none;
     width: 14px;
@@ -228,16 +227,16 @@ textarea.form-control {
     background: none;
 }
 
-.dropdown-menu>li {
+.dropdown-menu > li {
     font-size: 14px;
 }
 
-.bootstrap-select>.dropdown-toggle.bs-placeholder {
+.bootstrap-select > .dropdown-toggle.bs-placeholder {
     color: var(--placeholderColor);
 }
 
 .bootstrap-select .dropdown-toggle:focus,
-.bootstrap-select>select.mobile-device:focus+.dropdown-toggle {
+.bootstrap-select > select.mobile-device:focus + .dropdown-toggle {
     outline: none !important;
     outline: none !important;
     outline-offset: 0;
@@ -304,7 +303,7 @@ textarea.form-control {
 }
 
 .ongoingProgresss .progress-circle:before {
-    content: attr(data-progress)'%';
+    content: attr(data-progress) "%";
     font-size: 10px;
 }
 
@@ -317,8 +316,6 @@ textarea.form-control {
     display: flex;
     align-items: center;
     justify-content: center;
-
-
 }
 
 .frgot_pass a {
@@ -331,7 +328,8 @@ textarea.form-control {
 
 .form-panel {
     max-width: 450px;
-    background: transparent linear-gradient(180deg, #FFEEE2 0%, #FFE1F1 100%) 0% 0% no-repeat padding-box;
+    background: transparent linear-gradient(180deg, #ffeee2 0%, #ffe1f1 100%) 0%
+        0% no-repeat padding-box;
     border-radius: 20px;
     padding: 35px;
     margin: 10px;
@@ -362,10 +360,10 @@ textarea.form-control {
 }
 
 .forget_password .modal-content {
-    background: transparent linear-gradient(180deg, #FFEEE2 0%, #FFE1F1 100%) 0% 0% no-repeat padding-box;
+    background: transparent linear-gradient(180deg, #ffeee2 0%, #ffe1f1 100%) 0%
+        0% no-repeat padding-box;
     border-radius: 20px;
     border: 0;
-
 }
 
 .forget_password .modal-body {
@@ -440,7 +438,8 @@ textarea.form-control {
     left: 300px;
     width: calc(100% - 300px);
     height: 400px;
-    background: transparent linear-gradient(-90deg, #FFEEE2 0%, #FFE1F1 100%) 0% 0% no-repeat padding-box;
+    background: transparent linear-gradient(-90deg, #ffeee2 0%, #ffe1f1 100%) 0%
+        0% no-repeat padding-box;
     border-radius: 0 0 0 100px;
     z-index: -1;
 }
@@ -464,14 +463,13 @@ textarea.form-control {
     padding: 20px 25px;
 }
 
-.menuList>ul {
+.menuList > ul {
     display: block;
     padding: 0;
     margin: 0;
 }
 
-
-.menuList>ul>li>a {
+.menuList > ul > li > a {
     color: var(--lightGray);
     font-size: 14px;
     position: relative;
@@ -479,7 +477,7 @@ textarea.form-control {
     z-index: 1;
 }
 
-.menuList>ul>li>a:after {
+.menuList > ul > li > a:after {
     content: "\F285";
     font-family: bootstrap-icons !important;
     position: absolute;
@@ -491,19 +489,19 @@ textarea.form-control {
     align-items: center;
 }
 
-.menuList>ul>li>a.active,
-.menuList>ul>li:hover>a {
+.menuList > ul > li > a.active,
+.menuList > ul > li:hover > a {
     color: var(--blue);
 }
 
-.menuList>ul>li>a i {
+.menuList > ul > li > a i {
     margin-right: 20px;
     display: inline-block;
     position: relative;
     padding: 14px 15px;
 }
 
-.menuList>ul>li>a i:after {
+.menuList > ul > li > a i:after {
     content: "";
     position: absolute;
     top: 0;
@@ -516,17 +514,17 @@ textarea.form-control {
     opacity: 0;
 }
 
-.menuList ul>li>a svg {
+.menuList ul > li > a svg {
     fill: var(--lightGray);
 }
 
-.menuList ul>li:hover>a svg,
-.menuList ul>li>a.active svg {
+.menuList ul > li:hover > a svg,
+.menuList ul > li > a.active svg {
     fill: var(--white);
 }
 
-.menuList ul>li:hover>a i:after,
-.menuList ul>li>a.active i:after {
+.menuList ul > li:hover > a i:after,
+.menuList ul > li > a.active i:after {
     opacity: 1;
 }
 
@@ -535,19 +533,19 @@ textarea.form-control {
     margin: 0;
 }
 
-.submenu>li {
+.submenu > li {
     margin-bottom: 7px;
 }
 
-.submenu>li>a {
+.submenu > li > a {
     color: var(--lightGray);
 }
 
-.submenu>li>a:hover {
+.submenu > li > a:hover {
     color: var(--blue);
 }
 
-.submenu>li>a.active {
+.submenu > li > a.active {
     color: var(--black);
 }
 
@@ -730,7 +728,7 @@ textarea.form-control {
     width: 1px;
     height: calc(100% - 46px);
     background: var(--grayBorder);
-    opacity: .6;
+    opacity: 0.6;
 }
 
 .trainingGroup ul li {
@@ -745,13 +743,13 @@ textarea.form-control {
     width: 20px;
     height: 1px;
     background: var(--grayBorder);
-    opacity: .6;
+    opacity: 0.6;
     margin-top: -1px;
 }
 
 .trainingTime {
     font-size: 14px;
-    color: var(--blue)
+    color: var(--blue);
 }
 
 .traningContent {
@@ -818,11 +816,11 @@ textarea.form-control {
     vertical-align: middle;
 }
 
-.trainingstatus span+span {
+.trainingstatus span + span {
     color: var(--progress-secondary-bg);
 }
 
-.trainingstatus span+span:before {
+.trainingstatus span + span:before {
     background-color: var(--progress-secondary-bg);
 }
 
@@ -892,7 +890,7 @@ textarea.form-control {
 .overallRate .timeDays {
     font-size: 18px;
     margin-top: 5px;
-    color: var(--darkDangerText)
+    color: var(--darkDangerText);
 }
 
 .trainingTxt .progress {
@@ -993,17 +991,17 @@ textarea.form-control {
     opacity: 0;
 }
 
-.checkGroup input[type="checkbox"]:checked+label,
-.checkGroup input[type="checkbox"]:not(:checked)+label {
+.checkGroup input[type="checkbox"]:checked + label,
+.checkGroup input[type="checkbox"]:not(:checked) + label {
     position: relative;
     cursor: pointer;
     display: block;
     line-height: 1;
 }
 
-.checkGroup input[type="checkbox"]:checked+label:before,
-.checkGroup input[type="checkbox"]:not(:checked)+label:before {
-    content: '';
+.checkGroup input[type="checkbox"]:checked + label:before,
+.checkGroup input[type="checkbox"]:not(:checked) + label:before {
+    content: "";
     width: 15px;
     height: 15px;
     border: 1px solid var(--grayBorder);
@@ -1011,9 +1009,9 @@ textarea.form-control {
     display: inline-block;
 }
 
-.checkGroup input[type="checkbox"]:checked+label:after,
-.checkGroup input[type="checkbox"]:not(:checked)+label:after {
-    content: '\F26E';
+.checkGroup input[type="checkbox"]:checked + label:after,
+.checkGroup input[type="checkbox"]:not(:checked) + label:after {
+    content: "\F26E";
     width: 15px;
     height: 15px;
     position: absolute;
@@ -1028,11 +1026,11 @@ textarea.form-control {
     justify-content: center;
 }
 
-.checkGroup input[type="checkbox"]:not(:checked)+label:after {
+.checkGroup input[type="checkbox"]:not(:checked) + label:after {
     opacity: 0;
 }
 
-.checkGroup input[type="checkbox"]:checked+label:after {
+.checkGroup input[type="checkbox"]:checked + label:after {
     opacity: 1;
 }
 
@@ -1043,13 +1041,13 @@ textarea.form-control {
     margin: -5px;
 }
 
-.addedList>li {
+.addedList > li {
     padding: 5px;
 }
 
 .addedListGroup {
     background: var(--blueBg200);
-    border: 1px solid #354C9E;
+    border: 1px solid #354c9e;
     padding: 8px 7px 8px 13px;
     font-weight: 500;
     color: var(--black);
@@ -1153,12 +1151,10 @@ textarea.form-control {
     top: 13px;
     right: 15px;
     color: var(--lightText400);
-    opacity: .8;
+    opacity: 0.8;
 }
 
 /*Ongoing Training Section Css End*/
-
-
 
 /*Trainee Dahsboard css start*/
 .subheading {
@@ -1187,7 +1183,7 @@ textarea.form-control {
     background: var(--white);
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0px 0px 10px #13171F33;
+    box-shadow: 0px 0px 10px #13171f33;
 }
 
 .trainingVideo {
@@ -1377,7 +1373,7 @@ textarea.form-control {
     margin: 0;
 }
 
-.notification ul>li {
+.notification ul > li {
     border-top: 1px solid var(--lightBorderOpacity01);
 }
 
@@ -1492,7 +1488,6 @@ textarea.form-control {
     flex-wrap: wrap;
     padding: 10px;
     margin-top: 15px;
-
 }
 
 .timeDescription {
@@ -1589,7 +1584,7 @@ textarea.form-control {
     top: 13px;
     left: 15px;
     filter: grayscale(1);
-    opacity: .5;
+    opacity: 0.5;
 }
 
 .courseGroup p {
@@ -1602,11 +1597,10 @@ textarea.form-control {
     display: flex;
     align-items: center;
     filter: grayscale(1);
-
 }
 
 .courseGroup span img {
-    opacity: .3;
+    opacity: 0.3;
 }
 
 .courseGroup.active {
@@ -1693,8 +1687,8 @@ textarea.form-control {
     left: -9999px;
 }
 
-.ansCheck input[type="radio"]:checked+label,
-.ansCheck input[type="radio"]:not(:checked)+label {
+.ansCheck input[type="radio"]:checked + label,
+.ansCheck input[type="radio"]:not(:checked) + label {
     position: relative;
     padding-left: 28px;
     cursor: pointer;
@@ -1705,9 +1699,9 @@ textarea.form-control {
     padding: 15px 15px 15px 40px;
 }
 
-.ansCheck input[type="radio"]:checked+label:before,
-.ansCheck input[type="radio"]:not(:checked)+label:before {
-    content: '';
+.ansCheck input[type="radio"]:checked + label:before,
+.ansCheck input[type="radio"]:not(:checked) + label:before {
+    content: "";
     position: absolute;
     left: 15px;
     top: 0;
@@ -1720,9 +1714,9 @@ textarea.form-control {
     background: var(--white);
 }
 
-.ansCheck input[type="radio"]:checked+label:after,
-.ansCheck input[type="radio"]:not(:checked)+label:after {
-    content: '';
+.ansCheck input[type="radio"]:checked + label:after,
+.ansCheck input[type="radio"]:not(:checked) + label:after {
+    content: "";
     width: 8px;
     height: 8px;
     background: var(--blue);
@@ -1734,14 +1728,13 @@ textarea.form-control {
     border-radius: 100%;
 }
 
-.ansCheck input[type="radio"]:not(:checked)+label:after {
+.ansCheck input[type="radio"]:not(:checked) + label:after {
     opacity: 0;
 }
 
-.ansCheck input[type="radio"]:checked+label:after {
+.ansCheck input[type="radio"]:checked + label:after {
     opacity: 1;
 }
-
 
 .ansCheck input[type="checkbox"]:checked,
 .ansCheck input[type="checkbox"]:not(:checked) {
@@ -1749,8 +1742,8 @@ textarea.form-control {
     left: -9999px;
 }
 
-.ansCheck input[type="checkbox"]:checked+label,
-.ansCheck input[type="checkbox"]:not(:checked)+label {
+.ansCheck input[type="checkbox"]:checked + label,
+.ansCheck input[type="checkbox"]:not(:checked) + label {
     position: relative;
     padding-left: 28px;
     cursor: pointer;
@@ -1760,9 +1753,9 @@ textarea.form-control {
     padding: 15px 15px 15px 40px;
 }
 
-.ansCheck input[type="checkbox"]:checked+label:before,
-.ansCheck input[type="checkbox"]:not(:checked)+label:before {
-    content: '';
+.ansCheck input[type="checkbox"]:checked + label:before,
+.ansCheck input[type="checkbox"]:not(:checked) + label:before {
+    content: "";
     position: absolute;
     left: 15px;
     top: 0;
@@ -1774,9 +1767,9 @@ textarea.form-control {
     background: var(--white);
 }
 
-.ansCheck input[type="checkbox"]:checked+label:after,
-.ansCheck input[type="checkbox"]:not(:checked)+label:after {
-    content: '\F26E';
+.ansCheck input[type="checkbox"]:checked + label:after,
+.ansCheck input[type="checkbox"]:not(:checked) + label:after {
+    content: "\F26E";
     width: 18px;
     height: 18px;
     position: absolute;
@@ -1790,11 +1783,11 @@ textarea.form-control {
     line-height: 18px;
 }
 
-.ansCheck input[type="checkbox"]:not(:checked)+label:after {
+.ansCheck input[type="checkbox"]:not(:checked) + label:after {
     opacity: 0;
 }
 
-.ansCheck input[type="checkbox"]:checked+label:after {
+.ansCheck input[type="checkbox"]:checked + label:after {
     opacity: 1;
 }
 
@@ -1888,7 +1881,7 @@ textarea.form-control {
 .filter-btn:hover {
     background: var(--blue);
     transform: scale(1.05);
-    transition: .2s all;
+    transition: 0.2s all;
 }
 
 .filter-offCanvas {
@@ -1920,7 +1913,7 @@ textarea.form-control {
     line-height: 14px;
 }
 
-.radioBtnGroup input[type="radio"]:checked+label {
+.radioBtnGroup input[type="radio"]:checked + label {
     background: var(--blue);
 }
 
@@ -1941,7 +1934,7 @@ textarea.form-control {
     background-color: var(--black);
     border-color: var(--black);
     color: var(--white);
-    transition: .5s;
+    transition: 0.5s;
     padding: 10px 30px;
     border-radius: 8px;
 }
@@ -2042,7 +2035,7 @@ label.form-label.blue-text {
     padding: 5px 115px 5px 15px;
     color: var(--darkGray);
     border-radius: 8px;
-    background: rgba(255, 255, 255, .5);
+    background: rgba(255, 255, 255, 0.5);
     display: flex;
     align-items: center;
 }
@@ -2076,7 +2069,6 @@ label.form-label.blue-text {
     content: "\F659";
 }
 
-
 .total-trainer {
     background: var(--blueBg300);
     border-radius: 4px;
@@ -2089,7 +2081,6 @@ label.form-label.blue-text {
 }
 
 /* report chart css */
-
 
 .report-progresBar {
     height: 8px;
@@ -2113,7 +2104,6 @@ label.form-label.blue-text {
     align-content: center;
     justify-content: center;
     text-align: center;
-
 }
 
 .reportTotalTraining span {
@@ -2173,7 +2163,7 @@ label.form-label.blue-text {
     -o-transition: width 0.3s;
     transition: width 0.3s;
     z-index: 1;
-    border: 1px solid #CFCFCF;
+    border: 1px solid #cfcfcf;
     border-radius: 4px;
     overflow: hidden;
 }
@@ -2200,7 +2190,6 @@ input[type="search"]::-webkit-search-results-decoration {
     display: none;
 }
 
-
 .searchbox-icon,
 .searchbox-submit {
     width: 34px;
@@ -2219,7 +2208,7 @@ input[type="search"]::-webkit-search-results-decoration {
     text-align: center;
     cursor: pointer;
     color: #dcddd8;
-    background: #FFFFFF;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2228,7 +2217,6 @@ input[type="search"]::-webkit-search-results-decoration {
 .searchbox-open {
     width: 200px;
 }
-
 
 .trainersHead {
     border-bottom: 1px solid #dee2e6;
@@ -2339,19 +2327,19 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 .tc-box {
-    background: #FFF9E6;
+    background: #fff9e6;
 }
 
 .QBox {
-    background: #FFF2E5;
+    background: #fff2e5;
 }
 
 .ps-box {
-    background: #E4FAE0;
+    background: #e4fae0;
 }
 
 .c-box {
-    background: #FFF1F8;
+    background: #fff1f8;
 }
 
 .greentxt {
@@ -2377,7 +2365,13 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 .training-progres .progress-circle[data-progress="100"]:after {
-    background-image: linear-gradient(90deg, #ddd 0%, transparent 0%, transparent), linear-gradient(144deg, #F47321 100%, #ddd 0%, #ddd);
+    background-image: linear-gradient(
+            90deg,
+            #ddd 0%,
+            transparent 0%,
+            transparent
+        ),
+        linear-gradient(144deg, #f47321 100%, #ddd 0%, #ddd);
 }
 
 /* a{
@@ -2431,7 +2425,7 @@ a:hover{
 
 .spent-hours {
     padding: 20px;
-    background: #FFF2E5 url(../img/report-block2-bg.svg);
+    background: #fff2e5 url(../img/report-block2-bg.svg);
     background-repeat: no-repeat;
     background-position: top right;
     border-radius: 10px;
@@ -2439,7 +2433,7 @@ a:hover{
 
 .ongoing-training {
     padding: 20px;
-    background: #E4FAE0 url(../img/report-block3-bg.svg);
+    background: #e4fae0 url(../img/report-block3-bg.svg);
     background-repeat: no-repeat;
     background-position: bottom left;
     border-radius: 10px;
@@ -2447,7 +2441,7 @@ a:hover{
 
 .upcoming-training {
     padding: 20px;
-    background: #FFF1F8 url(../img/report-block4-bg.svg);
+    background: #fff1f8 url(../img/report-block4-bg.svg);
     background-repeat: no-repeat;
     background-position: bottom right;
     border-radius: 10px;
@@ -2490,7 +2484,7 @@ a:hover{
     padding: 0 15px;
     color: var(--darkGray);
     border-radius: 4px;
-    background-color: #F3F3F3;
+    background-color: #f3f3f3;
 }
 
 .hrline {
@@ -2506,10 +2500,9 @@ a:hover{
     color: var(--darkGray);
     border-radius: 4px;
     line-height: 45px;
-    background-color: #F3F3F3;
+    background-color: #f3f3f3;
     outline: none !important;
     font-weight: 400;
-
 }
 
 .profile-info textarea {
@@ -2543,7 +2536,8 @@ a:hover{
 }
 
 .training-chart .progress-circle[data-progress="100"]:after {
-    background-image: linear-gradient(90deg, #00407E 60%, transparent 0%), linear-gradient(191deg, #FF8D8D 40%, #00407E 41%);
+    background-image: linear-gradient(90deg, #00407e 60%, transparent 0%),
+        linear-gradient(191deg, #ff8d8d 40%, #00407e 41%);
 }
 
 .training-chart .training-progres .progress-circle:before {
@@ -2559,7 +2553,7 @@ a:hover{
 }
 
 .preview {
-    background: #F3F9FF;
+    background: #f3f9ff;
     padding: 8px;
 }
 
@@ -2641,12 +2635,12 @@ a:hover{
 }
 
 #hoursSpentChart svg line {
-    stroke: #C2C2C2;
+    stroke: #c2c2c2;
 }
 
 #hoursSpentChart svg g.axis,
 #hoursSpentChart svg text {
-    color: #C2C2C2;
+    color: #c2c2c2;
 }
 
 .chart-empty {
@@ -2676,7 +2670,7 @@ a:hover{
     margin-left: auto;
 }
 
-@media (min-width:992px) {
+@media (min-width: 992px) {
     .courselisting {
         position: sticky;
         top: 70px;
@@ -2694,13 +2688,13 @@ a:hover{
     }
 }
 
-@media (min-width:768px) {
+@media (min-width: 768px) {
     .selectListModal .modal-dialog {
         max-width: 600px;
     }
 }
 
-@media (max-width:991px) {
+@media (max-width: 991px) {
     .mobileHeader {
         position: fixed;
         top: 0;
@@ -2711,14 +2705,15 @@ a:hover{
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: transparent linear-gradient(-90deg, #FFEEE2 0%, #FFE1F1 100%) 0% 0% no-repeat padding-box;
+        background: transparent
+            linear-gradient(-90deg, #ffeee2 0%, #ffe1f1 100%) 0% 0% no-repeat
+            padding-box;
         border-bottom: 1px solid rgb(226 220 220);
         min-height: 56px;
-
     }
 
     .dashboard-main {
-        padding-top: 60px
+        padding-top: 60px;
     }
 
     .dashboard_content {
@@ -2750,7 +2745,6 @@ a:hover{
         height: calc(100% - 56px);
         padding-right: 0;
         transition: 0.3s all;
-
     }
 
     .logoDiv {
@@ -2864,7 +2858,6 @@ a:hover{
         padding: 20px 15px 20px;
     }
 
-
     .traineeHead .courseProgress {
         width: auto;
     }
@@ -2880,7 +2873,7 @@ a:hover{
     }
 }
 
-@media (max-width:767px) {
+@media (max-width: 767px) {
     .box {
         padding: 12px;
     }
@@ -2983,7 +2976,7 @@ a:hover{
     }
 }
 
-@media (max-width:575px) {
+@media (max-width: 575px) {
     .form-panel {
         max-width: 100%;
     }
@@ -3004,7 +2997,6 @@ a:hover{
         flex-wrap: wrap;
         gap: 5px !important;
         margin-bottom: 20px;
-
     }
 
     .trainingTab .tabButton {
@@ -3028,10 +3020,9 @@ a:hover{
         font-size: 12px;
         margin-bottom: 5px;
     }
-
 }
 
-@media (max-width:375px) {
+@media (max-width: 375px) {
     .ansCheck span {
         width: 100%;
         padding-right: 0;
@@ -3142,8 +3133,6 @@ a:hover{
     align-items: center;
     border-radius: 50%;
 }
-
-
 
 /* for the test attempt portion */
 
@@ -3372,7 +3361,7 @@ a:hover{
 
 /* Sidebar instructions */
 :root {
-    --blue: #00438C;
+    --blue: #00438c;
     /* fallback */
 }
 
@@ -3430,8 +3419,6 @@ a:hover{
     color: #555;
 }
 
-
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .test-meta {
@@ -3451,5 +3438,80 @@ a:hover{
 
     .col-md-4 {
         margin-top: 30px;
+    }
+
+    .courseGroup {
+        transition: all 0.2s ease;
+        padding: 12px;
+        border-radius: 6px;
+        display: block;
+    }
+
+    .courseGroup:hover {
+        background-color: #f8f9fa;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .courseStatus img {
+        transition: opacity 0.2s ease;
+    }
+
+    .courseGroup:hover .courseStatus img {
+        opacity: 1;
+    }
+
+    .btn.disabled {
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    .text-truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .accordion-body {
+        padding: 1rem;
+    }
+
+    .accordion-item {
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .accordion-button:not(.collapsed) {
+        color: #0c63e4;
+        background-color: #e7f1ff;
+        box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+    }
+
+    .accordion-button:focus {
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .accordion-button.locked-course {
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
+
+    .accordion-button .badge {
+        position: absolute;
+        right: 20px;
+    }
+
+    .locked-message {
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
     }
 }

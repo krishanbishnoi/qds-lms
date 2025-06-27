@@ -115,9 +115,10 @@
                                             will result in immediate test submission and logging of the attempt.</span>
                                     </li>
                                     {{-- <li class="list-group-item d-flex align-items-start">
-        <span class="me-2">🔁</span>
-        <span><strong>No Retake Requests:</strong> Once submitted or terminated due to policy violation, no retake will be allowed.</span>
-    </li> --}}
+                                        <span class="me-2">🔁</span>
+                                        <span><strong>No Retake Requests:</strong> Once submitted or terminated due to
+                                            policy violation, no retake will be allowed.</span>
+                                    </li> --}}
                                     <li class="list-group-item d-flex align-items-start">
                                         <span class="me-2">📈</span>
                                         <span><strong>Result Review:</strong> Results will be reviewed before finalization.
@@ -288,10 +289,6 @@
                     </div>
                 </div>
             </div>
-
-
-
-
         </div>
 
         <!-- Confirm Submit Modal -->
@@ -480,22 +477,6 @@
                 }
             }
 
-            // Function to check if current question has an answer
-            // function hasAnswerForCurrentQuestion() {
-            //     const question = questions[currentQuestionIndex];
-
-            //     if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
-            //         return $(`input[name="answer-${question.id}"]:checked`).length > 0;
-            //     } else if (question.question_type === 'MCQ') {
-            //         return $(`input[name="answer-${question.id}[]"]:checked`).length > 0;
-            //     } else if (question.question_type === 'FreeText') {
-            //         return $(`textarea[name="answer-text-${question.id}"]`).val().trim().length > 0;
-            //     }
-
-            //     return false;
-            // }
-
-
             function hasAnswerForCurrentQuestion() {
                 const question = questions[currentQuestionIndex];
 
@@ -602,14 +583,6 @@
                 $('#test-progress').css('width', progress + '%').attr('aria-valuenow', progress);
                 $('#progress-percentage').text(Math.round(progress) + '%');
             }
-
-            // Function to update answer status indicators
-            // function updateAnswerStatus() {
-            //     const answeredCount = Object.keys(userAnswers).length;
-
-            //     // Update answered count in confirmation modal
-            //     $('#answered-count').text(answeredCount);
-            // }
 
             function updateAnswerStatus() {
                 let answeredCount = Object.keys(userAnswers).length;
@@ -751,6 +724,7 @@
             });
         });
     </script>
+
     {{-- // // cheating restrict scripts --}}
     {{-- <script>
         //  Prevent Page Refresh (F5 / Ctrl+R / Right-click Reload)

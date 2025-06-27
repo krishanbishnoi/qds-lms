@@ -132,13 +132,13 @@ class CoursesController extends BaseController
             $trainees = User::where("is_deleted", 0)->pluck('first_name', 'id')->toArray();
             return  view("admin.Course.add", compact('trainees', 'test',  'training_id'));
         } catch (\Exception $e) {
-            dd($e);
             return redirect()->back()->with('error', 'somthing went wrong');;
         }
     }
 
     public function save(Request $request, $training_id = 0)
     {
+        // dd($request->all());
         $step = $request->input('current_step', 1);
         $trainingId = $request->input('training_id');
         $request->replace($this->arrayStripTags($request->all()));
@@ -213,9 +213,70 @@ class CoursesController extends BaseController
                             }
 
                             // Determine file type
-                            $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'ico'];
-                            $videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'mkv', 'flv', 'mpeg', 'mpg'];
-                            $fileExtensions = ['doc', 'pdf', 'txt', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'odt'];
+                            $imageExtensions = [
+                                'jpg',
+                                'jpeg',
+                                'png',
+                                'gif',
+                                'bmp',
+                                'svg',
+                                'ico',
+                                'webp',
+                                'tif',
+                                'tiff',
+                                'jfif',
+                                'avif',
+                                'heic',
+                                'raw',
+                                'psd',
+                                'ai',
+                                'eps'
+                            ];
+
+                            $videoExtensions = [
+                                'mp4',
+                                'm4v',
+                                'mov',
+                                'avi',
+                                'wmv',
+                                'flv',
+                                'mkv',
+                                'webm',
+                                'mpeg',
+                                'mpg',
+                                '3gp',
+                                '3g2',
+                                'ts',
+                                'mts',
+                                'm2ts'
+                            ];
+
+                            $fileExtensions = [
+                                'pdf',
+                                'doc',
+                                'docx',
+                                'xls',
+                                'xlsx',
+                                'ppt',
+                                'pptx',
+                                'txt',
+                                'csv',
+                                'rtf',
+                                'odt',
+                                'ods',
+                                'odp',
+                                'pages',
+                                'key',
+                                'numbers',
+                                'epub',
+                                'md',
+                                'log',
+                                'tex',
+                                'json',
+                                'xml',
+                                'yml',
+                                'yaml'
+                            ];
 
                             if (in_array($extension, $imageExtensions)) {
                                 $document['type'] = 'image';

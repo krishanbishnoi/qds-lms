@@ -110,7 +110,7 @@ class TrainingController extends BaseController
             ->distinct('course_id')
             ->count('course_id');
 
-        return  View::make("front.$this->model.userTrainingDetails", compact('training_id', 'trainingDetails', 'trainingCourses', 'trainingQuestions', 'totalTrainees', 'totalCoursesCount', 'completedCoursesCount'));
+        return  View::make("front.Training.userTrainingDetails", compact('training_id', 'trainingDetails', 'trainingCourses', 'trainingQuestions', 'totalTrainees', 'totalCoursesCount', 'completedCoursesCount'));
     }
 
     public function userTrainingDocumentProgress(Request $request)
@@ -121,7 +121,16 @@ class TrainingController extends BaseController
                 'status' => 1,
             ]);
         } else {
-            return response()->json(['TraineeAssignedTrainingDocument not Found' => true]);
+            $trainingId = Course::where('id', $request->course_id)->value('training_id');
+            TraineeAssignedTrainingDocument::create([
+                'training_id' => $trainingId,
+                'course_id' => $request->course_id,
+                'document_id' => $request->content_id,
+                'user_id' =>  Auth::user()->id,
+                'type' =>  $request->content_type,
+                'duration' =>  $request->content_length,
+                'status' => 1,
+            ]);
         }
         return response()->json(['success' => true]);
     }
@@ -189,7 +198,7 @@ class TrainingController extends BaseController
 
             $totalTrainees = DB::table('training_participants')->where('training_id', $training_id)
                 ->count();
-            // DD($trainingDetails,$trainingTest);
+            // DD($trainingDetails,$trainingTest,$trainingQuestions);
             return View::make("front.$this->model.userTest", compact('training_id', 'courseId', 'trainingCoursesTitle', 'trainingDetails', 'trainingQuestions', 'totalTrainees', 'trainingTest', 'testDetails'));
         } else {
             return redirect()->back()->with('This test not found. Contact to admin.');
@@ -253,6 +262,7 @@ class TrainingController extends BaseController
         }
         return response()->json(['success' => true]);
     }
+
     // public function userTrainingTestSubmit_old(Request $request)
     // {
     //     $anserAlreadyExist = Answer::where('test_id', $request->test_id)->where('question_id', $request->question_id)
@@ -407,6 +417,7 @@ class TrainingController extends BaseController
             ->where('test_id', $id)
             ->select('training_id', 'course_id')
             ->first();
+
         $alreadysubmitedTest = TrainingTestResult::where('test_id', $id)->where('user_id', $userId)->where('course_id', $trainingTestResultDetails->course_id)->first();
         // DD($alreadysubmitedTest);
         if ($alreadysubmitedTest) {
@@ -476,6 +487,7 @@ class TrainingController extends BaseController
         #####################################################################################################################################################################
 
         return view('front.Training.training-test-result', [
+            'trainingId' =>  $training->id,
             'results' => $results,
             'totalMarks' => $totalMarks,
             'obtainedMarks' => $obtainedMarks,
@@ -484,7 +496,6 @@ class TrainingController extends BaseController
             'resultStatus' => $resultStatus,
             'testDetails' => $getTestMarks,
             'admin' => $user->parentManager->fullname,
-
             'trainingData' => $training,
             'totalTestCount' => $totalTestCount,
             'totalAttendedTestCount' => $totalAttendedTestCount,
@@ -568,5 +579,37 @@ class TrainingController extends BaseController
             return redirect()->route('front.dashboard')->with('success', 'Feedback saved successfully');
         }
     }
+
+
+    public function getDocumentDuration(Request $request)
+    {
+        $record = TraineeAssignedTrainingDocument::where('user_id', auth()->id())
+            ->where('course_id', $request->course_id)
+            ->where('document_id', $request->content_id)
+            ->first();
+
+        return response()->json(['duration' => $record?->duration ?? 0]);
+    }
+
+    public function updateDocumentPartialDuration(Request $request)
+    {
+        $record = TraineeAssignedTrainingDocument::firstOrCreate([
+            'user_id' => auth()->id(),
+            'course_id' => $request->course_id,
+            'document_id' => $request->content_id,
+        ], [
+            'training_id' => Course::find($request->course_id)?->training_id,
+            'type' => $request->type ?? 'doc',
+            'status' => 0,
+        ]);
+
+        if ($record->status != 1) {
+            $record->update(['duration' => $request->duration]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+   
 }
 // end TrainingController

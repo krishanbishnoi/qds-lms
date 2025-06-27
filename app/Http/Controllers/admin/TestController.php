@@ -759,6 +759,7 @@ class TestController extends BaseController
             return Excel::download(new TestReportExport($participants, $questions, $testResults), "{$test->title}_test_report.xlsx");
         }
     }
+
     public function calculateAndSaveTestResult($testId, $userId)
     {
         $existingResult = TestResult::where('test_id', $testId)->where('user_id', $userId)->first();

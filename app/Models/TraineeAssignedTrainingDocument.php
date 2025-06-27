@@ -18,5 +18,5 @@ class TraineeAssignedTrainingDocument extends Eloquent
 	 */
 	protected $table = 'trainee_assigned_training_documents';
 
-	protected $fillable = ['user_id', 'training_id', 'course_id', 'document_id', 'type', 'status'];
+	protected $fillable = ['user_id', 'training_id', 'course_id', 'document_id', 'type','duration', 'status'];
 }// end TraineeAssignedTrainingDocument class

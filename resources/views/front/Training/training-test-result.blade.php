@@ -93,6 +93,8 @@
                                         <button type="button" class="btn btn-secondary smallBtn  py-1 px-4"
                                             data-bs-toggle="modal"
                                             data-bs-target="#certificate-not-generated-modal">View</button>
+                                        <a href="{{ route('userTrainingDetails.index', ['id' => $trainingId]) }}"
+                                            class="btn btn-secondary smallBtn py-1 px-4">Next Course</a>
                                     @endif
 
                                 </div>
@@ -148,7 +150,8 @@
                                     on
                                     LMS | QDegrees. The certificate indicates the entire Training was completed as validated
                                     by the
-                                    student. The Training duration represents the total <b>{{ $lengthInDays }}</b> days of the course at time
+                                    student. The Training duration represents the total <b>{{ $lengthInDays }}</b> days of
+                                    the course at time
                                     of most
                                     recentcompletion.</p>
                             </td>
