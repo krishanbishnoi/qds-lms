@@ -552,6 +552,10 @@ Route::group(array('middleware' => ['App\Http\Middleware\AuthFront', 'PreventBac
     Route::any('my-trainings-details/{id}', array('as' => 'userTrainingDetails.index', 'uses' => 'TrainingController@userTrainingDetails'));
     Route::any('/update-training-document-progress', array('as' => 'userTrainingDetails.document.progress', 'uses' => 'TrainingController@userTrainingDocumentProgress'));
     Route::post('/training-logs/training_details/{id}', array('as' => 'training_details.popup', 'uses' => 'TrainingController@training_details_popup'));
+    Route::post('/user/document/duration', [App\Http\Controllers\front\TrainingController::class, 'getDocumentDuration'])->name('userTrainingDetails.document.duration');
+    Route::post('/user/document/update-duration', [App\Http\Controllers\front\TrainingController::class, 'updateDocumentPartialDuration'])->name('userTrainingDetails.document.partial');
+
+
 
     Route::get('my-trainings/{training_id}/{course_id}/test/{test_id}', array('as' => 'userTraining.test', 'uses' => 'TrainingController@userTrainingTest'));
     Route::post('/submit-training-test-response', array('as' => 'userTraining.test.submit', 'uses' => 'TrainingController@userTrainingTestSubmit'));

@@ -125,7 +125,7 @@ class TestController extends BaseController
         $startDateTime   = Carbon::parse($testDetails->start_date_time);
         $endDateTime     = Carbon::parse($testDetails->end_date_time);
         $currentDateTime = Carbon::now();
-
+        // dd($startDateTime , $currentDateTime);
         // Check if the current time is within the start and end times
         if ($currentDateTime->lt($startDateTime)) {
             return redirect()->back()->with('error', 'The test has not started yet. Please come back at ' . $startDateTime->format('Y-m-d h:i:s A') . '.');
@@ -176,7 +176,6 @@ class TestController extends BaseController
             ->where('trainee_id', $request->user_id)->first();
 
         if ($testResult && $testResult->result == 'Passed' && $testSubmitted->status == 1 && $testSubmitted->user_attempts >= $testSubmitted->number_of_attempts) {
-
             $testDetails = Test::where('tests.id', $request->test_id)->first();
             return response()->json(['successRedirect' => true, 'testDetails' => $testDetails]);
         } else {

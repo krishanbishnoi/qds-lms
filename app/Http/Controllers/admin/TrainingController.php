@@ -24,7 +24,9 @@ use App\ApiService;
 use App\Models\EmailAction;
 use App\Models\EmailTemplate;
 use App\Models\RetailAssignedTraining;
+use App\Models\TestParticipants;
 use App\Notifications\AssignTrainingNotification;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\JsonResponse;
@@ -239,6 +241,18 @@ class TrainingController extends BaseController
                 }
             }
 
+            $currentDateTime = Carbon::now();
+            $startDateTime   = Carbon::parse($trainingData['start_date_time']);
+            $endDateTime     = Carbon::parse($trainingData['end_date_time']);
+
+            if ($currentDateTime->between($startDateTime, $endDateTime)) {
+                $trainingData['status'] = 1;
+            } elseif ($startDateTime->isFuture()) {
+                $trainingData['status'] = 0;
+            } elseif ($endDateTime->isPast()) {
+                $trainingData['status'] = 2;
+            }
+
             // Use updateOrCreate for saving/updating
             $training = Training::updateOrCreate(
                 ['id' => $trainingId],
@@ -272,56 +286,56 @@ class TrainingController extends BaseController
                 }
             }
 
-            /*
-    if($training_id){
-        if(isset($input['data']) && !empty($input['data'])) {
-            foreach($input['data'] as $training_documents) {
 
-                $obj = new TrainingDocument;
-                $obj->training_id = $training_id;
+            // if($training_id){
+            //     if(isset($input['data']) && !empty($input['data'])) {
+            //         foreach($input['data'] as $training_documents) {
 
-                if(isset($training_documents['title']) && !empty($training_documents['title'])){
-                    $title = $training_documents["title"];
-                    $obj->title = $title;
-                }
+            //             $obj = new TrainingDocument;
+            //             $obj->training_id = $training_id;
 
-                if(isset($training_documents['document']) && !empty($training_documents['document'])){
+            //             if(isset($training_documents['title']) && !empty($training_documents['title'])){
+            //                 $title = $training_documents["title"];
+            //                 $obj->title = $title;
+            //             }
 
-                    $extension = $training_documents['document']->getClientOriginalExtension();
-                    $fileName = time() . '-document.' . $extension;
+            //             if(isset($training_documents['document']) && !empty($training_documents['document'])){
 
-                    $folderName = strtoupper(date('M') . date('Y')) . "/";
-                    $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
+            //                 $extension = $training_documents['document']->getClientOriginalExtension();
+            //                 $fileName = time() . '-document.' . $extension;
 
-                    if(!File::exists($folderPath)) {
-                        File::makeDirectory($folderPath, 0777, true);
-                    }
+            //                 $folderName = strtoupper(date('M') . date('Y')) . "/";
+            //                 $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
 
-                    if(!empty($extension)){
-                        $obj->document_type = $extension;
-                    }
+            //                 if(!File::exists($folderPath)) {
+            //                     File::makeDirectory($folderPath, 0777, true);
+            //                 }
 
-                    if($training_documents['document']->move($folderPath, $fileName)){
-                        $obj->document = $folderName . $fileName;
-                    }
+            //                 if(!empty($extension)){
+            //                     $obj->document_type = $extension;
+            //                 }
 
-                    $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'ico'];
-                    $videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'mkv', 'flv','mpeg','mpg'];
-                    $fileExtensions = ['doc', 'pdf', 'txt', 'xls', 'xlsx', 'ppt', 'csv', 'odt'];
+            //                 if($training_documents['document']->move($folderPath, $fileName)){
+            //                     $obj->document = $folderName . $fileName;
+            //                 }
 
-                    if (in_array($extension, $imageExtensions)) {
-                        $obj->type = 'image';
-                    } elseif (in_array($extension, $videoExtensions)) {
-                        $obj->type = 'video';
-                    } elseif (in_array($extension, $fileExtensions)) {
-                        $obj->type = 'doc';
-                    }
-                }
-                $obj->save();
-            }
-        }
-    }
-    */
+            //                 $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'ico'];
+            //                 $videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'mkv', 'flv','mpeg','mpg'];
+            //                 $fileExtensions = ['doc', 'pdf', 'txt', 'xls', 'xlsx', 'ppt', 'csv', 'odt'];
+
+            //                 if (in_array($extension, $imageExtensions)) {
+            //                     $obj->type = 'image';
+            //                 } elseif (in_array($extension, $videoExtensions)) {
+            //                     $obj->type = 'video';
+            //                 } elseif (in_array($extension, $fileExtensions)) {
+            //                     $obj->type = 'doc';
+            //                 }
+            //             }
+            //             $obj->save();
+            //         }
+            //     }
+            // }
+
 
             if (!$training->save()) {
                 Session::flash('error', trans("Something went wrong."));
@@ -499,7 +513,7 @@ class TrainingController extends BaseController
                 ? collect($clientResponse['data'])->pluck('company_name', 'id')->toArray()
                 : [];
 
-            return  View::make("admin.Training.uploadTrainingParticipants", compact('assginTo', 'training_id', 'projects', 'methods', 'users', 'existingUserIds', 'clients'));
+            return view("admin.Training.uploadTrainingParticipants", compact('assginTo', 'training_id', 'projects', 'methods', 'users', 'existingUserIds', 'clients'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'somthing went wrong');;
         }

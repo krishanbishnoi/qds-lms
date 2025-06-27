@@ -23,7 +23,8 @@
                 <div class="courseProgress">
                     <div class="progress-main">
                         @php
-                            $progressPercentage = ($completedCoursesCount / $totalCoursesCount) * 100;
+                            $progressPercentage =
+                                $totalCoursesCount > 0 ? ($completedCoursesCount / $totalCoursesCount) * 100 : 0;
                             $roundedProgressPercentage = round($progressPercentage, 2);
                         @endphp
                         <div class="progress-circle" data-progress="{{ $roundedProgressPercentage }}"><img
@@ -62,6 +63,7 @@
                                 Auth::user()->id,
                             )
                                 ->where('course_id', $course->id)
+                                ->where('status', 1)
                                 ->where('document_id', $content['id'])
                                 ->first();
 
@@ -71,101 +73,47 @@
                             }
                         @endphp
 
-                        {{-- @if ($previousDocumentCompleted) --}}
-                        <!-- Display the document -->
                         <div class="tab-pane courseDocument{{ $content['id'] }}" id="courseViseView{{ $content['id'] }}">
                             @if ($content['type'] === 'video')
-                                <!-- Video Content -->
                                 <video id="myVideo" class="videoContent" width="100%" height="500px" controls>
-                                    <source src="{{ TRAINING_DOCUMENT_URL . $content['document'] }}" type="video/mp4">
+                                    <source
+                                        src="{{ config('constants.TRAINING_DOCUMENT_URL') . '/' . $content['document'] }}"
+                                        type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
                             @elseif ($content['type'] === 'doc' && $content['document_type'] === 'pdf')
-                                <div class="tab-pane" id="courseViseView{{ $content['id'] }}">
-                                    <iframe src="{{ config('TRAINING_DOCUMENT_URL') . $content['document'] }}"
-                                        width="100%" height="500px"></iframe>
-                                @elseif (($content['type'] === 'doc' && $content['document_type'] == 'ppt') || $content['document_type'] == 'pptx')
-                                    @if (config('TRAINING_DOCUMENT_URL') . $content['document'] != '')
-                                        <iframe
-                                            src="https://view.officeapps.live.com/op/view.aspx?src={{ asset('training_document/' . $content['document']) }}"
-                                            style="width: 100%; height: 500px;" frameborder="0">
-                                        </iframe>
-                                    @endif
-                                @elseif (($content['type'] === 'doc' && $content['document_type'] == 'xls') || $content['document_type'] == 'xlsx')
-                                    @if (config('TRAINING_DOCUMENT_URL') . $content['document'] != '')
-                                        <iframe
-                                            src="https://view.officeapps.live.com/op/view.aspx?src={{ asset('training_document/' . $content['document']) }}"
-                                            style="width: 100%; height: 500px;" frameborder="0">
-                                        </iframe>
-                                    @endif
-                                @elseif (($content['type'] === 'doc' && $content['document_type'] == 'doc') || $content['document_type'] == 'docx')
-                                    @if (config('TRAINING_DOCUMENT_URL') . $content['document'] != '')
-                                        <iframe
-                                            src="https://view.officeapps.live.com/op/view.aspx?src={{ asset('training_document/' . $content['document']) }}"
-                                            style="width: 100%; height: 500px;" frameborder="0">
-                                        </iframe>
-                                    @endif
-                                @elseif ($content['type'] === 'image')
-                                    @if (config('TRAINING_DOCUMENT_URL') . $content['document'] != '')
-                                        <img class="me-2"
-                                            src="{{ config('TRAINING_DOCUMENT_URL') . $content['document'] }}"
-                                            style="width:500px; height:500px">
-                                    @endif
+                                <iframe src="{{ asset('training_document/' . $content['document']) }}" width="100%"
+                                    height="500px" style="border: none;"></iframe>
+                            @elseif (($content['type'] === 'doc' && $content['document_type'] == 'ppt') || $content['document_type'] == 'pptx')
+                                @if (config('constants.TRAINING_DOCUMENT_URL') . '/' . $content['document'] != '')
+                                    <iframe
+                                        src="https://view.officeapps.live.com/op/view.aspx?src={{ asset('training_document/' . $content['document']) }}"
+                                        style="width: 100%; height: 500px;" frameborder="0"></iframe>
+                                @endif
+                            @elseif (($content['type'] === 'doc' && $content['document_type'] == 'xls') || $content['document_type'] == 'xlsx')
+                                @if (config('constants.TRAINING_DOCUMENT_URL') . '/' . $content['document'] != '')
+                                    <iframe
+                                        src="https://view.officeapps.live.com/op/view.aspx?src={{ asset('training_document/' . $content['document']) }}"
+                                        style="width: 100%; height: 500px;" frameborder="0"></iframe>
+                                @endif
+                            @elseif (($content['type'] === 'doc' && $content['document_type'] == 'doc') || $content['document_type'] == 'docx')
+                                @if (config('constants.TRAINING_DOCUMENT_URL') . '/' . $content['document'] != '')
+                                    <iframe
+                                        src="https://view.officeapps.live.com/op/view.aspx?src={{ asset('training_document/' . $content['document']) }}"
+                                        style="width: 100%; height: 500px;" frameborder="0"></iframe>
+                                @endif
+                            @elseif ($content['type'] === 'image')
+                                @if (config('constants.TRAINING_DOCUMENT_URL') . '/' . $content['document'] != '')
+                                    <img class="me-2"
+                                        src="{{ config('constants.TRAINING_DOCUMENT_URL') . '/' . $content['document'] }}"
+                                        style="width:500px; height:500px">
+                                @endif
                             @endif
                         </div>
-                        {{-- @else
-                            <!-- Display an alert or any other action indicating that the previous document needs to be completed -->
-                            <div class="alert alert-warning" role="alert">
-                                Please read the previous document before accessing this one.
-                            </div>
-                        @endif --}}
                     @endforeach
                 @endforeach
-
-                {{-- @foreach ($trainingCourses as $course)
-                    @foreach ($course->CourseContentAndDocument as $content)
-                        @php
-                            $documentCompletion = \App\Models\TraineeAssignedTrainingDocument::where('user_id', Auth::user()->id)
-                                ->where('course_id', $course->id)
-                                ->where('document_id', $content['id'])
-                                ->first();
-                        @endphp
-                        @if ($content['type'] === 'video')
-                            <!-- Video Content -->
-                            <div class="tab-pane courseDocument{{ $content['id'] }}"
-                                id="courseViseView{{ $content['id'] }}">
-                                <video id="myVideo" class="videoContent" width="100%" height="500px" controls>
-                                    <source src="{{ TRAINING_DOCUMENT_URL . $content['document'] }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        @elseif ($content['type'] === 'doc')
-                            <!-- Doc Content -->
-                            <div class="tab-pane courseDocument{{ $content['id'] }}"
-                                id="courseViseView{{ $content['id'] }}" role="tabpanel">
-                                <div class="imgwrapper">
-                                    <iframe id="myIframe" src="{{ TRAINING_DOCUMENT_URL . $content['document'] }}"
-                                        width="100%" style="height:calc(100vh - 100px)" type="application/pdf"
-                                        frameborder="0" scrolling="auto"></iframe>
-                                    <!-- Container for Doc.js rendering -->
-                                    <div id="pdf-container{{ $content['id'] }}"></div>
-                                    <!-- Placeholder for the checkbox -->
-                                    <div style="background: #feffff; margin-top: -5px; padding: 8px; text-align: center;">
-                                        <span>
-                                            <input type="checkbox" id="readCheck" data-content-id="{{ $content['id'] }}"
-                                                data-content-length="{{ $content['length'] }}"
-                                                data-course-id="{{ $course->id }}"
-                                                {{ $documentCompletion && ($documentCompletion->status === 1 || $documentCompletion->status === null) ? 'checked' : '' }}>
-                                            <label for="readCheck" style="color: white;">I acknowledge that I have read the
-                                                full document.</label>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
-                @endforeach --}}
             </div>
+
             <div class="timeSection">
                 <div class="timeDescription">
                     <i><img src="../front/img/timer.svg" alt="img"></i>
@@ -178,97 +126,213 @@
                 <div class="timerGroup">
                 </div>
             </div>
+
             <div class="about_content">
                 <h2>About this Training</h2>
                 <p>{!! $trainingDetails->description !!}</p>
                 <hr>
+
                 <div class="otherDetail">
                     <strong>Other Details</strong>
                     <p><span>Training Type : {{ $trainingDetails->type }}</span><span>Trainee :
-                            {{ $totalTrainees }}</span>
-                    </p>
+                            {{ $totalTrainees }}</span></p>
                     <p><span>Total Content : {{ count($trainingCourses) }}</span><span>Total Time to finish :
                             {{ $hours . 'h ' . $minutes . 'm ' }}</span></p>
                 </div>
                 <hr>
                 <div class="certificates">
                     <strong class="mb-2 d-block">Certificates</strong>
-                    <p class="mb-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry
-                    </p>
+                    <p class="mb-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
                     <p class="mb-2">Complete the training and test to achieve this certificate</p>
                     <a href="javascript:void(0)" class="btn btn-light py-2 px-3 fs-7">Certificate</a>
                 </div>
             </div>
         </div>
+
         <div class="courseContent courses-and-document-listing" id="courseContent">
             <div class="courselisting">
-                <strong>Course Content</strong>
+                <strong class="mb-3 d-block fs-5 fw-semibold">Course Content</strong>
                 <div class="accordion" id="accordionExample">
                     @foreach ($trainingCourses as $index => $course)
-                        <div class="accordion-item">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapse{{ $index + 1 }}" aria-expanded="false"
-                                aria-controls="collapse{{ $index + 1 }}">
-                                {{ $course['title'] }}
-                            </button>
-                            <div id="collapse{{ $index + 1 }}" class="accordion-collapse collapse"
-                                data-bs-parent="#accordionExample">
-                                <ul class="nav nav-tabs" id="nav-tab" role="tablist">
-                                    @foreach ($course->CourseContentAndDocument as $key => $content)
-                                        @php
-                                            $documentCompletion = \App\Models\TrainingDocumentCompletion::where(
-                                                'user_id',
-                                                Auth::user()->id,
-                                            )
-                                                ->where('document_id', $content['id'])
-                                                ->first();
-                                        @endphp
-                                        <li>
-                                            <a href="#courseViseView{{ $content['id'] }}" class="courseGroup"
-                                                data-course-id="{{ $course->id }}"
-                                                data-content-id="{{ $content['id'] }}"
-                                                data-video-duration="{{ $content['length'] }}"
-                                                data-pdf-pages="{{ $content['length'] }}">
-                                                <div class="courseStatus">
-                                                    <img src="{{ asset('front/img/processing.svg') }}" width="20"
-                                                        height="20">
-                                                </div>
-                                                <p>{{ $content['id'] }}. {{ $content['title'] }}</p>
-                                                <span>
-                                                    @if ($content['type'] === 'video')
-                                                        <img class="me-2" src="{{ asset('front/img/videoicon.svg') }}"
-                                                            width="18" height="18">Video
-                                                    @elseif($content['type'] === 'doc')
-                                                        <img class="me-2" src="{{ asset('front/img/pdficon.svg') }}"
-                                                            width="18" height="18">Doc
-                                                    @endif
-                                                </span>
-                                            </a>
-                                            @if (!empty($course->test_id))
-                                                @php
-                                                    $testAlreadySubmited = \App\Models\TrainingTestParticipants::where(
-                                                        'training_id',
-                                                        $training_id,
-                                                    )
-                                                        ->where('course_id', $course->id)
-                                                        ->where('test_id', $course->test_id)
-                                                        ->where('trainee_id', Auth::user()->id)
-                                                        ->first();
-                                                @endphp
+                        @php
+                            $isFirstCourse = $index === 0;
+                            $isCompleted = checkIfCourseCompleted($course->id);
+                            $isPreviousCompleted =
+                                $index === 0 ? true : checkIfCourseCompleted($trainingCourses[$index - 1]->id);
+                            $canAccess = $isFirstCourse || $isPreviousCompleted;
+                        @endphp
 
+                        <div class="accordion-item mb-3 border rounded shadow-sm">
+                            <h2 class="accordion-header" id="heading{{ $index }}">
+                                <button
+                                    class="accordion-button collapsed bg-light {{ !$canAccess ? 'locked-course' : '' }}"
+                                    type="button" data-bs-toggle="{{ $canAccess ? 'collapse' : '' }}"
+                                    data-bs-target="{{ $canAccess ? '#collapse' . $index : '' }}"
+                                    aria-expanded="{{ $isFirstCourse ? 'true' : 'false' }}"
+                                    aria-controls="collapse{{ $index }}" data-course-id="{{ $course->id }}"
+                                    onclick="{{ !$canAccess ? 'showLockedMessage(this); return false;' : '' }}">
+                                    {{ $course['title'] }}
+                                    @if ($isCompleted)
+                                        <span class="ms-2 badge bg-success">Completed</span>
+                                    @endif
+                                </button>
+                            </h2>
+
+                            <div id="collapse{{ $index }}"
+                                class="accordion-collapse collapse {{ $isFirstCourse ? 'show' : '' }}"
+                                aria-labelledby="heading{{ $index }}" data-bs-parent="#accordionExample">
+                                <div class="accordion-body p-3">
+                                    @if ($course->CourseContentAndDocument->isNotEmpty())
+                                        @php
+                                            $allContentCompleted = true;
+                                            $hasTest = !empty($course->test_id);
+                                        @endphp
+
+                                        @foreach ($course->CourseContentAndDocument as $key => $content)
+                                            @php
+                                                $documentCompletionInside = \App\Models\TraineeAssignedTrainingDocument::where(
+                                                    'user_id',
+                                                    Auth::user()->id,
+                                                )
+                                                    ->where('document_id', $content['id'])
+                                                    ->where('status', 1)
+                                                    ->first();
+
+                                                if (!$documentCompletionInside) {
+                                                    $allContentCompleted = false;
+                                                }
+                                            @endphp
+
+                                            <div class="mb-3">
+                                                <a href="#courseViseView{{ $content['id'] }}"
+                                                    class="courseGroup d-flex justify-content-between align-items-center border-bottom pb-3 text-decoration-none"
+                                                    data-course-id="{{ $course->id }}"
+                                                    data-content-id="{{ $content['id'] }}"
+                                                    data-video-duration="{{ $content['length'] }}"
+                                                    data-pdf-pages="{{ $content['length'] }}"
+                                                    data-doc-type="{{ $content['type'] }}">
+                                                    {{-- @dump($content['type'] ) --}}
+
+                                                    <div class="d-flex align-items-center flex-grow-1"
+                                                        style="min-width: 0;">
+                                                        <div class="me-3">
+                                                            @if ($content['type'] === 'video')
+                                                                <img src="{{ asset('front/img/videoicon.svg') }}"
+                                                                    width="24" height="24" alt="Video">
+                                                            @elseif ($content['type'] === 'doc')
+                                                                <img src="{{ asset('front/img/pdficon.svg') }}"
+                                                                    width="24" height="24" alt="Document">
+                                                            @elseif ($content['type'] === 'image')
+                                                                <img src="{{ asset('front/img/image-icon.svg') }}"
+                                                                    width="24" height="24" alt="Document">
+                                                            @endif
+                                                        </div>
+                                                        <div class="flex-grow-1" style="min-width: 0;">
+                                                            <p class="mb-1 fw-semibold text-dark text-truncate">
+                                                                {{ $key + 1 }}. {{ $content['title'] }}
+                                                            </p>
+                                                            <div class="text-muted small">
+                                                                @if ($content['type'] === 'video')
+                                                                    Video • <small style="font-size: 11px"> Study required:
+                                                                        {{ gmdate('i:s', $content['length']) }}</small>
+                                                                @elseif ($content['type'] === 'doc')
+                                                                    @php
+                                                                        $seconds = $content['length'];
+                                                                        if ($seconds < 60) {
+                                                                            $readingTime =
+                                                                                'Study required: ' . $seconds . ' sec';
+                                                                        } else {
+                                                                            $minutes = floor($seconds / 60);
+                                                                            $remainingSeconds = $seconds % 60;
+                                                                            $readingTime =
+                                                                                'Study required: ' .
+                                                                                $minutes .
+                                                                                ':' .
+                                                                                str_pad(
+                                                                                    $remainingSeconds,
+                                                                                    2,
+                                                                                    '0',
+                                                                                    STR_PAD_LEFT,
+                                                                                ) .
+                                                                                ' min';
+                                                                        }
+                                                                    @endphp
+                                                                    Document • <small style="font-size: 11px">
+                                                                        {{ $readingTime }}</small>
+                                                                @elseif ($content['type'] === 'image')
+                                                                    @php
+                                                                        $seconds = $content['length'];
+                                                                        if ($seconds < 60) {
+                                                                            $viewingTime =
+                                                                                'Study required: ' . $seconds . ' sec';
+                                                                        } else {
+                                                                            $minutes = floor($seconds / 60);
+                                                                            $remainingSeconds = $seconds % 60;
+                                                                            $viewingTime =
+                                                                                'Study required: ' .
+                                                                                $minutes .
+                                                                                ':' .
+                                                                                str_pad(
+                                                                                    $remainingSeconds,
+                                                                                    2,
+                                                                                    '0',
+                                                                                    STR_PAD_LEFT,
+                                                                                ) .
+                                                                                ' min';
+                                                                        }
+                                                                    @endphp
+                                                                    Image • <small style="font-size: 11px">
+                                                                        {{ $viewingTime }}</small>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="d-flex flex-column align-items-end ms-3">
+                                                        <div
+                                                            class="small {{ $documentCompletionInside ? 'text-success' : 'text-warning' }}">
+                                                            {{ $documentCompletionInside ? 'Completed' : 'Not Started' }}
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        @endforeach
+
+                                        @if ($hasTest)
+                                            @php
+                                                $testAlreadySubmited = \App\Models\TrainingTestParticipants::where(
+                                                    'training_id',
+                                                    $training_id,
+                                                )
+                                                    ->where('course_id', $course->id)
+                                                    ->where('test_id', $course->test_id)
+                                                    ->where('trainee_id', Auth::user()->id)
+                                                    ->first();
+                                            @endphp
+
+                                            <div class="mt-4 pt-3 border-top">
                                                 @if (!empty($testAlreadySubmited) && $testAlreadySubmited->status == 1)
-                                                    <a class="btn btn-secondary py-2" href="javascript:void()"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#alreadySubmittedTest">Begin Test</a>
+                                                    <button class="btn btn-outline-secondary" data-bs-toggle="modal"
+                                                        data-bs-target="#alreadySubmittedTest">
+                                                        Begin Test
+                                                    </button>
                                                 @else
-                                                    <a class="btn btn-secondary py-2"
-                                                        href="{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => $course->id, 'test_id' => $course->test_id]) }}">Begin
-                                                        Test</a>
+                                                    <a class="btn btn-primary w-100 {{ $allContentCompleted ? '' : 'disabled' }}"
+                                                        href="{{ $allContentCompleted ? route('userTraining.test', ['training_id' => $training_id, 'course_id' => $course->id, 'test_id' => $course->test_id]) : 'javascript:void(0)' }}"
+                                                        @if (!$allContentCompleted) data-original-href="{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => $course->id, 'test_id' => $course->test_id]) }}"
+                                                        style="{{ !$allContentCompleted ? 'pointer-events: none; opacity: 0.6;' : '' }}" @endif>
+                                                        <i class="bi bi-pencil-square me-2"></i>Begin Test
+                                                        @if (!$allContentCompleted)
+                                                            <small class="d-block mt-1">Complete all content first</small>
+                                                        @endif
+                                                    </a>
                                                 @endif
-                                            @endif
-                                        </li>
-                                    @endforeach
-                                </ul>
+                                            </div>
+                                        @endif
+                                    @else
+                                        <p class="text-muted mb-0">No content available.</p>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     @endforeach
@@ -276,6 +340,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade " id="testresult" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -409,37 +474,256 @@
                 }
             });
         });
-        //For Video compalated or not
-        $('a.courseGroup').click(function(event) {
-            event.preventDefault();
-            var video = document.getElementById('myVideo');
-            var contentId = $(this).data('content-id');
-            var courseId = $(this).data('course-id');
-            var contentLeanth = $(this).data('video-duration');
-            video.addEventListener('timeupdate', function() {
-                if (video.currentTime >= contentLeanth) {
-                    $.ajax({
-                        url: "{{ route('userTrainingDetails.document.progress') }}",
-                        method: 'POST',
-                        data: {
-                            '_token': '{{ csrf_token() }}',
-                            'content_id': contentId,
-                            'course_id': courseId,
-                            'content_length': contentLeanth,
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            // location.reload(true);
-                        },
-                        error: function(error) {
-                            console.error(error);
-                        }
-                    });
+
+        function showLockedMessage(button) {
+            const $button = $(button);
+            // Remove any existing message
+            $button.find('.locked-message').remove();
+            // Add new message
+            $button.append(
+                '<span class="ms-2 badge bg-warning text-dark locked-message">Complete previous course first</span>'
+            );
+            // Remove the message after 3 seconds
+            setTimeout(() => {
+                $button.find('.locked-message').remove();
+            }, 3000);
+            return false;
+        }
+
+        // This will handle the accordion behavior
+        $(document).ready(function() {
+            $('#accordionExample').on('show.bs.collapse', function(e) {
+                const $header = $(e.target).prev('.accordion-header');
+                const $button = $header.find('.accordion-button');
+
+                // Skip check for first course
+                if ($header.is('#heading0')) return true;
+
+                const courseId = $button.data('course-id');
+                const prevCourseId = $header.parent().prev('.accordion-item').find('.accordion-button')
+                    .data('course-id');
+
+                // Check if previous course is completed
+                if (!checkIfCourseCompleted(prevCourseId)) {
+                    showLockedMessage($button[0]);
+                    e.preventDefault(); // Prevent accordion from opening
+                    return false;
                 }
             });
         });
+
+        function checkAllContentCompleted(courseId) {
+            var courseItems = $('a.courseGroup[data-course-id="' + courseId + '"]');
+            var allCompleted = true;
+
+            courseItems.each(function() {
+                if (!$(this).find('.small').hasClass('text-success')) {
+                    allCompleted = false;
+                    return false;
+                }
+            });
+
+            if (allCompleted) {
+                const $button = $('.accordion-item').has('[data-course-id="' + courseId + '"]')
+                    .find('.accordion-button');
+
+                $button.find('.badge').remove();
+                $button.append('<span class="ms-2 badge bg-success">Completed</span>');
+
+                var testButton = $('.accordion-item').has('[data-course-id="' + courseId + '"]')
+                    .find('.btn-primary');
+                testButton.removeClass('disabled')
+                    .css({
+                        'pointer-events': 'auto',
+                        'opacity': '1'
+                    })
+                    .attr('href', testButton.data('original-href'))
+                    .find('small').remove();
+
+                var nextAccordionItem = $('.accordion-item').has('[data-course-id="' + courseId + '"]').next(
+                    '.accordion-item');
+                if (nextAccordionItem.length) {
+                    const nextButton = nextAccordionItem.find('.accordion-button');
+                    nextButton.removeClass('locked-course')
+                        .attr('data-bs-toggle', 'collapse')
+                        .attr('data-bs-target', '#collapse' + nextAccordionItem.index())
+                        .removeAttr('onclick');
+                }
+            }
+        }
+
+        // Helper function to check course completion (mimics PHP function)
+        function checkIfCourseCompleted(courseId) {
+            var allCompleted = true;
+            $('a.courseGroup[data-course-id="' + courseId + '"]').each(function() {
+                if (!$(this).find('.small').hasClass('text-success')) {
+                    allCompleted = false;
+                    return false;
+                }
+            });
+            return allCompleted;
+        }
+
+
+
+        let globalTracker = {
+            intervalId: null,
+            viewedTime: 0,
+            contentId: null,
+            hasUpdated: false,
+            type: null
+        };
+
+        $('a.courseGroup').click(function(event) {
+            event.preventDefault();
+
+            const $this = $(this);
+            const contentId = $this.data('content-id');
+            const courseId = $this.data('course-id');
+            const contentLength = parseFloat($this.data('video-duration')); // used for both doc/video
+            const contentType = $this.data('doc-type'); // 'doc' or 'video'
+            const href = $this.attr('href');
+            const $targetTab = $(href);
+
+            // Reset UI
+            $(".tab-content .tab-pane").hide();
+            $("a.courseGroup").removeClass("active");
+            $this.addClass("active");
+            $(".thumb").hide();
+            $targetTab.show();
+
+            // Cleanup previous timer
+            if (globalTracker.intervalId && globalTracker.contentId !== contentId) {
+                clearInterval(globalTracker.intervalId);
+                globalTracker.intervalId = null;
+            }
+
+            // Reset tracker
+            globalTracker = {
+                intervalId: null,
+                viewedTime: 0,
+                contentId,
+                hasUpdated: false,
+                type: contentType
+            };
+
+            // Load stored progress
+            $.ajax({
+                url: "{{ route('userTrainingDetails.document.duration') }}", 
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    content_id: contentId,
+                    course_id: courseId
+                },
+                success: function(response) {
+                    globalTracker.viewedTime = response.duration || 0;
+
+                    if (contentType === 'doc' || contentType === 'image') {
+                        handleDocumentTracking();
+                    } else if (contentType === 'video') {
+                        handleVideoTracking();
+                    }
+                }
+            });
+
+            function handleDocumentTracking() {
+                function startTimer() {
+                    if (!globalTracker.intervalId && !globalTracker.hasUpdated) {
+                        globalTracker.intervalId = setInterval(() => {
+                            globalTracker.viewedTime++;
+
+                            if (globalTracker.viewedTime >= contentLength && !globalTracker.hasUpdated) {
+                                clearInterval(globalTracker.intervalId);
+                                globalTracker.hasUpdated = true;
+                                updateProgress();
+                            } else {
+                                // console.log('time:', globalTracker.viewedTime);
+                                updatePartialProgress(globalTracker.viewedTime);
+                            }
+                        }, 1000);
+                    }
+                }
+
+                function stopTimer() {
+                    clearInterval(globalTracker.intervalId);
+                    globalTracker.intervalId = null;
+                }
+
+                function checkAndToggleTimer() {
+                    const isTabVisible = document.visibilityState === 'visible';
+                    const isDocTabActive = $targetTab.is(':visible');
+                    if (isTabVisible && isDocTabActive && !globalTracker.hasUpdated) {
+                        startTimer();
+                    } else {
+                        stopTimer();
+                    }
+                }
+
+                checkAndToggleTimer();
+                $(document).off('visibilitychange').on('visibilitychange', checkAndToggleTimer);
+            }
+
+            function handleVideoTracking() {
+                const video = $targetTab.find('video')[0];
+
+                if (!video) return;
+
+                let lastReportedTime = globalTracker.viewedTime;
+
+                video.currentTime = globalTracker.viewedTime; // Resume from last saved
+                video.ontimeupdate = function() {
+                    const newTime = Math.floor(video.currentTime);
+                    if (newTime > globalTracker.viewedTime) {
+                        globalTracker.viewedTime = newTime;
+
+                        if (globalTracker.viewedTime >= contentLength && !globalTracker.hasUpdated) {
+                            globalTracker.hasUpdated = true;
+                            video.ontimeupdate = null;
+                            updateProgress();
+                        } else if (globalTracker.viewedTime !== lastReportedTime) {
+                            lastReportedTime = globalTracker.viewedTime;
+                            updatePartialProgress(globalTracker.viewedTime);
+                        }
+                    }
+                };
+
+                document.addEventListener('visibilitychange', function() {
+                    if (document.visibilityState !== 'visible') {
+                        video.pause();
+                    }
+                });
+            }
+
+            function updateProgress() {
+                $.post("{{ route('userTrainingDetails.document.progress') }}", {
+                    _token: '{{ csrf_token() }}',
+                    content_id: contentId,
+                    course_id: courseId,
+                    content_length: contentLength,
+                    content_type: contentType
+                }, function() {
+                    $('a.courseGroup[data-content-id="' + contentId + '"][data-course-id="' + courseId +
+                            '"]')
+                        .find('.small')
+                        .removeClass('text-warning')
+                        .addClass('text-success')
+                        .text('Completed');
+                    checkAllContentCompleted(courseId);
+                });
+            }
+
+            function updatePartialProgress(duration) {
+                $.post("{{ route('userTrainingDetails.document.partial') }}", {
+                    _token: '{{ csrf_token() }}',
+                    content_id: contentId,
+                    course_id: courseId,
+                    duration
+                });
+            }
+        });
     </script>
-    <script>
+    {{-- <script>
         jQuery("a.courseGroup").click(function(event) {
             event.preventDefault();
             jQuery(".tab-content .tab-pane").hide();
@@ -449,29 +733,13 @@
             var target = jQuery(this).attr('href');
             jQuery(target).show();
         });
-    </script>
+    </script> --}}
     <script>
-        // $(document).ready(function() {
-        //     $(document).on("contextmenu", function() {
-        //         return false;
-        //     });
-        //     $(document).keydown(function(e) {
-        //         if (e.which === 123) { // F12 key
-        //             return false;
-        //         }
-        //     });
-        //     $(document).on("keydown", function(e) {
-        //         if (e.ctrlKey && (e.which === 85 || e.which === 83)) { // Ctrl+U or Ctrl+S
-        //             return false;
-        //         }
-        //     });
-        // });
         $(document).ready(function() {
             $('a').on('click', function(e) {
                 var href = $(this).attr('href');
                 if (href && (href.endsWith('.pdf') || href.endsWith('.doc') || href.endsWith('.xlsx'))) {
                     e.preventDefault();
-                    // Optionally, you can display a message or perform some other action to indicate that the file is not downloadable
                     alert('File downloading is disabled.');
                 }
             });
