@@ -17,4 +17,8 @@ class TrainingType extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'training_types';
+	protected $fillable = [
+		'type',
+		'is_active',
+	];
 }// end TrainingType class

@@ -93,9 +93,9 @@ class TrainingController extends BaseController
     public function userTrainingDetails($training_id = 0)
     {
         $trainingDetails = Training::where('trainings.id', $training_id)->leftJoin('training_types', 'training_types.id', '=', 'trainings.type')->first();
+
         $trainingCourses = Course::where('training_id', $training_id)->with('CourseContentAndDocument')
             ->get();
-
         $trainingQuestions = DB::table('questions')->where('test_id', $training_id)
             ->get();
         $totalTrainees = DB::table('training_participants')->where('training_id', $training_id)->count();

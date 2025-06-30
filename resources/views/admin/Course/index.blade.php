@@ -56,11 +56,10 @@
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                             </div>
                         </div>
-                        <table class="table table-hover table table-bordered mt-2 ">
+                        <table class="table table-hover table-bordered mt-2">
                             <thead class="theadLight">
-
                                 <tr>
-
+                                    <th>SN.</th>
                                     <th>
                                         {{ link_to_route(
                                             "$modelName.index",
@@ -80,7 +79,6 @@
                                             ],
                                         ) }}
                                     </th>
-
                                     <th>
                                         {{ link_to_route(
                                             "$modelName.index",
@@ -100,55 +98,64 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th{ trans('Action') }}</th>
+                                    <th>{{ trans('Action') }}</th>
                                 </tr>
                             </thead>
+                            @php
+                                $sn = ($results->currentPage() - 1) * $results->perPage() + 1;
+                            @endphp
                             <tbody id="powerwidgets">
                                 @if (!$results->isEmpty())
                                     @foreach ($results as $result)
                                         <tr class="items-inner">
-                                            <td data-th='question'>{{ $result->title }}</td>
+                                            <td>{{ $sn++ }}</td>
+                                            <td data-th="question">{{ $result->title }}</td>
                                             <td data-th="{{ trans('Modified') }}">
                                                 {{ date(Config::get('Reading.date_format'), strtotime($result->updated_at)) }}
                                             </td>
-                                            <!-- <td  data-th=''>
-                                                                                  @if ($result->is_active == 1)
-    <span class="label label-success" >{{ trans('Activated') }}</span>
-@else
-    <span class="label label-warning" >{{ trans('Deactivated') }}</span>
-    @endif
-                                                                                 </td>								 -->
-                                            <td data-th='' class="action-td">
-                                                <!-- @if ($result->is_active == 1)
-    <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$result->id, 0]) }}' class="btn btn-success btn-small status_any_item"><span class="fas fa-ban"></span>
-                                                                                   </a>
-@else
-    <a title="Click To Activate" href='{{ route("$modelName.status", [$result->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fas fa-check"></span>
-                                                                                   </a>
-    @endif  -->
-                                                <a href='{{ route("Course.edit", [$training_id, $result->id]) }}'
-                                                    class="btn btn-primary" title="Edit"> <span
-                                                        class="fas fa-edit"></span></a>
-                                                <a href='{{ route("$modelName.delete", "$result->id") }}'
+                                            <td class="action-td">
+                                                {{-- Uncomment status toggle if needed
+                        @if ($result->is_active == 1)
+                            <a title="Click To Deactivate"
+                               href="{{ route("$modelName.status", [$result->id, 0]) }}"
+                               class="btn btn-success btn-small status_any_item">
+                               <span class="fas fa-ban"></span>
+                            </a>
+                        @else
+                            <a title="Click To Activate"
+                               href="{{ route("$modelName.status", [$result->id, 1]) }}"
+                               class="btn btn-warning btn-small status_any_item">
+                               <span class="fas fa-check"></span>
+                            </a>
+                        @endif
+                        --}}
+
+                                                <a href="{{ route('Course.edit', [$training_id, $result->id]) }}"
+                                                    class="btn btn-primary" title="Edit">
+                                                    <span class="fas fa-edit"></span>
+                                                </a>
+
+                                                <a href="{{ route("$modelName.delete", $result->id) }}"
                                                     data-delete="delete" class="delete_any_item btn btn-danger"
                                                     title="Delete">
-                                                    <span class="fas fa-trash-alt"></span></a>
+                                                    <span class="fas fa-trash-alt"></span>
+                                                </a>
 
-                                                <a href='{{ route("$modelName.view", [$training_id, $result->id]) }}'
-                                                    class="btn btn-success" title="View Training Courses"> <span
-                                                        class="fas fa-eye"></span></a>
+                                                <a href="{{ route("$modelName.view", [$training_id, $result->id]) }}"
+                                                    class="btn btn-success" title="View Training Courses">
+                                                    <span class="fas fa-eye"></span>
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td class="alignCenterClass" colspan="4">{{ trans('No Record Found') }}</td>
+                                        <td class="alignCenterClass" colspan="3">{{ trans('No Record Found') }}</td>
                                     </tr>
                                 @endif
                             </tbody>
-
-
                         </table>
+
                         <div class="box-footer clearfix">
                             <!-- <div class="col-md-3 col-sm-4 "></div> -->
                             <div class="col-md-12 col-sm-12 text-right ">@include('pagination.default', ['paginator' => $results])</div>

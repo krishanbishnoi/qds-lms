@@ -23,9 +23,15 @@
                 <div class="courseProgress">
                     <div class="progress-main">
                         @php
-                            $progressPercentage = ($completedCoursesCount / $totalCoursesCount) * 100;
-                            $roundedProgressPercentage = round($progressPercentage, 2);
+                            if ($totalCoursesCount > 0) {
+                                $progressPercentage = ($completedCoursesCount / $totalCoursesCount) * 100;
+                                $roundedProgressPercentage = round($progressPercentage, 2);
+                            } else {
+                                $progressPercentage = 0;
+                                $roundedProgressPercentage = 0;
+                            }
                         @endphp
+
                         <div class="progress-circle" data-progress="{{ $roundedProgressPercentage }}"><img
                                 src="{{ asset('front/img/processing.svg') }}" width="20" height="20"></div>
                     </div>

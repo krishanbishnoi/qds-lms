@@ -105,13 +105,7 @@ class TrainingController extends BaseController
         return  View::make("trainer.$this->model.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string'));
     }
 
-    /**
-     * Function for add new State
-     *
-     * @param null
-     *
-     * @return view page.
-     */
+
     public function add()
     {
 
@@ -122,13 +116,7 @@ class TrainingController extends BaseController
         return  View::make("trainer.$this->model.add", compact('trainingCategory', 'TrainingType', 'trainees', 'test'));
     } // end add()
 
-    /**
-     * Function for save new Area
-     *
-     * @param null
-     *
-     * @return redirect page.
-     */
+
     function save()
     {
         Request::replace($this->arrayStripTags(Request::all()));

@@ -11,12 +11,7 @@ use Eloquent, Session;
 class TrainingDocument extends Eloquent
 {
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
 	protected $table = 'training_documents';
 
-	protected $fillable = ['course_id', 'type', 'document', 'document_type', 'title', 'length'];
-}// end TrainingDocument class
+	protected $fillable = ['course_id', 'training_id', 'type', 'document', 'document_type', 'title', 'length'];
+}

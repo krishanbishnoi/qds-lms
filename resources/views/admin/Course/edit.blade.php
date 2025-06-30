@@ -38,7 +38,7 @@
                                                 'title',
                                                 trans('Title') .
                                                     '<span class="requireRed">*
-                                                                                                                                                                                        </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -66,7 +66,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-6">
                                 <div class="form-group <?php echo $errors->first('skip') ? 'has-error' : ''; ?>">
                                     <div class="mws-form-row">
@@ -75,7 +75,7 @@
                                                 'skip',
                                                 trans('Skip Video') .
                                                     '<span class="requireRed"> *
-                                                                                                                                                                                        </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -104,7 +104,7 @@
                                     'training_documents',
                                     trans('Training Documents') .
                                         '<span
-                                                                                                                                            class="requireRed"> * </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                        class="requireRed"> * </span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -123,7 +123,7 @@
                                                                     'title',
                                                                     trans('Title') .
                                                                         '<span
-                                                                                                                                                                                                                                                                                                    class="requireRed"> </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                class="requireRed"> </span>',
                                                                     ['class' => 'mws-form-label'],
                                                                 ),
                                                             ) !!}
@@ -135,6 +135,9 @@
                                                             </div>
                                                         </div>
                                                     </td>
+                                                    <input type="hidden" name="data[{{ $i }}][entryID]"
+                                                        value="{{ $document->id ?? '' }}">
+
                                                     <td width="700px">
                                                         <div class="form-group <?php echo $errors->first('document') ? 'has-error' : ''; ?>">
                                                             {!! Html::decode(
@@ -142,7 +145,7 @@
                                                                     'document',
                                                                     trans('Document') .
                                                                         '<span
-                                                                                                                                                                                                                                                                                                    class="requireRed"> </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                class="requireRed"> </span>',
                                                                     ['class' => 'mws-form-label'],
                                                                 ),
                                                             ) !!}
@@ -157,19 +160,28 @@
 
                                                         </div>
                                                     </td>
+                                                    @php
+                                                        $fieldName = "data.$i.length";
+                                                        $lengthInMinutes =
+                                                            isset($document->length) && is_numeric($document->length)
+                                                                ? (int) ($document->length / 60)
+                                                                : '';
+
+                                                    @endphp
+
                                                     <td width="700px">
                                                         <div class="form-group <?php echo $errors->first('length') ? 'has-error' : ''; ?>">
                                                             {!! Html::decode(
                                                                 Form::label(
                                                                     'length',
-                                                                    trans('Length') .
+                                                                    trans('Reading Time (In Minutes)') .
                                                                         '<span
-                                                                                                                                                                                                                                                                                                    class="requireRed"> </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                class="requireRed"> </span>',
                                                                     ['class' => 'mws-form-label'],
                                                                 ),
                                                             ) !!}
                                                             <div class="mws-form-item">
-                                                                {{ Form::text('data[' . $i . '][length]', isset($document->length) ? $document->length : '', ['class' => 'form-control ']) }}
+                                                                {{ Form::text('data[' . $i . '][length]', isset($lengthInMinutes) ? $lengthInMinutes : '', ['class' => 'form-control ']) }}
                                                                 <div class="error-message help-inline">
                                                                     <?php echo $errors->first('length'); ?>
                                                                 </div>
@@ -273,7 +285,7 @@
                                                                 'title',
                                                                 trans('Title') .
                                                                     '<span
-                                                                                                                                                                                                                                                                                    class="requireRed"> </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"> </span>',
                                                                 ['class' => 'mws-form-label'],
                                                             ),
                                                         ) !!}
@@ -292,7 +304,7 @@
                                                                 'document',
                                                                 trans('Document') .
                                                                     '<span
-                                                                                                                                                                                                                                                                                    class="requireRed"> </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"> </span>',
                                                                 ['class' => 'mws-form-label'],
                                                             ),
                                                         ) !!}
@@ -319,7 +331,7 @@
                                     </div>
                                     <input type="hidden" name="count" value="1" id="add_more_count">
                                 @endif
-                               
+
                             </div>
                             <div class="form-group <?php echo $errors->first('description') ? 'has-error' : ''; ?>">
                                 {!! Html::decode(
@@ -327,7 +339,7 @@
                                         'description',
                                         trans('Description') .
                                             '<span class="requireRed">
-                                                                                                                                                                * </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                * </span>',
                                         ['class' => 'mws-form-label'],
                                     ),
                                 ) !!}

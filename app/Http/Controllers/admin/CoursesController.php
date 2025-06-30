@@ -132,7 +132,6 @@ class CoursesController extends BaseController
             $trainees = User::where("is_deleted", 0)->pluck('first_name', 'id')->toArray();
             return  view("admin.Course.add", compact('trainees', 'test',  'training_id'));
         } catch (\Exception $e) {
-            dd($e);
             return redirect()->back()->with('error', 'somthing went wrong');;
         }
     }
@@ -175,21 +174,31 @@ class CoursesController extends BaseController
                     $existingDocuments = TrainingDocument::where('course_id', $course->id)->get();
 
                     foreach ($request->data as $documentData) {
-                        $document = [
-                            'course_id' => $course->id,
-                            'title' => $documentData['title'] ?? null,
-                            'length' => $documentData['length'] ?? null,
-                        ];
+                        $validator = Validator::make($documentData, [
+                            'title' => 'required|string|max:255',
+                            'length' => 'required|numeric|min:1',
+                            // 'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi|max:20480',
+                        ]);
 
-                        // Check if we have an existing document (for edit)
+                        if ($validator->fails()) {
+                            return redirect()->back()
+                                ->withErrors($validator)
+                                ->withInput();
+                        }
                         $existingDocument = null;
+
                         if (isset($documentData['entryID'])) {
                             $existingDocument = $existingDocuments->where('id', $documentData['entryID'])->first();
                         }
 
-                        // Handle file upload if new file is provided
+                        $document = [
+                            'course_id' => $course->id,
+                            'title' => $documentData['title'] ?? null,
+                            'length' => isset($documentData['length']) ? ((int) $documentData['length']) * 60 : 0,
+                        ];
+
                         if (isset($documentData['document']) && $documentData['document']) {
-                            // Delete old file if exists
+                            // File uploaded – process new file
                             if ($existingDocument && $existingDocument->document) {
                                 $oldFilePath = TRAINING_DOCUMENT_ROOT_PATH . $existingDocument->document;
                                 if (File::exists($oldFilePath)) {
@@ -223,15 +232,16 @@ class CoursesController extends BaseController
                                 $document['type'] = 'video';
                             } elseif (in_array($extension, $fileExtensions)) {
                                 $document['type'] = 'doc';
+                            } else {
+                                $document['type'] = 'other';
                             }
                         } elseif ($existingDocument) {
-                            // Keep the existing file if no new file is uploaded
+                            // ✅ No new file uploaded — keep existing file info
                             $document['document'] = $existingDocument->document;
                             $document['document_type'] = $existingDocument->document_type;
                             $document['type'] = $existingDocument->type;
                         }
 
-                        // Update or create the document
                         if ($existingDocument) {
                             $existingDocument->update($document);
                         } else {
@@ -513,7 +523,6 @@ class CoursesController extends BaseController
      */
     function update($training_id, $modelId)
     {
-
         $model                    =    Course::findorFail($modelId);
         if (empty($model)) {
             return Redirect::back();
