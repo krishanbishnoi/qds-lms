@@ -2,6 +2,9 @@
 
 return [
 
+    'TRAINING_DOCUMENT_URL' => 'http://lms.test/training_document',
+    // 'TRAINING_DOCUMENT_URL' => env('APP_URL') . '/training_document',
+    
     'STATUS_LIST'                   => [
         1 => 'Active',
         0 => 'Inactive',

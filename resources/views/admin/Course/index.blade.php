@@ -113,29 +113,25 @@
                                             <td data-th="{{ trans('Modified') }}">
                                                 {{ date(Config::get('Reading.date_format'), strtotime($result->updated_at)) }}
                                             </td>
-                                            <td class="action-td">
-                                                {{-- Uncomment status toggle if needed
-                        @if ($result->is_active == 1)
-                            <a title="Click To Deactivate"
-                               href="{{ route("$modelName.status", [$result->id, 0]) }}"
-                               class="btn btn-success btn-small status_any_item">
-                               <span class="fas fa-ban"></span>
-                            </a>
-                        @else
-                            <a title="Click To Activate"
-                               href="{{ route("$modelName.status", [$result->id, 1]) }}"
-                               class="btn btn-warning btn-small status_any_item">
-                               <span class="fas fa-check"></span>
-                            </a>
-                        @endif
-                        --}}
-
-                                                <a href="{{ route('Course.edit', [$training_id, $result->id]) }}"
-                                                    class="btn btn-primary" title="Edit">
-                                                    <span class="fas fa-edit"></span>
-                                                </a>
-
-                                                <a href="{{ route("$modelName.delete", $result->id) }}"
+                                            <!-- <td  data-th=''>
+                                                                                      @if ($result->is_active == 1)
+    <span class="label label-success" >{{ trans('Activated') }}</span>
+@else
+    <span class="label label-warning" >{{ trans('Deactivated') }}</span>
+    @endif
+                                                                                     </td>								 -->
+                                            <td data-th='' class="action-td">
+                                                <!-- @if ($result->is_active == 1)
+    <a  title="Click To Deactivate" href='{{ route("$modelName.status", [$result->id, 0]) }}' class="btn btn-success btn-small status_any_item"><span class="fas fa-ban"></span>
+                                                                                       </a>
+@else
+    <a title="Click To Activate" href='{{ route("$modelName.status", [$result->id, 1]) }}' class="btn btn-warning btn-small status_any_item"><span class="fas fa-check"></span>
+                                                                                       </a>
+    @endif  -->
+                                                <a href='{{ route('Course.edit', [$training_id, $result->id]) }}'
+                                                    class="btn btn-primary" title="Edit"> <span
+                                                        class="fas fa-edit"></span></a>
+                                                <a href='{{ route("$modelName.delete", "$result->id") }}'
                                                     data-delete="delete" class="delete_any_item btn btn-danger"
                                                     title="Delete">
                                                     <span class="fas fa-trash-alt"></span>
