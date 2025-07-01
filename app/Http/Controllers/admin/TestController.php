@@ -15,6 +15,7 @@ use App\Models\Lob;
 use App\Models\ManagerTrainings;
 use App\Models\Question;
 use App\Models\Region;
+use App\Models\RetailAssignedTest;
 use App\Models\Test;
 use App\Models\TestAttendee;
 use App\Models\TestCategory;
@@ -27,10 +28,11 @@ use App\Models\UserAssignedTestQuestion;
 use App\Notifications\AssignTestNotification;
 use Auth;
 use Config;
-use DB;
 use File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Maatwebsite\Excel\Facades\Excel;
 use Mail;
 use Notification;
@@ -496,8 +498,18 @@ class TestController extends BaseController
                 ->toArray();
             $users = User::where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'employee_id')
                 ->toArray();
+            $assginTo = ['Freelancer' => 'Freelancer', 'In-House' => 'In-House'];
+            // API call to RetailIQ
 
-            return View::make("admin.$this->model.uploadTestsParticipants", compact('test_id', 'existingEmails', 'projects', 'methods', 'existingUserIds', 'users'));
+            $clientResponse = Http::withOptions([
+                'verify' => false, // Disable SSL cert check
+            ])->get('https://retailanalytics.qdegrees.com/api/get_client_list');
+
+            $clients = $clientResponse->successful()
+                ? collect($clientResponse['data'])->pluck('company_name', 'id')->toArray()
+                : [];
+
+            return View::make("admin.Test.uploadTestsParticipants", compact('test_id', 'assginTo', 'clients', 'existingEmails', 'projects', 'methods', 'existingUserIds', 'users'));
         } else {
             Session::flash('success', 'Please add questions to this test before uploading participants.');
             return Redirect::back();
@@ -807,6 +819,8 @@ class TestController extends BaseController
         }
     }
 
+
+
     public function assginTestParticipants(Request $request)
     {
         $test_id = $request->test_id;
@@ -815,6 +829,9 @@ class TestController extends BaseController
 
         try {
             $test = Test::findOrFail($test_id);
+
+            // Delete existing test participants
+            TestParticipants::where('test_id', $test_id)->delete();
 
             foreach ($request->empIds as $empId) {
                 $user = User::where('olms_id', $empId)->first();
@@ -828,9 +845,9 @@ class TestController extends BaseController
                     'test_id' => $test_id,
                     'trainee_id' => $user->id,
                     'number_of_attempts' => $test->number_of_attempts,
-
                 ]);
-                $this->sendNotificationAndMail($user, $test_id);
+
+                // $this->sendNotificationAndMail($user, $test_id);
             }
 
             DB::commit();
@@ -839,5 +856,45 @@ class TestController extends BaseController
             DB::rollBack();
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
+    }
+    public function retailAssignTest(Request $request)
+    {
+        // dd($request->all());
+        $request->validate([
+            'client_id'    => 'required|integer',
+            'test_id'  => 'required|integer',
+            'validity'  => 'required',
+            'assginTo'  => 'required',
+        ]);
+
+        $campaignId = $request->filled('campaign_id') ? implode(',', $request->campaign_id) : null;
+        $storeCodes = is_array($request->store_code) ? implode(',', $request->store_code) : null;
+
+        $query = RetailAssignedTest::where('client_id', $request->client_id)
+            ->where('test_id', $request->test_id);
+
+        if (!is_null($campaignId)) {
+            $query->where('campaign_id', $campaignId);
+        } else {
+            $query->whereNull('campaign_id');
+        }
+
+        $existing = $query->first();
+
+        if ($existing) {
+            $existing->store_code = $storeCodes;
+            $existing->save();
+        } else {
+            RetailAssignedTest::create([
+                'test_id' => $request->test_id,
+                'client_id'   => $request->client_id,
+                'campaign_id' => $campaignId,
+                'store_code'  => $storeCodes,
+                'assginTo'  => $request->assginTo,
+                'validity'  => $request->validity,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Training successfully assigned to the client.');
     }
 }

@@ -186,21 +186,20 @@
             width: '100%',
         });
 
+
         $('#projectSelect').on('change', function() {
             const selectedProject = $(this).val();
 
             if (selectedProject === 'RetailIQ') {
                 $('#retailiq-section').show();
-                $('#method-section').hide();
-                $('#excel-upload-section').hide();
-                $('#user-selection-section').hide();
+                $('#method-section, #excel-upload-section, #user-selection-section, #campaign-section, #store-section')
+                    .hide();
             } else if (selectedProject) {
                 $('#retailiq-section').hide();
                 $('#method-section').show();
-                $('#excel-upload-section').hide();
-                $('#user-selection-section').hide();
+                $('#excel-upload-section, #user-selection-section, #campaign-section, #store-section').hide();
             } else {
-                $('#retailiq-section, #method-section, #excel-upload-section, #user-selection-section')
+                $('#retailiq-section, #method-section, #excel-upload-section, #user-selection-section, #campaign-section, #store-section')
                     .hide();
             }
         });

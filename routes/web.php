@@ -175,6 +175,7 @@ Route::group(array('prefix' => 'admin'), function () {
 
             Route::post('test/assgin-test-participants', 'assginTestParticipants')->name('assgin.test.participants');
 
+            Route::post('/test/retail-assign', 'retailAssignTest')->name('retail.assign-test');
 
             Route::post('import-tests-participants/{id}', 'importTests')->name('import.tests');
             Route::post('assign-manager', 'AssignManager')->name('Test.AssignManager');
