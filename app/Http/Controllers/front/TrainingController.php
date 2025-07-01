@@ -22,7 +22,8 @@ use App\Models\TraineeAssignedTrainingDocument;
 use App\Models\Feedback;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator, PDF;
+use Illuminate\Support\Facades\Auth;
+use  Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator, PDF;
 
 require_once app_path('getID3/getid3/getid3.php');
 
@@ -112,7 +113,28 @@ class TrainingController extends BaseController
 
         return  View::make("front.Training.userTrainingDetails", compact('training_id', 'trainingDetails', 'trainingCourses', 'trainingQuestions', 'totalTrainees', 'totalCoursesCount', 'completedCoursesCount'));
     }
+    public function userTrainingDetailsDesign($training_id = 0)
+    {
+        $trainingDetails = Training::where('trainings.id', $training_id)->leftJoin('training_types', 'training_types.id', '=', 'trainings.type')->first();
+        $trainingCourses = Course::where('training_id', $training_id)->with('CourseContentAndDocument')
+            ->get();
 
+        $trainingQuestions = DB::table('questions')->where('test_id', $training_id)
+            ->get();
+        $totalTrainees = DB::table('training_participants')->where('training_id', $training_id)->count();
+
+        $totalCoursesCount = TraineeAssignedTrainingDocument::where('training_id', $training_id)
+            ->distinct('course_id')
+            ->count('course_id');
+
+
+        $completedCoursesCount = TraineeAssignedTrainingDocument::where('training_id', $training_id)
+            ->where('status', 1)
+            ->distinct('course_id')
+            ->count('course_id');
+
+        return  View::make("front.Training.userTrainingDetailsDesign", compact('training_id', 'trainingDetails', 'trainingCourses', 'trainingQuestions', 'totalTrainees', 'totalCoursesCount', 'completedCoursesCount'));
+    }
     public function userTrainingDocumentProgress(Request $request)
     {
         $completedDocument = TraineeAssignedTrainingDocument::where('user_id', Auth::user()->id)->where('course_id', $request->input('course_id'))->where('document_id', $request->input('content_id'))->first();
@@ -199,7 +221,7 @@ class TrainingController extends BaseController
             $totalTrainees = DB::table('training_participants')->where('training_id', $training_id)
                 ->count();
             // DD($trainingDetails,$trainingTest,$trainingQuestions);
-            return View::make("front.$this->model.userTest", compact('training_id', 'courseId', 'trainingCoursesTitle', 'trainingDetails', 'trainingQuestions', 'totalTrainees', 'trainingTest', 'testDetails'));
+            return View::make("front.Training.userTest", compact('training_id', 'courseId', 'trainingCoursesTitle', 'trainingDetails', 'trainingQuestions', 'totalTrainees', 'trainingTest', 'testDetails'));
         } else {
             return redirect()->back()->with('This test not found. Contact to admin.');
         }
@@ -610,6 +632,47 @@ class TrainingController extends BaseController
         return response()->json(['success' => true]);
     }
 
-   
+
+    public function getCourseContentForMobile(Request $request)
+    {
+        $courseId = $request->input('course_id');
+        $userId = Auth::id();
+
+        $course = Course::with(['CourseContentAndDocument' => function ($query) {
+            $query->where('is_active', 1)
+                ->where('is_deleted', 0)
+                ->orderBy('created_at', 'asc');
+        }])->findOrFail($courseId);
+
+        // Get all completed documents for this user and course
+        $completedDocuments = TraineeAssignedTrainingDocument::where('user_id', $userId)
+            ->where('course_id', $courseId)
+            ->where('status', 1)
+            ->pluck('document_id')
+            ->toArray();
+
+        // Transform the content data for the response
+        $content = $course->CourseContentAndDocument->map(function ($item) use ($completedDocuments) {
+            return [
+                'id' => $item->id,
+                'title' => $item->title,
+                'type' => $item->type,
+                'document' => $item->document,
+                'length' => $item->length,
+                'is_completed' => in_array($item->id, $completedDocuments),
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'course' => [
+                'id' => $course->id,
+                'title' => $course->title,
+                'description' => $course->description,
+                'test_id' => $course->test_id,
+            ],
+            'content' => $content,
+        ]);
+    }
 }
 // end TrainingController
