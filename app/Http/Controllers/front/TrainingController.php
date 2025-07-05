@@ -230,88 +230,65 @@ class TrainingController extends BaseController
 
     public function userTrainingTestSubmit(Request $request)
     {
-        $answerAlreadyExists = Answer::where('test_id', $request->test_id)
-            ->where('question_id', $request->question_id)
-            ->where('user_id', $request->user_id)
-            ->first();
-        // If the answer already exists, we will handle checkbox question behavior
-        if ($answerAlreadyExists) {
-            $question = $answerAlreadyExists->question;
-            if ($question->question_type == 'MCQ') {
-                $existingAnswers = explode(',', $answerAlreadyExists->answer_id);
-                // dd($existingAnswers);
-                $newAnswer = $request->answer_id;
-                if (in_array($newAnswer, $existingAnswers)) {
-                    // If the new answer is already in the existing answers, remove it
-                    $existingAnswers = array_diff($existingAnswers, [$newAnswer]);
-                } else {
-                    // If the new answer is not in the existing answers, add it
-                    $existingAnswers[] = $newAnswer;
-                }
-                $updatedAnswerIds = implode(',', $existingAnswers);
-                $answerAlreadyExists->answer_id = $updatedAnswerIds;
-                $answerAlreadyExists->save();
-            } elseif ($question->question_type == 'FreeText') {
-                // For FreeText questions, update the existing answer
-                $answerAlreadyExists->free_text_answer = $request->answer_text;
-                $answerAlreadyExists->save();
-            } else {
-                // For single-choice questions, update the existing answer
-                $answerAlreadyExists->answer_id = $request->answer_id;
-                $answerAlreadyExists->save();
-            }
-        } else {
-            // If the answer does not exist, create a new one
-            $answer = new Answer();
-            $answer->test_id = $request->test_id;
-            $answer->question_id = $request->question_id;
-            $question = $answer->question;
-            $answer->user_id = $request->user_id;
-            // For single-choice questions, set the answer directly
-            $answer->answer_id = $request->answer_id;
-            $question = $answer->question;
-            $questionAnswer = $question->questionAnswer;
-            // Convert questionAttributes array to a Laravel Collection
-            $questionAttributesCollection = collect($questionAnswer);
-            // Filter the options to get only the correct ones
-            $correctOptions = $questionAttributesCollection->where('is_correct', 1)->pluck('id')->toArray();
-            $correctOptionString = implode(',', $correctOptions);
-            $answer->valid_answer = $correctOptionString;
-            $answer->free_text_answer = $request->answer_text;
+        $testSubmitted = TrainingTestParticipants::where('test_id', $request->test_id)
+            ->where('trainee_id', $request->user_id)->first();
 
-            // Save the answer in the database
-            $answer->save();
-        }
+        $attemptNumber = $testSubmitted->user_attempts ? $testSubmitted->user_attempts + 1 : '1';
+        // $answerAlreadyExists = Answer::where('test_id', $request->test_id)
+        //     ->where('question_id', $request->question_id)
+        //     ->where('user_id', $request->user_id)
+        //     ->first();
+        // // If the answer already exists, we will handle checkbox question behavior
+        // if ($answerAlreadyExists) {
+        //     $question = $answerAlreadyExists->question;
+        //     if ($question->question_type == 'MCQ') {
+        //         $existingAnswers = explode(',', $answerAlreadyExists->answer_id);
+        //         // dd($existingAnswers);
+        //         $newAnswer = $request->answer_id;
+        //         if (in_array($newAnswer, $existingAnswers)) {
+        //             // If the new answer is already in the existing answers, remove it
+        //             $existingAnswers = array_diff($existingAnswers, [$newAnswer]);
+        //         } else {
+        //             // If the new answer is not in the existing answers, add it
+        //             $existingAnswers[] = $newAnswer;
+        //         }
+        //         $updatedAnswerIds = implode(',', $existingAnswers);
+        //         $answerAlreadyExists->answer_id = $updatedAnswerIds;
+        //         $answerAlreadyExists->save();
+        //     } elseif ($question->question_type == 'FreeText') {
+        //         // For FreeText questions, update the existing answer
+        //         $answerAlreadyExists->free_text_answer = $request->answer_text;
+        //         $answerAlreadyExists->save();
+        //     } else {
+        //         // For single-choice questions, update the existing answer
+        //         $answerAlreadyExists->answer_id = $request->answer_id;
+        //         $answerAlreadyExists->save();
+        //     }
+        // } else {
+        // If the answer does not exist, create a new one
+        $answer = new Answer();
+        $answer->test_id = $request->test_id;
+        $answer->attempt_number   = $attemptNumber;
+        $answer->question_id = $request->question_id;
+        $question = $answer->question;
+        $answer->user_id = $request->user_id;
+        // For single-choice questions, set the answer directly
+        $answer->answer_id = $request->answer_id;
+        $question = $answer->question;
+        $questionAnswer = $question->questionAnswer;
+        // Convert questionAttributes array to a Laravel Collection
+        $questionAttributesCollection = collect($questionAnswer);
+        // Filter the options to get only the correct ones
+        $correctOptions = $questionAttributesCollection->where('is_correct', 1)->pluck('id')->toArray();
+        $correctOptionString = implode(',', $correctOptions);
+        $answer->valid_answer = $correctOptionString;
+        $answer->free_text_answer = $request->answer_text;
+
+        // Save the answer in the database
+        $answer->save();
+        // }
         return response()->json(['success' => true]);
     }
-
-    // public function userTrainingTestSubmit_old(Request $request)
-    // {
-    //     $anserAlreadyExist = Answer::where('test_id', $request->test_id)->where('question_id', $request->question_id)
-    //         ->where('user_id', $request->user_id)->first();
-    //     // return $anserAlreadyExist;
-    //     if ($anserAlreadyExist) {
-    //         $anserAlreadyExist->answer_id = $request->answer_id;
-    //         $anserAlreadyExist->save();
-    //     } else {
-    //         $answer = new Answer();
-    //         $answer->test_id = $request->test_id;
-    //         $answer->question_id = $request->question_id;
-    //         $answer->answer_id = $request->answer_id;
-    //         $answer->user_id = $request->user_id;
-    //         $question = $answer->question;
-    //         $questionAnswer = $question->questionAnswer;
-    //         // Convert questionAttributes array to a Laravel Collection
-    //         $questionAttributesCollection = collect($questionAnswer);
-    //         // Filter the options to get only the correct ones
-    //         $correctOptions = $questionAttributesCollection->where('is_correct', 1)->pluck('id')->toArray();
-    //         // return $correctOptions;
-    //         $correctOptionString = implode('', $correctOptions);
-    //         $answer->valid_answer = $correctOptionString;
-    //         $answer->save();
-    //     }
-    //     return response()->json(['success' => true]);
-    // }
 
     public function userTrainingTestInfoSubmit(Request $request)
     {
@@ -388,12 +365,20 @@ class TrainingController extends BaseController
     // // TestController function userTestResult
     public function userTrainingTestResult($id)
     {
-        // dd($id);
         $userId = Auth::user()->id;
-        $answers = Answer::where('user_id', $userId)->where('test_id', $id)->get();
         $totalMarks = 0;
         $obtainedMarks = 0;
         $user = User::where('id', $userId)->with('parentManager')->first();
+        $hasFreeTextQuestion = false;
+        $r = TrainingTestParticipants::where('test_id', $id)
+            ->where('trainee_id', $userId)->first();
+        if ($r->user_attempts) {
+            $attemptNumber = $r->user_attempts;
+        } else {
+            $attemptNumber = '1';
+        }
+        $answers = Answer::where('user_id', $userId)->where('test_id', $id)->where('attempt_number', $attemptNumber)->get();
+
 
         // Fetch the IDs of questions assigned to the user for this test
         $assignedQuestionIds = UserAssignedTestQuestion::where('trainee_id', $userId)
@@ -412,8 +397,15 @@ class TrainingController extends BaseController
                 sort($validAnswer);
                 sort($userAnswer);
                 $totalMarks += $question->marks;
-                if ($validAnswer === $userAnswer) {
+                // if ($validAnswer === $userAnswer) {
+                //     $obtainedMarks += $question->marks;
+                // }
+                if ($question->question_type != 'FreeText' && $validAnswer === $userAnswer) {
                     $obtainedMarks += $question->marks;
+                }
+
+                if ($question->question_type === 'FreeText') {
+                    $hasFreeTextQuestion = true;
                 }
             }
 
@@ -421,30 +413,42 @@ class TrainingController extends BaseController
                 'question' => $question->question,
                 'user_answer' => $answer->answer_id,
                 // 'correct_options' => $correctOptions,
-                'marks' => $question->marks
+                'marks' => $question->marks,
+                'question_type' => $question->question_type
             ];
             $results[] = $result;
         }
 
         // TestParticipants::where('trainee_id', $userId)->where('test_id', $id)->update(['status' => 1]);
-        $percentage = ($obtainedMarks / $totalMarks) * 100;
-        $getTestMarks = Test::where('id', $id)->first();
+        // $percentage = ($obtainedMarks / $totalMarks) * 100;
+        // $getTestMarks = Test::where('id', $id)->first();
 
-        if ($percentage >= $getTestMarks->minimum_marks) {
-            $resultStatus = 'Passed';
-        } else {
-            $resultStatus = 'Failed';
+        // if ($percentage >= $getTestMarks->minimum_marks) {
+        //     $resultStatus = 'Passed';
+        // } else {
+        //     $resultStatus = 'Failed';
+        // }
+
+        $percentage = 0;
+        $resultStatus = 'FreeText_Paper';
+
+        if (!$hasFreeTextQuestion) {
+            $getTestMarks = Test::where('id', $id)->first();
+            $percentage = ($obtainedMarks / $totalMarks) * 100;
+            $resultStatus = ($percentage >= $getTestMarks->minimum_marks) ? 'Passed' : 'Failed';
         }
+
         $trainingTestResultDetails = TrainingTestParticipants::where('trainee_id', $userId)
             ->where('test_id', $id)
             ->select('training_id', 'course_id')
             ->first();
 
-        $alreadysubmitedTest = TrainingTestResult::where('test_id', $id)->where('user_id', $userId)->where('course_id', $trainingTestResultDetails->course_id)->first();
+        $alreadysubmitedTest = TrainingTestResult::where('test_id', $id)->where('user_id', $userId)->where('attempt_number', $attemptNumber)->where('course_id', $trainingTestResultDetails->course_id)->first();
         // DD($alreadysubmitedTest);
         if ($alreadysubmitedTest) {
             $alreadysubmitedTest->update([
                 'total_questions' => count($answers),
+                'attempt_number'           => $attemptNumber,
                 'total_attemted_questions' => count($assignedQuestionIds),
                 'total_marks' => $totalMarks,
                 'obtain_marks' => $obtainedMarks,
@@ -456,6 +460,7 @@ class TrainingController extends BaseController
         } else {
             $trainingTestResult = new TrainingTestResult([
                 'test_id' => $id,
+                'attempt_number'           => $attemptNumber,
                 'training_id' => $trainingTestResultDetails->training_id,
                 'course_id' => $trainingTestResultDetails->course_id,
                 'user_id' => $userId,
@@ -507,6 +512,13 @@ class TrainingController extends BaseController
         $end_date = \Carbon\Carbon::parse($training->end_date_time);
         $lengthInDays = $start_date->diffInDays($end_date);
         #####################################################################################################################################################################
+
+        if ($hasFreeTextQuestion) {
+            $testDetails = Test::where('id', $id)->first();
+            $trainingId = $training->id;
+            $testAttendStatus = 1;
+            return View::make("front.testLinkFront.userTestSubmittedThanksPage", compact('testDetails', 'testAttendStatus', 'trainingId'));
+        }
 
         return view('front.Training.training-test-result', [
             'trainingId' =>  $training->id,
@@ -651,6 +663,20 @@ class TrainingController extends BaseController
             ->pluck('document_id')
             ->toArray();
 
+        $numberOfAttempts = TrainingTestParticipants::where('trainee_id', $userId)
+            ->where('course_id', $courseId)
+            ->first();
+        if ($numberOfAttempts) {
+            if ($numberOfAttempts->number_of_attempts > $numberOfAttempts->user_attempts) {
+                $canAttempt = true;
+            } else if ($numberOfAttempts->number_of_attempts <= $numberOfAttempts->user_attempts) {
+                $canAttempt = false;
+            } else {
+                $canAttempt = true;
+            }
+        } else {
+            $canAttempt = true;
+        }
         // Transform the content data for the response
         $content = $course->CourseContentAndDocument->map(function ($item) use ($completedDocuments) {
             return [
@@ -671,6 +697,7 @@ class TrainingController extends BaseController
                 'description' => $course->description,
                 'test_id' => $course->test_id,
             ],
+            'canAttempt' => $canAttempt,
             'content' => $content,
         ]);
     }

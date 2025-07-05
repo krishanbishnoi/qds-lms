@@ -20,7 +20,7 @@ class Answer extends Eloquent
 	 */
 	protected $table = 'answers';
 
-	protected $fillable = ['test_id', 'question_id', 'answer_id', 'user_id', 'free_text_answer', 'valid_answer'];
+	protected $fillable = ['test_id', 'question_id','attempt_number', 'answer_id', 'user_id', 'free_text_answer', 'valid_answer'];
 
 	public function question()
 	{

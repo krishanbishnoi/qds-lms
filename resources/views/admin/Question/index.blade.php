@@ -134,7 +134,7 @@
                                         ],
                                     ) }}
                                 </th>
-                                <th{ trans('Action') }}</th>
+                                <th>{{ trans('Action') }}</th>
                             </tr>
                         </thead>
                         <tbody id="powerwidgets">
@@ -147,6 +147,7 @@
                                         <td data-th="{{ trans('Modified') }}">
                                             {{ date(Config::get('Reading.date_format'), strtotime($result->updated_at)) }}
                                         </td>
+                                        <td>
                                         
                                             <a href='{{ route("$modelName.edit", [$test_id, $result->id]) }}'
                                                 class="btn btn-primary" title="Edit"> <span

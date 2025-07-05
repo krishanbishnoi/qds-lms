@@ -34,6 +34,7 @@ class Test extends Eloquent
 		'lob',
 		'circle',
 		'number_of_questions',
+		'publish_result',
 		'regipublish_resulton',
 		'thumbnail',
 	];

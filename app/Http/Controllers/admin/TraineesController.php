@@ -428,13 +428,17 @@ class TraineesController extends BaseController
             ->with(['test_details'])
             ->first();
 
-        $testResult = TestResult::where('user_id', $user_id)
-            ->where('test_id', $test_id)->first();
+        $testResults = TestResult::where('user_id', $user_id)
+            ->where('test_id', $test_id)->get();
 
         $questionsAlreadyAssigned = UserAssignedTestQuestion::where('test_id', $test_id)
             ->where('trainee_id', $user_id)
             ->pluck('questions_id')
             ->toArray();
+
+        $test = Test::where('id', $test_id)->first();
+        $attemptNumber = request()->get('user_attempts', $testResults->first()->user_attempts);
+        $latestAttempt = $testResults->where('user_attempts', $attemptNumber)->first();
 
         $testQuestions = Question::whereIn('id', $questionsAlreadyAssigned)
             ->where('test_id', $test_id)
@@ -445,6 +449,8 @@ class TraineesController extends BaseController
             ->where('user_id', $user_id)
             ->pluck('answer_id', 'question_id')
             ->toArray();
-        return view("admin.$this->model.test-report", compact('userData', 'testData', 'testQuestions', 'userAnswers', 'testResult'));
+        return view('admin.Test.partials-test-report-details', compact('userData', 'test', 'testData', 'testQuestions', 'userAnswers', 'latestAttempt', 'testResults', 'attemptNumber'));
+
+        // return view("admin.Test.test-report", compact('userData', 'test','latestAttempt', 'testData', 'testQuestions', 'userAnswers', 'testResults'));
     }
 }

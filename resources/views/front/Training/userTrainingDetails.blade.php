@@ -49,28 +49,12 @@
         </div>
     </header>
     <div>
-        @include('front.Training.userTrainingDetails-desktop')
+        @use('Jenssegers\Agent\Agent')
+
+        @if ((new Agent())->isMobile())
+            @include('front.Training.userTrainingDetails-mobile')
+        @else
+            @include('front.Training.userTrainingDetails-desktop')
+        @endif
     </div>
-    <div>
-        @include('front.Training.userTrainingDetails-mobile')
-    </div>
-    <style>
-        .desktopScren {
-            display: block;
-        }
-
-        .mobileScren {
-            display: none;
-        }
-
-        @media screen and (max-width: 768px) {
-            .desktopScren {
-                display: none;
-            }
-
-            .mobileScren {
-                display: block;
-            }
-        }
-    </style>
 @stop

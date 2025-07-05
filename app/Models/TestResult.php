@@ -20,7 +20,19 @@ class TestResult extends Eloquent
 	 */
 	protected $table = 'test_results';
 
-	protected $fillable = ['test_id', 'user_id', 'total_questions', 'total_attemted_questions', 'total_marks', 'obtain_marks', 'percentage', 'result', 'status', 'user_attempts'];
+	protected $fillable = [
+		'test_id',
+		'user_id',
+		'attempt_number',
+		'total_questions',
+		'total_attemted_questions',
+		'total_marks',
+		'obtain_marks',
+		'percentage',
+		'result',
+		'status',
+		'user_attempts'
+	];
 	public function user_details()
 	{
 		return $this->hasOne(User::class, 'id', 'user_id');

@@ -691,7 +691,6 @@
                             }
                         });
                     } else {
-                        // All answers submitted, redirect to results page
                         window.location.href = '{{ route('user.test.result', $testDetails->id) }}';
                     }
                 }

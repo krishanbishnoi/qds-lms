@@ -19,7 +19,15 @@ class TestParticipants extends Eloquent
 	protected $table = 'test_participants';
 
 
-	protected $fillable = ['test_id', 'trainee_id', 'type', 'status', 'number_of_attempts', 'user_attempts'];
+	protected $fillable = [
+		'test_id',
+		'trainee_id',
+		'type',
+		'attempt_number',
+		'status',
+		'number_of_attempts',
+		'user_attempts'
+	];
 
 	public function test_details()
 	{

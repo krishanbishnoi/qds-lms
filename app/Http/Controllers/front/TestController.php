@@ -14,6 +14,8 @@ use App\Models\QuestionAttribute;
 use App\Models\UserAssignedTestQuestion;
 use App\Models\Answer;
 use App\Models\TestResult;
+use App\Models\TrainingTestParticipants;
+use App\Models\TrainingTestResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
@@ -138,6 +140,7 @@ class TestController extends BaseController
                 ->where('trainee_id', Auth::user()->id)
                 ->pluck('questions_id')
                 ->toArray();
+            // dd($testDetails,$questionsAlreadyAssigned);
             if ($questionsAlreadyAssigned) {
 
                 $testDetails = Test::where('tests.id', $test_id)->first();
@@ -169,78 +172,95 @@ class TestController extends BaseController
 
     public function userTestSubmit(Request $request)
     {
-        $testResult = TestResult::where('test_id', $request->test_id)
-            ->where('user_id', $request->user_id)->first();
+        $testType = Test::where('id', $request->test_id)->value('type');
+        if ($testType == 'training_test') {
+            $testSubmitted = TrainingTestParticipants::where('test_id', $request->test_id)
+                ->where('trainee_id', $request->user_id)->first();
+            $attemptNumber = $testSubmitted->user_attempts ? $testSubmitted->user_attempts : '1';
+        } else {
+            $testSubmitted = TestParticipants::where('test_id', $request->test_id)
+                ->where('trainee_id', $request->user_id)->first();
+            $attemptNumber = $testSubmitted->user_attempts ? $testSubmitted->user_attempts + 1 : '1';
+        }
 
-        $testSubmitted = TestParticipants::where('test_id', $request->test_id)
-            ->where('trainee_id', $request->user_id)->first();
+
+        if ($testType == 'training_test') {
+            $testResult = TrainingTestResult::where('test_id', $request->test_id)->where('attempt_number', $attemptNumber)
+                ->where('user_id', $request->user_id)->first();
+        } else {
+            $testResult = TestResult::where('test_id', $request->test_id)->where('attempt_number', $attemptNumber)
+                ->where('user_id', $request->user_id)->first();
+        }
 
         if ($testResult && $testResult->result == 'Passed' && $testSubmitted->status == 1 && $testSubmitted->user_attempts >= $testSubmitted->number_of_attempts) {
             $testDetails = Test::where('tests.id', $request->test_id)->first();
             return response()->json(['successRedirect' => true, 'testDetails' => $testDetails]);
         } else {
-            $answerAlreadyExists = Answer::where('test_id', $request->test_id)
-                ->where('question_id', $request->question_id)
-                ->where('user_id', $request->user_id)
-                ->first();
-            // If the answer already exists, we will handle checkbox question behavior
-            if ($answerAlreadyExists) {
-                $question = $answerAlreadyExists->question;
-                if ($question->question_type == 'MCQ') {
-                    $existingAnswers = explode(',', $answerAlreadyExists->answer_id);
-                    // dd($existingAnswers);
-                    $newAnswer = $request->answer_id;
-                    if (in_array($newAnswer, $existingAnswers)) {
-                        // If the new answer is already in the existing answers, remove it
-                        $existingAnswers = array_diff($existingAnswers, [$newAnswer]);
-                    } else {
-                        // If the new answer is not in the existing answers, add it
-                        $existingAnswers[] = $newAnswer;
-                    }
-                    $updatedAnswerIds = implode(',', $existingAnswers);
-                    $answerAlreadyExists->answer_id = $updatedAnswerIds;
-                    $answerAlreadyExists->save();
-                } elseif ($question->question_type == 'FreeText') {
-                    // For FreeText questions, update the existing answer
-                    $answerAlreadyExists->free_text_answer = $request->answer_text;
-                    $answerAlreadyExists->save();
-                } else {
-                    // For single-choice questions, update the existing answer
-                    $answerAlreadyExists->answer_id = $request->answer_id;
-                    $answerAlreadyExists->save();
-                }
-            } else {
-                // If the answer does not exist, create a new one
-                $answer = new Answer();
-                $answer->test_id = $request->test_id;
-                $answer->question_id = $request->question_id;
-                $question = $answer->question;
-                $answer->user_id = $request->user_id;
-                // For single-choice questions, set the answer directly
-                $answer->answer_id = $request->answer_id;
-                $question = $answer->question;
-                $questionAnswer = $question->questionAnswer;
-                // Convert questionAttributes array to a Laravel Collection
-                $questionAttributesCollection = collect($questionAnswer);
-                // Filter the options to get only the correct ones
-                $correctOptions = $questionAttributesCollection->where('is_correct', 1)->pluck('id')->toArray();
-                $correctOptionString = implode(',', $correctOptions);
-                $answer->valid_answer = $correctOptionString;
-                $answer->free_text_answer = $request->answer_text;
 
-                // Save the answer in the database
-                $answer->save();
-            }
+            // $answerAlreadyExists = Answer::where('test_id', $request->test_id)
+            //     ->where('question_id', $request->question_id)
+            //     ->where('user_id', $request->user_id)
+            //     ->where('attempt_number', $attemptNumber)
+            //     ->first();
+            // // If the answer already exists, we will handle checkbox question behavior
+            // if ($answerAlreadyExists) {
+            //     $question = $answerAlreadyExists->question;
+            //     if ($question->question_type == 'MCQ') {
+            //         $existingAnswers = explode(',', $answerAlreadyExists->answer_id);
+            //         $newAnswer = $request->answer_id;
+            //         if (in_array($newAnswer, $existingAnswers)) {
+            //             $existingAnswers = array_diff($existingAnswers, [$newAnswer]);
+            //         } else {
+            //             $existingAnswers[] = $newAnswer;
+            //         }
+            //         $updatedAnswerIds = implode(',', $existingAnswers);
+            //         $answerAlreadyExists->answer_id = $updatedAnswerIds;
+            //         $answerAlreadyExists->save();
+            //     } elseif ($question->question_type == 'FreeText') {
+            //         $answerAlreadyExists->free_text_answer = $request->answer_text;
+            //         $answerAlreadyExists->save();
+            //     } else {
+            //         $answerAlreadyExists->answer_id = $request->answer_id;
+            //         $answerAlreadyExists->save();
+            //     }
+            // }else {
+            // If the answer does not exist, create a new one
+            $answer = new Answer();
+            $answer->test_id = $request->test_id;
+            $answer->attempt_number   = $attemptNumber;
+            $answer->question_id = $request->question_id;
+            $question = $answer->question;
+            $answer->user_id = $request->user_id;
+            // For single-choice questions, set the answer directly
+            $answer->answer_id = $request->answer_id;
+            $question = $answer->question;
+            $questionAnswer = $question->questionAnswer;
+            // Convert questionAttributes array to a Laravel Collection
+            $questionAttributesCollection = collect($questionAnswer);
+            // Filter the options to get only the correct ones
+            $correctOptions = $questionAttributesCollection->where('is_correct', 1)->pluck('id')->toArray();
+            $correctOptionString = implode(',', $correctOptions);
+            $answer->valid_answer = $correctOptionString;
+            $answer->free_text_answer = $request->answer_text;
+
+            // Save the answer in the database
+            $answer->save();
+            // }
             return response()->json(['success' => true]);
         }
     }
 
-
-
     public function userTestResult($id)
     {
         $userId = Auth::user()->id;
-        $answers = Answer::where('user_id', $userId)->where('test_id', $id)->get();
+        $r = TestParticipants::where('test_id', $id)
+            ->where('trainee_id', $userId)->first();
+        if ($r->user_attempts) {
+            $attemptNumber = $r->user_attempts + 1;
+        } else {
+            $attemptNumber = '1';
+        }
+        $answers = Answer::where('user_id', $userId)->where('test_id', $id)->where('attempt_number', $attemptNumber)->get();
         $totalMarks = 0;
         $obtainedMarks = 0;
         $percentage = 0;
@@ -249,7 +269,6 @@ class TestController extends BaseController
 
         $user = User::where('id', $userId)->with('parentManager')->first();
 
-        // Fetch the IDs of questions assigned to the user for this test
         $assignedQuestionIds = UserAssignedTestQuestion::where('trainee_id', $userId)
             ->where('test_id', $id)
             ->pluck('questions_id')
@@ -270,7 +289,6 @@ class TestController extends BaseController
 
                     $obtainedMarks += $question->marks;
                 }
-                // Calculate partial marks for MCQs
                 if ($question->question_type == 'MCQ' || count($validAnswer) > 1) {
                     $correctCount = count(array_intersect($validAnswer, $userAnswer));
                     $obtainedMarks += ($question->marks * $correctCount) / count($validAnswer);
@@ -282,7 +300,6 @@ class TestController extends BaseController
             $result = [
                 'question' => $question->question,
                 'user_answer' => $answer->answer_id,
-                // 'correct_options' => $correctOptions,
                 'marks' => $question->marks
             ];
             $results[] = $result;
@@ -291,7 +308,6 @@ class TestController extends BaseController
             }
         }
 
-        // Check if user has already attempted the test and update user_attempts
         $testParticipants = TestParticipants::where('trainee_id', $userId)->where('test_id', $id)->first();
         if ($testParticipants->user_attempts == null) {
             $testParticipants->update([
@@ -305,6 +321,10 @@ class TestController extends BaseController
             ]);
         }
         $getTestMarks = Test::where('id', $id)->first();
+        $trainingTestResultDetails = TrainingTestParticipants::where('trainee_id', $userId)
+            ->where('test_id', $id)
+            ->select('training_id', 'course_id')
+            ->first();
 
         if (!$hasFreeTextQuestion) {
             $percentage = ($obtainedMarks / $totalMarks) * 100;
@@ -316,21 +336,41 @@ class TestController extends BaseController
                 $resultStatus = "Failed";
             }
         }
-        $alreadysubmitedTest = TestResult::where('test_id', $id)->where('user_id', $userId)->first();
-        if ($alreadysubmitedTest) {
-            $alreadysubmitedTest->update([
+        // $alreadysubmitedTest = TestResult::where('test_id', $id)->where('user_id', $userId)->where('attempt_number', $attemptNumber)->first();
+        // if ($alreadysubmitedTest) {
+        //     $alreadysubmitedTest->update([
+        //         'total_questions' => count($answers),
+        //         'total_attemted_questions' => count($assignedQuestionIds),
+        //         'total_marks' => $totalMarks,
+        //         'obtain_marks' => $obtainedMarks,
+        //         'percentage' => $percentage,
+        //         'result' => $resultStatus,
+        //         'user_attempts' => $testParticipants->user_attempts,
+        //         'attempt_number'           => $attemptNumber,
+        //     ]);
+        // } else {
+        $testType = Test::where('id',  $id)->value('type');
+        if ($testType == 'training_test') {
+            $trainingTestResult = new TrainingTestResult([
+                'test_id' => $id,
+                'attempt_number'           => $attemptNumber,
+                'training_id' => $trainingTestResultDetails->training_id,
+                'course_id' => $trainingTestResultDetails->course_id,
+                'user_id' => $userId,
                 'total_questions' => count($answers),
                 'total_attemted_questions' => count($assignedQuestionIds),
                 'total_marks' => $totalMarks,
                 'obtain_marks' => $obtainedMarks,
                 'percentage' => $percentage,
                 'result' => $resultStatus,
-                'user_attempts' => $testParticipants->user_attempts,
+                'status' => 1,
             ]);
+            $trainingTestResult->save();
         } else {
             $testResult = new TestResult([
                 'test_id' => $id,
                 'user_id' => $userId,
+                'attempt_number'           => $attemptNumber,
                 'total_questions' => count($answers),
                 'total_attemted_questions' => count($assignedQuestionIds),
                 'total_marks' => $totalMarks,
@@ -343,6 +383,9 @@ class TestController extends BaseController
             ]);
             $testResult->save();
         }
+
+
+        // }
         if ($getTestMarks->publish_result == 1 && !$hasFreeTextQuestion) {
             return view('front.test.user-test-result', [
                 'results' => $results,
@@ -359,7 +402,7 @@ class TestController extends BaseController
         } elseif ($hasFreeTextQuestion) {
             $testDetails = Test::where('tests.id', $id)->first();
             $testAttendStatus = 1;
-            return View::make("front.$this->model.userTestSubmittedThanksPage", compact('testDetails', 'testAttendStatus'));
+            return View::make("front.testLinkFront.userTestSubmittedThanksPage", compact('testDetails', 'testAttendStatus'));
         } else {
             Session::flash('flash_notice', trans('Thank you for attending test. your response has been saved for result contect to admin.'));
             return Redirect::intended('/dashboard')->with('message', 'Thank you for attending test. your response has been saved for result contect to admin.');

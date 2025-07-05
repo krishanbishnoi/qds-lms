@@ -52,6 +52,7 @@
                                                 <span>Module {{ $index + 1 }} <b>{{ $course['title'] }}</b></span>
                                             </div>
                                             <figure class="m-0">
+
                                                 @if (!$canAccess)
                                                     <img src="{{ asset('front/img/lock-icon.png') }}" alt="Locked"
                                                         width="20">
@@ -107,7 +108,7 @@
 
         <div class="modulesTypes d-md-none" style="display: none;">
             <div class="chepterWise mb-3" id="content-viewer">
-             </div>
+            </div>
 
             <a href="javascript:void(0)" class="moduleBck d-md-none mb-3 d-block back-to-modules">
                 <img src="{{ asset('front/img/back-button.png') }}" alt="" width="50" class="me-2">
@@ -352,461 +353,6 @@
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
 
-
-{{-- <script>
-    $(document).ready(function() {
-        // Reuse the globalTracker from desktop
-        let globalTracker = {
-            intervalId: null,
-            viewedTime: 0,
-            contentId: null,
-            hasUpdated: false,
-            type: null
-        };
-
-        // Handle module click
-        $('.load-course-module').click(function() {
-            const courseId = $(this).data('course-id');
-            const canAccess = String($(this).data('can-access')) === 'true';
-            const isCompleted = String($(this).data('is-completed')) === 'true';
-            const isFirst = String($(this).data('is-first')) === 'true';
-            const testId = $(this).data('test-id');
-            if (!canAccess) {
-                if (!isFirst) {
-                    $('#holdMdl .module-lock-message').text(
-                        `Module ${$(this).find('strong').text()} is locked until you complete the Module ${parseInt($(this).find('strong').text())-1} test. Let's finish that first!`
-                    );
-                    $('#holdMdl').modal('show');
-                    return;
-                }
-            }
-
-            if (isCompleted && testId) {
-                $('#greatMdl').modal('show');
-                $('#greatMdl .start-test-btn').attr('data-course-id', courseId);
-                $('#greatMdl .start-test-btn').attr('data-test-id', testId);
-                return;
-            }
-
-            // Load module content
-            loadModuleContent(courseId);
-        });
-
-        // Back to modules list
-        $('.back-to-modules').click(function() {
-            // Cleanup any active tracking (reusing desktop logic)
-            if (globalTracker.intervalId) {
-                clearInterval(globalTracker.intervalId);
-                globalTracker.intervalId = null;
-            }
-
-            $('.traningTypes').show();
-            $('.modulesTypes').hide();
-        });
-
-        // Start test button (reusing desktop functionality)
-        $(document).on('click', '.start-test-btn', function() {
-            if ($(this).hasClass('disabled')) return;
-
-            const courseId = $(this).data('course-id');
-            const testId = $(this).data('test-id');
-            window.location.href =
-                "{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => '__CID__', 'test_id' => '__TID__']) }}"
-                .replace('__CID__', courseId)
-                .replace('__TID__', testId);
-        });
-
-        // Function to load module content (mobile-specific but reusing desktop endpoints)
-        function loadModuleContent(courseId) {
-            $.ajax({
-                url: "{{ route('userTraining.getCourseContentForMobile') }}",
-                type: "GET",
-                data: {
-                    course_id: courseId,
-                    training_id: "{{ $training_id }}"
-                },
-                success: function(response) {
-                    if (response.success) {
-
-                        $('.imgwrapper.thumb.m-3').hide();
-                        $('.navdiv.d-md-none').show();
-                        // Update the module title
-                        $('.modulesTypes .module-title').text(response.course.title);
-
-                        // Build the content HTML
-                        let contentHtml = '';
-
-                        // Add course description
-                        // if (response.course.description) {
-                        //     contentHtml += `
-                        //     <div class="chepterWise mb-3">
-                        //         <div class="px-3 py-2 pb-3">
-                        //             ${response.course.description}
-                        //         </div>
-                        //     </div>
-                        // `;
-                        // }
-
-                        // Add content items
-                        if (response.content.length > 0) {
-                            contentHtml += `<b class="mb-3 d-block fs-6 text-black">Lessons</b>`;
-                            contentHtml += `<ul class="courselistUl">`;
-
-                            response.content.forEach((item, index) => {
-                                const isCompleted = item.is_completed;
-
-                                let icon = '';
-                                let typeText = '';
-                                let timeText = '';
-
-                                if (item.type === 'video') {
-                                    icon = "{{ asset('front/img/video-icon.svg') }}";
-                                    typeText = 'Video';
-                                    timeText = formatTime(item.length);
-                                } else if (item.type === 'doc') {
-                                    icon = "{{ asset('front/img/docs-icon.svg') }}";
-                                    typeText = 'DOC';
-                                    timeText = formatTime(item.length);
-                                } else if (item.type === 'image') {
-                                    icon = "{{ asset('front/img/docs-icon.svg') }}";
-                                    typeText = 'Image';
-                                    timeText = formatTime(item.length);
-                                }
-
-                                contentHtml += `
-                                <li>
-                                    <a href="javascript:void(0)" class="load-content" 
-                                       data-content-id="${item.id}"
-                                       data-course-id="${response.course.id}"
-                                       data-content-type="${item.type}"
-                                       data-video-duration="${item.length}"
-                                       data-doc-type="${item.type}"
-                                       data-content-src="${item.document}">
-                                        <div class="d-flex justify-content-between align-items-center gap-2">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <strong>${index + 1}</strong>
-                                                <div class="">
-                                                    <span class="mb-1 d-block"><b>${item.title}</b></span>
-                                                    <span class="text-gray d-flex align-items-center gap-2">
-                                                        <img src="${icon}" alt="" class="me-1">
-                                                        ${typeText} • ${timeText}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <figure class="m-0">
-                                                <img src="{{ asset('front/img/play-btn-icon.png') }}" alt="">
-                                            </figure>
-                                        </div>
-                                        <div class="small ${isCompleted ? 'text-success' : 'text-warning'}">
-                                            ${isCompleted ? 'Completed' : 'Not Started'}
-                                        </div>
-                                    </a>
-                                </li>
-                            `;
-                            });
-
-                            contentHtml += `</ul>`;
-
-                            // Add test button if exists (reusing desktop logic)
-                            if (response.course.test_id) {
-                                const allContentCompleted = response.content.every(item => item
-                                    .is_completed);
-
-                                contentHtml += `
-                                <div class="mt-4 pt-3 border-top">
-                                    <a class="btn btn-primary w-100 start-test-btn ${allContentCompleted ? '' : 'disabled'}"
-                                        href="${allContentCompleted ? "{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => '__CID__', 'test_id' => '__TID__']) }}".replace('__CID__', response.course.id).replace('__TID__', response.course.test_id) : 'javascript:void(0)'}"
-                                        data-course-id="${response.course.id}"
-                                        data-test-id="${response.course.test_id}"
-                                        ${!allContentCompleted ? 'style="pointer-events: none; opacity: 0.6;"' : ''}>
-                                        <i class="bi bi-pencil-square me-2"></i>Begin Test
-                                        ${!allContentCompleted ? '<small class="d-block mt-1">Complete all content first</small>' : ''}
-                                    </a>
-                                </div>
-                            `;
-                            }
-                        } else {
-                            contentHtml +=
-                                `<p class="text-muted">No content available for this module.</p>`;
-                        }
-
-                        // Update the content container
-                        $('.module-content-container').html(contentHtml);
-
-                        // Show the module content section
-                        $('.traningTypes').hide();
-                        $('.modulesTypes').show();
-                    }
-                },
-                error: function(xhr) {
-                    console.error(xhr);
-                    alert('Failed to load module content. Please try again.');
-                }
-            });
-        }
-
-        $(document).on('click', '.moduleBck', function(e) {
-            e.preventDefault();
-            $('.navdiv.d-md-none').hide();
-            $('.imgwrapper.thumb.m-3').show();
-        });
-
-        // Handle content item click (reusing desktop tracking logic)
-        $(document).on('click', '.load-content', function() {
-            const contentType = $(this).data('content-type');
-            const contentSrc = $(this).data('content-src');
-            const contentId = $(this).data('content-id');
-            const courseId = $(this).data('course-id');
-            const contentLength = $(this).data('video-duration');
-            const $contentItem = $(this);
-
-            // Cleanup previous timer
-            if (globalTracker.intervalId && globalTracker.contentId !== contentId) {
-                clearInterval(globalTracker.intervalId);
-                globalTracker.intervalId = null;
-            }
-
-            // Reset tracker
-            globalTracker = {
-                intervalId: null,
-                viewedTime: 0,
-                contentId,
-                hasUpdated: false,
-                type: contentType
-            };
-
-            // Load stored progress (reusing desktop endpoint)
-            $.ajax({
-                url: "{{ route('userTrainingDetails.document.duration') }}",
-                method: "POST",
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    content_id: contentId,
-                    course_id: courseId
-                },
-                success: function(response) {
-                    globalTracker.viewedTime = response.duration || 0;
-
-                    if (contentType === 'video') {
-                        handleVideoContent(contentSrc);
-                    } else if (contentType === 'doc' || contentType === 'image') {
-                        handleDocumentContent(contentSrc, contentId, courseId,
-                            contentLength, $contentItem);
-                    }
-                }
-            });
-        });
-
-        // Handle video content (reusing desktop logic)
-        function handleVideoContent(contentSrc) {
-            const fullVideoPath = "{{ url('training_document') }}/" + contentSrc;
-            const videoModal = $('#videoMdl');
-            const videoElement = videoModal.find('video')[0];
-
-            $('#videoMdl .video-source').attr('src', fullVideoPath);
-            videoElement.load(); // Force video to reload with new source
-
-            videoElement.currentTime = globalTracker.viewedTime;
-            videoModal.modal('show');
-
-            let lastReportedTime = globalTracker.viewedTime;
-
-            videoElement.ontimeupdate = function() {
-                const newTime = Math.floor(videoElement.currentTime);
-                if (newTime > globalTracker.viewedTime) {
-                    globalTracker.viewedTime = newTime;
-
-                    // Periodic partial progress updates
-                    if (
-                        globalTracker.viewedTime !== lastReportedTime &&
-                        (globalTracker.viewedTime % 5 === 0 || globalTracker.viewedTime >= videoElement
-                            .duration)
-                    ) {
-                        lastReportedTime = globalTracker.viewedTime;
-                        updatePartialProgress();
-                    }
-                }
-            };
-
-            videoElement.onended = function() {
-                globalTracker.hasUpdated = true;
-                updateProgress();
-            };
-
-            videoModal.on('hidden.bs.modal', function() {
-                videoElement.pause();
-                updatePartialProgress();
-            });
-        }
-
-        function handleDocumentContent(contentSrc, contentId, courseId, contentLength, $contentItem) {
-            const fullDocPath = "{{ url('training_document') }}/" + contentSrc;
-
-            const isImage = /\.(jpe?g|jfif|png|gif|webp|bmp|svg|tiff?|ico|heic|heif)$/i.test(fullDocPath);
-            const isPDF = /\.pdf$/i.test(fullDocPath);
-            const isDoc = /\.(docx?|pptx?|xlsx?|odt|ods|odp|rtf|txt|csv|pages|key|numbers)$/i.test(fullDocPath);
-
-            // Reset both viewers
-            $('#docMdl .doc-image').addClass('d-none').attr('src', '');
-            $('#docMdl .doc-frame').addClass('d-none').attr('src', '');
-
-            if (isImage) {
-                $('#docMdl .doc-image').attr('src', fullDocPath).removeClass('d-none');
-                $('#docMdl').modal('show');
-            } else if (isPDF) {
-                // Direct PDF display using iframe (modern browsers support this)
-                $('#docMdl .doc-frame').attr('src', fullDocPath + '#toolbar=0&navpanes=0').removeClass(
-                    'd-none');
-                $('#docMdl').modal('show');
-            } else if (isDoc) {
-                // Use Google Docs Viewer with fallback
-                const gdocViewer =
-                    `https://docs.google.com/gview?url=${encodeURIComponent(fullDocPath)}&embedded=true`;
-                $('#docMdl .doc-frame').attr('src', gdocViewer).removeClass('d-none');
-                $('#docMdl').modal('show');
-            } else {
-                alert('Unsupported file type');
-                return;
-            }
-
-            // Start tracking
-            if (!globalTracker.hasUpdated) {
-                globalTracker.intervalId = setInterval(() => {
-                    globalTracker.viewedTime++;
-
-                    if (globalTracker.viewedTime % 5 === 0) {
-                        updatePartialProgress();
-                    }
-
-                    if (globalTracker.viewedTime >= contentLength) {
-                        clearInterval(globalTracker.intervalId);
-                        globalTracker.hasUpdated = true;
-                        updateProgress();
-                    }
-                }, 1000);
-            }
-
-            // Cleanup on modal close
-            $('#docMdl').off('hidden.bs.modal').on('hidden.bs.modal', function() {
-                if (globalTracker.intervalId) {
-                    clearInterval(globalTracker.intervalId);
-                    globalTracker.intervalId = null;
-                    updatePartialProgress();
-                }
-
-                // Reset viewers
-                $('#docMdl .doc-image').attr('src', '').addClass('d-none');
-                $('#docMdl .doc-frame').attr('src', '').addClass('d-none');
-            });
-        }
-
-
-
-
-        // Update progress (reusing desktop endpoint)
-        function updateProgress() {
-            const contentId = globalTracker.contentId;
-            const courseId = $('.module-content-container').find('.load-content[data-content-id="' + contentId +
-                '"]').data('course-id');
-            const contentLength = $('.module-content-container').find('.load-content[data-content-id="' +
-                contentId + '"]').data('video-duration');
-            const contentType = globalTracker.type;
-
-            $.post("{{ route('userTrainingDetails.document.progress') }}", {
-                _token: '{{ csrf_token() }}',
-                content_id: contentId,
-                course_id: courseId,
-                content_length: contentLength,
-                content_type: contentType
-            }, function() {
-                // Update UI
-                $('.module-content-container').find('.load-content[data-content-id="' + contentId +
-                        '"]')
-                    .find('.small')
-                    .removeClass('text-warning')
-                    .addClass('text-success')
-                    .text('Completed');
-
-                // Check if all content is completed to enable test button
-                checkAllContentCompleted(courseId);
-            });
-        }
-
-        // Update partial progress (reusing desktop endpoint)
-        function updatePartialProgress() {
-            const contentId = globalTracker.contentId;
-            const courseId = $('.module-content-container').find('.load-content[data-content-id="' + contentId +
-                '"]').data('course-id');
-
-            $.post("{{ route('userTrainingDetails.document.partial') }}", {
-                _token: '{{ csrf_token() }}',
-                content_id: contentId,
-                course_id: courseId,
-                duration: globalTracker.viewedTime
-            });
-        }
-
-        // Check if all content is completed (reusing desktop logic)
-        function checkAllContentCompleted(courseId) {
-            const allCompleted = $('.module-content-container').find('.load-content[data-course-id="' +
-                    courseId + '"]')
-                .toArray()
-                .every(item => $(item).find('.small').hasClass('text-success'));
-
-            if (allCompleted) {
-                // Enable test button
-                $('.module-content-container').find('.start-test-btn')
-                    .removeClass('disabled')
-                    .css({
-                        'pointer-events': 'auto',
-                        'opacity': '1'
-                    })
-                    .attr('href',
-                        "{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => '__CID__', 'test_id' => '__TID__']) }}"
-                        .replace('__CID__', courseId)
-                        .replace('__TID__', $('.module-content-container').find('.start-test-btn').data(
-                            'test-id')));
-
-                // Update module list to show completed status
-                $('.load-course-module[data-course-id="' + courseId + '"]')
-                    .find('figure img')
-                    .attr('src', "{{ asset('front/img/completed-icon.png') }}");
-            }
-        }
-
-        // Helper function to format time (reusing desktop logic)
-        function formatTime(seconds) {
-            if (seconds < 60) {
-                return `Study required: ${seconds} sec`;
-            } else {
-                const minutes = Math.floor(seconds / 60);
-                const remainingSeconds = seconds % 60;
-                return `Study required: ${minutes}:${remainingSeconds.toString().padStart(2, '0')} min`;
-            }
-        }
-
-        // Countdown timer (reusing desktop logic)
-        var hours = <?php echo $hours; ?>;
-        var minutes = <?php echo $minutes; ?>;
-        var seconds = (hours * 60 * 60) + (minutes * 60);
-
-        function countdown() {
-            var countdownElement = document.getElementById('countdown');
-            if (seconds > 0) {
-                seconds--;
-            } else {
-                clearInterval(timer);
-            }
-            var paddedSeconds = (seconds % 60).toString().padStart(2, '0');
-            var paddedMinutes = Math.floor((seconds / 60) % 60).toString().padStart(2, '0');
-            var paddedHours = Math.floor(seconds / 3600).toString().padStart(2, '0');
-            countdownElement.innerHTML = paddedHours + ' hours ' + paddedMinutes + ' minutes ' + paddedSeconds +
-                ' seconds';
-        }
-        var timer = setInterval(countdown, 1000);
-    });
-</script> --}}
-
 <script>
     $(document).ready(function() {
         // Reuse the globalTracker from desktop
@@ -837,12 +383,12 @@
                 }
             }
 
-            if (isCompleted && testId) {
-                $('#greatMdl').modal('show');
-                $('#greatMdl .start-test-btn').attr('data-course-id', courseId);
-                $('#greatMdl .start-test-btn').attr('data-test-id', testId);
-                return;
-            }
+            // if (isCompleted && testId) {
+            //     $('#greatMdl').modal('show');
+            //     $('#greatMdl .start-test-btn').attr('data-course-id', courseId);
+            //     $('#greatMdl .start-test-btn').attr('data-test-id', testId);
+            //     return;
+            // }
 
             // Load module content
             loadModuleContent(courseId);
@@ -872,113 +418,6 @@
                 .replace('__TID__', testId);
         });
 
-        // function loadModuleContent(courseId) {
-        //     $.ajax({
-        //         url: "{{ route('userTraining.getCourseContentForMobile') }}",
-        //         type: "GET",
-        //         data: {
-        //             course_id: courseId,
-        //             training_id: "{{ $training_id }}"
-        //         },
-        //         success: function(response) {
-        //             if (response.success) {
-        //                 // Store content for navigation
-        //                 currentCourseContent = response.content;
-
-        //                 // Hide banner and show modules
-        //                 $('.imgwrapper.thumb.m-3').hide();
-        //                 $('.navdiv.d-md-none').show();
-
-        //                 // Update the module title
-        //                 $('.modulesTypes .module-title').text(response.course.title);
-
-        //                 // Build the content list HTML
-        //                 let contentHtml =
-        //                     '<b class="mb-3 d-block fs-6 text-black">Lessons</b><ul class="courselistUl">';
-
-        //                 response.content.forEach((item, index) => {
-        //                     const isCompleted = item.is_completed;
-        //                     let icon = '';
-        //                     let typeText = '';
-        //                     let timeText = formatTime(item.length);
-        //                     if (item.type === 'video') {
-        //                         icon = "{{ asset('front/img/video-icon.svg') }}";
-        //                         typeText = 'Video';
-        //                     } else if (item.type === 'doc') {
-        //                         icon = "{{ asset('front/img/docs-icon.svg') }}";
-        //                         typeText = 'DOC';
-        //                     } else if (item.type === 'image') {
-        //                         icon = "{{ asset('front/img/docs-icon.svg') }}";
-        //                         typeText = 'Image';
-        //                     }
-
-        //                     contentHtml += `
-        //             <li>
-        //                 <a href="javascript:void(0)" class="load-content" 
-        //                    data-content-id="${item.id}"
-        //                    data-course-id="${response.course.id}"
-        //                    data-content-type="${item.type}"
-        //                    data-video-duration="${item.length}"
-        //                    data-doc-type="${item.type}"
-        //                    data-content-src="${item.document}"
-        //                    data-index="${index}">
-        //                     <div class="d-flex justify-content-between align-items-center gap-2">
-        //                         <div class="d-flex align-items-center gap-2">
-        //                             <strong>${index + 1}</strong>
-        //                             <div class="">
-        //                                 <span class="mb-1 d-block"><b>${item.title}</b></span>
-        //                                 <span class="text-gray d-flex align-items-center gap-2">
-        //                                     <img src="${icon}" alt="" class="me-1">
-        //                                     ${typeText} • ${timeText}
-        //                                 </span>
-        //                             </div>
-        //                         </div>
-        //                         <figure class="m-0">
-        //                             <img src="{{ asset('front/img/play-btn-icon.png') }}" alt="">
-        //                         </figure>
-        //                     </div>
-        //                     <div class="small ${isCompleted ? 'text-success' : 'text-warning'}">
-        //                         ${isCompleted ? 'Completed' : 'Not Started'}
-        //                     </div>
-        //                 </a>
-        //             </li>`;
-        //                 });
-
-        //                 contentHtml += '</ul>';
-
-        //                 // Add test button if exists
-        //                 if (response.course.test_id) {
-        //                     console.log('2')
-        //                     const allContentCompleted = response.content.every(item => item
-        //                         .is_completed);
-        //                     contentHtml += `
-        //             <div class="mt-4 pt-3 border-top">
-        //                 <a class="btn btn-primary w-100 start-test-btn ${allContentCompleted ? '' : 'disabled'}"
-        //                     href="${allContentCompleted ? "{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => '__CID__', 'test_id' => '__TID__']) }}".replace('__CID__', response.course.id).replace('__TID__', response.course.test_id) : 'javascript:void(0)'}"
-        //                     data-course-id="${response.course.id}"
-        //                     data-test-id="${response.course.test_id}"
-        //                     ${!allContentCompleted ? 'style="pointer-events: none; opacity: 0.6;"' : ''}>
-        //                     <i class="bi bi-pencil-square me-2"></i>Begin Test
-        //                     ${!allContentCompleted ? '<small class="d-block mt-1">Complete all content first</small>' : ''}
-        //                 </a>
-        //             </div>`;
-        //                 }
-
-        //                 // Update the content container
-        //                 $('.module-content-container').html(contentHtml);
-
-        //                 // Show the module content section
-        //                 $('.traningTypes').hide();
-        //                 $('.modulesTypes').show();
-        //             }
-        //         },
-        //         error: function(xhr) {
-        //             console.error(xhr);
-        //             alert('Failed to load module content. Please try again.');
-        //         }
-        //     });
-        // }
-
         $(document).on('click', '.moduleBck', function(e) {
             e.preventDefault();
             $('.navdiv.d-md-none').hide();
@@ -995,6 +434,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
+
                         // Store content for navigation
                         currentCourseContent = response.content;
 
@@ -1061,24 +501,56 @@
                         contentHtml += '</ul>';
 
                         // Add test button if exists
+                        //     if (response.course.test_id) {
+                        //         var canAttempt = response.canAttempt;
+
+                        //         const allContentCompleted = response.content.every(item => item
+                        //             .is_completed);
+                        //         contentHtml += `
+                        // <div class="mt-4 pt-3 border-top">
+                        //     <a class="btn btn-primary w-100 start-test-btn ${allContentCompleted ? '' : 'disabled'}"
+                        //         href="${allContentCompleted ? "{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => '__CID__', 'test_id' => '__TID__']) }}".replace('__CID__', response.course.id).replace('__TID__', response.course.test_id) : 'javascript:void(0)'}"
+                        //         data-course-id="${response.course.id}"
+                        //         data-test-id="${response.course.test_id}"
+                        //         ${!allContentCompleted ? 'style="pointer-events: none; opacity: 0.6;"' : ''}>
+                        //         <i class="bi bi-pencil-square me-2"></i>Begin Test
+                        //         ${!allContentCompleted ? '<small class="d-block mt-1">Complete all content first</small>' : ''}
+                        //     </a>
+                        // </div>`;
+                        //     }
+
                         if (response.course.test_id) {
-                            console.log('1')
+                            var canAttempt = response.canAttempt;
                             const allContentCompleted = response.content.every(item => item
                                 .is_completed);
+
+                            let isDisabled = !allContentCompleted || !canAttempt;
+                            let hrefValue = isDisabled ? 'javascript:void(0)' :
+                                "{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => '__CID__', 'test_id' => '__TID__']) }}"
+                                .replace('__CID__', response.course.id).replace('__TID__', response
+                                    .course.test_id);
+
+                            let message = '';
+                            let buttonText = 'Begin Test'; // default text
+
+                            if (!canAttempt) {
+                                message = 'You have reached the maximum number of attempts';
+                                buttonText = 'Max Attempts Reached';
+                            }
+
                             contentHtml += `
-                    <div class="mt-4 pt-3 border-top">
-                        <a class="btn btn-primary w-100 start-test-btn ${allContentCompleted ? '' : 'disabled'}"
-                            href="${allContentCompleted ? "{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => '__CID__', 'test_id' => '__TID__']) }}".replace('__CID__', response.course.id).replace('__TID__', response.course.test_id) : 'javascript:void(0)'}"
-                            data-course-id="${response.course.id}"
-                            data-test-id="${response.course.test_id}"
-                            ${!allContentCompleted ? 'style="pointer-events: none; opacity: 0.6;"' : ''}>
-                            <i class="bi bi-pencil-square me-2"></i>Begin Test
-                            ${!allContentCompleted ? '<small class="d-block mt-1">Complete all content first</small>' : ''}
-                        </a>
-                    </div>`;
+                                <div class="mt-4 pt-3 border-top">
+                                    <a class="btn btn-primary w-100 start-test-btn ${isDisabled ? 'disabled' : ''}"
+                                        href="${hrefValue}"
+                                        data-course-id="${response.course.id}"
+                                        data-test-id="${response.course.test_id}"
+                                        ${isDisabled ? 'style="pointer-events: none; opacity: 0.6;"' : ''}>
+                                        <i class="bi bi-pencil-square me-2"></i>${buttonText}
+                                        ${message ? `<small class="d-block mt-1">${message}</small>` : ''}
+                                    </a>
+                                </div>`;
                         }
 
-                        // Update the content container
                         $('.module-content-container').html(contentHtml);
 
                         // Show the module content section

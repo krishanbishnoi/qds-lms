@@ -241,7 +241,6 @@
             <div class="box-body">
                 <div class="box-header with-border">
                     <h3 class="box-title">Assign Trainees List</h3>
-
                 </div>
                 <div class="row">
                     <div class="col-lg-12 grid-margin stretch-card">
@@ -253,11 +252,9 @@
                                             <tr>
                                                 <th>{{ trans('SN.') }}</th>
                                                 <th>{{ trans('Employee Id') }}</th>
-
                                                 <th>{{ trans('Name') }}</th>
                                                 <th>{{ trans('Email') }}</th>
                                                 <th>{{ trans('Mobile Number') }}</th>
-
                                             </tr>
                                         </thead>
                                         <tbody id="powerwidgets">
@@ -270,6 +267,22 @@
                                                         <td>{{ $trainee_detail->fullname }}</td>
                                                         <td>{{ $trainee_detail->email }}</td>
                                                         <td>{{ $trainee_detail->mobile_number }}</td>
+                                                        <td>
+                                                            {{-- @if (
+                                                                $trainee_detail->answers->contains(function ($answer) {
+                                                                    return !empty($answer->free_text_answer);
+                                                                }))
+                                                                <a href='{{ route("$modelName.view.answer", ['test_id' => $model->id, 'trainee_id' => $trainee_detail->id]) }}'
+                                                                    class="btn btn-warning"
+                                                                    title="Check Subjective Answer"> <span
+                                                                        class="fas fa-edit"></span></a>
+                                                            @endif --}}
+                                                            <a href="{{ route('test.wise.report', ['user_id' => $trainee_detail->id, 'test_id' => $model->id]) }}"
+                                                                class="btn btn-info"
+                                                                title="View All Question & Answers"><span
+                                                                    class="fa fa-question"></span>
+                                                            </a>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             @endif

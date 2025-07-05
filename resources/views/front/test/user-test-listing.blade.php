@@ -52,6 +52,7 @@
                                                                 $test->id,
                                                             )
                                                                 ->where('user_id', Auth::user()->id)
+                                                                ->orderBy('id', 'desc')
                                                                 ->first();
                                                             $testParticipant = App\Models\TestParticipants::where(
                                                                 'test_id',

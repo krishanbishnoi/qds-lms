@@ -19,5 +19,18 @@ class TrainingTestParticipants extends Eloquent
 	protected $table = 'training_test_participants';
 
 
-	protected $fillable = ['training_id', 'course_id', 'test_id', 'trainee_id', 'status', 'number_of_attempts', 'user_attempts'];
+	protected $fillable = [
+		'training_id',
+		'course_id',
+		'test_id',
+		'attempt_number',
+		'trainee_id',
+		'status',
+		'number_of_attempts',
+		'user_attempts'
+	];
+	public function test_details()
+	{
+		return $this->hasOne(Test::class, 'id', 'test_id');
+	}
 }// end TrainingParticipants class

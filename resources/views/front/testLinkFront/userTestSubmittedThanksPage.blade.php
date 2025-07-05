@@ -46,6 +46,22 @@
         });
     </script>
     @endif
+
+     <header class="traineeHead">
+            <div class="container-fluid">
+                <div class="d-flex flex-wrap align-items-center">
+                    <div class="logoSec">
+                        <a href="{{ route('front.dashboard') }}"><img src="../lms-img/qdegrees-logo.svg" alt="logo"
+                                width="130" height="33px"></a>
+                    </div>
+                    <div class="courseProgress">
+                        <a href="{{ route('front.dashboard') }}" class="exitBtn">
+                            <img src="../front/img/exit.svg" alt="icon" width="23" height="23">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
     <div class=" rounded-2 bg-transparent backgroundCard">
         <div class="text-center ">
             <img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="QDegrees-logo" width="130" height="33">
@@ -57,7 +73,10 @@
             <p class="mb-3 mb-md-4">
                 It seems like you've already completed and submitted the Test. If you have any additional questions or need further assistance, please contact to Admin.
             </p>
-
+            @if(isset($trainingId))
+            <a href="{{ route('userTrainingDetails.index', ['id' => $trainingId]) }}"
+                                            class="btn btn-secondary smallBtn py-1 px-4">Next Course</a>
+                                            @endif
         </div>
     </div>
 

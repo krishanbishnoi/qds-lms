@@ -33,7 +33,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Training Name</th>
-                                                    <th>Training Description</th>
+                                                    {{-- <th>Training Description</th> --}}
                                                     <th>Starting Date & Time</th>
                                                     <th>End Date & Time</th>
                                                     <th class="text-center">Details</th>
@@ -45,7 +45,7 @@
                                                     @foreach ($ongoing as $training)
                                                         <tr>
                                                             <td>{{ ucwords($training->title) }}</td>
-                                                            <td>{!! ucwords(substr($training->description, 0, 40)) !!}..</td>
+                                                            {{-- <td>{!! ucwords(substr($training->description, 0, 40)) !!}..</td> --}}
                                                             <td>{{ \Carbon\Carbon::parse($training->start_date_time)->format('Y-m-d') }}
                                                                 |
                                                                 {{ \Carbon\Carbon::parse($training->start_date_time)->format('h:i') }}
@@ -87,7 +87,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Training Name</th>
-                                                    <th>Training Description</th>
+                                                    {{-- <th>Training Description</th> --}}
                                                     <th>Starting Date & Time</th>
                                                     <th>End Date & Time</th>
                                                     <th class="text-center">Details</th>
@@ -98,7 +98,7 @@
                                                     @foreach ($upcoming as $training)
                                                         <tr>
                                                             <td>{{ ucwords($training->title) }}</td>
-                                                            <td>{!! ucwords(substr($training->description, 0, 40)) !!}</td>
+                                                            {{-- <td>{!! ucwords(substr($training->description, 0, 40)) !!}</td> --}}
                                                             <td>{{ \Carbon\Carbon::parse($training->start_date_time)->format('Y-m-d') }}
                                                                 |
                                                                 {{ \Carbon\Carbon::parse($training->start_date_time)->format('h:i') }}

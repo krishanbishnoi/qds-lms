@@ -20,5 +20,18 @@ class TrainingTestResult extends Eloquent
 	 */
 	protected $table = 'training_test_results';
 
-	protected $fillable = ['test_id', 'user_id', 'training_id', 'course_id', 'total_questions', 'total_attemted_questions', 'total_marks', 'obtain_marks', 'percentage', 'result', 'status'];
+	protected $fillable = [
+		'test_id',
+		'user_id',
+		'training_id',
+		'attempt_number',
+		'course_id',
+		'total_questions',
+		'total_attemted_questions',
+		'total_marks',
+		'obtain_marks',
+		'percentage',
+		'result',
+		'status'
+	];
 }// end TestResult class

@@ -181,6 +181,7 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::post('assign-manager', 'AssignManager')->name('Test.AssignManager');
             Route::post('assign-trainer', 'AssignTrainer')->name('Test.AssignTrainer');
             Route::post('import-tests-participants-user/{id}', 'importTestsUsersDirectly')->name('Test.import.tests.usersDirectly');
+            Route::get('test/view-questions/{test_id}/{user_id}', 'traineeTestWiseReport')->name('test.wise.report');
         });
 
         /* test questions routes */
@@ -558,6 +559,7 @@ Route::group(array('middleware' => ['App\Http\Middleware\AuthFront', 'PreventBac
     Route::post('/user/document/update-duration', [App\Http\Controllers\front\TrainingController::class, 'updateDocumentPartialDuration'])->name('userTrainingDetails.document.partial');
     Route::get('/user-training/get-course-content', [App\Http\Controllers\front\TrainingController::class, 'getCourseContentForMobile'])
         ->name('userTraining.getCourseContentForMobile');
+
 
 
     Route::get('my-trainings/{training_id}/{course_id}/test/{test_id}', array('as' => 'userTraining.test', 'uses' => 'TrainingController@userTrainingTest'));

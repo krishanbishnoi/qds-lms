@@ -257,7 +257,7 @@ class TrainingController extends BaseController
                 foreach ($request->data as $index => $doc) {
                     $validator = Validator::make($doc, [
                         'title'  => 'required|string|max:255',
-                        'length' => 'required|numeric|min:1',
+                        'length' => 'required|numeric',
                     ]);
                     if ($validator->fails()) {
                         return redirect()->back()->withErrors($validator)->withInput();
@@ -346,55 +346,6 @@ class TrainingController extends BaseController
             }
 
 
-            // if($training_id){
-            //     if(isset($input['data']) && !empty($input['data'])) {
-            //         foreach($input['data'] as $training_documents) {
-
-            //             $obj = new TrainingDocument;
-            //             $obj->training_id = $training_id;
-
-            //             if(isset($training_documents['title']) && !empty($training_documents['title'])){
-            //                 $title = $training_documents["title"];
-            //                 $obj->title = $title;
-            //             }
-
-            //             if(isset($training_documents['document']) && !empty($training_documents['document'])){
-
-            //                 $extension = $training_documents['document']->getClientOriginalExtension();
-            //                 $fileName = time() . '-document.' . $extension;
-
-            //                 $folderName = strtoupper(date('M') . date('Y')) . "/";
-            //                 $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
-
-            //                 if(!File::exists($folderPath)) {
-            //                     File::makeDirectory($folderPath, 0777, true);
-            //                 }
-
-            //                 if(!empty($extension)){
-            //                     $obj->document_type = $extension;
-            //                 }
-
-            //                 if($training_documents['document']->move($folderPath, $fileName)){
-            //                     $obj->document = $folderName . $fileName;
-            //                 }
-
-            //                 $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'ico'];
-            //                 $videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'mkv', 'flv','mpeg','mpg'];
-            //                 $fileExtensions = ['doc', 'pdf', 'txt', 'xls', 'xlsx', 'ppt', 'csv', 'odt'];
-
-            //                 if (in_array($extension, $imageExtensions)) {
-            //                     $obj->type = 'image';
-            //                 } elseif (in_array($extension, $videoExtensions)) {
-            //                     $obj->type = 'video';
-            //                 } elseif (in_array($extension, $fileExtensions)) {
-            //                     $obj->type = 'doc';
-            //                 }
-            //             }
-            //             $obj->save();
-            //         }
-            //     }
-            // }
-
 
             if (!$training->save()) {
                 Session::flash('error', trans("Something went wrong."));
@@ -404,7 +355,6 @@ class TrainingController extends BaseController
                 return redirect()->route('Training.index');
             }
         } catch (\Exception $e) {
-            dd($e);
             return redirect()->back()
                 ->with('error', 'An error occurred while saving the training. Please try again.')
                 ->withInput();

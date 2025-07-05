@@ -138,9 +138,9 @@ class CoursesController extends BaseController
 
     public function save(Request $request, $training_id = 0)
     {
-        // dd($request->all());
         $step = $request->input('current_step', 1);
-        $trainingId = $request->input('training_id');
+        $trainingId = $training_id;
+        $categoryId = Training::where('id',$trainingId)->value('category_id');
         $request->replace($this->arrayStripTags($request->all()));
 
         try {
@@ -177,7 +177,7 @@ class CoursesController extends BaseController
                     foreach ($request->data as $documentData) {
                         $validator = Validator::make($documentData, [
                             'title' => 'required|string|max:255',
-                            'length' => 'required|numeric|min:1',
+                            'length' => 'required|numeric',
                             // 'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi|max:20480',
                         ]);
 
@@ -334,7 +334,7 @@ class CoursesController extends BaseController
                 Session::put('course_id', $course->id);
 
 
-                if ($request->add_test_option == 'existing') {
+                if ($request->add_test_option == 'existing' || $request->add_test_option == 'no_test') {
                     return redirect()->route('Course.index', $trainingId);
                 }
                 return response()->json(['success' => true]);
@@ -353,7 +353,7 @@ class CoursesController extends BaseController
                 ]);
 
                 $data = [
-                    'category_id' => $request->category_id,
+                    'category_id' => $categoryId,
                     'title' => $request->title,
                     'type' => 'training_test',
                     'minimum_marks' => $request->minimum_marks,

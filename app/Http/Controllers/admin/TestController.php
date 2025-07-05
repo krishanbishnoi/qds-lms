@@ -22,6 +22,9 @@ use App\Models\TestCategory;
 use App\Models\TestParticipants;
 use App\Models\TestResult;
 use App\Models\TrainerTrainings;
+use App\Models\Training;
+use App\Models\TrainingTestParticipants;
+use App\Models\TrainingTestResult;
 use App\Models\TrainingType;
 use App\Models\User;
 use App\Models\UserAssignedTestQuestion;
@@ -100,9 +103,10 @@ class TestController extends BaseController
         }
 
         $DB->leftJoin('users', 'users.id', '=', 'tests.user_id')->join('test_categories', 'test_categories.id', '=', 'tests.category_id')->select('tests.*', 'users.first_name as created_by', 'test_categories.name as category_name');
-        $sortBy = ($request->get('sortBy')) ? $request->get('sortBy') : 'updated_at';
+        $sortBy = ($request->get('sortBy')) ? $request->get('sortBy') : 'created_at';
         $order = ($request->get('order')) ? $request->get('order') : 'DESC';
-        $results = $DB->orderBy($sortBy, $order)->paginate(Config::get("Reading.records_per_page"));
+        // dd($order,$sortBy);
+        $results = $DB->orderBy($sortBy, $order)->paginate(100);
         $complete_string = $request->query();
         unset($complete_string["sortBy"]);
         unset($complete_string["order"]);
@@ -137,6 +141,7 @@ class TestController extends BaseController
 
     public function save(Request $request)
     {
+        dd('1');
         $request->replace($this->arrayStripTags($request->all()));
         $thisData = $request->all();
 
@@ -164,6 +169,7 @@ class TestController extends BaseController
         }
 
         // Prepare data array for saving
+        $request->publish_result == 0 ? $publishResult = '1' :  $publishResult = '0';
         $data = [
             'category_id' => $request->category_id,
             'title' => $request->title,
@@ -178,7 +184,7 @@ class TestController extends BaseController
             'lob' => $request->lob,
             'start_date_time' => $request->start_date_time,
             'end_date_time' => $request->end_date_time,
-            'publish_result' => $request->publish_result,
+            'publish_result' => $publishResult,
             'description' => $request->description,
         ];
 
@@ -280,7 +286,12 @@ class TestController extends BaseController
         $trainer_ids = TrainerTrainings::where("test_id", $modelId)->pluck('user_id')->toArray();
         $trainer_details = User::whereIn("id", $trainer_ids)->get();
 
-        $trainee_ids = TestParticipants::where("test_id", $modelId)->pluck('trainee_id')->toArray();
+        $testType = Test::where('id', $modelId)->value('type');
+        if ($testType == 'training_test') {
+            $trainee_ids = TrainingTestParticipants::where("test_id", $modelId)->pluck('trainee_id')->toArray();
+        } else {
+            $trainee_ids = TestParticipants::where("test_id", $modelId)->pluck('trainee_id')->toArray();
+        }
 
         $user_details = User::whereIn("id", $trainee_ids)->get();
 
@@ -294,7 +305,7 @@ class TestController extends BaseController
         // $trainer_details    = $trainer_details;
         // $manager_details    = $manager_details;
 
-        return View::make("admin.$this->model.view", compact('model', 'trainee_details', 'trainer_details', 'manager_details', 'questions'));
+        return View::make("admin.Test.view", compact('model', 'trainee_details', 'trainer_details', 'manager_details', 'questions'));
         // echo '<pre>'; print_r($createdBy); die;
     }
 
@@ -896,5 +907,78 @@ class TestController extends BaseController
         }
 
         return redirect()->back()->with('success', 'Training successfully assigned to the client.');
+    }
+
+    public function traineeTestWiseReport($test_id, $user_id)
+    {
+        $userData = User::find($user_id);
+        $test     = Test::find($test_id);
+        if ($test->type == 'training_test') {
+            $testData = TrainingTestParticipants::where('trainee_id', $user_id)
+                ->where('test_id', $test_id)
+                ->with('test_details')
+                ->first();
+        } else {
+            $testData = TestParticipants::where('trainee_id', $user_id)
+                ->where('test_id', $test_id)
+                ->with('test_details')
+                ->first();
+        }
+
+        if ($test->type == 'training_test') {
+            $testResults = TrainingTestResult::where('user_id', $user_id)
+                ->where('test_id', $test_id)
+                ->orderBy('attempt_number', 'desc')
+                ->get();
+        } else {
+            $testResults = TestResult::where('user_id', $user_id)
+                ->where('test_id', $test_id)
+                ->orderBy('user_attempts', 'desc')
+                ->get();
+        }
+
+        if ($testResults->isEmpty()) {
+            Session::flash('error', 'This test has not been submitted by this user.');
+            return Redirect::back();
+        }
+
+        if ($test->type == 'training_test') {
+        $attemptNumber = request()->get('attempt_number', $testResults->first()->attempt_number);
+        } else {
+        $attemptNumber = request()->get('attempt_number', $testResults->first()->user_attempts);
+        }
+
+        if ($test->type == 'training_test') {
+            $latestAttempt = $testResults->where('attempt_number', $attemptNumber)->first();
+        } else {
+            $latestAttempt = $testResults->where('user_attempts', $attemptNumber)->first();
+        }
+
+        $questionsAlreadyAssigned = UserAssignedTestQuestion::where('test_id', $test_id)
+            ->where('trainee_id', $user_id)
+            ->pluck('questions_id')
+            ->toArray();
+
+        $testQuestions = Question::whereIn('id', $questionsAlreadyAssigned)
+            ->where('test_id', $test_id)
+            ->with('questionAttributes')
+            ->get();
+
+        $userAnswers = Answer::where('test_id', $test_id)
+            ->where('user_id', $user_id)
+            ->where('attempt_number', $latestAttempt->attempt_number)
+            ->pluck('answer_id', 'question_id')
+            ->toArray();
+
+        if ($testResults && $userAnswers) {
+            if (request()->ajax()) {
+                return view('admin.Test.partials-test-report-details', compact('userData', 'test', 'testData', 'testQuestions', 'userAnswers', 'latestAttempt', 'testResults', 'attemptNumber'));
+            }
+            return view("admin.Test.test-report", compact('userData', 'test', 'testData', 'testQuestions', 'userAnswers', 'testResults', 'latestAttempt', 'attemptNumber'));
+        } else {
+            Session::flash('error', 'This test has not been submitted by this user.');
+
+            return Redirect::back();
+        }
     }
 }
