@@ -194,7 +194,7 @@
                                                                 @if ($content['type'] === 'video')
                                                                     Video • <small style="font-size: 11px"> Study
                                                                         required:
-                                                                        {{-- {{ gmdate('i:s', $content['length']) }}</small> --}}
+                                                                        {{ gmdate('i:s', $content['length']) }}</small>
                                                                 @elseif ($content['type'] === 'doc')
                                                                     @php
                                                                         $seconds = $content['length'];

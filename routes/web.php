@@ -14,7 +14,7 @@ use App\Http\Controllers\admin\QuestionController;
 use App\Http\Controllers\admin\RegionController;
 use App\Http\Controllers\admin\ReportsController;
 use App\Http\Controllers\admin\TestCategoryController;
-use App\Http\Controllers\front\TestController;
+use App\Http\Controllers\admin\TestController;
 use App\Http\Controllers\admin\TraineesController;
 use App\Http\Controllers\admin\TrainingTypeController;
 use App\Http\Controllers\admin\UsersController;
@@ -31,11 +31,6 @@ use Illuminate\Support\Facades\Route;
 
 
 //crons url
-Route::get('retail-test-details/{id}', [TestController::class, 'retailUserTestDetails']);
-
-
-    // Route::any('retail-test-details/{id}', array('as' => 'userTestDetails.index', 'uses' => 'TestController@retailUserTestDetails'));
-
 Route::get('crone/move-status-to-publish', 'CroneController@moveStatusToPublish');
 Route::group(array('prefix' => 'admin'), function () {
     Route::group(array('middleware' => ['App\Http\Middleware\GuestAdmin', 'PreventBackHistory'], 'namespace' => 'admin'), function () {
@@ -422,6 +417,10 @@ Route::group(array('prefix' => 'trainer'), function () {
         Route::get('/change-password', 'AdminDashboardController@change_password');
         Route::post('/changed-password', 'AdminDashboardController@changedPassword');
 
+
+
+
+
         /* user routes */
         Route::get('users', array('as' => 'TrainerTrainees.index', 'uses' => 'TraineesController@index'));
         Route::post('users', array('as' => 'TrainerTrainees.index', 'uses' => 'TraineesController@index'));
@@ -585,6 +584,48 @@ Route::group(array('middleware' => ['App\Http\Middleware\AuthFront', 'PreventBac
     Route::get('feedback', array('as' => 'userFeedback', 'uses' => 'TrainingController@userFeedback'));
     Route::post('feedback', array('as' => 'store.feedback', 'uses' => 'TrainingController@storeFeedback'));
 });
+
+
+
+
+Route::group(array('namespace' => 'front'), function () {
+
+    Route::any('retail/my-test', array('as' => 'userTest.index', 'uses' => 'RetailTestController@userTests'));
+    Route::any('retail/test-details/{id}', array('as' => 'userTestDetails.index', 'uses' => 'RetailTestController@userTestDetails'));
+    Route::post('retail/submit-test-response', array('as' => 'user.test.submit', 'uses' => 'RetailTestController@userTestSubmit'));
+    Route::post('retail/training-test-participant-info', array('as' => 'training.test.participant.info', 'uses' => 'TrainingController@userTrainingTestInfoSubmit'));
+    Route::get('retail/view--test-result/{id}', array('as' => 'user.test.result', 'uses' => 'RetailTestController@userTestResult'));
+    Route::get('retail/download-certificate-pdf/{id}', array('as' => 'download.user.test.certificate', 'uses' => 'RetailTestController@userTestCertificateDownload'));
+
+    Route::post('retail/update-test-participant-status-attempts', array('as' => 'update.test.participant.status.attempts', 'uses' => 'RetailTestController@userTestParticipantStatus'));
+});
+Route::group(array('namespace' => 'front'), function () {
+
+    Route::any('retail/my-trainings', array('as' => 'userTraining.index', 'uses' => 'RetailTrainingController@userTrainings'));
+    Route::any('retail/my-trainings-details/{id}', array('as' => 'userTrainingDetails.index', 'uses' => 'RetailTrainingController@userTrainingDetails'));
+    Route::any('retail/my-trainings-details-design/{id}', array('as' => 'userTrainingDetails.index.design', 'uses' => 'RetailTrainingController@userTrainingDetailsDesign'));
+    Route::any('/retail/update-training-document-progress', array('as' => 'userTrainingDetails.document.progress', 'uses' => 'RetailTrainingController@userTrainingDocumentProgress'));
+    Route::post('/retail/training-logs/training_details/{id}', array('as' => 'training_details.popup', 'uses' => 'RetailTrainingController@training_details_popup'));
+    Route::post('/retail/user/document/duration', [App\Http\Controllers\front\RetailTrainingController::class, 'getDocumentDuration'])->name('userTrainingDetails.document.duration');
+    Route::post('/retail/user/document/update-duration', [App\Http\Controllers\front\RetailTrainingController::class, 'updateDocumentPartialDuration'])->name('userTrainingDetails.document.partial');
+    Route::get('/retail/user-training/get-course-content', [App\Http\Controllers\front\RetailTrainingController::class, 'getCourseContentForMobile'])
+        ->name('userTraining.getCourseContentForMobile');
+
+
+
+    Route::get('retail/my-trainings/{training_id}/{course_id}/test/{test_id}', array('as' => 'userTraining.test', 'uses' => 'RetailTrainingController@userTrainingTest'));
+    Route::post('/retail/submit-training-test-response', array('as' => 'userTraining.test.submit', 'uses' => 'RetailTrainingController@userTrainingTestSubmit'));
+    Route::get('/retail/view-training-test-result/{id}', array('as' => 'training.test.result', 'uses' => 'RetailTrainingController@userTrainingTestResult'));
+    Route::get('/retail/download-training-certificate-pdf/{id}', array('as' => 'download.user.training.certificate', 'uses' => 'RetailTrainingController@userTrainingCertificateDownload'));
+});
+
+
+
+
+
+
+
+
 
 
 
