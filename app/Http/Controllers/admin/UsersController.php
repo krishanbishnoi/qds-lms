@@ -31,7 +31,7 @@ class UsersController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        View::share('modelName', $this->model);
+        View::share('modelName', users);
         View::share('sectionName', $this->sectionName);
         View::share('sectionNameSingular', $this->sectionNameSingular);
     }
@@ -100,7 +100,7 @@ class UsersController extends BaseController
         unset($complete_string['order']);
         $query_string             =     http_build_query($complete_string);
         $results->appends(Request::all())->render();
-        return  View::make("admin.$this->model.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string'));
+        return  View::make("admin.users.index", compact('results', 'searchVariable', 'sortBy', 'order', 'query_string'));
     }
     // end index()
     /**
@@ -117,7 +117,7 @@ class UsersController extends BaseController
         $lob = Lob::pluck('lob', 'lob')->toArray();
         $circle = Circle::pluck('circle', 'circle')->toArray();
         $designation = Designation::pluck('designation', 'designation')->toArray();
-        return  View::make("admin.$this->model.add", compact('region', 'lob', 'circle', 'designation'));
+        return  View::make("admin.users.add", compact('region', 'lob', 'circle', 'designation'));
     }
     // end add()
     /**
@@ -235,7 +235,7 @@ class UsersController extends BaseController
                 $messageBody             =     str_replace($constants, $rep_Array, $emailTemplates[0]['body']);
                 $mail                     =     $this->sendMail($email, $full_name, $subject, $messageBody, $settingsEmail);
                 Session::flash('success', trans($this->sectionNameSingular . ' has been added successfully'));
-                return Redirect::route($this->model . '.index');
+                return Redirect::route(users . '.index');
             }
         }
     }
@@ -282,7 +282,7 @@ class UsersController extends BaseController
         $designation = Designation::pluck('designation', 'designation')->toArray();
         $user_role = User::pluck('user_role_id', 'id')->toArray();
 
-        return  View::make("admin.$this->model.edit", compact('model', 'region', 'lob', 'circle', 'designation', 'user_role'));
+        return  View::make("admin.users.edit", compact('model', 'region', 'lob', 'circle', 'designation', 'user_role'));
     }
     // end edit()
     /**
@@ -367,7 +367,7 @@ class UsersController extends BaseController
                     return Redirect::back()->withInput();
                 }
                 Session::flash('success', trans($this->sectionNameSingular . ' has been updated successfully'));
-                return Redirect::route($this->model . '.index');
+                return Redirect::route(users . '.index');
             }
         }
     }
@@ -386,7 +386,7 @@ class UsersController extends BaseController
         $userDetails = User::find($userId);
 
         if (empty($userDetails)) {
-            return redirect()->route($this->model . ".index");
+            return redirect()->route(users . ".index");
         }
 
         if ($userId) {
@@ -415,12 +415,12 @@ class UsersController extends BaseController
         // $UserInvestAmount = DB::table( 'streek_participant' )->where( 'user_id', $model->id )->sum( 'amount' );
         // $won_amount = DB::table( 'streek_participant' )->where( 'user_id', $model->id )->sum( 'won_amount' );
         if (empty($model)) {
-            return Redirect::route($this->model . '.index');
+            return Redirect::route(users . '.index');
         }
         //	echo '<pre>';
         print_r($Historystreeks);
         die;
-        return  View::make("admin.$this->model.view", compact('model'));
+        return  View::make("admin.users.view", compact('model'));
     }
     // end view()
 
