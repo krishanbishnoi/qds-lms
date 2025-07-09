@@ -19,7 +19,9 @@ use App\Models\TrainingTestResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
-use Auth, Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator, PDF;;
+use Illuminate\Support\Facades\Auth;
+
+use  Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator, PDF;;
 
 /**
  * TestController Controller
@@ -511,5 +513,55 @@ class TestController extends BaseController
         $pdf = PDF::loadView('front.test.certificate-pdf', $data);
 
         return $pdf->download($getTestMarks->title . '-certificate.pdf');
+    }
+
+    public function retailUserTestDetails($test_id = 408)
+    {
+        Auth::loginUsingId(76);
+        $testDetails = Test::where('tests.id', $test_id)->first();
+        $startDateTime   = Carbon::parse($testDetails->start_date_time);
+        $endDateTime     = Carbon::parse($testDetails->end_date_time);
+        $currentDateTime = Carbon::now();
+        // dd($startDateTime , $currentDateTime);
+        // Check if the current time is within the start and end times
+        if ($currentDateTime->lt($startDateTime)) {
+            return redirect()->back()->with('error', 'The test has not started yet. Please come back at ' . $startDateTime->format('Y-m-d h:i:s A') . '.');
+        }
+        if ($currentDateTime->gt($endDateTime)) {
+            return redirect()->back()->with('error', 'The test time is over. It ended at ' . $endDateTime->format('Y-m-d h:i:s A') . '.');
+        }
+        if ($testDetails) {
+            $questionsAlreadyAssigned = UserAssignedTestQuestion::where('test_id', $test_id)
+                ->where('trainee_id', Auth::user()->id)
+                ->pluck('questions_id')
+                ->toArray();
+            // dd($testDetails,$questionsAlreadyAssigned);
+            if ($questionsAlreadyAssigned) {
+
+                $testDetails = Test::where('tests.id', $test_id)->first();
+
+                $testQuestions = Question::whereIn('id', $questionsAlreadyAssigned)
+                    ->where('test_id', $testDetails->id)
+                    ->with('questionAttributes')
+                    ->get();
+            } else {
+
+                $testQuestions = Question::inRandomOrder()->where('test_id', $testDetails->id)->with('questionAttributes')
+                    ->limit($testDetails->number_of_questions)->get();
+
+                foreach ($testQuestions as $question) {
+                    $userAssignedTestQuestion = new UserAssignedTestQuestion();
+                    $userAssignedTestQuestion->test_id = $test_id;
+                    $userAssignedTestQuestion->trainee_id = Auth::user()->id;
+                    $userAssignedTestQuestion->questions_id = $question->id;
+                    $userAssignedTestQuestion->save();
+                }
+            }
+            $totalTrainees = DB::table('test_participants')->where('test_id', $test_id)
+                ->count();
+            return view("front.test.userTest", compact('test_id', 'testDetails', 'testQuestions', 'totalTrainees'));
+        } else {
+            return redirect()->back()->with('This test not found. Contact to admin.');
+        }
     }
 }// end TestController

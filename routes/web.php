@@ -14,7 +14,7 @@ use App\Http\Controllers\admin\QuestionController;
 use App\Http\Controllers\admin\RegionController;
 use App\Http\Controllers\admin\ReportsController;
 use App\Http\Controllers\admin\TestCategoryController;
-use App\Http\Controllers\admin\TestController;
+use App\Http\Controllers\front\TestController;
 use App\Http\Controllers\admin\TraineesController;
 use App\Http\Controllers\admin\TrainingTypeController;
 use App\Http\Controllers\admin\UsersController;
@@ -31,6 +31,11 @@ use Illuminate\Support\Facades\Route;
 
 
 //crons url
+Route::get('retail-test-details/{id}', [TestController::class, 'retailUserTestDetails']);
+
+
+    // Route::any('retail-test-details/{id}', array('as' => 'userTestDetails.index', 'uses' => 'TestController@retailUserTestDetails'));
+
 Route::get('crone/move-status-to-publish', 'CroneController@moveStatusToPublish');
 Route::group(array('prefix' => 'admin'), function () {
     Route::group(array('middleware' => ['App\Http\Middleware\GuestAdmin', 'PreventBackHistory'], 'namespace' => 'admin'), function () {
@@ -416,10 +421,6 @@ Route::group(array('prefix' => 'trainer'), function () {
         Route::post('/bankdetail', 'AdminDashboardController@bankdetailUpdate');
         Route::get('/change-password', 'AdminDashboardController@change_password');
         Route::post('/changed-password', 'AdminDashboardController@changedPassword');
-
-
-
-
 
         /* user routes */
         Route::get('users', array('as' => 'TrainerTrainees.index', 'uses' => 'TraineesController@index'));

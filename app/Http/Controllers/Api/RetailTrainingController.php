@@ -19,6 +19,65 @@ class RetailTrainingController extends BaseController
 {
 	public $res = [];
 	public $data = [];
+
+	public function userAudit(Request $request)
+	{
+		try {
+			$request->validate([
+				'email' => 'required|email',
+				'client_id' => 'required',
+				'campaign_id' => 'nullable',
+				'store_code' => 'nullable',
+			]);
+
+			// 1. Check if user exists
+			$user = User::where('email', $request->email)->first();
+
+			// 2. If not, create and log in the user
+			if (!$user) {
+				$user = User::create([
+					'name' => 'Guest User',
+					'email' => $request->email,
+					'password' => bcrypt(Str::random(10)), // temporary password
+					// Add more fields as per your table structure
+				]);
+
+				Auth::login($user);
+			} else {
+				// Optionally: login existing user
+				Auth::login($user);
+			}
+
+			// 3. Fetch assigned trainings
+			$query = RetailAssignedTraining::where('client_id', $request->client_id);
+
+			if ($request->filled('campaign_id')) {
+				$query->where('campaign_id', $request->campaign_id);
+			}
+
+			if ($request->filled('store_code')) {
+				$query->whereRaw("FIND_IN_SET(?, store_code)", [$request->store_code]);
+			}
+
+			$assignedTrainings = $query->get();
+			$data = [];
+
+			foreach ($assignedTrainings as $assigned) {
+				$training = Training::find($assigned->training_id);
+				$data[] = [
+					'training' => $training,
+				];
+			}
+
+			return $this->sendSuccess($data, config('constants.API_MSG.REC_FETCH_SUCCESS'));
+		} catch (ValidationException $e) {
+			return $this->sendError(config('constants.API_MSG.VALIDATION_ERROR'), $e->errors(), 422);
+		} catch (\Exception $e) {
+			return $this->sendError(config('constants.API_MSG.SERVER_ERROR'), $e->getMessage(), 500);
+		}
+	}
+
+
 	public function getTrainings(Request $request)
 	{
 		try {
@@ -46,7 +105,7 @@ class RetailTrainingController extends BaseController
 
 				if (!$training) continue;
 
-				 
+
 				$data[] = [
 					'training' => $training,
 					'training_courses' => $courses,

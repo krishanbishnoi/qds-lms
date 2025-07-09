@@ -355,6 +355,7 @@ class TrainingController extends BaseController
                 return redirect()->route('Training.index');
             }
         } catch (\Exception $e) {
+            // dd($e);
             return redirect()->back()
                 ->with('error', 'An error occurred while saving the training. Please try again.')
                 ->withInput();

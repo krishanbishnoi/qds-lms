@@ -192,6 +192,81 @@
                                                             {{ $errors->first('document') }}</div>
                                                     </div>
                                                 </div>
+
+
+                                                {{-- Audio Attach --}}
+                                                <div class="col-md-2">
+                                                    <div
+                                                        class="form-group {{ $errors->first('document') ? 'has-error' : '' }}">
+                                                        {!! Html::decode(
+                                                            Form::label('audio_document', 'Audio Instruction <span class="requireRed">*</span>', ['class' => 'form-label']),
+                                                        ) !!}
+                                                        <div class="attchadomn d-flex align-items-center mb-3 mt-3"
+                                                            data-bs-toggle="modal" data-bs-target="#recordtask"
+                                                            role="button">
+                                                            <div class="recordimg pe-1 d-flex align-items-center">
+                                                                <i class="fas fa-microphone me-2"></i>
+                                                                <div class="attchtext">
+                                                                    <h6 class="fw-normal forange">Attach audio instruction
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal fade" id="recordtask" aria-hidden="true"
+                                                    aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header grayclr">
+                                                                <h1 class="modal-title fs-6 fw-semibold"
+                                                                    id="exampleModalToggleLabel">
+                                                                    Record Audio
+                                                                </h1>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body m-3">
+                                                                <div class="audio-controls" id="audio-controls">
+                                                                    <div class="text-center">
+                                                                        <div class="position-relative d-inline-block">
+                                                                            <i class="fas fa-clock forange"
+                                                                                style="font-size: 2rem;"></i>
+                                                                            <span id="recordingDot"
+                                                                                class="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle blink"
+                                                                                style="width: 8px; height: 8px; display: none;"></span>
+                                                                        </div>
+                                                                        <div id="playDuration"
+                                                                            class="forange fw-semibold fs-4 mt-2">00:00
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div
+                                                                        class="d-flex mt-2 align-items-center justify-content-center gap-3">
+
+                                                                        <button type="button" id="recordButton"
+                                                                            class="btn btn-outline-danger rounded-circle p-3"
+                                                                            onclick="toggleRecording()">
+                                                                            <i class="fas fa-microphone"></i>
+                                                                        </button>
+                                                                        <button disabled id="playButton" type="button"
+                                                                            onclick="togglePlayback()"
+                                                                            class="btn btn-outline-primary rounded-circle p-3">
+                                                                            <i class="fas fa-play"></i>
+                                                                        </button>
+                                                                        <button type="button"
+                                                                            class="btn btn-outline-success rounded-circle p-3"
+                                                                            data-bs-dismiss="modal" aria-label="Close"
+                                                                            id="saveButton">
+                                                                            <i class="fas fa-check"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <audio id="audioPlayer"></audio>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 {{-- Length --}}
                                                 @php
                                                     $fieldName = "data.$i.length";
@@ -284,6 +359,81 @@
                                                 </div>
                                             </div>
 
+                                            {{-- Audio Attach --}}
+                                            <div class="col-md-2">
+                                                {!! Html::decode(
+                                                    Form::label('audio_document', 'Audio Instruction <span class="requireRed">*</span>', ['class' => 'form-label']),
+                                                ) !!}
+                                                <div class="attchadomn d-flex align-items-center mb-3 mt-3"
+                                                    data-bs-toggle="modal" data-bs-target="#recordtask" role="button">
+                                                    <div class="recordimg pe-1 d-flex align-items-center">
+                                                        <i class="fas fa-microphone me-2"></i>
+                                                        <div class="attchtext">
+                                                            <h6 class="fw-normal forange">Attach audio instruction</h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{ Form::hidden('audio_instruction', '') }}
+                                            </div>
+                                            <div class="modal fade" id="recordtask" aria-hidden="true"
+                                                aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header grayclr">
+                                                            <h1 class="modal-title fs-6 fw-semibold"
+                                                                id="exampleModalToggleLabel">
+                                                                Record Audio
+                                                            </h1>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body m-3">
+                                                            <div class="audio-controls" id="audio-controls">
+                                                                <div class="text-center">
+                                                                    <div class="position-relative d-inline-block">
+                                                                        <i class="fas fa-clock forange"
+                                                                            style="font-size: 2rem;"></i>
+                                                                        <span id="recordingDot"
+                                                                            class="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle blink"
+                                                                            style="width: 8px; height: 8px; display: none;"></span>
+                                                                    </div>
+                                                                    <div id="playDuration"
+                                                                        class="forange fw-semibold fs-4 mt-2">00:00
+                                                                    </div>
+                                                                </div>
+
+                                                                <div
+                                                                    class="d-flex mt-2 align-items-center justify-content-center gap-3">
+                                                                    <div class="uploadAudio">
+                                                                        <input type="file" name="audio_instruction"
+                                                                            id="audioFile" accept="audio/*">
+                                                                        <label for="audioFile" class="m-0">
+                                                                            <i class="fas fa-cloud-upload-alt fa-2x"></i>
+                                                                        </label>
+                                                                    </div>
+                                                                    <button type="button" id="recordButton"
+                                                                        class="btn btn-outline-danger rounded-circle p-3"
+                                                                        onclick="toggleRecording()">
+                                                                        <i class="fas fa-microphone"></i>
+                                                                    </button>
+                                                                    <button disabled id="playButton" type="button"
+                                                                        onclick="togglePlayback()"
+                                                                        class="btn btn-outline-primary rounded-circle p-3">
+                                                                        <i class="fas fa-play"></i>
+                                                                    </button>
+                                                                    <button type="button"
+                                                                        class="btn btn-outline-success rounded-circle p-3"
+                                                                        data-bs-dismiss="modal" aria-label="Close"
+                                                                        id="saveButton">
+                                                                        <i class="fas fa-check"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <audio id="audioPlayer"></audio>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             {{-- Length --}}
                                             <div class="col-md-2">
                                                 <div class="form-group {{ $errors->first('length') ? 'has-error' : '' }}">
@@ -391,7 +541,162 @@
             color: red;
             font-size: 12px;
         }
+    </style>
+    <script>
+        let recorder;
+        let recordedChunks = [];
+        let audioContext = new(window.AudioContext || window.webkitAudioContext)();
+        let playbackInterval;
+        let stopMessageTimeout;
+        let recordedAudioData;
+        let isRecording = false;
+        let isPlaying = false;
 
+        function toggleRecording() {
+            const recordButton = document.getElementById("recordButton");
+            const playButton = document.getElementById("playButton");
+            const statusMessage = document.getElementById("statusMessage");
+            const playDuration = document.getElementById("playDuration");
+
+            if (isRecording) {
+                // Stop recording
+                recorder.stop();
+                recordButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                recordButton.classList.remove('btn-danger');
+                recordButton.classList.add('btn-outline-danger');
+                playButton.disabled = false;
+                statusMessage.textContent = "Recording stopped";
+                playDuration.style.display = "block";
+                isRecording = false;
+
+                // Hide the status message after 2 seconds
+                setTimeout(() => {
+                    statusMessage.textContent = "";
+                }, 2000);
+            } else {
+                // Start recording
+                navigator.mediaDevices.getUserMedia({
+                        audio: true
+                    })
+                    .then(function(stream) {
+                        recordedChunks = [];
+                        recorder = new MediaRecorder(stream);
+
+                        recorder.ondataavailable = function(event) {
+                            recordedChunks.push(event.data);
+                            recordedAudioData = event.data;
+                        };
+
+                        recorder.onstop = function() {
+                            const audioBlob = new Blob(recordedChunks, {
+                                type: 'audio/webm'
+                            });
+                            const audioUrl = URL.createObjectURL(audioBlob);
+                            document.getElementById("audioPlayer").src = audioUrl;
+                        };
+
+                        recorder.start();
+                        recordButton.innerHTML = '<i class="fas fa-stop"></i>';
+                        recordButton.classList.remove('btn-outline-danger');
+                        recordButton.classList.add('btn-danger');
+                        playButton.disabled = true;
+                        statusMessage.textContent = "Recording...";
+                        playDuration.style.display = "none";
+                        isRecording = true;
+
+                        // Stop any current playback
+                        stopPlayback();
+                    })
+                    .catch(function(err) {
+                        console.error("Error accessing microphone:", err);
+                        statusMessage.textContent = "Microphone access denied";
+                    });
+            }
+        }
+
+        function togglePlayback() {
+            const playButton = document.getElementById("playButton");
+            const audioPlayer = document.getElementById("audioPlayer");
+            const playDuration = document.getElementById("playDuration");
+
+            if (isPlaying) {
+                stopPlayback();
+            } else {
+                if (recordedChunks.length === 0) {
+                    console.error("No recording available.");
+                    return;
+                }
+
+                // Start playback
+                const blob = new Blob(recordedChunks, {
+                    type: "audio/webm"
+                });
+                const audioURL = URL.createObjectURL(blob);
+                audioPlayer.src = audioURL;
+                audioPlayer.play();
+
+                playButton.innerHTML = '<i class="fas fa-stop"></i>';
+                playButton.classList.remove('btn-outline-primary');
+                playButton.classList.add('btn-primary');
+                isPlaying = true;
+
+                // Update timer
+                playbackInterval = setInterval(function() {
+                    const duration = audioPlayer.currentTime;
+                    const minutes = Math.floor(duration / 60);
+                    const seconds = Math.floor(duration % 60);
+                    playDuration.textContent =
+                        minutes.toString().padStart(2, '0') + ":" +
+                        seconds.toString().padStart(2, '0');
+                }, 100);
+
+                audioPlayer.onended = function() {
+                    stopPlayback();
+                };
+            }
+        }
+
+        function stopPlayback() {
+            const playButton = document.getElementById("playButton");
+            const audioPlayer = document.getElementById("audioPlayer");
+            const playDuration = document.getElementById("playDuration");
+
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            playButton.innerHTML = '<i class="fas fa-play"></i>';
+            playButton.classList.remove('btn-primary');
+            playButton.classList.add('btn-outline-primary');
+            playDuration.textContent = "00:00";
+            clearInterval(playbackInterval);
+            isPlaying = false;
+        }
+
+        // Handle modal close
+        document.getElementById("recordtask").addEventListener("hidden.bs.modal", function() {
+            if (isRecording) {
+                recorder.stop();
+                isRecording = false;
+            }
+            stopPlayback();
+        });
+
+        // Handle file upload
+        document.getElementById("audioFile").addEventListener("change", function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const audioPlayer = document.getElementById("audioPlayer");
+            const playButton = document.getElementById("playButton");
+            const recordButton = document.getElementById("recordButton");
+
+            recordedChunks = [file];
+            audioPlayer.src = URL.createObjectURL(file);
+            playButton.disabled = false;
+            recordButton.disabled = false;
+        });
+    </script>
+
+    <style>
         .uploadAudio input[type="file"] {
             display: none;
         }

@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {});
 Route::controller(RetailTrainingController::class)->group(function () {
     Route::post('get-training', 'getTrainings');
+    Route::post('user-audit', 'userAudit');
 });
 
 Route::group(['namespace' => 'api\v1', 'middleware'   => 'App\Http\Middleware\GuestApi'], function () {
