@@ -4,6 +4,8 @@ return [
 
     'TRAINING_DOCUMENT_URL' => 'http://lms.test/training_document',
     'TRAINING_THUMBNAIL_URL' => 'http://lms.test/training_thumbnail',
+    //    'TRAINING_DOCUMENT_URL' => 'http://lms.qdegrees.com/training_document',
+    // 'TRAINING_THUMBNAIL_URL' => 'http://lms.qdegrees.com/training_thumbnail',
     // 'TRAINING_DOCUMENT_URL' => env('APP_URL') . '/training_document',
     
     'STATUS_LIST'                   => [

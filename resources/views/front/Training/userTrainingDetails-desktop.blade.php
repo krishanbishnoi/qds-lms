@@ -295,30 +295,6 @@
                                             @endphp
 
                                             <div class="mt-4 pt-3 border-top">
-                                                {{-- @if (!empty($testAlreadySubmited) && $testAlreadySubmited->status == 1)
-                                                    <button class="btn btn-outline-secondary" data-bs-toggle="modal"
-                                                        data-bs-target="#alreadySubmittedTest">
-                                                        Begin Test
-                                                    </button>
-                                                @else
-                                                    <a class="btn btn-primary w-100 {{ $allContentCompleted ? '' : 'disabled' }}"
-                                                        href="{{ $allContentCompleted ? route('userTraining.test', ['training_id' => $training_id, 'course_id' => $course->id, 'test_id' => $course->test_id]) : 'javascript:void(0)' }}"
-                                                        @if (!$allContentCompleted) data-original-href="{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => $course->id, 'test_id' => $course->test_id]) }}"
-                                                        style="{{ !$allContentCompleted ? 'pointer-events: none; opacity: 0.6;' : '' }}" @endif>
-                                                        <i class="bi bi-pencil-square me-2"></i>Begin Test
-                                                        @if (!$allContentCompleted)
-                                                            <small class="d-block mt-1">Complete all content
-                                                                first</small>
-                                                        @endif
-                                                    </a>
-                                                @endif --}}
-
-                                                {{-- @if (!empty($testAlreadySubmited) && $testAlreadySubmited->status == 1)
-                                                    <button class="btn btn-outline-primary" style="pointer-events: none; opacity: 0.6;" data-bs-toggle="modal"
-                                                        data-bs-target="#alreadySubmittedTest">
-                                                        Begin Test
-                                                    </button>
-                                                @else --}}
                                                     @php
                                                         $isDisabled = !$allContentCompleted || !$canAttempt;
                                                         $buttonText = $canAttempt
@@ -334,14 +310,13 @@
                                                             'course_id' => $course->id,
                                                             'test_id' => $course->test_id,
                                                         ]);
-                                                        // dd($allContentCompleted);
                                                     @endphp
 
                                                     <div class="mt-4 pt-3 border-top">
                                                         <a class="btn btn-primary w-100 {{ $isDisabled ? 'disabled' : '' }}"
                                                             href="{{ $isDisabled ? 'javascript:void(0)' : $testRoute }}"
                                                             @if ($isDisabled) data-original-href="{{ $testRoute }}"
-               style="pointer-events: none; opacity: 0.6;" @endif>
+                                                                style="pointer-events: none; opacity: 0.6;" @endif>
                                                             <i
                                                                 class="bi bi-pencil-square me-2"></i>{{ $buttonText }}
                                                             @if ($message)
@@ -350,8 +325,6 @@
                                                             @endif
                                                         </a>
                                                     </div>
-                                                {{-- @endif --}}
-
                                             </div>
                                         @endif
                                     @else

@@ -66,7 +66,8 @@ class User extends Eloquent implements
 		'trainer_olms',
 		'location',
 		'is_certified',
-		'date_of_joining'
+		'date_of_joining',
+		'is_from_retail'
 	];
 
 	/**

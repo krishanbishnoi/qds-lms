@@ -2935,6 +2935,7 @@ a:hover{
     .textIntruction,
     .questionsScrn {
         margin: 15px;
+        width: 100%;
     }
     .questionsScrn {
         height:  100vh;

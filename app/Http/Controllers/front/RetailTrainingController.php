@@ -34,7 +34,7 @@ require_once app_path('getID3/getid3/getid3.php');
  *
  */
 
-class TrainingController extends BaseController
+class RetailTrainingController extends BaseController
 {
     public $model        =    'Training';
     public $sectionName    =    'Training';
@@ -91,8 +91,19 @@ class TrainingController extends BaseController
         return View::make('front.Training.popup', compact('result'));
     }
 
-    public function userTrainingDetails($training_id = 0)
+    public function userTrainingDetails($training_id = 0, Request $request)
     {
+
+        if ($request->has('user_id')) {
+            $user = User::find($request->user_id);
+
+            if ($user) {
+                $authUserId = Auth::loginUsingId($user->id);
+                // Log in this user
+            } else {
+                $authUserId = Auth::user()->id; // Log in this user
+            }
+        }
         $trainingDetails = Training::where('trainings.id', $training_id)->leftJoin('training_types', 'training_types.id', '=', 'trainings.type')->first();
 
         $trainingCourses = Course::where('training_id', $training_id)->with('CourseContentAndDocument')
