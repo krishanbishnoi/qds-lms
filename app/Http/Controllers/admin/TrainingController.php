@@ -158,7 +158,7 @@ class TrainingController extends BaseController
                 ->pluck('first_name', 'id')
                 ->toArray();
 
-            return view('admin.Training.add', compact('trainingCategory', 'TrainingType', 'training_manager', 'test', 'trainers'));
+            return view('admin.training.add', compact('trainingCategory', 'TrainingType', 'training_manager', 'test', 'trainers'));
         } catch (\Exception $e) {
 
             return redirect()->back()->with('error', 'somthing went wrong');;

@@ -142,7 +142,7 @@ class TestController extends BaseController
                 ->toArray();
             // dd($testDetails,$questionsAlreadyAssigned);
             if ($questionsAlreadyAssigned) {
-
+  
                 $testDetails = Test::where('tests.id', $test_id)->first();
 
                 $testQuestions = Question::whereIn('id', $questionsAlreadyAssigned)
