@@ -31,7 +31,7 @@ class UsersController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        View::share('modelName', users);
+        View::share('modelName', $this->model);
         View::share('sectionName', $this->sectionName);
         View::share('sectionNameSingular', $this->sectionNameSingular);
     }

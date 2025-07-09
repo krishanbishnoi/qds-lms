@@ -128,7 +128,7 @@ class TrainingController extends BaseController
                 ->where("user_role_id", TRAINER_ROLE_ID)
                 ->pluck('fullname', 'id');
 
-            return view("admin.Training.index", compact(
+            return view("admin.training.index", compact(
                 'results',
                 'searchVariable',
                 'sortBy',
@@ -138,6 +138,7 @@ class TrainingController extends BaseController
                 'trainers'
             ));
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->back()->with('error', 'somthing went wrong');;
         }
     }
@@ -399,7 +400,7 @@ class TrainingController extends BaseController
 
             $trainers = User::where("is_deleted", 0)->where("user_role_id", TRAINER_ROLE_ID)->pluck('fullname', 'id')->toArray();
             $selected_training_trainers = TrainerTrainings::where('training_id', $modelId)->pluck('user_id');
-            return  View::make("admin.Training.add", compact('model',  'breflingsDocument', 'trainingCategory', 'TrainingType', 'trainees', 'selected_trainees', 'training_manager', 'selected_training_manager', 'trainers', 'selected_training_trainers'));
+            return  View::make("admin.training.add", compact('model',  'breflingsDocument', 'trainingCategory', 'TrainingType', 'trainees', 'selected_trainees', 'training_manager', 'selected_training_manager', 'trainers', 'selected_training_trainers'));
         } catch (\Exception $e) {
 
             return redirect()->back()->with('error', 'somthing went wrong');;
@@ -427,7 +428,7 @@ class TrainingController extends BaseController
     public function addMoreDocument()
     {
         $offset = $_POST['offset'];
-        return  View::make("admin.Training.addMoreDetails", compact('offset', 'offset'));
+        return  View::make("admin.training.addMoreDetails", compact('offset', 'offset'));
     }
 
     public function deleteMoreDocument()
@@ -465,7 +466,7 @@ class TrainingController extends BaseController
             $trainee_ids         = TrainingParticipants::where("training_id", $modelId)->pluck('trainee_id')->toArray();
             $trainee_details     = User::whereIn("id", $trainee_ids)->get();
             $courses     = Course::where("training_id", $modelId)->get();
-            return  View::make("admin.Training.view", compact('model', 'trainee_details', 'trainer_details', 'manager_details', 'courses'));
+            return  View::make("admin.training.view", compact('model', 'trainee_details', 'trainer_details', 'manager_details', 'courses'));
         } catch (\Exception $e) {
 
             return redirect()->back()->with('error', 'somthing went wrong');;
@@ -523,7 +524,7 @@ class TrainingController extends BaseController
                 ? collect($clientResponse['data'])->pluck('company_name', 'id')->toArray()
                 : [];
 
-            return view("admin.Training.uploadTrainingParticipants", compact('assginTo', 'training_id', 'projects', 'methods', 'users', 'existingUserIds', 'clients'));
+            return view("admin.training.uploadTrainingParticipants", compact('assginTo', 'training_id', 'projects', 'methods', 'users', 'existingUserIds', 'clients'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'somthing went wrong');
         }
