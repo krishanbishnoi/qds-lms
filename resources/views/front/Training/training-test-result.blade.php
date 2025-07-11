@@ -36,10 +36,10 @@
                     <strong>Progress</strong>
                     <span>1<i>/4</i></span>
                 </div> --}}
-                    <button type="button" class="optionBtn d-lg-none"><img src="../front/img/option.svg" alt="icon"
+                    {{-- <button type="button" class="optionBtn d-lg-none"><img src="../front/img/option.svg" alt="icon"
                             width="23" height="23"></button>
                     <a href="{{ route('front.dashboard') }}"><button type="button" class="exitBtn"><img
-                                src="../front/img/exit.svg" alt="icon" width="23" height="23"></button></a>
+                                src="../front/img/exit.svg" alt="icon" width="23" height="23"></button></a> --}}
                 </div>
             </div>
         </div>
@@ -96,6 +96,35 @@
                                         <a href="{{ route('userTrainingDetails.index', ['id' => $trainingId]) }}"
                                             class="btn btn-secondary smallBtn py-1 px-4">Next Course</a>
                                     @endif
+
+                                    {{-- <button type="button" class="btn btn-secondary smallBtn py-1 px-4"
+                                        onclick="onSurveySubmit()">Finish Training</button> --}}
+                                    <script>
+                                        // // Provided by Sanjeev Ji
+                                        // function onSurveySubmit() {
+                                        //     // Optional: add validation or ajax call here
+                                        //     if (window.Android && Android.closeActivity) {
+                                        //         Android.closeActivity();
+                                        //     }
+                                        //     return true;
+                                        // }
+
+                                        // // Custome for log and alert
+                                        function onSurveySubmit() {
+                                            console.log("Button clicked");
+
+                                            if (window.Android && Android.closeActivity) {
+                                                Android.closeActivity();
+                                            } else {
+                                                // alert("Thank you for finishing the training!");
+                                                // Optionally, redirect or close tab
+                                                console.log("Thank you for finishing the training!");
+                                                // window.close();
+                                            }
+
+                                            return true;
+                                        }
+                                    </script>
 
                                 </div>
                             </div>

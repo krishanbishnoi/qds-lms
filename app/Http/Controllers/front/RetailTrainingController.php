@@ -93,7 +93,6 @@ class RetailTrainingController extends BaseController
 
     public function userTrainingDetails($training_id = 0, Request $request)
     {
-
         if ($request->has('user_id')) {
             $user = User::find($request->user_id);
 
@@ -102,6 +101,7 @@ class RetailTrainingController extends BaseController
                 // Log in this user
             } else {
                 $authUserId = Auth::user()->id; // Log in this user
+                return redirect()->back()->with('This user not found. Please try again with valid email');
             }
         }
         $trainingDetails = Training::where('trainings.id', $training_id)->leftJoin('training_types', 'training_types.id', '=', 'trainings.type')->first();

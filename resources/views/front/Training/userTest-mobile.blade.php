@@ -127,15 +127,17 @@
                             @endif
 
                             <div class="form-check my-4">
-                                <input class="form-check-input" type="checkbox" value="" id="mobile-checkDefault">
-                                <label class="form-check-label" for="mobile-checkDefault">
+                                <input class="form-check-input" type="checkbox" required value=""
+                                    id="mobile-checkDefault">
+                                <label class="form-check-label" for="mobile-checkDefault" id="mobile-checkDefaultBtn">
                                     I've Read and Start test
                                 </label>
                             </div>
                         </ul>
                     </div>
                 </div>
-                <div class="modal-footer">
+
+                <div class="modal-footer" id="mobile-startTestBtnWrapper">
                     <button type="button" id="mobile-startTestBtn" class="btn btn-success" disabled>✅ I've Read &
                         Start Test</button>
                 </div>
@@ -161,7 +163,7 @@
                     <div class="modalSpan text-start mb-4">
                         <strong class="mb-3">Questions Answered: <span
                                 id="answered-count">0</span>/{{ count($trainingQuestions) }}</strong>
-                        <strong>Time Remaining: <span id="time-remaining">0m 0s</span></strong>
+                        {{-- <strong>Time Remaining: <span id="time-remaining-display">0m 0s</span></strong> --}}
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -177,8 +179,7 @@
 
     <div class="questionsScrn d-md-none pb-5 w-100 m-0" style="display: none; ">
         <a href="" class="moduleBck d-md-none mb-3 d-block">
-            <img src="https://demolms.qdegrees.com/front/img/back-button.png" alt="" width="50"
-                class="me-2">
+            <img src="https://lms.qdegrees.com/front/img/back-button.png" alt="" width="50" class="me-2">
         </a>
         <div class="headingInt">
             <span class="d-block fw-medium">Question <span
@@ -279,6 +280,36 @@
                 transform: scale(1);
             }
         }
+
+        .highlight-checkbox {
+            outline: 2px solid red;
+            outline-offset: 2px;
+            box-shadow: 0 0 5px red;
+            animation: shake 0.3s ease-in-out 0s 2;
+        }
+
+        /* Shake animation keyframes */
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-4px);
+            }
+
+            50% {
+                transform: translateX(4px);
+            }
+
+            75% {
+                transform: translateX(-4px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
     </style>
 
 
@@ -288,6 +319,32 @@
 
     <script>
         $(document).ready(function() {
+            // Enable the button only when checkbox is checked
+            $('#mobile-checkDefault').change(function() {
+                $('#mobile-startTestBtn').prop('disabled', !this.checked);
+            });
+
+            // Wrapper click (to catch clicks even when button is disabled)
+            $('#mobile-startTestBtnWrapper').click(function() {
+                if (!$('#mobile-checkDefault').is(':checked')) {
+                    const checkbox = $('#mobile-checkDefault');
+
+                    // Add shake + highlight
+                    checkbox.addClass('highlight-checkbox');
+
+                    // Scroll into view (optional)
+                    checkbox[0].scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    // Remove after 1.5s
+                    setTimeout(function() {
+                        checkbox.removeClass('highlight-checkbox');
+                    }, 1500);
+                }
+            });
+
             // Show mobile instructions modal first
             const mobileTestInstructionsModal = new bootstrap.Modal(document.getElementById(
                 'mobile-testInstructionsModal'));
@@ -301,11 +358,6 @@
             let testStarted = false;
             let countdownInterval;
 
-            // Enable Start Test button when checkbox is checked
-            $('#mobile-checkDefault').change(function() {
-                $('#mobile-startTestBtn').prop('disabled', !this.checked);
-            });
-
             // Start test button handler
             $('#mobile-startTestBtn').click(function() {
                 mobileTestInstructionsModal.hide();
@@ -314,6 +366,7 @@
                 testStarted = true;
                 showQuestion(currentQuestionIndex);
             });
+
 
 
             // Function to show question
@@ -341,36 +394,36 @@
                                     userAnswers[question.id].answer_id.includes(option.id.toString())));
 
                         $optionsList.append(`
-                <li>
-                    <input type="radio" id="option-${question.id}-${option.id}" name="answer-${question.id}" 
-                           value="${option.id}" ${isChecked ? 'checked' : ''}>
-                    <label for="option-${question.id}-${option.id}">${option.option}</label>
-                </li>
-            `);
+                        <li>
+                            <input type="radio" id="option-${question.id}-${option.id}" name="answer-${question.id}" 
+                                value="${option.id}" ${isChecked ? 'checked' : ''}>
+                            <label for="option-${question.id}-${option.id}">${option.option}</label>
+                        </li>
+                    `);
                     });
                 } else if (question.question_type === 'MCQ') {
                     question.question_attributes.forEach((option) => {
                         const isChecked = userAnswers[question.id] &&
-                            (Array.isArray(userAnswers[question.id].answer_id) &&
-                                userAnswers[question.id].answer_id.includes(option.id.toString()));
+                            userAnswers[question.id].answer_id &&
+                            userAnswers[question.id].answer_id.split(',').includes(option.id.toString());
 
                         $optionsList.append(`
-                <li>
-                    <input type="checkbox" id="option-${question.id}-${option.id}" name="answer-${question.id}[]" 
-                           value="${option.id}" ${isChecked ? 'checked' : ''}>
-                    <label for="option-${question.id}-${option.id}">${option.option}</label>
-                </li>
-            `);
+                        <li>
+                            <input type="checkbox" id="option-${question.id}-${option.id}" name="answer-${question.id}[]" 
+                                value="${option.id}" ${isChecked ? 'checked' : ''}>
+                            <label for="option-${question.id}-${option.id}">${option.option}</label>
+                        </li>
+                    `);
                     });
                 } else if (question.question_type === 'FreeText') {
                     const answerText = userAnswers[question.id] ? userAnswers[question.id].answer_text : '';
                     $optionsList.append(`
-        <li class="free-text-item">
-            <textarea class="form-control" name="answer-text-${question.id}" 
-                     rows="4" maxlength="150">${answerText}</textarea>
-            <div class="wordcounter text-end">${answerText.length}/150</div>
-        </li>
-    `);
+                    <li class="free-text-item">
+                        <textarea class="form-control" name="answer-text-${question.id}" 
+                                rows="4" maxlength="150">${answerText}</textarea>
+                        <div class="wordcounter text-end">${answerText.length}/150</div>
+                    </li>
+                `);
 
                     // Update word counter
                     $(`textarea[name="answer-text-${question.id}"]`).on('input', function() {
@@ -401,34 +454,6 @@
                 }
             });
 
-
-            // Timer function
-            // function startTimer() {
-            //     let countdown = {{ $trainingTest->time_of_test }} * 60;
-
-            //     updateTimeDisplay(countdown);
-
-            //     countdownInterval = setInterval(function() {
-            //         countdown--;
-            //         updateTimeDisplay(countdown);
-
-            //         if (countdown <= 0) {
-            //             clearInterval(countdownInterval);
-            //             submitTest();
-            //         } else if (countdown <= 300) { // 5 minutes or less
-            //             $('#time-remaining').addClass('text-danger');
-            //         }
-            //     }, 1000);
-            // }
-
-            // function updateTimeDisplay(seconds) {
-            //     const minutes = Math.floor(seconds / 60);
-            //     const remainingSeconds = seconds % 60;
-            //     $('#time-remaining').text(
-            //         `${minutes}m ${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}s`
-            //     );
-            // }
-
             if (countdown <= 60) {
                 $('#countdown-timer').addClass('low-time');
             } else {
@@ -439,6 +464,7 @@
                 const countdownElement = $('#countdown');
                 const timerImgElement = $('.timerImg');
                 let countdown = {{ $testDetails->time_of_test }} * 60;
+
 
                 // Update time remaining in confirmation modal
                 function updateTimeRemainingDisplay(seconds) {
@@ -488,50 +514,6 @@
                     showSubmissionModal();
                 }
             });
-
-            // function saveAnswer() {
-            //     const question = questions[currentQuestionIndex];
-            //     let answerData = {};
-
-            //     if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
-            //         const selectedOption = $(`input[name="answer-${question.id}"]:checked`).val();
-            //         if (selectedOption) {
-            //             answerData = {
-            //                 question_id: question.id,
-            //                 answer_id: selectedOption,
-            //                 answer_text: null
-            //             };
-            //         }
-            //     } else if (question.question_type === 'MCQ') {
-            //         const selectedOptions = [];
-            //         $(`input[name="answer-${question.id}[]"]:checked`).each(function() {
-            //             selectedOptions.push($(this).val());
-            //         });
-
-            //         if (selectedOptions.length > 0) {
-            //             answerData = {
-            //                 question_id: question.id,
-            //                 answer_id: selectedOptions.join(','),
-            //                 answer_text: null
-            //             };
-            //         }
-            //     } else if (question.question_type === 'FreeText') {
-            //         const answerText = $(`textarea[name="answer-text-${question.id}"]`).val().trim();
-            //         if (answerText) {
-            //             answerData = {
-            //                 question_id: question.id,
-            //                 answer_id: null,
-            //                 answer_text: answerText
-            //             };
-            //         }
-            //     }
-
-            //     if (Object.keys(answerData).length > 0) {
-            //         userAnswers[question.id] = answerData;
-            //         return true;
-            //     }
-            //     return false;
-            // }
 
             function saveAnswer() {
                 const question = questions[currentQuestionIndex];
@@ -671,7 +653,9 @@
 
         $('.moduleBck').click(function(e) {
             e.preventDefault();
-            const leaveTest = confirm('If you click OK, your test will end here. Do you want to leave the test?');
+            const leaveTest = confirm(
+                "⚠️ Warning:\n\nIf you proceed, your test will be submitted and you won't be able to make further changes.\n\nAre you sure you want to end the test and leave?"
+            );
             if (leaveTest) {
                 window.location.href = '/'; // change URL as needed
             } else {
@@ -679,4 +663,5 @@
             }
         });
     </script>
+
 </div>
