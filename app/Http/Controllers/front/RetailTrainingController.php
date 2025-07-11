@@ -492,32 +492,56 @@ class RetailTrainingController extends BaseController
         $training = Training::findOrFail($trainingTestResultDetails->training_id);
 
         $courses = $training->training_courses;
+        $trainingLastTestDetails = TrainingTestParticipants::where('trainee_id', $userId)
+            ->where('test_id', $id)
+            ->orderBy('created_at', 'desc')  // or ->orderBy('id', 'desc')
+            ->select('training_id', 'course_id')
+            ->first();
+        $isLastCourse = false;
+        $courseIds = $courses->pluck('id')->toArray();
+        $currentCourseId = $trainingLastTestDetails->course_id;
+
+        if (end($courseIds) == $currentCourseId) {
+            $isLastCourse = true;
+        }
+
+
 
         $totalMinimumMark = 0;
         $totalTestCount = 0;
         $totalObtainMarks = 0;
-        $totalCount = 0;
+
         foreach ($courses as $course) {
             $test = Test::find($course->test_id);
-            // Check if the course has a test associated with it
+
             if ($test) {
-                $totalMinimumMark += $test->minimum_marks;
                 $totalTestCount++;
-                $averageMarks = TrainingTestResult::where('training_id', $trainingTestResultDetails->training_id)->where('user_id', $userId)
-                    ->avg('obtain_marks');
-                $userDetails = TrainingTestResult::where('training_id', $trainingTestResultDetails->training_id)->where('course_id', $course->id)->orWhere('test_id', $test->id)->first();
-                if ($averageMarks !== null) {
-                    $totalObtainMarks += $averageMarks;
-                    $totalCount++;
+                $totalMinimumMark += $test->minimum_marks;
+
+                // Get the latest attempt by user for this test
+                $latestAttempt = TrainingTestResult::where('training_id', $training->id)
+                    ->where('user_id', $userId)
+                    ->where('course_id', $course->id)
+                    ->where('test_id', $test->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
+                if ($latestAttempt) {
+                    $totalObtainMarks += $latestAttempt->obtain_marks;
                 }
             }
         }
+
         $totalAttendedTestCount = TrainingTestResult::where('training_id', $trainingTestResultDetails->training_id)->where('user_id', $userId)->count();
 
-        $averageMinimumMark = ($totalTestCount > 0) ? ($totalMinimumMark / $totalTestCount) : 0;
-        $averageObtainMarks = ($totalCount > 0) ? ($totalObtainMarks / $totalCount) : 0;
+        // Calculate averages
+        $averageMinimumMark = $totalTestCount > 0 ? ($totalMinimumMark / $totalTestCount) : 0;
+        $averageObtainMarks = $totalTestCount > 0 ? ($totalObtainMarks / $totalTestCount) : 0;
 
+        // Determine pass/fail
         $OverAllStatus = ($averageObtainMarks >= $averageMinimumMark) ? 'Passed' : 'Failed';
+
+
 
         $start_date = \Carbon\Carbon::parse($training->start_date_time);
         $end_date = \Carbon\Carbon::parse($training->end_date_time);
@@ -547,7 +571,7 @@ class RetailTrainingController extends BaseController
             'averageObtainMarks' => $averageObtainMarks,
             'OverAllStatus' => $OverAllStatus,
             'lengthInDays' => $lengthInDays,
-
+            'isLastCourse' => $isLastCourse
         ]);
     }
 
@@ -667,6 +691,15 @@ class RetailTrainingController extends BaseController
                 ->orderBy('created_at', 'asc');
         }])->findOrFail($courseId);
 
+        $training = Training::findOrFail($course->training_id);
+
+        $courses = $training->training_courses;
+        $isLastCourse = false;
+        $courseIds = $courses->pluck('id')->toArray();
+        if (end($courseIds) == $courseId) {
+            $isLastCourse = true;
+        }
+
         // Get all completed documents for this user and course
         $completedDocuments = TraineeAssignedTrainingDocument::where('user_id', $userId)
             ->where('course_id', $courseId)
@@ -710,6 +743,7 @@ class RetailTrainingController extends BaseController
             ],
             'canAttempt' => $canAttempt,
             'content' => $content,
+            'isLastCourse' => $isLastCourse,
         ]);
     }
 }

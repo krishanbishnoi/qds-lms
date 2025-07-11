@@ -85,15 +85,18 @@
                             <div class="fs-6 blue-text">Certificate</div>
                             <div class="text-center">
                                 <div class="d-flex align-items-center justify-content-start gap-3 ">
-
-                                    @if ($OverAllStatus == 'Passed' && $totalTestCount == $totalAttendedTestCount)
+                                    @if ($OverAllStatus == 'Passed' && $isLastCourse)
+                                        <!-- Last course, passed all tests -->
                                         <button type="button" class="btn btn-secondary smallBtn  py-1 px-4"
                                             data-bs-toggle="modal" data-bs-target="#certificate-modal">View</button>
+                                        <button type="button" class="btn btn-secondary smallBtn py-1 px-4"
+                                            onclick="onSurveySubmit()">Finish Training</button>
                                     @else
+                                        <!-- Not last course or not passed -->
                                         <button type="button" class="btn btn-secondary smallBtn  py-1 px-4"
                                             data-bs-toggle="modal"
                                             data-bs-target="#certificate-not-generated-modal">View</button>
-                                        <a href="{{ route('userTrainingDetails.index', ['id' => $trainingId]) }}"
+                                        <a href="{{ route('userTrainingDetails.index', ['id' => $trainingId]) . '?user_id=' . Auth::id() }}"
                                             class="btn btn-secondary smallBtn py-1 px-4">Next Course</a>
                                     @endif
 

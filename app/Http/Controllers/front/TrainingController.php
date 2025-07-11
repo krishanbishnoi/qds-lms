@@ -481,6 +481,19 @@ class TrainingController extends BaseController
         $training = Training::findOrFail($trainingTestResultDetails->training_id);
 
         $courses = $training->training_courses;
+        $trainingLastTestDetails = TrainingTestParticipants::where('trainee_id', $userId)
+            ->where('test_id', $id)
+            ->orderBy('created_at', 'desc')  // or ->orderBy('id', 'desc')
+            ->select('training_id', 'course_id')
+            ->first();
+        $isLastCourse = false;
+        $courseIds = $courses->pluck('id')->toArray();
+        $currentCourseId = $trainingLastTestDetails->course_id;
+
+        if (end($courseIds) == $currentCourseId) {
+            $isLastCourse = true;
+        }
+
 
         $totalMinimumMark = 0;
         $totalTestCount = 0;
@@ -502,7 +515,7 @@ class TrainingController extends BaseController
             }
         }
         $totalAttendedTestCount = TrainingTestResult::where('training_id', $trainingTestResultDetails->training_id)->where('user_id', $userId)->count();
-
+        $testParticipantData = TrainingTestParticipants::where('training_id', $training->id)->where('course_id', $userId);
         $averageMinimumMark = ($totalTestCount > 0) ? ($totalMinimumMark / $totalTestCount) : 0;
         $averageObtainMarks = ($totalCount > 0) ? ($totalObtainMarks / $totalCount) : 0;
 
@@ -536,7 +549,7 @@ class TrainingController extends BaseController
             'averageObtainMarks' => $averageObtainMarks,
             'OverAllStatus' => $OverAllStatus,
             'lengthInDays' => $lengthInDays,
-
+            'isLastCourse' => $isLastCourse
         ]);
     }
 
@@ -656,6 +669,21 @@ class TrainingController extends BaseController
                 ->orderBy('created_at', 'asc');
         }])->findOrFail($courseId);
 
+        $training = Training::findOrFail($course->training_id);
+
+        $courses = $training->training_courses;
+        $trainingLastTestDetails = TrainingTestParticipants::where('trainee_id', $userId)
+            ->orderBy('created_at', 'desc')  // or ->orderBy('id', 'desc')
+            ->select('training_id', 'course_id')
+            ->first();
+        $isLastCourse = false;
+        $courseIds = $courses->pluck('id')->toArray();
+        $currentCourseId = $trainingLastTestDetails->course_id;
+
+        if (end($courseIds) == $currentCourseId) {
+            $isLastCourse = true;
+        }
+
         // Get all completed documents for this user and course
         $completedDocuments = TraineeAssignedTrainingDocument::where('user_id', $userId)
             ->where('course_id', $courseId)
@@ -677,6 +705,7 @@ class TrainingController extends BaseController
         } else {
             $canAttempt = true;
         }
+
         // Transform the content data for the response
         $content = $course->CourseContentAndDocument->map(function ($item) use ($completedDocuments) {
             return [
@@ -688,7 +717,6 @@ class TrainingController extends BaseController
                 'is_completed' => in_array($item->id, $completedDocuments),
             ];
         });
-
         return response()->json([
             'success' => true,
             'course' => [
@@ -699,6 +727,7 @@ class TrainingController extends BaseController
             ],
             'canAttempt' => $canAttempt,
             'content' => $content,
+            'isLastCourse' => $isLastCourse,
         ]);
     }
 }

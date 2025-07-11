@@ -259,54 +259,6 @@
     </div>
 
 
-    <!--  -->
-    <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
-        tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Modal 1</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Show a second modal and hide this one with the button below.
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">Open
-                        second modal</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="submissionMdl">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0">
-                <div class="modal-header">
-                    <!-- <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Modal 2</h1> -->
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center mdlContent">
-                    <div class="mb-4">
-                        <lottie-player src="{{ asset('front/img/online-exam.json') }}"
-                            style="width: 100%;height:200px;margin: auto;" loop autoplay></lottie-player>
-                    </div>
-                    <span class="d-block mb-3">Confirm Submission</span>
-                    <p class="px-3">Are you sure you want to submit your test? Once submitted, you cannot change your
-                        answers.</p>
-                    <div class="modalSpan text-start mb-4">
-                        <strong>Question Answered: <b>2/2</b></strong>
-                        <strong>Time Remaining : <b>9m 32s</b></strong>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <button type="button" class="btn btn-secondary">Previous</button>
-                        <button type="button" class="btn btn-primary quizBtn">Confirm Submit</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade" id="docMdl">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content rounded-4 border-0">
@@ -1319,36 +1271,6 @@
 
                         const allContentCompleted = response.content.every(item => item
                             .is_completed);
-                        // Add test button if exists
-                        // if (response.course.test_id) {
-                        //     const allContentCompleted = response.content.every(item => item
-                        //         .is_completed);
-                        //     const isDisabled = !allContentCompleted || !response.canAttempt;
-
-                        //     contentHtml += `
-                        //     <div class="mt-4 pt-3 border-top">
-                        //         <a href="{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => '__CID__', 'test_id' => '__TID__']) }}"
-                        //             class="btn btn-primary w-100 start-test-btn ${isDisabled ? 'disabled' : ''}"
-                        //             data-course-id="${response.course.id}"
-                        //             data-test-id="${response.course.test_id}"
-                        //             ${isDisabled ? 'style="pointer-events: none; opacity: 0.6;"' : ''}>
-                        //             <i class="bi bi-pencil-square me-2"></i>Begin Test
-                        //         </a>
-                        //     </div>
-                        // `.replace('__CID__', response.course.id).replace('__TID__', response.course.test_id);
-
-                        // } else {
-                        //     // Add Next Course button if no test exists
-                        //     contentHtml += `
-                        // <div class="mt-4 pt-3 border-top">
-                        //     <a href="{{ route('userTrainingDetails.index', ['id' => $training_id]) }}"
-                        //         class="btn btn-secondary w-100 next-course-btn ${allContentCompleted ? '' : 'disabled'}"
-                        //         ${allContentCompleted ? '' : 'style="pointer-events: none; opacity: 0.6;"'}>
-                        //         <i class="bi bi-arrow-right me-2"></i>Next Course
-                        //     </a>
-                        // </div>
-                        // `;
-                        //     }
 
                         if (response.course.test_id) {
                             const allContentCompleted = response.content.every(item => item
@@ -1384,16 +1306,31 @@
 
                             contentHtml += buttonHtml;
                         } else {
-                            // Add Next Course button if no test exists
-                            contentHtml += `
+                            console.log(response.isLastCourse)
+                            if (response.isLastCourse == true) {
+                                // Show Finish Training button if last course
+                                contentHtml += `
                         <div class="mt-4 pt-3 border-top">
-                            <a href="{{ route('userTrainingDetails.index', ['id' => $training_id]) }}"
+                            <a href="{{ route('userTrainingDetails.index', ['id' => $training_id]) . '?user_id=' . Auth::id() }}"
+                                class="btn btn-secondary w-100 finish-trianing-btn ${allContentCompleted ? '' : 'disabled'}"
+                                ${allContentCompleted ? '' : 'style="pointer-events: none; opacity: 0.6;"'}>
+                                <i class="bi bi-arrow-right me-2"></i>Finish Training
+                            </a>
+                        </div>
+                    `;
+
+                            } else {
+                                // Add Next Course button if no test exists
+                                contentHtml += `
+                        <div class="mt-4 pt-3 border-top">
+                            <a href="{{ route('userTrainingDetails.index', ['id' => $training_id]) . '?user_id=' . Auth::id() }}"
                                 class="btn btn-secondary w-100 next-course-btn ${allContentCompleted ? '' : 'disabled'}"
                                 ${allContentCompleted ? '' : 'style="pointer-events: none; opacity: 0.6;"'}>
                                 <i class="bi bi-arrow-right me-2"></i>Next Course
                             </a>
                         </div>
                     `;
+                            }
                         }
 
                         $('.module-content-container').html(contentHtml);
@@ -1791,6 +1728,7 @@
 
             const hasTest = container.find('.start-test-btn').length > 0;
             const nextCourseBtn = container.find('.next-course-btn');
+            const finishTrainingBtn = container.find('.finish-trianing-btn');
             const testBtn = container.find('.start-test-btn');
             const canAttempt = container.data('can-attempt') !== false; // Default to true if not set
 
@@ -1828,9 +1766,24 @@
                         });
                 }
             } else {
-                // Handle Next Course button
-                if (nextCourseBtn.length) {
-                    // Update existing button
+                // Handle Next Course or Finish Training button
+                if (finishTrainingBtn.length) {
+                    // Update Finish Training button
+                    if (allCompleted) {
+                        finishTrainingBtn.removeClass('disabled')
+                            .css({
+                                'pointer-events': 'auto',
+                                'opacity': '1'
+                            });
+                    } else {
+                        finishTrainingBtn.addClass('disabled')
+                            .css({
+                                'pointer-events': 'none',
+                                'opacity': '0.6'
+                            });
+                    }
+                } else if (nextCourseBtn.length) {
+                    // Update Next Course button
                     if (allCompleted) {
                         nextCourseBtn.removeClass('disabled')
                             .css({
@@ -1845,18 +1798,19 @@
                             });
                     }
                 } else if (allCompleted) {
-                    // Create new button if it doesn't exist and content is completed
-                    const nextCourseHtml = `
-                <div class="mt-4 pt-3 border-top">
-                    <a href="{{ route('userTrainingDetails.index', ['id' => $training_id]) }}"
-                        class="btn btn-secondary w-100 next-course-btn">
-                        <i class="bi bi-arrow-right me-2"></i>Next Course
-                    </a>
-                </div>
-            `;
-                    container.append(nextCourseHtml);
+                    // Optionally add Finish Training or Next Course button
+                    const finishTrainingHtml = `
+            <div class="mt-4 pt-3 border-top">
+                <a href="{{ route('userTrainingDetails.index', ['id' => $training_id]) }}"
+                    class="btn btn-secondary w-100 finish-trianing-btn">
+                    <i class="bi bi-arrow-right me-2"></i>Finish Training
+                </a>
+            </div>
+        `;
+                    container.append(finishTrainingHtml);
                 }
             }
+
 
             // Update module completion status in the list
             const courseElement = $('.load-course-module[data-course-id="' + courseId + '"]');
