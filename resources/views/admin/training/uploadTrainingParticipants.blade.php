@@ -20,6 +20,10 @@
                 </ol>
             </nav>
         </div>
+        {{-- @php
+            $data = App\Models\RetailAssignedTraining::where('training_id',$training_id)->first();
+            dd($data);
+        @endphp --}}
         <div class="row">
             <div class="col-lg-12 ">
                 <div class="card">
@@ -88,7 +92,15 @@
                                 </div>
 
                                 <!-- retailiq Project fields -->
-
+                                <div id="loadingOverlay"
+                                    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; justify-content: center; align-items: center;">
+                                    <div class="text-center">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p class="mt-2">Loading data, please wait...</p>
+                                    </div>
+                                </div>
                                 <div class="mb-3 col-6" id="retailiq-section" style="display: none;">
                                     <form action="{{ route('retail.assign-training', $training_id) }}" method="POST"
                                         class="mt-0">
@@ -122,7 +134,7 @@
                                     {!! Form::label('campaign_id', 'Select Campaign', ['class' => 'block font-bold mb-1']) !!}
                                     {!! Form::select('campaign_id[]', [], $campaignData ?? null, [
                                         'id' => 'campaignSelect',
-                                        'class' => 'form-control campaign-users',
+                                        'class' => 'form-control campaign-users campaignFetchedData',
                                         'multiple' => true,
                                         'data-placeholder' => '-- Choose Campaign --',
                                     ]) !!}
@@ -142,7 +154,7 @@
 
                                     {!! Form::select('store_code[]', [], null, [
                                         'id' => 'storeSelect',
-                                        'class' => 'form-control select2-form',
+                                        'class' => 'form-control select2-form storeFetchedData',
                                         'multiple' => 'multiple',
                                     ]) !!}
 
@@ -179,6 +191,17 @@
             left: auto;
             line-height: 1;
             font-size: 12px;
+        }
+
+        #loadingOverlay {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(2px);
+            padding-top: 50px;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
         }
     </style>
     <script>
@@ -373,6 +396,160 @@
                 } else {
                     $('#validity-error').hide();
                 }
+            });
+        });
+
+
+        $(document).ready(function() {
+            $('#clientSelect').change(function() {
+                var fetchAssignedTrainingUrl = "{{ route('retail.assigned-training.fetch') }}";
+                let clientId = $(this).val();
+                let trainingId = $('input[name="training_id"]').val();
+
+                if (clientId) {
+                    // Show loader
+                    $('#loadingOverlay').show();
+
+                    $.ajax({
+                        url: fetchAssignedTrainingUrl,
+                        method: 'POST',
+                        data: {
+                            client_id: clientId,
+                            training_id: trainingId,
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                let data = response.data;
+                                console.log(data);
+
+                                $('#retailiq-section, #store-section, #campaign-section')
+                                    .show();
+
+                                // Set simple fields
+                                $('select[name="assginTo"]').val(data.assginTo);
+                                $('input[name="validity"]').val(data.validity);
+
+                                let campaignIds = data.campaign_id || [];
+                                let storeCodes = data.store_code || [];
+
+                                // First fetch campaigns for this client
+                                $.ajax({
+                                    url: '{{ route('fetch.retail.campaigns') }}',
+                                    method: 'POST',
+                                    data: {
+                                        client_id: clientId,
+                                        _token: '{{ csrf_token() }}'
+                                    },
+                                    success: function(campaignResponse) {
+                                        if (campaignResponse.status === 1) {
+                                            $('#campaignSelect').empty().append(
+                                                '<option value="">-- Choose Campaign --</option>'
+                                            );
+
+                                            // Add all campaign options
+                                            campaignResponse.campaigns.forEach(
+                                                function(camp) {
+                                                    $('#campaignSelect').append(
+                                                        new Option(camp
+                                                            .name, camp.id));
+                                                });
+
+                                            // Now set the selected values
+                                            $('.campaignFetchedData').val(
+                                                campaignIds).trigger('change');
+
+                                            // After setting campaigns, fetch stores for these campaigns
+                                            if (storeCodes.length > 0) {
+                                                $.ajax({
+                                                    url: '{{ route('fetch.retail.campaigns.store') }}',
+                                                    method: 'POST',
+                                                    data: {
+                                                        campaign_ids: campaignIds,
+                                                        _token: '{{ csrf_token() }}'
+                                                    },
+                                                    success: function(
+                                                        storeResponse) {
+                                                        if (storeResponse
+                                                            .status ===
+                                                            1) {
+                                                            $('#storeSelect')
+                                                                .empty();
+                                                            storeResponse
+                                                                .stores
+                                                                .forEach(
+                                                                    function(
+                                                                        store
+                                                                    ) {
+                                                                        $('#storeSelect')
+                                                                            .append(
+                                                                                new Option(
+                                                                                    store
+                                                                                    .code,
+                                                                                    store
+                                                                                    .code
+                                                                                )
+                                                                            );
+                                                                    });
+
+                                                            // Now set the selected store values
+                                                            $('.storeFetchedData')
+                                                                .val(
+                                                                    storeCodes
+                                                                )
+                                                                .trigger(
+                                                                    'change'
+                                                                );
+                                                        }
+                                                        // Hide loader after everything is done
+                                                        $('#loadingOverlay')
+                                                            .hide();
+                                                    },
+                                                    error: function() {
+                                                        console.error(
+                                                            'Failed to load stores.'
+                                                        );
+                                                        $('#loadingOverlay')
+                                                            .hide();
+                                                    }
+                                                });
+                                            } else {
+                                                // No stores to load, hide loader
+                                                $('#loadingOverlay').hide();
+                                            }
+                                        } else {
+                                            $('#loadingOverlay').hide();
+                                        }
+                                    },
+                                    error: function() {
+                                        console.error('Failed to load campaigns.');
+                                        $('#loadingOverlay').hide();
+                                    }
+                                });
+                            } else {
+                                // No data found for client, clear form fields
+                                $('select[name="assginTo"]').val(null);
+                                $('input[name="validity"]').val(null);
+                                $('.campaignFetchedData').val(null).trigger('change');
+                                $('.storeFetchedData').val(null).trigger('change');
+                                $('#loadingOverlay').hide();
+                            }
+                        },
+                        error: function() {
+                            alert('Failed to fetch assigned training data.');
+                            $('#loadingOverlay').hide();
+                        }
+                    });
+                }
+            });
+
+            $('.select2-form').select2({
+                placeholder: '-- Choose --',
+                allowClear: true
+            });
+            $('.campaign-users').select2({
+                placeholder: '-- Choose Campaign --',
+                allowClear: true
             });
         });
     </script>
