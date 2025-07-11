@@ -178,7 +178,7 @@
 
 
     <div class="questionsScrn d-md-none pb-5 w-100 m-0" style="display: none; ">
-        <a href="" class="moduleBck d-md-none mb-3 d-block">
+        <a href="{{ url()->previous() }}" class="moduleBck d-md-none mb-3 d-block">
             <img src="https://lms.qdegrees.com/front/img/back-button.png" alt="" width="50" class="me-2">
         </a>
         <div class="headingInt">
