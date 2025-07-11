@@ -120,6 +120,8 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::post('/training/fetch-campaigns', 'fetchRetailCampaigns')->name('fetch.retail.campaigns');
             Route::post('/training/fetch-store', 'fetchRetailCampaignsStore')->name('fetch.retail.campaigns.store');
             Route::post('/training/retail-assign', 'retailAssignTraining')->name('retail.assign-training');
+            Route::post('retail-assigned-training/fetch', 'fetchAssignedTraining')->name('retail.assigned-training.fetch');
+
         });
 
         /* training category modules routes */
@@ -555,8 +557,8 @@ Route::group(array('middleware' => ['App\Http\Middleware\AuthFront', 'PreventBac
     Route::any('my-trainings-details-design/{id}', array('as' => 'userTrainingDetails.index.design', 'uses' => 'TrainingController@userTrainingDetailsDesign'));
     Route::any('/update-training-document-progress', array('as' => 'userTrainingDetails.document.progress', 'uses' => 'TrainingController@userTrainingDocumentProgress'));
     Route::post('/training-logs/training_details/{id}', array('as' => 'training_details.popup', 'uses' => 'TrainingController@training_details_popup'));
-    Route::post('/user/document/duration', [App\Http\Controllers\front\TrainingController::class, 'getDocumentDuration'])->name('userTrainingDetails.document.duration');
-    Route::post('/user/document/update-duration', [App\Http\Controllers\front\TrainingController::class, 'updateDocumentPartialDuration'])->name('userTrainingDetails.document.partial');
+    Route::post('/user/document/duration', [App\Http\Controllers\front\TrainingController::class, 'getDocumentDuration'])->name('tc.userTrainingDetails.document.duration');
+    Route::post('/user/document/update-duration', [App\Http\Controllers\front\TrainingController::class, 'updateDocumentPartialDuration'])->name('tc.userTrainingDetails.document.partial');
     Route::get('/user-training/get-course-content', [App\Http\Controllers\front\TrainingController::class, 'getCourseContentForMobile'])
         ->name('userTraining.getCourseContentForMobile');
 

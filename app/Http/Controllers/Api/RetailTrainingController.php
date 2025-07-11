@@ -96,11 +96,11 @@ class RetailTrainingController extends BaseController
 				];
 			}
 
-			return $this->sendSuccess($data, config('constants.API_MSG.REC_FETCH_SUCCESS'));
+			return $this->sendSuccess($data, config('constants.API_MSG.REC_FETCHED_SUCCESS'));
 		} catch (ValidationException $e) {
 			return $this->sendError(config('constants.API_MSG.VALIDATION_ERROR'), $e->errors(), 422);
 		} catch (\Exception $e) {
-			return $this->sendError(config('constants.API_MSG.SERVER_ERROR'), $e->getMessage(), 500);
+		return $this->sendError(config('constants.API_MSG.SERVER_ERROR'), $e->getMessage(), 500);
 		}
 	}
 

@@ -637,7 +637,7 @@ class TrainingController extends BaseController
             'status' => 0,
         ]);
 
-        if ($record->status != 1) {
+        if ($record) {
             $record->update(['duration' => $request->duration]);
         }
 

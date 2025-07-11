@@ -161,7 +161,7 @@
                     <div class="modalSpan text-start mb-4">
                         <strong class="mb-3">Questions Answered: <span
                                 id="answered-count">0</span>/{{ count($trainingQuestions) }}</strong>
-                        <strong>Time Remaining: <span id="time-remaining">0m 0s</span></strong>
+                        {{-- <strong>Time Remaining: <span id="time-remaining-display">0m 0s</span></strong> --}}
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -401,34 +401,6 @@
                 }
             });
 
-
-            // Timer function
-            // function startTimer() {
-            //     let countdown = {{ $trainingTest->time_of_test }} * 60;
-
-            //     updateTimeDisplay(countdown);
-
-            //     countdownInterval = setInterval(function() {
-            //         countdown--;
-            //         updateTimeDisplay(countdown);
-
-            //         if (countdown <= 0) {
-            //             clearInterval(countdownInterval);
-            //             submitTest();
-            //         } else if (countdown <= 300) { // 5 minutes or less
-            //             $('#time-remaining').addClass('text-danger');
-            //         }
-            //     }, 1000);
-            // }
-
-            // function updateTimeDisplay(seconds) {
-            //     const minutes = Math.floor(seconds / 60);
-            //     const remainingSeconds = seconds % 60;
-            //     $('#time-remaining').text(
-            //         `${minutes}m ${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}s`
-            //     );
-            // }
-
             if (countdown <= 60) {
                 $('#countdown-timer').addClass('low-time');
             } else {
@@ -439,6 +411,7 @@
                 const countdownElement = $('#countdown');
                 const timerImgElement = $('.timerImg');
                 let countdown = {{ $testDetails->time_of_test }} * 60;
+
 
                 // Update time remaining in confirmation modal
                 function updateTimeRemainingDisplay(seconds) {

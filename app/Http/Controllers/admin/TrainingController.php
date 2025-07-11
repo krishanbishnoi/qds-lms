@@ -402,7 +402,6 @@ class TrainingController extends BaseController
             $selected_training_trainers = TrainerTrainings::where('training_id', $modelId)->pluck('user_id');
             return  View::make("admin.training.add", compact('model',  'breflingsDocument', 'trainingCategory', 'TrainingType', 'trainees', 'selected_trainees', 'training_manager', 'selected_training_manager', 'trainers', 'selected_training_trainers'));
         } catch (\Exception $e) {
-
             return redirect()->back()->with('error', 'somthing went wrong');;
         }
     }
@@ -523,7 +522,6 @@ class TrainingController extends BaseController
             $clients = $clientResponse->successful()
                 ? collect($clientResponse['data'])->pluck('company_name', 'id')->toArray()
                 : [];
-
             return view("admin.training.uploadTrainingParticipants", compact('assginTo', 'training_id', 'projects', 'methods', 'users', 'existingUserIds', 'clients'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'somthing went wrong');
@@ -928,41 +926,60 @@ class TrainingController extends BaseController
 
     public function retailAssignTraining(Request $request)
     {
+        // Validate request
         $request->validate([
             'client_id'    => 'required|integer',
             'training_id'  => 'required|integer',
-            'validity'  => 'required',
-            'assginTo'  => 'required',
+            'validity'     => 'required',
+            'assginTo'     => 'required',
         ]);
 
+        // Prepare campaign_id and store_code as comma-separated strings if arrays
         $campaignId = $request->filled('campaign_id') ? implode(',', $request->campaign_id) : null;
         $storeCodes = is_array($request->store_code) ? implode(',', $request->store_code) : null;
 
-        $query = RetailAssignedTraining::where('client_id', $request->client_id)
-            ->where('training_id', $request->training_id);
+        // Delete existing entries for this client_id
+        RetailAssignedTraining::where('client_id', $request->client_id)->delete();
 
-        if (!is_null($campaignId)) {
-            $query->where('campaign_id', $campaignId);
-        } else {
-            $query->whereNull('campaign_id');
-        }
+        // Insert new entry
+        RetailAssignedTraining::create([
+            'training_id' => $request->training_id,
+            'client_id'   => $request->client_id,
+            'campaign_id' => $campaignId,
+            'store_code'  => $storeCodes,
+            'assginTo'    => $request->assginTo,
+            'validity'    => $request->validity,
+        ]);
 
-        $existing = $query->first();
+        return redirect()->back()->with('success', 'Training successfully assigned to the client.');
+    }
 
-        if ($existing) {
-            $existing->store_code = $storeCodes;
-            $existing->save();
-        } else {
-            RetailAssignedTraining::create([
-                'training_id' => $request->training_id,
-                'client_id'   => $request->client_id,
-                'campaign_id' => $campaignId,
-                'store_code'  => $storeCodes,
-                'assginTo'  => $request->assginTo,
-                'validity'  => $request->validity,
+    public function fetchAssignedTraining(Request $request)
+    {
+        $request->validate([
+            'client_id' => 'required|integer',
+            'training_id' => 'required|integer',
+        ]);
+
+        $record = RetailAssignedTraining::where('client_id', $request->client_id)
+            ->where('training_id', $request->training_id)
+            ->first();
+
+        if ($record) {
+            $campaignIds = $record->campaign_id ? explode(',', $record->campaign_id) : [];
+            $storeCodes = $record->store_code ? explode(',', $record->store_code) : [];
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'assginTo' => $record->assginTo,
+                    'validity' => $record->validity,
+                    'campaign_id' => $campaignIds,
+                    'store_code' => $storeCodes,
+                ],
             ]);
         }
 
-        return redirect()->back()->with('success', 'Training successfully assigned to the client.');
+        return response()->json(['success' => false, 'message' => 'No data found']);
     }
 }
