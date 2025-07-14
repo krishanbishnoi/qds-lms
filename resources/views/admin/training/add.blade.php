@@ -728,6 +728,7 @@
             color: #198754;
         }
     </style>
+
     <script type="text/javascript">
         // Add More Functionality
         $(document).ready(function() {
@@ -813,49 +814,47 @@
             });
         });
 
+        var isEditMode = {{ $flag == 1 ? 'true' : 'false' }};
         $(function() {
-            var isEditMode = {{ $flag == 1 ? 'true' : 'false' }};
-            $(function() {
-                const startDateTimeValue = $('#start_date_time').val();
-                const endDateTimeValue = $('#end_date_time').val();
-                $('#start_date_time').datetimepicker({
-                    format: 'YYYY-MM-DD HH:mm:ss',
-                    icons: {
-                        time: "fa fa-clock-o",
-                        date: "fa fa-calendar",
-                        up: "fa fa-arrow-up",
-                        down: "fa fa-arrow-down",
-                        previous: "fa fa-chevron-left",
-                        next: "fa fa-chevron-right",
-                        today: "fa fa-clock-o",
-                        clear: "fa fa-trash-o"
-                    },
-                    useCurrent: false,
-                    defaultDate: startDateTimeValue || null,
-                    minDate: isEditMode ? false : moment() // ✅ Allow past dates in edit mode
-                });
-                $('#end_date_time').datetimepicker({
-                    format: 'YYYY-MM-DD HH:mm:ss',
-                    icons: {
-                        time: "fa fa-clock-o",
-                        date: "fa fa-calendar",
-                        up: "fa fa-arrow-up",
-                        down: "fa fa-arrow-down",
-                        previous: "fa fa-chevron-left",
-                        next: "fa fa-chevron-right",
-                        today: "fa fa-clock-o",
-                        clear: "fa fa-trash-o"
-                    },
-                    useCurrent: false,
-                    defaultDate: endDateTimeValue || null,
-                    minDate: isEditMode ? false : moment()
-                });
-                $("#start_date_time").on("dp.change", function(e) {
-                    $('#end_date_time').data("DateTimePicker").minDate(e.date);
-                });
-                $("#end_date_time").on("dp.change", function(e) {
-                    $('#start_date_time').data("DateTimePicker").maxDate(e.date);
-                });
+            const startDateTimeValue = $('#start_date_time').val();
+            const endDateTimeValue = $('#end_date_time').val();
+            $('#start_date_time').datetimepicker({
+                format: 'YYYY-MM-DD HH:mm:ss',
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down",
+                    previous: "fa fa-chevron-left",
+                    next: "fa fa-chevron-right",
+                    today: "fa fa-clock-o",
+                    clear: "fa fa-trash-o"
+                },
+                useCurrent: false,
+                defaultDate: startDateTimeValue || null,
+                minDate: isEditMode ? false : moment() // ✅ Allow past dates in edit mode
+            });
+            $('#end_date_time').datetimepicker({
+                format: 'YYYY-MM-DD HH:mm:ss',
+                icons: {
+                    time: "fa fa-clock-o",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down",
+                    previous: "fa fa-chevron-left",
+                    next: "fa fa-chevron-right",
+                    today: "fa fa-clock-o",
+                    clear: "fa fa-trash-o"
+                },
+                useCurrent: false,
+                defaultDate: endDateTimeValue || null,
+                minDate: isEditMode ? false : moment()
+            });
+            $("#start_date_time").on("dp.change", function(e) {
+                $('#end_date_time').data("DateTimePicker").minDate(e.date);
+            });
+            $("#end_date_time").on("dp.change", function(e) {
+                $('#start_date_time').data("DateTimePicker").maxDate(e.date);
             });
         });
 
