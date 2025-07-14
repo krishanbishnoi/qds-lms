@@ -141,7 +141,7 @@
                                             ]),
                                         ) !!}
                                         <div class="mws-form-item">
-                                            {{ Form::text('end_date_time', null, ['class' => 'form-control small', 'id' => 'end_date_time']) }}
+                                            {{ Form::text('end_date_time',null, ['class' => 'form-control small', 'id' => 'end_date_time']) }}
                                             <div class="error-message help-inline">
                                                 <?php echo $errors->first('end_date_time'); ?>
                                             </div>
@@ -218,8 +218,7 @@
                                                 <div class="col-md-3">
                                                     @if ($document->type == 'audio' && !empty($document->document))
                                                         <audio controls class="w-100 mt-2">
-                                                            <source
-                                                                src="{{ TRAINING_DOCUMENT_URL . $document->document }}"
+                                                            <source src="{{ TRAINING_DOCUMENT_URL . $document->document }}"
                                                                 type="audio/{{ pathinfo($document->document, PATHINFO_EXTENSION) }}">
                                                         </audio>
                                                     @elseif ($document->type == 'image')
@@ -234,8 +233,7 @@
                                                             class="w-100 mt-2" style="height: 150px;"></iframe>
                                                     @elseif ($document->type == 'video')
                                                         <video controls class="w-100 mt-2">
-                                                            <source
-                                                                src="{{ TRAINING_DOCUMENT_URL . $document->document }}"
+                                                            <source src="{{ TRAINING_DOCUMENT_URL . $document->document }}"
                                                                 type="video/mp4">
                                                         </video>
                                                     @endif
@@ -254,12 +252,10 @@
                                             </div>
                                         </div>
                                     @endforeach
-                                    <input type="hidden" name="count" value="{{ $i }}"
-                                        id="add_more_count">
+                                    <input type="hidden" name="count" value="{{ $i }}" id="add_more_count">
                                 @else
                                     <?php $i = 1; ?>
-                                    <div
-                                        class="projectDetailsInnerSection_1 ace_left_sec mb-4 border p-3 rounded bg-light">
+                                    <div class="projectDetailsInnerSection_1 ace_left_sec mb-4 border p-3 rounded bg-light">
                                         <div class="row g-3 align-items-start">
                                             {{-- Title --}}
                                             <div class="col-md-2">
@@ -423,6 +419,7 @@
             color: #198754;
         }
     </style>
+
     <script type="text/javascript">
         // Add More Functionality
         $(document).ready(function() {
@@ -508,7 +505,12 @@
             });
         });
 
+        var isEditMode = {{ $flag == 1 ? 'true' : 'false' }};
         $(function() {
+
+            const startDateTimeValue = $('#start_date_time').val();
+            const endDateTimeValue = $('#end_date_time').val();
+
             $('#start_date_time').datetimepicker({
                 format: 'YYYY-MM-DD HH:mm:ss',
                 icons: {
@@ -522,7 +524,8 @@
                     clear: "fa fa-trash-o"
                 },
                 useCurrent: false,
-                minDate: moment()
+                defaultDate: startDateTimeValue || null,
+                minDate: isEditMode ? false : moment() // ✅ Allow past dates in edit mode
             });
 
             $('#end_date_time').datetimepicker({
@@ -538,12 +541,14 @@
                     clear: "fa fa-trash-o"
                 },
                 useCurrent: false,
-                minDate: moment()
+                defaultDate: endDateTimeValue || null,
+                minDate: isEditMode ? false : moment()
             });
 
             $("#start_date_time").on("dp.change", function(e) {
                 $('#end_date_time').data("DateTimePicker").minDate(e.date);
             });
+
             $("#end_date_time").on("dp.change", function(e) {
                 $('#start_date_time').data("DateTimePicker").maxDate(e.date);
             });

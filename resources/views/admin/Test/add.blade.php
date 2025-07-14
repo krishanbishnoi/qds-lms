@@ -40,7 +40,7 @@
                                                 'category',
                                                 trans('Select Test Category') .
                                                     '<span class="requireRed">*
-                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                            </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -61,7 +61,7 @@
                                                 'title',
                                                 trans('Title') .
                                                     '<span class="requireRed">*
-                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                            </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -82,12 +82,12 @@
                                                 'type',
                                                 trans('Test Type') .
                                                     '<span class="requireRed">*
-                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                            </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
                                         <div class="mws-form-item">
-                                            {{ Form::select('type', test_type,null , ['class' => 'form-control', 'placeholder' => 'Please select test type']) }}
+                                            {{ Form::select('type', test_type, null, ['class' => 'form-control', 'placeholder' => 'Please select test type']) }}
                                             <div class="error-message help-inline">
                                                 <?php echo $errors->first('type'); ?>
                                             </div>
@@ -147,7 +147,7 @@
                                                 'region',
                                                 trans('Region') .
                                                     '<span class="requireRed"> *
-                                                                                                                                                                                                                                                                                                                                                </span>',
+                                                                                                                                                                                                                                                                                                                                                                                        </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -168,7 +168,7 @@
                                                 'circle',
                                                 trans('Circle') .
                                                     '<span class="requireRed"> *
-                                                                                                                                                                                                                                                                                                                                                </span>',
+                                                                                                                                                                                                                                                                                                                                                                                        </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -223,7 +223,7 @@
                                                 'minimum_marks',
                                                 trans('Minimum Passing Percentage') .
                                                     '<span
-                                                                                                                                                                                                                                                                                                                                                    class="requireRed"> * </span>',
+                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"> * </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -244,7 +244,7 @@
                                                 'number_of_questions',
                                                 trans('Number of Question') .
                                                     '<span
-                                                                                                                                                                                                                                                                                                                                                    class="requireRed"> * </span>',
+                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"> * </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -265,7 +265,7 @@
                                                 'number_of_attempts',
                                                 trans('Number of Attempts') .
                                                     '<span
-                                                                                                                                                                                                                                                                                                                                                    class="requireRed"> * </span>',
+                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"> * </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -286,7 +286,7 @@
                                                 'time_of_test',
                                                 trans('Time Of Test(mins)') .
                                                     '<span
-                                                                                                                                                                                                                                                                                                                                                    class="requireRed"> * </span>',
+                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"> * </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -307,7 +307,7 @@
                                                 'publish_result',
                                                 trans('Publish Results') .
                                                     '<span class="requireRed"> *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -333,7 +333,7 @@
                                                 'thumbnail',
                                                 trans('Thumbnail') .
                                                     '<span class="requireRed"> *
-                                                                                                                                                                                                                                                                                                                                                </span>',
+                                                                                                                                                                                                                                                                                                                                                                                        </span>',
                                                 ['class' => 'mws-form-label'],
                                             ),
                                         ) !!}
@@ -353,7 +353,7 @@
                                             'description',
                                             trans('Description') .
                                                 '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                * </span>',
+                                                                                                                                                                                                                                                                                                                                                    * </span>',
                                             ['class' => 'mws-form-label'],
                                         ),
                                     ) !!}
@@ -393,7 +393,11 @@
                         }
                     </style>
                     <script type="text/javascript">
+                        var isEditMode = {{ $flag == 1 ? 'true' : 'false' }};
                         $(function() {
+
+                            const startDateTimeValue = $('#start_date_time').val();
+                            const endDateTimeValue = $('#end_date_time').val();
 
                             $('#start_date_time').datetimepicker({
                                 format: 'YYYY-MM-DD HH:mm:ss',
@@ -408,8 +412,10 @@
                                     clear: "fa fa-trash-o"
                                 },
                                 useCurrent: false,
-                                minDate: moment() // today's date
+                                defaultDate: startDateTimeValue || null,
+                                minDate: isEditMode ? false : moment() // ✅ Allow past dates in edit mode
                             });
+
                             $('#end_date_time').datetimepicker({
                                 format: 'YYYY-MM-DD HH:mm:ss',
                                 icons: {
@@ -422,12 +428,15 @@
                                     today: "fa fa-clock-o",
                                     clear: "fa fa-trash-o"
                                 },
-                                useCurrent: false
+                                useCurrent: false,
+                                defaultDate: endDateTimeValue || null,
+                                minDate: isEditMode ? false : moment()
                             });
 
                             $("#start_date_time").on("dp.change", function(e) {
                                 $('#end_date_time').data("DateTimePicker").minDate(e.date);
                             });
+
                             $("#end_date_time").on("dp.change", function(e) {
                                 $('#start_date_time').data("DateTimePicker").maxDate(e.date);
                             });
