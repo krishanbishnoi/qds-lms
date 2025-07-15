@@ -45,7 +45,7 @@
         </div>
     </header>
     {{-- Test Result Model --}}
-    <div class="modal d-block testresultModal z-1" id="testresult" tabindex="-1" aria-hidden="true">
+    <div class="modal d-block testresultModal z-1" id="testresult">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -100,24 +100,14 @@
                                             class="btn btn-secondary smallBtn py-1 px-4">Next Course</a>
                                     @endif
 
-                                    {{-- <button type="button" class="btn btn-secondary smallBtn py-1 px-4"
-                                        onclick="onSurveySubmit()">Finish Training</button> --}}
-                                    <script>
-                                        // // Provided by Sanjeev Ji
-                                        // function onSurveySubmit() {
-                                        //     // Optional: add validation or ajax call here
-                                        //     if (window.Android && Android.closeActivity) {
-                                        //         Android.closeActivity();
-                                        //     }
-                                        //     return true;
-                                        // }
 
+                                    <script>
                                         // // Custome for log and alert
                                         function onSurveySubmit() {
-                                            console.log("Button clicked");
-
                                             if (window.Android && Android.closeActivity) {
-                                                Android.closeActivity();
+                                                Android.closeActivity(window.location.origin);
+                                                console.log("thanks");
+
                                             } else {
                                                 // alert("Thank you for finishing the training!");
                                                 // Optionally, redirect or close tab
@@ -143,72 +133,84 @@
         <div class="modal-dialog modal-dialog-centered certificateMan">
             <div class="modal-content rounded-1">
                 <div class="modal-body p-2 ">
-                    <table
-                        style="background-image: url('{{ asset('front/img/backgroundimage.png') }}'); background-repeat: no-repeat;width: 100%;background-position: left top;background-size: cover;padding: 0px 32px 32px 32px;">
-                        <tr>
-                            <td
-                                style="padding-top: 60px;padding-left: 20px;font-size: 35px;font-weight:700;color: #ed1c24;">
-                                <div style="font-family: 'Sans-Serif';text-transform:uppercase;">
-                                    Certificate</div>
-                            </td>
-                            <td align="right" style="padding-top: 30px;padding-right: 25px;">
-                                <img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="logo" width="130"
-                                    height="33">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"
-                                style="font-size: 16px;font-weight: 700;text-transform: uppercase;padding-left: 6px;color: #323232;padding-top: 40px;">
-                                of achievement test {{ $trainingData->title }}</td>
-                        </tr>
-                        <tr align="center">
-                            <td colspan="2" width="100%"
-                                style="text-transform: uppercase;font-size: 16px;font-weight: 700;color: #2c2c2c;font-family: sans-serif;font-size: 12px;    font-weight: 500;padding-top: 30px;">
-                                proudly presented to :
-                            </td>
+                    <div class="table-responsive">
+                        <table
+                            style="background-image: url('{{ asset('front/img/backgroundimage.png') }}'); background-repeat: no-repeat;width: 100%;background-position: left top;background-size: cover;padding: 0px 32px 32px 32px;">
+                            <tr>
+                                <td
+                                    style="padding-top: 60px;padding-left: 20px;font-size: 35px;font-weight:700;color: #ed1c24;">
+                                    <div style="font-family: 'Sans-Serif';text-transform:uppercase;">
+                                        Certificate</div>
+                                </td>
+                                <td align="right" style="padding-top: 30px;padding-right: 25px;">
+                                    <img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="logo" width="130"
+                                        height="33">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"
+                                    style="font-size: 16px;font-weight: 700;text-transform: uppercase;padding-left: 6px;color: #323232;padding-top: 40px;">
+                                    of achievement test {{ $trainingData->title }}</td>
+                            </tr>
+                            <tr align="center">
+                                <td colspan="2" width="100%"
+                                    style="text-transform: uppercase;font-size: 16px;font-weight: 700;color: #2c2c2c;font-family: sans-serif;font-size: 12px;    font-weight: 500;padding-top: 30px;">
+                                    proudly presented to :
+                                </td>
 
-                        </tr>
-                        <tr style="text-align: center;">
-                            <td colspan="2"
-                                style="font-weight: 800;font-family: 'Sans-Serif';font-size: 35px;color: #ed1c24;padding-top: 20px;">
-                                <b>{{ Auth::user()->fullname }}</b>
-                                <p
-                                    style="padding-top: 20px; font-family: sans-serif;color: #5c5a59;font-size: 12px;font-weight: 500;margin-top: 20px;width: 70%;margin: auto;padding-bottom: 40px;">
-                                    This certificate above verifies that {{ Auth::user()->fullname }} successfully
-                                    completed
-                                    the
-                                    Training {{ $trainingData->title }} on {{ today()->format('d-M-Y') }} as taught by
-                                    {{ $admin }}
-                                    on
-                                    LMS | QDegrees. The certificate indicates the entire Training was completed as validated
-                                    by the
-                                    student. The Training duration represents the total <b>{{ $lengthInDays }}</b> days of
-                                    the course at time
-                                    of most
-                                    recentcompletion.</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="50%" style="padding-bottom: 80px;">
-                                <span
-                                    style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Date<br>
-                                    <b
-                                        style="font-weight: 500;font-size: 16px;color: #474645;">{{ today()->format('d-M-Y') }}</b></span>
-                            </td>
-                            <td width="50%" style="padding-bottom: 80px;">
-                                <span
-                                    style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Director<br>
-                                    <b
-                                        style="font-weight: 500;font-size: 16px;color: #474645;">{{ $admin }}</b></span>
-                            </td>
-                        </tr>
-                    </table>
+                            </tr>
+                            <tr style="text-align: center;">
+                                <td colspan="2"
+                                    style="font-weight: 800;font-family: 'Sans-Serif';font-size: 35px;color: #ed1c24;padding-top: 20px;">
+                                    <b>{{ Auth::user()->fullname }}</b>
+                                    <p
+                                        style="padding-top: 20px; font-family: sans-serif;color: #5c5a59;font-size: 12px;font-weight: 500;margin-top: 20px;width: 70%;margin: auto;padding-bottom: 40px;">
+                                        This certificate acknowledges that <strong>{{ Auth::user()->fullname }}</strong>
+                                        has
+                                        successfully completed
+                                        the digital training program
+                                        <strong>{{ $trainingData->title }}</strong> on
+                                        <strong>{{ today()->format('d-M-Y') }}</strong>,
+                                        delivered via the LMS
+                                        platform at QDegrees.
+                                        <br><br>
+                                        It is awarded in recognition of the learner’s active participation and completion of
+                                        the
+                                        required
+                                        training content.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="50%" style="padding-bottom: 80px;">
+                                    <span
+                                        style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Date<br>
+                                        <b
+                                            style="font-weight: 500;font-size: 16px;color: #474645;">{{ today()->format('d-M-Y') }}</b></span>
+                                </td>
+                                <td width="50%" style="padding-bottom: 80px;">
+                                    <span
+                                        style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Sr.
+                                        Manager<br>Training & Development<br>
+                                        <b
+                                            style="font-weight: 500;font-size: 16px;color: #474645;">{{ $admin }}</b></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                     <div class="modal-footer border-0">
-                        <a href="{{ route('front.dashboard') }}"><button type="button"
-                                class="btn btn-secondary fs-7 text-black" style="background-color: #FFF2E5"
-                                data-bs-dismiss="modal">Back
-                                to
-                                Home</button></a>
+                        @use('Jenssegers\Agent\Agent')
+
+                        @if ((new Agent())->isMobile())
+                            <button type="button" class="btn btn-secondary fs-7 text-black" data-bs-dismiss="modal"
+                                aria-label="Close" style="background-color: #FFF2E5">Close</button>
+                        @else
+                            <a href="{{ route('front.dashboard') }}"><button type="button"
+                                    class="btn btn-secondary fs-7 text-black" style="background-color: #FFF2E5"
+                                    data-bs-dismiss="modal">Back
+                                    to
+                                    Home</button></a>
+                        @endif
                         <a href="{{ route('download.user.training.certificate', $trainingData->id) }}">
                             <button type="button" class="btn btn-secondary fs-7"
                                 style="background-color: #00407E">Download</button></a>

@@ -91,8 +91,8 @@
                                         <button type="button" class="btn btn-secondary smallBtn  py-1 px-4"
                                             data-bs-toggle="modal" data-bs-target="#certificate-modal">View</button>
                                     @else
-                                    <p class="blacktxt fs-5 mb-0 text-start"><b >Not Generated</b>
-                                    </p>
+                                        <p class="blacktxt fs-5 mb-0 text-start"><b>Not Generated</b>
+                                        </p>
                                     @endif
                                 </div>
                             </div>
@@ -163,7 +163,8 @@
                             </td>
                             <td width="50%" style="padding-bottom: 80px;">
                                 <span
-                                    style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Director<br>
+                                    style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Sr.
+                                    Manager<br>Training & Development<br>
                                     <b
                                         style="font-weight: 500;font-size: 16px;color: #474645;">{{ $admin }}</b></span>
                             </td>

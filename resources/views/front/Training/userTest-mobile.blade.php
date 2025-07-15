@@ -401,6 +401,9 @@
                         </li>
                     `);
                     });
+
+
+                    
                 } else if (question.question_type === 'MCQ') {
                     question.question_attributes.forEach((option) => {
                         const isChecked = userAnswers[question.id] &&

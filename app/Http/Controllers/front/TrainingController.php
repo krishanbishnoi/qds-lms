@@ -569,7 +569,7 @@ class TrainingController extends BaseController
             'date' => date('m/d/Y'),
             'lengthInDays' => $lengthInDays,
             'logo' => public_path('lms-img/qdegrees-logo.png'),
-            'background_img' => asset('front/img/backgroundimage.png')
+            'background_img' => public_path('front/img/backgroundimage.png')
         ];
 
         $pdf = PDF::loadView('front.Training.certificate-pdf', $data);

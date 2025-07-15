@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -71,7 +70,8 @@
             </td>
             <td width="50%" style="padding-bottom: 80px;">
                 <span
-                    style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Director<br>
+                    style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Sr.
+                    Manager<br>Training & Development<br>
                     <b style="font-weight: 500;font-size: 16px;color: #474645;">{{ $admin }}</b></span>
             </td>
         </tr>

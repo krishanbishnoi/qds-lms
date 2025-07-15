@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,20 +23,21 @@
 
 <body>
     <table
-        style="background-image: url({{ $background_img }}); background-repeat: no-repeat;width: 100%;background-position: left top;background-size: cover;padding: 0px 32px 32px 32px;">
+        style="background-image: url(data:image/png;base64,{{ base64_encode(file_get_contents('https://lms.qdegrees.com/front/img/backgroundimage.png')) }}'); background-repeat: no-repeat;width: 100%;background-position: left top;background-size: cover;padding: 0px 32px 32px 32px;">
         <tr>
             <td style="padding-top: 60px;padding-left: 20px;font-size: 35px;font-weight:700;color: #ed1c24;">
                 <div style="font-family: 'Cinzel Decorative', cursive;text-transform:uppercase;">
                     Certificate</div>
             </td>
             <td align="right" style="padding-top: 30px;padding-right: 25px;">
-                <img src="https://lms.qdegrees.com/lms-img/qdegrees-logo.png" alt="logo" width="100">
+                <img src="data:image/png;base64,{{ base64_encode(file_get_contents('https://lms.qdegrees.com/lms-img/qdegrees-logo.png')) }}"
+                    alt="logo" width="100">
             </td>
         </tr>
         <tr>
             <td colspan="2"
                 style="font-size: 16px;font-weight: 700;text-transform: uppercase;padding-left: 6px;color: #323232;padding-top: 40px;">
-                of achievement test {{ $title }}</td>
+                of achievement - training {{ $title }}</td>
         </tr>
         <tr align="center">
             <td colspan="2" width="100%"
@@ -49,16 +49,18 @@
         </tr>
         <tr style="text-align: center;">
             <td colspan="2"
-                style="font-weight: 500;font-family: 'Great Vibes', cursive;;font-size: 35px;color: #ed1c24;padding-top: 20px;">
+                style="font-weight: 600;font-family: 'Great Vibes', cursive;;font-size: 35px;color: #ed1c24;padding-top: 20px;">
                 {{ $name }}
                 <p
                     style="padding-top: 20px; font-family: sans-serif;color: #5c5a59;font-size: 12px;font-weight: 500;margin-top: 20px;width: 70%;margin: auto;padding-bottom: 40px;">
-                    This certificate above verifies that {{ $name }} successfully completed the
-                    Training {{ $title }} on {{ $date }} as taught by {{ $admin }}
-                    on
-                    LMS | QDegrees. The certificate indicates the entire Training was completed as validated
-                    by the
-                    user.</p>
+                    This certificate acknowledges that <strong>{{ $name }}</strong> has successfully completed
+                    the digital training program
+                    <strong>{{ $title }}</strong> on <strong>{{ $date }}</strong>, delivered via the LMS
+                    platform at QDegrees.
+                    <br><br>
+                    It is awarded in recognition of the learner’s active participation and completion of the required
+                    training content.
+                </p>
             </td>
         </tr>
         <tr>
@@ -69,7 +71,8 @@
             </td>
             <td width="50%" style="padding-bottom: 80px;">
                 <span
-                    style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Director<br>
+                    style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Sr.
+                    Manager<br>Training & Development<br>
                     <b style="font-weight: 500;font-size: 16px;color: #474645;">{{ $admin }}</b></span>
             </td>
         </tr>
