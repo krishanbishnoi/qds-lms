@@ -140,7 +140,7 @@ class CoursesController extends BaseController
     {
         $step = $request->input('current_step', 1);
         $trainingId = $training_id;
-        $categoryId = Training::where('id',$trainingId)->value('category_id');
+        $categoryId = Training::where('id', $trainingId)->value('category_id');
         $request->replace($this->arrayStripTags($request->all()));
 
         try {
@@ -574,6 +574,16 @@ class CoursesController extends BaseController
             return redirect()->back()->with('error', 'somthing went wrong');
         }
     } // end edit()
+
+    public function deleteContent($id)
+    {
+        $document = TrainingDocument::findOrFail($id);
+
+
+        $document->delete();
+
+        return redirect()->back()->with('success', 'Document deleted successfully.');
+    }
 
 
     /**

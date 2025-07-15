@@ -172,10 +172,8 @@ class TrainingController extends BaseController
     {
         // dd($request->all()); 
         try {
-            // Sanitize input
             $input = $this->arrayStripTags($request->all());
 
-            // Validation rules
             $rules = [
                 'category_id' => 'required',
                 'training_title' => 'required',
@@ -254,83 +252,104 @@ class TrainingController extends BaseController
             );
             // dd($request->data);
             // Handle single document upload if type requires it
+            // if ($training->type == 6 && isset($request->data)) {
+            //     foreach ($request->data as $index => $doc) {
+            //         $validator = Validator::make($doc, [
+            //             'title'  => 'required|string|max:255',
+            //             'length' => 'required|numeric',
+            //         ]);
+            //         if ($validator->fails()) {
+            //             return redirect()->back()->withErrors($validator)->withInput();
+            //         }
+            //         $documentData = [
+            //             'training_id' => $training->id,
+            //             'title' => $doc['title'] ?? '',
+            //             'length' => isset($doc['length']) ? ((int) $doc['length']) * 60 : 0,
+            //         ];
+
+            //         $documentType = null;
+
+            //         // File upload
+            //         if (isset($doc['document']) && $doc['document'] instanceof \Illuminate\Http\UploadedFile) {
+            //             $extension = $doc['document']->getClientOriginalExtension();
+            //             $docFileName = time() . '-' . uniqid() . '-document.' . $extension;
+            //             $folderName = strtoupper(date('M') . date('Y')) . "/";
+            //             $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
+
+            //             if (!File::exists($folderPath)) {
+            //                 File::makeDirectory($folderPath, 0777, true);
+            //             }
+
+            //             if ($doc['document']->move($folderPath, $docFileName)) {
+            //                 $documentData['document'] = $folderName . $docFileName;
+            //                 $documentData['document_type'] = $extension;
+
+            //                 $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'ico'];
+            //                 $videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'mkv', 'flv', 'mpeg', 'mpg'];
+            //                 $audioExtensions = ['mp3', 'wav', 'aac', 'ogg', 'webm', 'm4a'];
+
+            //                 if (in_array($extension, $imageExtensions)) {
+            //                     $documentType = 'image';
+            //                 } elseif (in_array($extension, $videoExtensions)) {
+            //                     $documentType = 'video';
+            //                 } elseif (in_array($extension, $audioExtensions)) {
+            //                     $documentType = 'audio';
+            //                 } else {
+            //                     $documentType = 'doc';
+            //                 }
+
+            //                 $documentData['type'] = $documentType;
+            //             }
+            //         } elseif (isset($doc['existing_document'])) {
+            //             $documentData['document'] = $doc['existing_document'];
+
+            //             $existingDoc = TrainingDocument::where('id', $doc['entryID'] ?? 0)
+            //                 ->where('training_id', $training->id)
+            //                 ->first();
+
+            //             if ($existingDoc) {
+            //                 $documentData['document_type'] = $existingDoc->document_type;
+            //                 $documentData['type'] = $existingDoc->type;
+            //                 $documentType = $existingDoc->type;
+            //             }
+            //         }
+
+
+            //         TrainingDocument::updateOrCreate(
+            //             [
+            //                 'id' => $doc['entryID'] ?? null,
+            //                 'course_id' => null,
+            //                 'training_id' => $training->id,
+            //             ],
+            //             $documentData
+            //         );
+            //     }
+
+
+            //     if ($request->has('deleted_items')) {
+            //         $deletedIds = explode(',', $request->deleted_items);
+
+            //         foreach ($deletedIds as $id) {
+            //             $document = TrainingDocument::find($id);
+            //             if ($document) {
+            //                 // Delete the physical file if needed
+            //                 if (File::exists(TRAINING_DOCUMENT_ROOT_PATH . $document->document)) {
+            //                     File::delete(TRAINING_DOCUMENT_ROOT_PATH . $document->document);
+            //                 }
+
+            //                 // Delete the database record
+            //                 $document->delete();
+            //             }
+            //         }
+            //     }
+            // }
+
+
+
             if ($training->type == 6 && isset($request->data)) {
-                foreach ($request->data as $index => $doc) {
-                    $validator = Validator::make($doc, [
-                        'title'  => 'required|string|max:255',
-                        'length' => 'required|numeric',
-                    ]);
-                    if ($validator->fails()) {
-                        return redirect()->back()->withErrors($validator)->withInput();
-                    }
-                    $documentData = [
-                        'training_id' => $training->id,
-                        'title' => $doc['title'] ?? '',
-                        'length' => isset($doc['length']) ? ((int) $doc['length']) * 60 : 0,
-                    ];
-
-                    $documentType = null;
-
-                    // File upload
-                    if (isset($doc['document']) && $doc['document'] instanceof \Illuminate\Http\UploadedFile) {
-                        $extension = $doc['document']->getClientOriginalExtension();
-                        $docFileName = time() . '-' . uniqid() . '-document.' . $extension;
-                        $folderName = strtoupper(date('M') . date('Y')) . "/";
-                        $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
-
-                        if (!File::exists($folderPath)) {
-                            File::makeDirectory($folderPath, 0777, true);
-                        }
-
-                        if ($doc['document']->move($folderPath, $docFileName)) {
-                            $documentData['document'] = $folderName . $docFileName;
-                            $documentData['document_type'] = $extension;
-
-                            $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'ico'];
-                            $videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'mkv', 'flv', 'mpeg', 'mpg'];
-                            $audioExtensions = ['mp3', 'wav', 'aac', 'ogg', 'webm', 'm4a'];
-
-                            if (in_array($extension, $imageExtensions)) {
-                                $documentType = 'image';
-                            } elseif (in_array($extension, $videoExtensions)) {
-                                $documentType = 'video';
-                            } elseif (in_array($extension, $audioExtensions)) {
-                                $documentType = 'audio';
-                            } else {
-                                $documentType = 'doc';
-                            }
-
-                            $documentData['type'] = $documentType;
-                        }
-                    } elseif (isset($doc['existing_document'])) {
-                        $documentData['document'] = $doc['existing_document'];
-
-                        $existingDoc = TrainingDocument::where('id', $doc['entryID'] ?? 0)
-                            ->where('training_id', $training->id)
-                            ->first();
-
-                        if ($existingDoc) {
-                            $documentData['document_type'] = $existingDoc->document_type;
-                            $documentData['type'] = $existingDoc->type;
-                            $documentType = $existingDoc->type;
-                        }
-                    }
-
-
-                    TrainingDocument::updateOrCreate(
-                        [
-                            'id' => $doc['entryID'] ?? null,
-                            'course_id' => null,
-                            'training_id' => $training->id,
-                        ],
-                        $documentData
-                    );
-                }
-
-
-                if ($request->has('deleted_items')) {
-                    $deletedIds = explode(',', $request->deleted_items);
-
+                // Handle deleted items first
+                if ($request->has('deletedEntries')) {
+                    $deletedIds = explode(',', $request->deletedEntries);
                     foreach ($deletedIds as $id) {
                         $document = TrainingDocument::find($id);
                         if ($document) {
@@ -338,15 +357,132 @@ class TrainingController extends BaseController
                             if (File::exists(TRAINING_DOCUMENT_ROOT_PATH . $document->document)) {
                                 File::delete(TRAINING_DOCUMENT_ROOT_PATH . $document->document);
                             }
-
                             // Delete the database record
                             $document->delete();
                         }
                     }
                 }
+
+                foreach ($request->data as $index => $doc) {
+                    $type = $doc['type'];
+
+                    // Handle Document part (for both 'document' and 'both' types)
+                    if ($type == 'document' || $type == 'both') {
+                        $documentValidator = Validator::make($doc, [
+                            'document_title' => 'required|string|max:255',
+                            'document_length' => 'required|numeric',
+                        ]);
+
+                        if ($documentValidator->fails()) {
+                            return redirect()->back()->withErrors($documentValidator)->withInput();
+                        }
+
+                        $documentData = [
+                            'training_id' => $training->id,
+                            'title' => $doc['document_title'],
+                            'length' => ((int) $doc['document_length']) * 60,
+                            'type' => 'document', // Set type as document
+                            'doc_upload_type' => $type, // S
+                            'group_index' => $index, // To group document+audio pairs when type is 'both'
+                        ];
+
+                        // File upload for document
+                        if (isset($doc['document']) && $doc['document'] instanceof \Illuminate\Http\UploadedFile) {
+                            $extension = $doc['document']->getClientOriginalExtension();
+                            $docFileName = time() . '-' . uniqid() . '-document.' . $extension;
+                            $folderName = strtoupper(date('M') . date('Y')) . "/";
+                            $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
+
+                            if (!File::exists($folderPath)) {
+                                File::makeDirectory($folderPath, 0777, true);
+                            }
+
+                            if ($doc['document']->move($folderPath, $docFileName)) {
+                                $documentData['document'] = $folderName . $docFileName;
+                                $documentData['document_type'] = $extension;
+
+                                // Determine file type based on extension
+                                $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'ico'];
+                                $videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'mkv', 'flv', 'mpeg', 'mpg'];
+                                $audioExtensions = ['mp3', 'wav', 'aac', 'ogg', 'webm', 'm4a'];
+
+                                if (in_array($extension, $imageExtensions)) {
+                                    $documentData['type'] = 'image';
+                                } elseif (in_array($extension, $videoExtensions)) {
+                                    $documentData['type'] = 'video';
+                                } elseif (in_array($extension, $audioExtensions)) {
+                                    $documentData['type'] = 'document_audio'; // Differentiate from audio instruction
+                                } else {
+                                    $documentData['type'] = 'doc';
+                                }
+                            }
+                        } elseif (isset($doc['existing_document'])) {
+                            $documentData['document'] = $doc['existing_document'];
+                            $documentData['document_type'] = pathinfo($doc['existing_document'], PATHINFO_EXTENSION);
+                        }
+
+                        // Save document entry
+                        TrainingDocument::updateOrCreate(
+                            [
+                                'id' => $doc['entryID'] ?? null,
+                                'training_id' => $training->id,
+                            ],
+                            $documentData
+                        );
+                    }
+
+                    // Handle Audio part (for both 'audio' and 'both' types)
+                    if ($type == 'audio' || $type == 'both') {
+                        $audioValidator = Validator::make($doc, [
+                            'audio_title' => 'required|string|max:255',
+                            'audio_length' => 'required|numeric',
+                        ]);
+
+                        if ($audioValidator->fails()) {
+                            return redirect()->back()->withErrors($audioValidator)->withInput();
+                        }
+
+                        $audioData = [
+                            'training_id' => $training->id,
+                            'title' => $doc['audio_title'],
+                            'length' => ((int) $doc['audio_length']) * 60,
+                            'type' => 'audio', // Set type as audio
+                            'doc_upload_type' => $type,
+                            'group_index' => $type == 'both' ? $index : null, // Group with document if type is 'both'
+                        ];
+
+                        // File upload for audio
+                        if (isset($doc['audio_document']) && $doc['audio_document'] instanceof \Illuminate\Http\UploadedFile) {
+                            $extension = $doc['audio_document']->getClientOriginalExtension();
+                            $audioFileName = time() . '-' . uniqid() . '-audio.' . $extension;
+                            $folderName = strtoupper(date('M') . date('Y')) . "/";
+                            $folderPath = TRAINING_DOCUMENT_ROOT_PATH . $folderName;
+
+                            if (!File::exists($folderPath)) {
+                                File::makeDirectory($folderPath, 0777, true);
+                            }
+
+                            if ($doc['audio_document']->move($folderPath, $audioFileName)) {
+                                $audioData['document'] = $folderName . $audioFileName;
+                                $audioData['document_type'] = $extension;
+                            }
+                        } elseif (isset($doc['existing_audio_document'])) {
+                            $audioData['document'] = $doc['existing_audio_document'];
+                            $audioData['document_type'] = pathinfo($doc['existing_audio_document'], PATHINFO_EXTENSION);
+                        }
+
+                        // Save audio entry
+                        TrainingDocument::updateOrCreate(
+                            [
+                                'id' => $doc['audio_entryID'] ?? null,
+                                'training_id' => $training->id,
+                                'type' => 'audio',
+                            ],
+                            $audioData
+                        );
+                    }
+                }
             }
-
-
 
             if (!$training->save()) {
                 Session::flash('error', trans("Something went wrong."));
@@ -356,7 +492,6 @@ class TrainingController extends BaseController
                 return redirect()->route('Training.index');
             }
         } catch (\Exception $e) {
-            // dd($e);
             return redirect()->back()
                 ->with('error', 'An error occurred while saving the training. Please try again.')
                 ->withInput();
