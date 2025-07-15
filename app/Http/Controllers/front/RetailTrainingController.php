@@ -104,6 +104,16 @@ class RetailTrainingController extends BaseController
                 return redirect()->back()->with('This user not found. Please try again with valid email');
             }
         }
+        $participantAlreadyExist = TrainingParticipants::where('training_id', $training_id)->where('trainee_id', $authUserId->id)->first();
+        if (!$participantAlreadyExist) {
+            $participant = new TrainingParticipants([
+                'training_id' => $training_id,
+                'trainee_id' => $authUserId->id,
+            ]);
+            $participant->save();
+
+        }
+
         $trainingDetails = Training::where('trainings.id', $training_id)->leftJoin('training_types', 'training_types.id', '=', 'trainings.type')->first();
 
         $trainingCourses = Course::where('training_id', $training_id)->with('CourseContentAndDocument')

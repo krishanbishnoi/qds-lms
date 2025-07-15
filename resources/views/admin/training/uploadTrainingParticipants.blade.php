@@ -68,8 +68,7 @@
                                                         <input type="file" name="file" class="form-control" required>
                                                     </div>
                                                     <div>
-                                                        <button class="btn btn-success" type="submit">Upload
-                                                            Users</button>
+                                                        <button class="btn btn-success" type="submit">Upload Users</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -116,14 +115,14 @@
                                         ]) !!}
                                 </div>
                                 <div class="mb-3 col-6" id="store-section" style="display: none;">
-                                    {!! Form::label('assginTo', 'Assgin To', ['class' => 'block font-bold mb-1 required']) !!}
+                                    {!! Form::label('assginTo', 'Assgin To', ['class' => 'block font-bold mb-1']) !!}
                                     {!! Form::select('assginTo', $assginTo, null, [
                                         'class' => 'form-control',
-                                        'placeholder' => '-- Choose --',
                                     ]) !!}
                                 </div>
                                 <div class="mb-3 col-6" id="store-section" style="display: none;">
-                                    {!! Form::label('validity', 'Training Validity', ['class' => 'block font-bold mb-1 required']) !!}
+                                    {!! Form::label('validity', 'Training Validity', ['class' => 'block font-bold mb-1']) !!}
+                                    <small class="'block text-muted mb-1">(select date if training is valid till a specific date.)</small>
                                     {!! Form::date('validity', null, [
                                         'class' => 'form-control',
                                         'id' => 'validityy',

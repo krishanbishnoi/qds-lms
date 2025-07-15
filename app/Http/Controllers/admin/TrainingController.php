@@ -647,7 +647,7 @@ class TrainingController extends BaseController
                 ->toArray();
             $users = User::where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'employee_id')
                 ->toArray();
-            $assginTo = ['Freelancer' => 'Freelancer', 'In-House' => 'In-House'];
+            $assginTo = ['Both' => 'Both','Freelancer' => 'Freelancer', 'In-House' => 'In-House'];
             // API call to RetailIQ
 
             $clientResponse = Http::withOptions([
