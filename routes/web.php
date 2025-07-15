@@ -121,7 +121,6 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::post('/training/fetch-store', 'fetchRetailCampaignsStore')->name('fetch.retail.campaigns.store');
             Route::post('/training/retail-assign', 'retailAssignTraining')->name('retail.assign-training');
             Route::post('retail-assigned-training/fetch', 'fetchAssignedTraining')->name('retail.assigned-training.fetch');
-
         });
 
         /* training category modules routes */
@@ -456,6 +455,7 @@ Route::group(array('prefix' => 'trainer'), function () {
         Route::post('trainings/edit-training/{id}', array('as' => 'TrainerTraining.edit', 'uses' => 'TrainingController@update'));
         Route::get('trainings/delete-training/{id}', array('as' => 'TrainerTraining.delete', 'uses' => 'TrainingController@delete'));
         Route::get('trainings/view-training/{id}', array('as' => 'TrainerTraining.view', 'uses' => 'TrainingController@view'));
+        Route::get('training/document/{id}', array('as' => 'training.document.delete', 'uses' => 'TrainingController@deleteContent'));
 
         Route::get('trainings/update-training-status/{id}/{status}', array('as' => 'TrainerTraining.status', 'uses' => 'TrainingController@changeStatus'));
         Route::get('training/import-training-participants/{id}', 'TrainingController@importTrainingParticipants')->name('import.importTrainerTrainingParticipants');
