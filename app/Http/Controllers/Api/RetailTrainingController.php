@@ -63,35 +63,24 @@ class RetailTrainingController extends BaseController
 
 			$data = [];
 
-			// // 3. Fetch assigned trainings
-			// $query = RetailAssignedTest::where('client_id', $request->client_id);
-
-			// if ($request->filled('campaign_id')) {
-			// 	$query->where('campaign_id', $request->campaign_id);
-			// }
-
-			// if ($request->filled('store_code')) {
-			// 	$query->whereRaw("FIND_IN_SET(?, store_code)", [$request->store_code]);
-			// }
-			// $assignedTests = $query->get();
-
-
-			// foreach ($assignedTests as $assigned) {
-			// 	$data[] = [
-			// 		// 'training_url' => 'https://lms.qdegrees.com/my-trainings-details/' . $assigned->training_id . '?user_id=' . $user->id,
-			// 		'test_url' => 'https://lms.qdegrees.com/test-details/408' . $assigned->training_id . '?user_id=' . $user->id,
-			// 	];
-			// }
-
 			// --- 4. Get RetailAssignedTraining trainings
 			$queryTraining = RetailAssignedTraining::where('client_id', $request->client_id);
 
+			// Optional: only filter by campaign_id if it's assigned in DB
 			if ($request->filled('campaign_id')) {
-				$queryTraining->whereRaw("FIND_IN_SET(?, campaign_id)", [$request->campaign_id]);
+				$queryTraining->where(function ($q) use ($request) {
+					$q->whereRaw("FIND_IN_SET(?, campaign_id)", [$request->campaign_id])
+						->orWhereNull('campaign_id')
+						->orWhere('campaign_id', '');
+				});
 			}
 
 			if ($request->filled('store_code')) {
-				$queryTraining->whereRaw("FIND_IN_SET(?, store_code)", [$request->store_code]);
+				$queryTraining->where(function ($q) use ($request) {
+					$q->whereRaw("FIND_IN_SET(?, store_code)", [$request->store_code])
+						->orWhereNull('store_code')
+						->orWhere('store_code', '');
+				});
 			}
 
 			$assignedTrainings = $queryTraining->get();
@@ -145,7 +134,7 @@ class RetailTrainingController extends BaseController
 		} catch (ValidationException $e) {
 			return $this->sendError(config('constants.API_MSG.VALIDATION_ERROR'), $e->errors(), 422);
 		} catch (\Exception $e) {
-		return $this->sendError(config('constants.API_MSG.SERVER_ERROR'), $e->getMessage(), 500);
+			return $this->sendError(config('constants.API_MSG.SERVER_ERROR'), $e->getMessage(), 500);
 		}
 	}
 

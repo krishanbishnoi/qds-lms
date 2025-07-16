@@ -1065,8 +1065,8 @@ class TrainingController extends BaseController
         $request->validate([
             'client_id'    => 'required|integer',
             'training_id'  => 'required|integer',
-            'validity'     => 'required',
-            'assginTo'     => 'required',
+            // 'validity'     => 'required',
+            // 'assginTo'     => 'required',
         ]);
 
         // Prepare campaign_id and store_code as comma-separated strings if arrays
