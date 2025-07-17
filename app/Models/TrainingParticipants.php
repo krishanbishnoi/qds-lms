@@ -19,7 +19,7 @@ class TrainingParticipants extends Eloquent
 	protected $table = 'training_participants';
 
 
-	protected $fillable = ['training_id', 'trainee_id'];
+	protected $fillable = ['training_id', 'trainee_id','status'];
 
 
 	public function user()

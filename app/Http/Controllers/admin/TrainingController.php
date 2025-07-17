@@ -1067,6 +1067,7 @@ class TrainingController extends BaseController
             'training_id'  => 'required|integer',
             // 'validity'     => 'required',
             // 'assginTo'     => 'required',
+            'vcAvailability'     => 'required',
         ]);
 
         // Prepare campaign_id and store_code as comma-separated strings if arrays
@@ -1081,6 +1082,7 @@ class TrainingController extends BaseController
             'training_id' => $request->training_id,
             'client_id'   => $request->client_id,
             'campaign_id' => $campaignId,
+            'is_vc' => $request->vcAvailability,
             'store_code'  => $storeCodes,
             'assginTo'    => $request->assginTo,
             'validity'    => $request->validity,
@@ -1109,6 +1111,7 @@ class TrainingController extends BaseController
                 'data' => [
                     'assginTo' => $record->assginTo,
                     'validity' => $record->validity,
+                    'is_vc' => $record->is_vc,
                     'campaign_id' => $campaignIds,
                     'store_code' => $storeCodes,
                 ],

@@ -617,7 +617,7 @@ Route::group(array('namespace' => 'front'), function () {
 
     Route::get('retail/my-trainings/{training_id}/{course_id}/test/{test_id}', array('as' => 'userTraining.test', 'uses' => 'RetailTrainingController@userTrainingTest'));
     Route::post('/retail/submit-training-test-response', array('as' => 'userTraining.test.submit', 'uses' => 'RetailTrainingController@userTrainingTestSubmit'));
-    Route::get('/retail/view-training-test-result/{id}', array('as' => 'training.test.result', 'uses' => 'RetailTrainingController@userTrainingTestResult'));
+    Route::get('training/import-training-participants{id}', array('as' => 'training.test.result', 'uses' => 'RetailTrainingController@userTrainingTestResult'));
     Route::get('/retail/download-training-certificate-pdf/{id}', array('as' => 'download.user.training.certificate', 'uses' => 'RetailTrainingController@userTrainingCertificateDownload'));
 });
 

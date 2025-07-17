@@ -489,9 +489,9 @@ class TrainingController extends BaseController
         $isLastCourse = false;
         $courseIds = $courses->pluck('id')->toArray();
         $currentCourseId = $trainingLastTestDetails->course_id;
-
         if (end($courseIds) == $currentCourseId) {
             $isLastCourse = true;
+            TrainingParticipants::where('training_id', $trainingTestResultDetails->training_id)->update(['status' => '1']);
         }
 
 
@@ -680,8 +680,10 @@ class TrainingController extends BaseController
         $courseIds = $courses->pluck('id')->toArray();
         $currentCourseId = $trainingLastTestDetails->course_id;
 
+
         if (end($courseIds) == $currentCourseId) {
             $isLastCourse = true;
+            TrainingParticipants::where('training_id', $course->training_id)->update(['status' => '1']);
         }
 
         // Get all completed documents for this user and course

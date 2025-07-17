@@ -89,8 +89,18 @@
                                         <!-- Last course, passed all tests -->
                                         <button type="button" class="btn btn-secondary smallBtn  py-1 px-4"
                                             data-bs-toggle="modal" data-bs-target="#certificate-modal">View</button>
-                                        <button type="button" class="btn btn-secondary smallBtn py-1 px-4"
-                                            onclick="onSurveySubmit()">Finish Training</button>
+                                        @php
+                                            $isMobile = (new \Jenssegers\Agent\Agent())->isMobile();
+                                        @endphp
+
+                                        @if ($isMobile)
+                                            <button type="button" class="btn btn-secondary smallBtn py-1 px-4"
+                                                onclick="onSurveySubmit()">Finish Training</button>
+                                        @else
+                                            <a href="{{ route('front.dashboard') }}"><button type="button"
+                                                    class="btn btn-secondary fs-7 text-black"
+                                                    style="background-color: #FFF2E5" >Finish Training</button></a>
+                                        @endif
                                     @else
                                         <!-- Not last course or not passed -->
                                         <button type="button" class="btn btn-secondary smallBtn  py-1 px-4"

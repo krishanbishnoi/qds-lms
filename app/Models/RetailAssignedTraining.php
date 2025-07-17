@@ -26,6 +26,7 @@ class RetailAssignedTraining extends Eloquent
         'store_code',
         'assginTo',
         'validity',
+        'is_vc',
     ];
 
     public function training()

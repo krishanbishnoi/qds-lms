@@ -513,6 +513,7 @@ class RetailTrainingController extends BaseController
 
         if (end($courseIds) == $currentCourseId) {
             $isLastCourse = true;
+            TrainingParticipants::where('training_id', $trainingTestResultDetails->training_id)->update(['status' => '1']);
         }
 
 
@@ -708,6 +709,7 @@ class RetailTrainingController extends BaseController
         $courseIds = $courses->pluck('id')->toArray();
         if (end($courseIds) == $courseId) {
             $isLastCourse = true;
+            TrainingParticipants::where('training_id', $course->training_id)->update(['status' => '1']);
         }
 
         // Get all completed documents for this user and course

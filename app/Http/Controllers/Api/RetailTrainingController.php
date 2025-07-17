@@ -13,6 +13,7 @@ use App\Models\RetailAssignedTraining;
 use App\Models\TraineeAssignedTrainingDocument;
 use App\Models\Training;
 use App\Models\TrainingDocument;
+use App\Models\TrainingParticipants;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -160,7 +161,6 @@ class RetailTrainingController extends BaseController
 			}
 
 			$assignedTrainings = $query->get();
-			dd($assignedTrainings);
 			$data = [];
 
 			foreach ($assignedTrainings as $assigned) {
@@ -173,6 +173,48 @@ class RetailTrainingController extends BaseController
 				];
 			}
 			return $this->sendSuccess($data, config('constants.API_MSG.REC_FETCH_SUCCESS'));
+		} catch (ValidationException $e) {
+			return $this->sendError(config('constants.API_MSG.VALIDATION_ERROR'), $e->errors(), 422);
+		} catch (\Exception $e) {
+			return $this->sendError(config('constants.API_MSG.SERVER_ERROR'), $e->getMessage(), 500);
+		}
+	}
+
+
+	public function userTrainingDetails(Request $request)
+	{
+		try {
+			$request->validate([
+				'user_id' => 'required',
+				'status' => 'required',
+			]);
+
+			$trainingIds = TrainingParticipants::where('trainee_id', $request->user_id)->where('status', $request->status)
+				->pluck('training_id')
+				->unique()
+				->toArray();
+
+			$trainings = Training::whereIn('id', $trainingIds)->get();
+
+			return $this->sendSuccess($trainings, config('constants.API_MSG.REC_FETCH_SUCCESS'));
+		} catch (ValidationException $e) {
+			return $this->sendError(config('constants.API_MSG.VALIDATION_ERROR'), $e->errors(), 422);
+		} catch (\Exception $e) {
+			return $this->sendError(config('constants.API_MSG.SERVER_ERROR'), $e->getMessage(), 500);
+		}
+	}
+
+	public function getTrainingUrl(Request $request)
+	{
+		try {
+			$request->validate([
+				'user_id' => 'required',
+				'training_id' => 'required',
+			]);
+
+			$training_url = 'http://lms.test/retail/my-trainings-details/' . $request->training_id . '?user_id=' . $request->user_id;
+
+			return $this->sendSuccess($training_url, config('constants.API_MSG.REC_FETCH_SUCCESS'));
 		} catch (ValidationException $e) {
 			return $this->sendError(config('constants.API_MSG.VALIDATION_ERROR'), $e->errors(), 422);
 		} catch (\Exception $e) {
