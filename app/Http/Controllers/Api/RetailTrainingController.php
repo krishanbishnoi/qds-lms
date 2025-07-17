@@ -47,6 +47,7 @@ class RetailTrainingController extends BaseController
 					'fullname' => $request->name,
 					'employee_id' => 'Retail-IQ',
 					'email' => $request->email,
+					'designation' => 'Trainee',
 					'is_from_retail' => '1',
 					'password' => Hash::make('Lms@1234'),
 					'parent_id' => '1',

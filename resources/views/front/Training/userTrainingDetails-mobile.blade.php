@@ -14,7 +14,7 @@
             <div class="traningTypes d-md-none">
                 <span class="mb-3 d-block">Training Type <b>{{ $trainingDetails->type }}</b></span>
                 <div class="d-flex justify-content-between">
-                    <span>Total Time To Finish <b>{{ $hours . 'h ' . $minutes . 'm ' }}</b></span>
+                    {{-- <span>Total Time To Finish <b>{{ $hours . 'h ' . $minutes . 'm ' }}</b></span> --}}
                     <span>Total Content <b>{{ count($trainingCourses) }}</b></span>
                 </div>
 
@@ -89,7 +89,8 @@
             </div>
 
             <a href="javascript:void(0)" class="moduleBck d-md-none mb-3 d-block back-to-modules">
-                <img src="{{ asset('front/img/back-button.png') }}" onclick="location.reload();" style="cursor: pointer;" alt="" width="50" class="me-2">
+                <img src="{{ asset('front/img/back-button.png') }}" onclick="location.reload();"
+                    style="cursor: pointer;" alt="" width="50" class="me-2">
                 <span class="module-title">Back to Modules</span>
             </a>
 
@@ -596,21 +597,21 @@
                 });
             } else if (contentType === 'image') {
                 const contentHtml = `
-        <div class="image-viewer-container">
-            <img src="${fullPath}" class="img-fluid w-100" style="max-height: 60vh; object-fit: contain;">
-            <div class="d-flex justify-content-between align-items-center px-3 py-2 pb-3">
-                <b>${content.title}</b>
-                <div class="d-flex align-items-center gap-2">
-                    <a href="javascript:void(0)" class="prev-content ${currentContentIndex === 0 ? 'disabled' : ''}">
-                        <img src="{{ asset('front/img/prew-icon.svg') }}" alt="Previous" width="35">
-                    </a>
-                    <a href="javascript:void(0)" class="next-content ${currentContentIndex === currentCourseContent.length - 1 ? 'disabled' : ''}">
-                        <img src="{{ asset('front/img/next-icon.svg') }}" alt="Next" width="35">
-                    </a>
+                <div class="image-viewer-container">
+                    <img src="${fullPath}" class="img-fluid w-100" style="max-height: 60vh; object-fit: contain;">
+                    <div class="d-flex justify-content-between align-items-center px-3 py-2 pb-3">
+                        <b>${content.title}</b>
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="javascript:void(0)" class="prev-content ${currentContentIndex === 0 ? 'disabled' : ''}">
+                                <img src="{{ asset('front/img/prew-icon.svg') }}" alt="Previous" width="35">
+                            </a>
+                            <a href="javascript:void(0)" class="next-content ${currentContentIndex === currentCourseContent.length - 1 ? 'disabled' : ''}">
+                                <img src="{{ asset('front/img/next-icon.svg') }}" alt="Next" width="35">
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    `;
+            `;
 
                 $('#content-viewer').html(contentHtml);
 
@@ -687,20 +688,23 @@
                 });
             } else if (contentType === 'doc' || contentType === 'pdf') {
                 // Handle document content
+                const pdfUrl = `{{ asset('training_document') }}/${contentSrc}`;
+
                 const contentHtml = `
-    <iframe src="{{ asset('training_document/') }}/${contentSrc}" class="w-100" style="height: 60vh;"></iframe>
-    <div class="d-flex justify-content-between align-items-center px-3 py-2 pb-3">
-        <b>${content.title}</b>
-        <div class="d-flex align-items-center gap-2">
-            <a href="javascript:void(0)" class="prev-content ${currentContentIndex === 0 ? 'disabled' : ''}">
-                <img src="{{ asset('front/img/prew-icon.svg') }}" alt="Previous" width="35">
-            </a>
-            <a href="javascript:void(0)" class="next-content ${currentContentIndex === currentCourseContent.length - 1 ? 'disabled' : ''}">
-                <img src="{{ asset('front/img/next-icon.svg') }}" alt="Next" width="35">
-            </a>
-        </div>
-    </div>
-    `;
+                 <iframe src="https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true" width="100%"
+                                    height="500px" style="border: none;"></iframe>
+                <div class="d-flex justify-content-between align-items-center px-3 py-2 pb-3">
+                    <b>${content.title}</b>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="javascript:void(0)" class="prev-content ${currentContentIndex === 0 ? 'disabled' : ''}">
+                            <img src="{{ asset('front/img/prew-icon.svg') }}" alt="Previous" width="35">
+                        </a>
+                        <a href="javascript:void(0)" class="next-content ${currentContentIndex === currentCourseContent.length - 1 ? 'disabled' : ''}">
+                            <img src="{{ asset('front/img/next-icon.svg') }}" alt="Next" width="35">
+                        </a>
+                    </div>
+                </div>
+                `;
                 $('#content-viewer').html(contentHtml);
 
                 // Initialize tracker

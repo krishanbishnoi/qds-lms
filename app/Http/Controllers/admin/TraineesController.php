@@ -449,7 +449,8 @@ class TraineesController extends BaseController
             ->where('user_id', $user_id)
             ->pluck('answer_id', 'question_id')
             ->toArray();
-        return view('admin.Test.partials-test-report-details', compact('userData', 'test', 'testData', 'testQuestions', 'userAnswers', 'latestAttempt', 'testResults', 'attemptNumber'));
+        return view('admin.Test.test-report', compact('userData', 'test', 'testData', 'testQuestions', 'userAnswers', 'latestAttempt', 'testResults', 'attemptNumber'));
+        // return view('admin.Test.partials-test-report-details', compact('userData', 'test', 'testData', 'testQuestions', 'userAnswers', 'latestAttempt', 'testResults', 'attemptNumber'));
 
         // return view("admin.Test.test-report", compact('userData', 'test','latestAttempt', 'testData', 'testQuestions', 'userAnswers', 'testResults'));
     }
