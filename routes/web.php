@@ -604,7 +604,7 @@ Route::group(array('namespace' => 'front'), function () {
 Route::group(array('namespace' => 'front'), function () {
 
     Route::any('retail/my-trainings', array('as' => 'userTraining.index', 'uses' => 'RetailTrainingController@userTrainings'));
-    Route::any('retail/my-trainings-details/{id}', array('as' => 'userTrainingDetails.index', 'uses' => 'RetailTrainingController@userTrainingDetails'));
+    Route::any('retail/my-trainings-details/{id}', array('as' => 'userTrainingDetails.index.riq', 'uses' => 'RetailTrainingController@userTrainingDetails'));
     Route::any('retail/my-trainings-details-design/{id}', array('as' => 'userTrainingDetails.index.design', 'uses' => 'RetailTrainingController@userTrainingDetailsDesign'));
     Route::any('/retail/update-training-document-progress', array('as' => 'userTrainingDetails.document.progress', 'uses' => 'RetailTrainingController@userTrainingDocumentProgress'));
     Route::post('/retail/training-logs/training_details/{id}', array('as' => 'training_details.popup', 'uses' => 'RetailTrainingController@training_details_popup'));

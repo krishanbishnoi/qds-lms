@@ -155,7 +155,7 @@
                                         href="{{ route('TestCategory.index') }}">Tests Categories</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link  @if ($segment2 === 'tests' && $segment3 === null) active @endif"
+                                    <a class="nav-link  @if ($segment2 === 'tests') active @endif"
                                         href="{{ route('Test.index') }}">Tests</a>
                                 </li>
                                 <li class="nav-item">
@@ -167,22 +167,22 @@
                     </li>
 
                     {{-- Training Management --}}
-                    <li class="nav-item trainings @if ($segment2 === 'trainings') active @endif">
+                    <li class="nav-item trainings @if ($segment2 === 'trainings' || $segment2 === 'training') active @endif">
                         <a class="nav-link" data-bs-toggle="collapse" href="#trainingManagement"
-                            aria-expanded="{{ $segment2 === 'trainings' ? 'true' : 'false' }}"
+                           aria-expanded="{{ ($segment2 === 'trainings' || $segment2 === 'training') ? 'true' : 'false' }}"
                             aria-controls="trainingManagement">
                             <span class="menu-title">{{ trans('Training Management') }}</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-bulletin-board menu-icon"></i>
                         </a>
-                        <div class="collapse @if ($segment2 === 'trainings') show @endif" id="trainingManagement">
+                        <div class="collapse @if ($segment2 === 'trainings' || $segment2 === 'training') show @endif" id="trainingManagement">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
                                     <a class="nav-link  @if ($segment2 === 'trainings' && $segment3 === 'category') active @endif"
                                         href="{{ route('TrainingCategory.index') }}">{{ trans('Trainings Categories') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link  @if ($segment2 === 'trainings' && $segment3 === null) active @endif"
+                                    <a class="nav-link  @if ($segment2 === 'trainings') active @endif"
                                         href="{{ route('Training.index') }}">{{ trans('Trainings') }}</a>
                                 </li>
                             </ul>

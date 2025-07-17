@@ -141,7 +141,7 @@ class TestController extends BaseController
 
     public function save(Request $request)
     {
-        dd('1');
+        // dd('1');
         $request->replace($this->arrayStripTags($request->all()));
         $thisData = $request->all();
 
@@ -509,7 +509,7 @@ class TestController extends BaseController
                 ->toArray();
             $users = User::where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'employee_id')
                 ->toArray();
-            $assginTo = ['Freelancer' => 'Freelancer', 'In-House' => 'In-House'];
+            $assginTo = ['Both' => 'Both','Freelancer' => 'Freelancer', 'In-House' => 'In-House'];
             // API call to RetailIQ
 
             $clientResponse = Http::withOptions([

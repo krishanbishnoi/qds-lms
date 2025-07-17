@@ -89,9 +89,9 @@
                                 </div>
                                 <div class="mb-3 col-6" id="store-section" style="display: none;">
                                     {!! Form::label('assginTo', 'Assgin To', ['class' => 'block font-bold mb-1 required']) !!}
+                                    <small class="text-muted mb-1">(select date if test is valid till a specific date.)</small>
                                     {!! Form::select('assginTo', $assginTo, null, [
                                         'class' => 'form-control',
-                                        'placeholder' => '-- Choose --',
                                     ]) !!}
                                 </div>
                                 <div class="mb-3 col-6" id="store-section" style="display: none;">
