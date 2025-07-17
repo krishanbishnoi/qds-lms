@@ -1,4 +1,15 @@
 <div class="desktopScren">
+    <style>
+        .courseListingBtn2 {
+            position: absolute;
+            bottom: 10px;
+            width: calc(100% - 30px);
+            left: 0;
+            right: 0;
+            margin: auto;
+            z-index: 1111111;
+        }
+    </style>
     <div class="d-flex flex-wrap paddingTop">
         <div class="courseName trainingNameMobile d-lg-none w-100">
             <p class="mb-0">{{ $trainingDetails->title }}</p>
@@ -294,37 +305,33 @@
                                                 }
                                             @endphp
 
-                                            <div class="mt-4 pt-3 border-top">
-                                                    @php
-                                                        $isDisabled = !$allContentCompleted || !$canAttempt;
-                                                        $buttonText = $canAttempt
-                                                            ? 'Begin Test'
-                                                            : 'Max Attempts Reached';
-                                                        $message = !$canAttempt
-                                                            ? 'You have reached the maximum number of attempts'
-                                                            : (!$allContentCompleted
-                                                                ? 'Complete all content first'
-                                                                : '');
-                                                        $testRoute = route('userTraining.test', [
-                                                            'training_id' => $training_id,
-                                                            'course_id' => $course->id,
-                                                            'test_id' => $course->test_id,
-                                                        ]);
-                                                    @endphp
+                                            <div class="mt-4 pt-3 border-top ">
+                                                @php
+                                                    $isDisabled = !$allContentCompleted || !$canAttempt;
+                                                    $buttonText = $canAttempt ? 'Begin Test' : 'Max Attempts Reached';
+                                                    $message = !$canAttempt
+                                                        ? 'You have reached the maximum number of attempts'
+                                                        : (!$allContentCompleted
+                                                            ? 'Complete all content first'
+                                                            : '');
+                                                    $testRoute = route('userTraining.test', [
+                                                        'training_id' => $training_id,
+                                                        'course_id' => $course->id,
+                                                        'test_id' => $course->test_id,
+                                                    ]);
+                                                @endphp
 
-                                                    <div class="mt-4 pt-3 border-top">
-                                                        <a class="btn btn-primary w-100 {{ $isDisabled ? 'disabled' : '' }}"
-                                                            href="{{ $isDisabled ? 'javascript:void(0)' : $testRoute }}"
-                                                            @if ($isDisabled) data-original-href="{{ $testRoute }}"
+                                                <div class="mt-4 pt-3 border-top ">
+                                                    <a class="btn btn-primary w-100 courseListingBtn2{{ $isDisabled ? 'disabled' : '' }}"
+                                                        href="{{ $isDisabled ? 'javascript:void(0)' : $testRoute }}"
+                                                        @if ($isDisabled) data-original-href="{{ $testRoute }}"
                                                                 style="pointer-events: none; opacity: 0.6;" @endif>
-                                                            <i
-                                                                class="bi bi-pencil-square me-2"></i>{{ $buttonText }}
-                                                            @if ($message)
-                                                                <small
-                                                                    class="d-block mt-1">{{ $message }}</small>
-                                                            @endif
-                                                        </a>
-                                                    </div>
+                                                        <i class="bi bi-pencil-square me-2"></i>{{ $buttonText }}
+                                                        @if ($message)
+                                                            <small class="d-block mt-1">{{ $message }}</small>
+                                                        @endif
+                                                    </a>
+                                                </div>
                                             </div>
                                         @endif
                                     @else

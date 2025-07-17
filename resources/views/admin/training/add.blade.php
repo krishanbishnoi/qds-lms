@@ -1487,90 +1487,6 @@
     </style>
 
     <script type="text/javascript">
-        // Add More Functionality
-        // $(document).ready(function() {
-        //     // Add new row
-        //     $('#addMore').click(function() {
-        //         var count = parseInt($('#add_more_count').val());
-        //         var newCount = count + 1;
-
-        //         // Clone the first row
-        //         var newRow = $('.projectDetailsInnerSection_1').clone();
-
-        //         // Update IDs, names, and reset values
-        //         newRow.attr('class', 'projectDetailsInnerSection_' + newCount +
-        //             ' ace_left_sec mb-4 border p-3 rounded bg-light');
-        //         newRow.find('input, select, textarea').each(function() {
-        //             var name = $(this).attr('name');
-        //             if (name) {
-        //                 name = name.replace('[1]', '[' + newCount + ']');
-        //                 $(this).attr('name', name);
-        //                 $(this).val(''); // Clear values
-        //             }
-
-        //             // Reset file inputs
-        //             if ($(this).attr('type') == 'file') {
-        //                 $(this).val('');
-        //             }
-        //         });
-
-        //         // Update the Remove button
-        //         newRow.find('#addMore').remove();
-        //         newRow.find('.col-md-1.mt-4').html(
-        //             '<a href="javascript:void(0);" class="btn btn-danger btn-sm w-100" onclick="removeTableEntry(\'' +
-        //             newCount + '\')">Remove</a>'
-        //         );
-
-        //         // Reset preview section
-        //         newRow.find('.col-md-3').html('');
-
-        //         // Insert the new row
-        //         newRow.insertAfter('.projectDetailsInnerSection_' + count);
-
-        //         // Update the count
-        //         $('#add_more_count').val(newCount);
-        //     });
-        // });
-
-
-        // // Remove row function
-        // // Global variable to track deleted items
-        // let deletedItems = [];
-
-        // // Remove row function - now accepts entryId parameter
-        // function removeTableEntry(rowId, entryId = null) {
-        //     // If this is an existing record (has an ID), add to deleted items
-        //     if (entryId) {
-        //         deletedItems.push(entryId);
-
-        //         // Create hidden input for deleted items if it doesn't exist
-        //         if (!$('#deletedItemsInput').length) {
-        //             $('.project_detailSection').append('<input type="hidden" id="deletedItemsInput" name="deleted_items">');
-        //         }
-
-        //         // Update the hidden input with comma-separated IDs
-        //         $('#deletedItemsInput').val(deletedItems.join(','));
-        //     }
-        //     // Remove the row from the DOM
-        //     $(`.projectDetailsInnerSection_${rowId}`).remove();
-
-        //     // Update the count of remaining rows
-        //     const count = $('[class^="projectDetailsInnerSection_"]').length;
-        //     $('#add_more_count').val(count);
-        // }
-
-        // // Form submission handler to ensure deleted items are included
-        // $(document).ready(function() {
-        //     $('form').on('submit', function() {
-        //         // Ensure deleted items are included in the form data
-        //         if (deletedItems.length > 0 && !$('#deletedItemsInput').length) {
-        //             $(this).append(
-        //                 `<input type="hidden" name="deleted_items" value="${deletedItems.join(',')}">`);
-        //         }
-        //         return true;
-        //     });
-        // });
-
         var isEditMode = {{ $flag == 1 ? 'true' : 'false' }};
         $(function() {
             const startDateTimeValue = $('#start_date_time').val();
@@ -1614,25 +1530,5 @@
                 $('#start_date_time').data("DateTimePicker").maxDate(e.date);
             });
         });
-
-
-        // $(document).ready(function() {
-        //     function toggleProjectDetailSection() {
-        //         var trainingType = $('#training_type').val();
-        //         if (trainingType == '6') {
-        //             $('#projectDetailSection').show();
-        //         } else {
-        //             $('#projectDetailSection').hide();
-        //         }
-        //     }
-
-        //     // On page load
-        //     toggleProjectDetailSection();
-
-        //     // On change
-        //     $('#training_type').change(function() {
-        //         toggleProjectDetailSection();
-        //     });
-        // });
     </script>
 @stop

@@ -161,7 +161,26 @@
                                     <div class="col-12 text-end">
                                         <button class="btn btn-primary mt-3" type="submit">Attach Training</button>
                                     </div>
+
+
                                 </div>
+                                <div class="mb-3 col-6" id="vc-availability-section" style="display: none;">
+                                    <label class="block font-bold mb-1 required" for="vc-availability">Is VC (video
+                                        call/
+                                        classroom training available for trainee)</label>
+                                    <div id="vc-availability">
+                                        <label>
+                                            <input type="radio" name="vcAvailability" id="vc-yes" value="1">
+                                            Yes
+                                        </label>
+                                        <label class="ml-4">
+                                            <input type="radio" name="vcAvailability" id="vc-no" value="0">
+                                            No
+                                        </label>
+                                    </div>
+                                </div>
+
+
                                 </form>
                             </div>
                         </div>
@@ -215,14 +234,17 @@
 
             if (selectedProject === 'RetailIQ') {
                 $('#retailiq-section').show();
-                $('#method-section, #excel-upload-section, #user-selection-section, #campaign-section, #store-section')
+                // $('#vc-availability-section').show();
+                $('#method-section, #excel-upload-section, #user-selection-section, #campaign-section, #store-section,#vc-availability-section')
                     .hide();
             } else if (selectedProject) {
                 $('#retailiq-section').hide();
+                $('#vc-availability-section').hide();
                 $('#method-section').show();
-                $('#excel-upload-section, #user-selection-section, #campaign-section, #store-section').hide();
+                $('#excel-upload-section, #user-selection-section, #campaign-section, #store-section,#vc-availability-section')
+                    .hide();
             } else {
-                $('#retailiq-section, #method-section, #excel-upload-section, #user-selection-section, #campaign-section, #store-section')
+                $('#retailiq-section, #method-section, #excel-upload-section, #user-selection-section, #campaign-section, #store-section,#vc-availability-section')
                     .hide();
             }
         });
@@ -273,7 +295,7 @@
                 const $campaignSelect = $('#campaignSelect'); // Use consistent ID
 
                 if (clientId) {
-                    $('#campaign-section, #store-section').show();
+                    $('#campaign-section, #store-section,#vc-availability-section').show();
                     $campaignSelect.empty().append('<option>Loading...</option>');
 
                     $.ajax({
@@ -303,7 +325,7 @@
                         }
                     });
                 } else {
-                    $('#campaign-section, #store-section').hide();
+                    $('#campaign-section, #store-section,#vc-availability-section').hide();
                     $campaignSelect.empty();
                 }
             });
@@ -315,7 +337,7 @@
             const $storeSelect = $('#storeSelect');
 
             if (selectedCampaignIds && selectedCampaignIds.length > 0) {
-                $('#store-section').show();
+                $('#store-section,#vc-availability-section').show();
 
                 $.ajax({
                     url: '{{ route('fetch.retail.campaigns.store') }}',
@@ -351,7 +373,7 @@
                     }
                 });
             } else {
-                $('#store-section').hide();
+                $('#store-section,#vc-availability-section').hide();
                 $storeSelect.empty();
             }
         });
@@ -421,14 +443,15 @@
                         success: function(response) {
                             if (response.success) {
                                 let data = response.data;
-                                console.log(data);
 
-                                $('#retailiq-section, #store-section, #campaign-section')
+                                $('#retailiq-section, #store-section, #campaign-section,#vc-availability-section')
                                     .show();
 
                                 // Set simple fields
                                 $('select[name="assginTo"]').val(data.assginTo);
                                 $('input[name="validity"]').val(data.validity);
+                                $('input[name="vcAvailability"][value="' + data.is_vc + '"]')
+                                    .prop('checked', true);
 
                                 let campaignIds = data.campaign_id || [];
                                 let storeCodes = data.store_code || [];
@@ -532,6 +555,7 @@
                                 $('input[name="validity"]').val(null);
                                 $('.campaignFetchedData').val(null).trigger('change');
                                 $('.storeFetchedData').val(null).trigger('change');
+                                $('input[name="vcAvailability"]').prop('checked', false);
                                 $('#loadingOverlay').hide();
                             }
                         },

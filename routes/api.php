@@ -20,6 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {});
 Route::controller(RetailTrainingController::class)->group(function () {
     Route::post('get-training', 'getTrainings');
     Route::post('get-user-training', 'userAudit');
+    Route::post('user-training-details', 'userTrainingDetails');
+    Route::post('get-training-url', 'getTrainingUrl');
 });
 
 Route::group(['namespace' => 'api\v1', 'middleware'   => 'App\Http\Middleware\GuestApi'], function () {
