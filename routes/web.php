@@ -585,6 +585,8 @@ Route::group(array('middleware' => ['App\Http\Middleware\AuthFront', 'PreventBac
     /** feedback routing**/
     Route::get('feedback', array('as' => 'userFeedback', 'uses' => 'TrainingController@userFeedback'));
     Route::post('feedback', array('as' => 'store.feedback', 'uses' => 'TrainingController@storeFeedback'));
+
+    Route::post('request-for-vc/{training_id}', array('as' => 'request.for.vc', 'uses' => 'TrainingController@requestForVc'));
 });
 
 

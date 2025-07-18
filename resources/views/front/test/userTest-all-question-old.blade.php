@@ -16,7 +16,7 @@
              <div class="container-fluid">
                  <div class="d-flex flex-wrap align-items-center">
                      <div class="logoSec">
-                         <a href="{{ route('front.dashboard') }}"><img src="../lms-img/qdegrees-logo.svg" alt="logo"
+                         <a href="{{ route('front.dashboard') }}"><img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="logo"
                                  width="130" height="33px"></a>
                      </div>
                      <div class="courseName">
@@ -50,10 +50,10 @@
                              <strong>Progress</strong>
                              <span>1<i>/4</i></span>
                          </div> --}}
-                         <button type="button" class="optionBtn d-lg-none"><img src="../front/img/option.svg"
+                         <button type="button" class="optionBtn d-lg-none"><img src="{{ asset('front/img/option.svg') }}"
                                  alt="icon" width="23" height="23"></button>
                          <a href="{{ route('front.dashboard') }}"><button type="button" class="exitBtn"><img
-                                     src="../front/img/exit.svg" alt="icon" width="23" height="23"></button></a>
+                                     src="{{ asset('front/img/exit.svg') }}.svg" alt="icon" width="23" height="23"></button></a>
                      </div>
                  </div>
              </div>

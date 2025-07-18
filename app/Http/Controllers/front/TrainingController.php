@@ -20,6 +20,7 @@ use App\Models\Course;
 use App\Models\TrainingTestResult;
 use App\Models\TraineeAssignedTrainingDocument;
 use App\Models\Feedback;
+use App\Models\VcTrainingRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -731,6 +732,30 @@ class TrainingController extends BaseController
             'content' => $content,
             'isLastCourse' => $isLastCourse,
         ]);
+    }
+    public function requestForVc(Request $request, $trainingId)
+    {
+        $userId = auth()->id();
+
+        // Check if user has already requested this training
+        $exists = VcTrainingRequest::where('training_id', $trainingId)
+            ->where('user_id', $userId)
+            ->exists();
+
+        if ($exists) {
+            return back()->with('info', 'You have already requested this training.');
+        }
+
+        // Create a new training request entry
+        VcTrainingRequest::create([
+            'training_id'  => $trainingId,
+            'user_id'      => $userId,
+            'requested_at' => now(),
+            'status'       => 'pending', // optional if default is already set
+            'remarks'      => null,      // optional
+        ]);
+
+        return back()->with('success', 'Your request has been submitted successfully.');
     }
 }
 // end TrainingController

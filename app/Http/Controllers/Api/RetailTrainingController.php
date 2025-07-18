@@ -212,7 +212,7 @@ class RetailTrainingController extends BaseController
 				'training_id' => 'required',
 			]);
 
-			$training_url = 'http://lms.test/retail/my-trainings-details/' . $request->training_id . '?user_id=' . $request->user_id;
+			$training_url = 'https://lms.qdegrees.com/retail/my-trainings-details/' . $request->training_id . '?user_id=' . $request->user_id;
 
 			return $this->sendSuccess($training_url, config('constants.API_MSG.REC_FETCH_SUCCESS'));
 		} catch (ValidationException $e) {
