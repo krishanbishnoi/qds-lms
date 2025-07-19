@@ -10,7 +10,12 @@ use App\Models\TrainingTestResult;
 use App\Models\TrainingParticipants;
 use App\Models\StateDescription;
 use App\Exports\TestResultsExport;
+use App\Exports\TrainingDocumentResultsExport;
 use App\Exports\TrainingResultsExport;
+use App\Exports\TrainingWithTestResultsExport;
+use App\Exports\userTestReportExport;
+use App\Models\Question;
+use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
@@ -97,61 +102,158 @@ class ReportsController extends BaseController
         $countCoursesWithTestId = $allTraining->pluck('training_courses')->flatten(1)->whereNotNull('test_id')->count();
         return View::make("admin.Reports.training-index", compact('allTraining',));
     }
+    // public function downloadReport($test_id)
+    // {
+    //     $test = Test::find($test_id);
+    //     $testResults = TestResult::where('test_id', $test_id)->get();
+    //     if ($testResults->isEmpty()) {
+    //         Session::flash('error', trans("This Test is not completed by any user."));
+    //         return redirect()->back();
+    //     } else {
+    //         $export = new TestResultsExport($test, $testResults);
+
+    //         Session::flash('success', trans("Training report downloaded successfully"));
+    //         $fileName = 'test-results' . $test_id . '.xlsx';
+
+    //         return Excel::download($export, $fileName);
+    //     }
+    // }
+
+
     public function downloadReport($test_id)
     {
-        $test = Test::find($test_id);
-        $testResults = TestResult::where('test_id', $test_id)->get();
-        if ($testResults->isEmpty()) {
+        $checkTestResults = TestResult::where('test_id', $test_id)->get();
+
+        if ($checkTestResults->isEmpty()) {
             Session::flash('error', trans("This Test is not completed by any user."));
             return redirect()->back();
         } else {
-            $export = new TestResultsExport($test, $testResults);
+            $test = Test::findOrFail($test_id);
 
-            Session::flash('success', trans("Training report downloaded successfully"));
-            $fileName = 'test-results' . $test_id . '.xlsx';
+            $testParticipants = $test->test_participants;
+            // Get all user details without filtering if the user role is not 4
+            $userDetails = User::whereIn('id', $testParticipants->pluck('trainee_id'))->get();
 
-            return Excel::download($export, $fileName);
+            $participants = $userDetails;
+
+            // Get the questions related to the test
+            $questions = Question::where('test_id', $test_id)->get();
+
+            // Retrieve test results and include user details
+            $testResults = TestResult::where('test_id', $test_id)
+                ->with('user_details')
+                ->get();
+
+            // Download the Excel report
+            return Excel::download(new userTestReportExport($participants, $questions, $testResults), "{$test->title}_test_report.xlsx");
         }
     }
+
+
     public function downloadReportTraining(Request $request, $trainingId)
     {
-        $training = Training::findOrFail($trainingId);
+        $training      = Training::findOrFail($trainingId);
         $trainingTitle = $training->title;
-        $courses = $training->training_courses;
+        $courses       = $training->training_courses;
+        $allUserDetails = [];
+        $allUserAssined = [];
+        $noTestsFound   = true; // Flag to check if any tests were found
 
-        $totalMinimumMark = 0;
-        $totalTestCount = 0;
-        $totalObtainMarks = 0;
-        $totalCount = 0;
         foreach ($courses as $course) {
             $test = Test::find($course->test_id);
-            // Check if the course has a test associated with it
-            if ($test) {
-                $totalMinimumMark += $test->minimum_marks;
-                $totalTestCount++;
-                $averageMarks = TrainingTestResult::where('training_id', $trainingId)
-                    ->where('course_id', $course->id)
-                    ->avg('obtain_marks');
-                $userDetails = TrainingTestResult::where('training_id', $trainingId)->where('course_id', $course->id)->orWhere('test_id', $test->id)->first();
-                if ($averageMarks !== null) {
-                    $totalObtainMarks += $averageMarks;
-                    $totalCount++;
-                }
+
+            if (! $test) {
+                // Skip this course and continue with the next one
+                continue;
             }
+
+            $noTestsFound = false; // At least one test was found
+
+            // Get all users' details
+            $userDetailsQuery = TrainingTestResult::where('training_id', $trainingId)
+                ->where('course_id', $course->id)
+                ->orWhere('test_id', $test->id);
+         
+            $userDetails = $userDetailsQuery->get(); // Fetch all user details
+            // dd($userDetails);
+            if ($userDetails->isEmpty()) {
+                Session::flash('error', trans('This training is not completed by any user.'));
+                return redirect()->back();
+            }
+            // Add user details to array for export
+            $allUserDetails = array_merge($allUserDetails, $userDetails->toArray());
         }
 
-        $averageMinimumMark = ($totalTestCount > 0) ? ($totalMinimumMark / $totalTestCount) : 0;
-        $averageObtainMarks = ($totalCount > 0) ? ($totalObtainMarks / $totalCount) : 0;
-        $status = ($averageObtainMarks >= $averageMinimumMark) ? 'Passed' : 'Failed';
-        if ($userDetails == null) {
-            // dd('here');
-            Session::flash('error', trans("This training is not completed by any user."));
-            return redirect()->back();
-        } else {
-            $export = new TrainingResultsExport($trainingTitle, $userDetails, $status, $averageMinimumMark, $averageObtainMarks);
-            $fileName = 'training-results-report' . $training->name . '.xlsx';
-            Session::flash('success', trans("Training report downloaded successfully"));
+        // If no tests were found in any course
+        if ($noTestsFound) {
+            $userassignedQuery = TrainingParticipants::where('training_id', $trainingId);
+            $userAssined = $userassignedQuery->get();
+            // dd($userAssined);
+            // Fetch all user details
+            // dd($userAssined);
+            if ($userAssined->isEmpty()) {
+                Session::flash('error', trans('This training is not completed by any user.'));
+                return redirect()->back();
+            }
+            // Add user details to array for export
+            $allUserAssined = array_merge($allUserAssined, $userAssined->toArray());
+            $export = new TrainingDocumentResultsExport($trainingTitle, $allUserAssined, $courses);
+            $fileName = 'training-documents-report-' . $trainingTitle . '.xlsx';
+            Session::flash('success', trans('Training report downloaded successfully'));
+
             return Excel::download($export, $fileName);
         }
+
+        // Proceed with exporting the results
+        $export   = new TrainingWithTestResultsExport($trainingTitle, $allUserDetails);
+        $fileName = 'training-results-report-' . $trainingTitle . '.xlsx';
+
+        Session::flash('success', trans('Training report downloaded successfully'));
+
+        return Excel::download($export, $fileName);
     }
+
+
+
+    // public function downloadReportTraining(Request $request, $trainingId)
+    // {
+    //     $training = Training::findOrFail($trainingId);
+    //     $trainingTitle = $training->title;
+    //     $courses = $training->training_courses;
+
+    //     $totalMinimumMark = 0;
+    //     $totalTestCount = 0;
+    //     $totalObtainMarks = 0;
+    //     $totalCount = 0;
+    //     foreach ($courses as $course) {
+    //         $test = Test::find($course->test_id);
+    //         // Check if the course has a test associated with it
+    //         if ($test) {
+    //             $totalMinimumMark += $test->minimum_marks;
+    //             $totalTestCount++;
+    //             $averageMarks = TrainingTestResult::where('training_id', $trainingId)
+    //                 ->where('course_id', $course->id)
+    //                 ->avg('obtain_marks');
+    //             $userDetails = TrainingTestResult::where('training_id', $trainingId)->where('course_id', $course->id)->orWhere('test_id', $test->id)->first();
+    //             if ($averageMarks !== null) {
+    //                 $totalObtainMarks += $averageMarks;
+    //                 $totalCount++;
+    //             }
+    //         }
+    //     }
+
+    //     $averageMinimumMark = ($totalTestCount > 0) ? ($totalMinimumMark / $totalTestCount) : 0;
+    //     $averageObtainMarks = ($totalCount > 0) ? ($totalObtainMarks / $totalCount) : 0;
+    //     $status = ($averageObtainMarks >= $averageMinimumMark) ? 'Passed' : 'Failed';
+    //     if ($userDetails == null) {
+    //         // dd('here');
+    //         Session::flash('error', trans("This training is not completed by any user."));
+    //         return redirect()->back();
+    //     } else {
+    //         $export = new TrainingResultsExport($trainingTitle, $userDetails, $status, $averageMinimumMark, $averageObtainMarks);
+    //         $fileName = 'training-results-report' . $training->name . '.xlsx';
+    //         Session::flash('success', trans("Training report downloaded successfully"));
+    //         return Excel::download($export, $fileName);
+    //     }
+    // }
 }// end ReportsController
