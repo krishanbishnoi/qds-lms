@@ -14,6 +14,7 @@ use App\Models\TrainingType;
 use App\Models\TrainingCategory;
 use App\Models\ManagerTrainings;
 use App\Models\TrainerTrainings;
+use App\Models\VcTrainingRequest;
 use App\Models\Course;
 use App\Models\Test;
 use App\Models\StateDescription;
@@ -647,7 +648,7 @@ class TrainingController extends BaseController
                 ->toArray();
             $users = User::where("is_deleted", 0)->where("user_role_id", TRAINEE_ROLE_ID)->pluck('fullname', 'employee_id')
                 ->toArray();
-            $assginTo = ['Both' => 'Both','Freelancer' => 'Freelancer', 'In-House' => 'In-House'];
+            $assginTo = ['Both' => 'Both', 'Freelancer' => 'Freelancer', 'In-House' => 'In-House'];
             // API call to RetailIQ
 
             $clientResponse = Http::withOptions([
@@ -1119,5 +1120,23 @@ class TrainingController extends BaseController
         }
 
         return response()->json(['success' => false, 'message' => 'No data found']);
+    }
+    public function vcIndex()
+    {
+        $requests = VcTrainingRequest::with(['user', 'training','statususer'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(20); // or use ->get() if no pagination
+            // dd($requests);
+        return view('admin.training.vc-index', compact('requests'));
+    }
+    public function vcRequestUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required',
+        ]);
+
+        VcTrainingRequest::where('id', $id)->update(['status' => $request->status, 'status_updated_by' => Auth::user()->id]);
+
+        return back()->with('success', 'Training request status updated.');
     }
 }

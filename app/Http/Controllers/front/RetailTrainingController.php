@@ -23,7 +23,9 @@ use App\Models\Feedback;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use  Blade, Config, Cache, Cookie, DB, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator, PDF;
+use Illuminate\Support\Facades\DB;
+
+use  Blade, Config, Cache, Cookie, File, Hash, Mail, Redirect, Response, Session, URL, View, Validator, PDF;
 
 require_once app_path('getID3/getid3/getid3.php');
 

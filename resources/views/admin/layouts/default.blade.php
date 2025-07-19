@@ -185,6 +185,10 @@
                                     <a class="nav-link  @if ($segment2 === 'trainings') active @endif"
                                         href="{{ route('Training.index') }}">{{ trans('Trainings') }}</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link  @if ($segment2 === 'trainings') active @endif"
+                                        href="{{ route('vc.index') }}">{{ trans('VC Requests') }}</a>
+                                </li>
                             </ul>
                         </div>
                     </li>

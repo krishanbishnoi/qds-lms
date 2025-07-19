@@ -121,6 +121,9 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::post('/training/fetch-store', 'fetchRetailCampaignsStore')->name('fetch.retail.campaigns.store');
             Route::post('/training/retail-assign', 'retailAssignTraining')->name('retail.assign-training');
             Route::post('retail-assigned-training/fetch', 'fetchAssignedTraining')->name('retail.assigned-training.fetch');
+
+            Route::get('trainings/vc-requests', 'vcIndex')->name('vc.index');
+            Route::post('trainings/vc-request-update/{id}', 'vcRequestUpdate')->name('vc.request.update');
         });
 
         /* training category modules routes */
@@ -586,7 +589,7 @@ Route::group(array('middleware' => ['App\Http\Middleware\AuthFront', 'PreventBac
     Route::get('feedback', array('as' => 'userFeedback', 'uses' => 'TrainingController@userFeedback'));
     Route::post('feedback', array('as' => 'store.feedback', 'uses' => 'TrainingController@storeFeedback'));
 
-    Route::post('request-for-vc/{training_id}', array('as' => 'request.for.vc', 'uses' => 'TrainingController@requestForVc'));
+    Route::get('request-for-vc/{training_id}', array('as' => 'request.for.vc', 'uses' => 'TrainingController@requestForVc'));
 });
 
 
