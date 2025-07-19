@@ -165,7 +165,7 @@
             <div class="container-fluid">
                 <div class="d-flex flex-wrap align-items-center">
                     <div class="logoSec">
-                        <a href="{{ route('front.dashboard') }}"><img src="../lms-img/qdegrees-logo.svg" alt="logo"
+                        <a href="{{ route('front.dashboard') }}"><img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="logo"
                                 width="130" height="33px"></a>
                     </div>
                     <div class="courseName">
@@ -193,7 +193,7 @@
                     </div>
                     <div class="courseProgress">
                         <a href="{{ route('front.dashboard') }}" class="exitBtn">
-                            <img src="../front/img/exit.svg" alt="icon" width="23" height="23">
+                            <img src="{{ asset('front/img/exit.svg') }}.svg" alt="icon" width="23" height="23">
                         </a>
                     </div>
                 </div>

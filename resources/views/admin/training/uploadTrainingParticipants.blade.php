@@ -114,15 +114,16 @@
                                             'placeholder' => '-- Choose Client --',
                                         ]) !!}
                                 </div>
-                                <div class="mb-3 col-6" id="store-section" style="display: none;">
+                                <div class="mb-3 col-6" id="assginTo-section" style="display: none;">
                                     {!! Form::label('assginTo', 'Assgin To', ['class' => 'block font-bold mb-1']) !!}
-                                    {!! Form::select('assginTo', $assginTo, null, [
+                                    {!! Form::select('assginTo', $assginTo, 'Both', [
                                         'class' => 'form-control',
                                     ]) !!}
                                 </div>
-                                <div class="mb-3 col-6" id="store-section" style="display: none;">
+                                <div class="mb-3 col-6" id="validity-section" style="display: none;">
                                     {!! Form::label('validity', 'Training Validity', ['class' => 'block font-bold mb-1']) !!}
-                                    <small class="'block text-muted mb-1">(select date if training is valid till a specific date.)</small>
+                                    <small class="'block text-muted mb-1">(select date if training is valid till a specific
+                                        date.)</small>
                                     {!! Form::date('validity', null, [
                                         'class' => 'form-control',
                                         'id' => 'validityy',
@@ -164,16 +165,18 @@
 
                                 </div>
                                 <div class="mb-3 col-6" id="vc-availability-section" style="display: none;">
-                                    <label class="block font-bold mb-1 required" for="vc-availability">Is VC (video
-                                        call/
-                                        classroom training available for trainee)</label>
+
+                                    <label class="block font-bold mb-1 required" for="vc-availability">
+                                        Is VC or Classroom Training required for the user?
+                                    </label>
                                     <div id="vc-availability">
                                         <label>
                                             <input type="radio" name="vcAvailability" id="vc-yes" value="1">
                                             Yes
                                         </label>
                                         <label class="ml-4">
-                                            <input type="radio" name="vcAvailability" id="vc-no" value="0">
+                                            <input type="radio" name="vcAvailability" id="vc-no" value="0"
+                                                checked>
                                             No
                                         </label>
                                     </div>
@@ -234,16 +237,16 @@
             if (selectedProject === 'RetailIQ') {
                 $('#retailiq-section').show();
                 // $('#vc-availability-section').show();
-                $('#method-section, #excel-upload-section, #user-selection-section, #campaign-section, #store-section,#vc-availability-section')
+                $('#method-section, #excel-upload-section, #user-selection-section, #campaign-section, #store-section, #assginTo-section,#validity-section, #vc-availability-section')
                     .hide();
             } else if (selectedProject) {
                 $('#retailiq-section').hide();
                 $('#vc-availability-section').hide();
                 $('#method-section').show();
-                $('#excel-upload-section, #user-selection-section, #campaign-section, #store-section,#vc-availability-section')
+                $('#excel-upload-section, #user-selection-section, #campaign-section, #store-section, #assginTo-section,#validity-section, #vc-availability-section')
                     .hide();
             } else {
-                $('#retailiq-section, #method-section, #excel-upload-section, #user-selection-section, #campaign-section, #store-section,#vc-availability-section')
+                $('#retailiq-section, #method-section, #excel-upload-section, #user-selection-section, #campaign-section, #store-section, #assginTo-section, #validity-section, #vc-availability-section')
                     .hide();
             }
         });
@@ -294,7 +297,8 @@
                 const $campaignSelect = $('#campaignSelect'); // Use consistent ID
 
                 if (clientId) {
-                    $('#campaign-section, #store-section,#vc-availability-section').show();
+                    $('#campaign-section, #store-section, #assginTo-section,#validity-section,#vc-availability-section')
+                        .show();
                     $campaignSelect.empty().append('<option>Loading...</option>');
 
                     $.ajax({
@@ -324,7 +328,8 @@
                         }
                     });
                 } else {
-                    $('#campaign-section, #store-section,#vc-availability-section').hide();
+                    $('#campaign-section, #store-section, #assginTo-section,#validity-section,#vc-availability-section')
+                        .hide();
                     $campaignSelect.empty();
                 }
             });
@@ -336,7 +341,7 @@
             const $storeSelect = $('#storeSelect');
 
             if (selectedCampaignIds && selectedCampaignIds.length > 0) {
-                $('#store-section,#vc-availability-section').show();
+                $('#store-section, #assginTo-section,#validity-section,#vc-availability-section').show();
 
                 $.ajax({
                     url: '{{ route('fetch.retail.campaigns.store') }}',
@@ -372,7 +377,7 @@
                     }
                 });
             } else {
-                $('#store-section,#vc-availability-section').hide();
+                $('#store-section, #assginTo-section,#validity-section,#vc-availability-section').hide();
                 $storeSelect.empty();
             }
         });
@@ -443,11 +448,11 @@
                             if (response.success) {
                                 let data = response.data;
 
-                                $('#retailiq-section, #store-section, #campaign-section,#vc-availability-section')
+                                $('#retailiq-section, #store-section, #assginTo-section,#validity-section, #campaign-section,#vc-availability-section')
                                     .show();
 
                                 // Set simple fields
-                                $('select[name="assginTo"]').val(data.assginTo);
+                                // $('select[name="assginTo"]').val(data.assginTo);
                                 $('input[name="validity"]').val(data.validity);
                                 $('input[name="vcAvailability"][value="' + data.is_vc + '"]')
                                     .prop('checked', true);
@@ -550,11 +555,9 @@
                                 });
                             } else {
                                 // No data found for client, clear form fields
-                                $('select[name="assginTo"]').val(null);
                                 $('input[name="validity"]').val(null);
                                 $('.campaignFetchedData').val(null).trigger('change');
                                 $('.storeFetchedData').val(null).trigger('change');
-                                $('input[name="vcAvailability"]').prop('checked', false);
                                 $('#loadingOverlay').hide();
                             }
                         },

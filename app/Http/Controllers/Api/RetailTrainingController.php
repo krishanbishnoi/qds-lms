@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 
 class RetailTrainingController extends BaseController
@@ -36,10 +37,9 @@ class RetailTrainingController extends BaseController
 				'store_code' => 'nullable',
 			]);
 
-			// 1. Check if user exists
+			// 1. Check or create user
 			$user = User::where('email', $request->email)->first();
 
-			// 2. If not, create and log in the user
 			if (!$user) {
 				$user = User::create([
 					'user_role_id' => '3',
@@ -56,19 +56,15 @@ class RetailTrainingController extends BaseController
 					'is_mobile_verified' => '1',
 					'is_email_verified' => '1',
 				]);
-
-				Auth::login($user);
-			} else {
-				// Optionally: login existing user
-				Auth::login($user);
 			}
+
+			Auth::login($user);
 
 			$data = [];
 
-			// --- 4. Get RetailAssignedTraining trainings
+			// 2. Get RetailAssignedTraining trainings
 			$queryTraining = RetailAssignedTraining::where('client_id', $request->client_id);
 
-			// Optional: only filter by campaign_id if it's assigned in DB
 			if ($request->filled('campaign_id')) {
 				$queryTraining->where(function ($q) use ($request) {
 					$q->whereRaw("FIND_IN_SET(?, campaign_id)", [$request->campaign_id])
@@ -90,17 +86,13 @@ class RetailTrainingController extends BaseController
 			foreach ($assignedTrainings as $assigned) {
 				$trainingId = $assigned->training_id;
 
-				// Step 1: Get course IDs under this training
 				$courseIds = Course::where('training_id', $trainingId)
 					->where('is_deleted', 0)
 					->pluck('id')
 					->toArray();
 
-				if (empty($courseIds)) {
-					continue; // no course means no documents → skip or include based on your logic
-				}
+				if (empty($courseIds)) continue;
 
-				// Step 2: Get document IDs from these courses
 				$documentIds = TrainingDocument::whereIn('course_id', $courseIds)
 					->where('is_active', 1)
 					->where('is_deleted', 0)
@@ -108,20 +100,52 @@ class RetailTrainingController extends BaseController
 					->toArray();
 
 				$totalDocs = count($documentIds);
+				if ($totalDocs === 0) continue;
 
-				if ($totalDocs === 0) {
-					continue; // no documents to check → treat as complete
-				}
-
-				// Step 3: Count user-completed documents
 				$completedDocs = TraineeAssignedTrainingDocument::where('user_id', $user->id)
 					->where('training_id', $trainingId)
 					->whereIn('document_id', $documentIds)
 					->where('status', 1)
 					->count();
 
-				// Step 4: If incomplete, include training
 				if ($completedDocs < $totalDocs) {
+					// === Auto assign participant & documents ===
+					$alreadyAssigned = TrainingParticipants::where('training_id', $trainingId)
+						->where('trainee_id', $user->id)
+						->exists();
+					if (! $alreadyAssigned) {
+						// Add participant
+						TrainingParticipants::create([
+							'training_id' => $trainingId,
+							'trainee_id' => $user->id,
+						]);
+
+						// Assign documents
+						$documentsToInsert = [];
+
+						$documents = TrainingDocument::whereIn('course_id', $courseIds)
+							->where('is_active', 1)
+							->where('is_deleted', 0)
+							->get();
+						foreach ($documents as $doc) {
+							$documentsToInsert[] = [
+								'user_id' => $user->id,
+								'training_id' => $trainingId,
+								'course_id' => $doc->course_id,
+								'document_id' => $doc->id,
+								'type' => $doc->type,
+								'duration' => $doc->length,
+								'status' => 0,
+								'created_at' => now(),
+								'updated_at' => now(),
+							];
+						}
+
+						if (!empty($documentsToInsert)) {
+							DB::table('trainee_assigned_training_documents')->insert($documentsToInsert);
+						}
+					}
+
 					$training = Training::find($trainingId);
 
 					$data[] = [
@@ -164,6 +188,7 @@ class RetailTrainingController extends BaseController
 			$data = [];
 
 			foreach ($assignedTrainings as $assigned) {
+
 				$training = Training::find($assigned->training_id);
 
 				if (!$training) continue;
@@ -212,7 +237,7 @@ class RetailTrainingController extends BaseController
 				'training_id' => 'required',
 			]);
 
-			$training_url = 'http://lms.test/retail/my-trainings-details/' . $request->training_id . '?user_id=' . $request->user_id;
+			$training_url = 'https://lms.qdegrees.com/retail/my-trainings-details/' . $request->training_id . '?user_id=' . $request->user_id;
 
 			return $this->sendSuccess($training_url, config('constants.API_MSG.REC_FETCH_SUCCESS'));
 		} catch (ValidationException $e) {

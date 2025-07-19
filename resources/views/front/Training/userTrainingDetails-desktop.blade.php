@@ -109,13 +109,13 @@
                     <p><span>Total Content : {{ count($trainingCourses) }}</span><span>Total Time to finish :
                             {{ $hours . 'h ' . $minutes . 'm ' }}</span></p>
                 </div>
-                <hr>
+                {{-- <hr>
                 <div class="certificates">
                     <strong class="mb-2 d-block">Certificates</strong>
                     <p class="mb-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
                     <p class="mb-2">Complete the training and test to achieve this certificate</p>
                     <a href="javascript:void(0)" class="btn btn-light py-2 px-3 fs-7">Certificate</a>
-                </div>
+                </div> --}}
             </div>
         </div>
 

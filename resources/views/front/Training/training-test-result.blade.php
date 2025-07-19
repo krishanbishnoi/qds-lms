@@ -36,10 +36,10 @@
                     <strong>Progress</strong>
                     <span>1<i>/4</i></span>
                 </div> --}}
-                    {{-- <button type="button" class="optionBtn d-lg-none"><img src="../front/img/option.svg" alt="icon"
+                    {{-- <button type="button" class="optionBtn d-lg-none"><img src="{{ asset('front/img/option.svg') }}" alt="icon"
                             width="23" height="23"></button>
                     <a href="{{ route('front.dashboard') }}"><button type="button" class="exitBtn"><img
-                                src="../front/img/exit.svg" alt="icon" width="23" height="23"></button></a> --}}
+                                src="{{ asset('front/img/exit.svg') }}.svg" alt="icon" width="23" height="23"></button></a> --}}
                 </div>
             </div>
         </div>
@@ -81,6 +81,19 @@
                             </div>
                         </div>
                         <hr>
+                        @if ($OverAllStatus == 'Passed' && $isLastCourse)
+                            <div class="d-sm-flex justify-content-between">
+                                <div class=" fs-6 blue-text">Note:</div>
+                                <div class="text-center"
+                                    style="font-size: 15px;font-weight: 400;color: var(--lightText400);">
+                                    This training requires VC (Virtual Classroom) or Classroom training.
+                                    Please click the button below to <a href="{{ route('request.for.vc', $trainingId) }}"> Request Special
+                                        Training</a> .<br>
+
+                                </div>
+                            </div>
+                            <hr>
+                        @endif
                         <div class="d-sm-flex justify-content-between">
                             <div class="fs-6 blue-text">Certificate</div>
                             <div class="text-center">
@@ -99,7 +112,7 @@
                                         @else
                                             <a href="{{ route('front.dashboard') }}"><button type="button"
                                                     class="btn btn-secondary fs-7 text-black"
-                                                    style="background-color: #FFF2E5" >Finish Training</button></a>
+                                                    style="background-color: #FFF2E5">Finish Training</button></a>
                                         @endif
                                     @else
                                         <!-- Not last course or not passed -->

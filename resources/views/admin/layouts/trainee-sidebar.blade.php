@@ -45,11 +45,11 @@
             @if(!empty(Auth::user()->image))
             <i><img src="{{ USER_IMAGE_URL.Auth::user()->image}}" alt="img"></i>
             @else
-            <i><img src="../front/img/profile-img.png" alt="img"></i>
+            <i><img src="{{ asset('front/img/profile-img.png') }}" alt="img"></i>
             @endif
              {{ ucwords(Auth::user()->first_name .' '.Auth::user()->last_name) }}</span>
         <button type="button"><a href="{{ URL('admin/logout')}}">
-            <img src="../front/img/logout-icon.svg" alt="logout"></a>
+            <img src="{{ asset('front/img/logout-icon.svg') }}" alt="logout"></a>
         </button>
 
     </div>

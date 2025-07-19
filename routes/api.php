@@ -20,7 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {});
 Route::controller(RetailTrainingController::class)->group(function () {
     Route::post('get-training', 'getTrainings');
     Route::post('get-user-training', 'userAudit');
-    Route::post('user-training-details', 'userTrainingDetails');
+    // get complated and pendid training for view data
+    Route::post('get-all-trainings', 'userTrainingDetails');
     Route::post('get-training-url', 'getTrainingUrl');
 });
 
