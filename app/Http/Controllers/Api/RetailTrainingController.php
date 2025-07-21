@@ -165,56 +165,20 @@ class RetailTrainingController extends BaseController
 	}
 
 
-	public function getTrainings(Request $request)
-	{
-		try {
-			$request->validate([
-				'client_id' => 'required',
-				'campaign_id' => 'nullable',
-				'store_code' => 'nullable', // comma or single store_code
-			]);
-
-			$query = RetailAssignedTraining::where('client_id', $request->client_id);
-
-			if ($request->filled('campaign_id')) {
-				$query->whereRaw("FIND_IN_SET(?, campaign_id)", [$request->campaign_id]);
-			}
-			if ($request->filled('store_code')) {
-				// Use FIND_IN_SET for comma-separated store_code field
-				$query->whereRaw("FIND_IN_SET(?, store_code)", [$request->store_code]);
-			}
-
-			$assignedTrainings = $query->get();
-			$data = [];
-
-			foreach ($assignedTrainings as $assigned) {
-
-				$training = Training::find($assigned->training_id);
-
-				if (!$training) continue;
-				$data[] = [
-					'training' => $training,
-					'training_courses' => $courses,
-				];
-			}
-			return $this->sendSuccess($data, config('constants.API_MSG.REC_FETCH_SUCCESS'));
-		} catch (ValidationException $e) {
-			return $this->sendError(config('constants.API_MSG.VALIDATION_ERROR'), $e->errors(), 422);
-		} catch (\Exception $e) {
-			return $this->sendError(config('constants.API_MSG.SERVER_ERROR'), $e->getMessage(), 500);
-		}
-	}
 
 
 	public function userTrainingDetails(Request $request)
 	{
 		try {
 			$request->validate([
-				'user_id' => 'required',
+				'email' => 'required',
 				'status' => 'required',
 			]);
-
-			$trainingIds = TrainingParticipants::where('trainee_id', $request->user_id)->where('status', $request->status)
+			$userId = User::where('email', $request->email)->value('id');
+			if (!$userId) {
+				return $this->sendError('User Not found', $e->errors(), 422);
+			}
+			$trainingIds = TrainingParticipants::where('trainee_id', $userId)->where('status', $request->status)
 				->pluck('training_id')
 				->unique()
 				->toArray();
