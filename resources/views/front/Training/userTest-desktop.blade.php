@@ -188,8 +188,8 @@
             <div class="container-fluid">
                 <div class="d-flex flex-wrap align-items-center">
                     <div class="logoSec">
-                        <a href="{{ route('front.dashboard') }}"><img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="logo"
-                                width="130" height="33px"></a>
+                        <a href="{{ route('front.dashboard') }}"><img src="{{ asset('lms-img/qdegrees-logo.svg') }}"
+                                alt="logo" width="130" height="33px"></a>
                     </div>
                     <div class="courseName">
                         <p class="mb-0">{{ $trainingTest->title }}</p>
@@ -216,7 +216,8 @@
                     </div>
                     <div class="courseProgress">
                         <a href="{{ route('front.dashboard') }}" class="exitBtn">
-                            <img src="{{ asset('front/img/exit.svg') }}.svg" alt="icon" width="23" height="23">
+                            <img src="{{ asset('front/img/exit.svg') }}.svg" alt="icon" width="23"
+                                height="23">
                         </a>
                     </div>
                 </div>
@@ -309,6 +310,9 @@
                                         <div class="summary-value">{{ $trainingTest->minimum_marks }}%</div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="card-body">
+                                <video id="video" width="400" height="250" autoplay muted></video>
                             </div>
                         </div>
                     </div>
@@ -793,4 +797,88 @@
             });
         });
     </script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+
+    <script>
+        window.addEventListener('DOMContentLoaded', async () => {
+            const video = document.getElementById('video');
+            let warnings = 0;
+            let sensitivity = 100;
+
+            // Wait until face-api is ready
+            const waitForFaceApi = () => new Promise(resolve => {
+                const check = () => {
+                    if (typeof faceapi !== 'undefined') resolve();
+                    else setTimeout(check, 50);
+                };
+                check();
+            });
+
+            await waitForFaceApi();
+            await Promise.all([
+                faceapi.nets.tinyFaceDetector.loadFromUri('/models/face-api/tiny_face_detector'),
+                faceapi.nets.faceLandmark68Net.loadFromUri('/models/face-api/face_landmark_68'),
+            ]);
+
+            startVideo();
+
+            function startVideo() {
+                navigator.mediaDevices.getUserMedia({
+                        video: true
+                    })
+                    .then(stream => video.srcObject = stream)
+                    .catch(err => console.error("Camera error:", err));
+            }
+
+            video.addEventListener('play', () => {
+                const canvas = faceapi.createCanvasFromMedia(video);
+                document.body.append(canvas);
+                const displaySize = {
+                    width: video.width,
+                    height: video.height
+                };
+                faceapi.matchDimensions(canvas, displaySize);
+
+                setInterval(async () => {
+                    const detections = await faceapi
+                        .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                        .withFaceLandmarks();
+
+                    if (detections) {
+                        const landmarks = detections.landmarks;
+                        const nose = landmarks.getNose()[3];
+                        const leftEye = landmarks.getLeftEye()[0];
+                        const rightEye = landmarks.getRightEye()[3];
+
+                        const xShift = Math.abs(leftEye.x - rightEye.x);
+                        const yShift = Math.abs(nose.y - (leftEye.y + rightEye.y) / 2);
+
+                        if (xShift < sensitivity || yShift > sensitivity) {
+                            warnings++;
+                            if (warnings === 1) {
+                                alert('⚠️ First warning: Please don’t look away!');
+                                // await fetch('/api/proctor/warning', {
+                                //     method: 'POST'
+                                // });
+                            } else if (warnings >= 2) {
+                                alert(
+                                    '❌ You’ve been disqualified. Test is auto-submitted.'
+                                    );
+                                // await fetch('/api/proctor/autosubmit', {
+                                //     method: 'POST'
+                                // });
+                                // window.location.href = '/test/submit';
+                            }
+                        }
+                    }
+                }, 1000);
+            });
+        });
+    </script>
+
+
+
+
 </div>
