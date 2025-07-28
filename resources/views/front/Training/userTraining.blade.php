@@ -64,8 +64,8 @@
                                                                 </div>
                                                             </td>
                                                             <td class="text-center">
-                                                                <div class="actionGroup"><a data-bs-toggle="modal"
-                                                                        data-bs-target="#vcRequestModal"
+                                                                <div class="actionGroup"><a
+                                                                        href="{{ route('userTrainingDetails.index', $training->id) }}"
                                                                         class="continueBtn"><img
                                                                             src="{{ asset('front/img/continue-icon.svg') }}"
                                                                             alt="img" width="47"
@@ -195,8 +195,6 @@
             </div>
         </div>
     </div>
-
-
     <!--Taraining Detail Modal -->
     <div ria-hidden="false" class="modal fade trainingDetailModal" class="modal fade in" id="trainingDetailModals"
         style="display: none;">
