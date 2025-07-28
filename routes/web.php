@@ -396,6 +396,7 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::get('training', 'training')->name('training');
             Route::get('downloads-report-test/{test_id}', 'downloadReport')->name('downloads');
             Route::get('downloads-report-training/{training_id}', 'downloadReportTraining')->name('downloads.training');
+            Route::get('/reports/training/{training}/users', 'showTrainingUsers')->name('training.users');
         });
     });
 });

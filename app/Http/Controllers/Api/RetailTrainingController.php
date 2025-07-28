@@ -174,18 +174,56 @@ class RetailTrainingController extends BaseController
 				'email' => 'required',
 				'status' => 'required',
 			]);
+
 			$userId = User::where('email', $request->email)->value('id');
 			if (!$userId) {
-				return $this->sendError('User Not found', $e->errors(), 422);
+				return $this->sendError('User Not found', [], 422);
 			}
-			$trainingIds = TrainingParticipants::where('trainee_id', $userId)->where('status', $request->status)
+
+			$trainingIds = TrainingParticipants::where('trainee_id', $userId)
+				->where('status', $request->status)
 				->pluck('training_id')
 				->unique()
 				->toArray();
 
 			$trainings = Training::whereIn('id', $trainingIds)->get();
 
-			return $this->sendSuccess($trainings, config('constants.API_MSG.REC_FETCH_SUCCESS'));
+			$result = [];
+
+			foreach ($trainings as $training) {
+				// Get all course IDs for the training
+				$courseIds = Course::where('training_id', $training->id)->pluck('id')->toArray();
+
+				// Get all document IDs for the training (via courses)
+				$documentIds = TrainingDocument::whereIn('course_id', $courseIds)->pluck('id')->toArray();
+
+				$totalDocuments = count($documentIds);
+
+				// Get documents completed by user (status = 1)
+				$completedDocumentCount = TraineeAssignedTrainingDocument::where('user_id', $userId)
+					->where('training_id', $training->id)
+					->where('status', 1)
+					->whereIn('document_id', $documentIds)
+					->count();
+
+				// Avoid division by zero
+				$completionPercentage = $totalDocuments > 0
+					? round(($completedDocumentCount / $totalDocuments) * 100, 2)
+					: 0;
+				$completionPercentage = number_format($completionPercentage,2);
+				// Add percentage to training
+				$training->completion_percentage = $completionPercentage;
+
+				// Append full thumbnail URL 
+				$training->thumbnail = $training->thumbnail
+					? asset('training_document/' . $training->thumbnail)
+					: null;
+ 
+
+				$result[] = $training;
+			}
+
+			return $this->sendSuccess($result, config('constants.API_MSG.REC_FETCH_SUCCESS'));
 		} catch (ValidationException $e) {
 			return $this->sendError(config('constants.API_MSG.VALIDATION_ERROR'), $e->errors(), 422);
 		} catch (\Exception $e) {
@@ -193,15 +231,21 @@ class RetailTrainingController extends BaseController
 		}
 	}
 
+
 	public function getTrainingUrl(Request $request)
 	{
 		try {
 			$request->validate([
-				'user_id' => 'required',
+				'email' => 'required',
 				'training_id' => 'required',
 			]);
+			$userId = User::where('email', $request->email)->value('id');
+			if (!$userId) {
+				return $this->sendError('User Not found', [], 422);
+			}
 
-			$training_url = 'https://lms.qdegrees.com/retail/my-trainings-details/' . $request->training_id . '?user_id=' . $request->user_id;
+
+			$training_url = 'https://lms.qdegrees.com/retail/my-trainings-details/' . $request->training_id . '?user_id=' . $userId;
 
 			return $this->sendSuccess($training_url, config('constants.API_MSG.REC_FETCH_SUCCESS'));
 		} catch (ValidationException $e) {

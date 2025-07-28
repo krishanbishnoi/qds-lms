@@ -21507,3 +21507,95 @@ button.btn.btn-default.ml5 {
         background: #007bff;
         color: #fff;
     }
+
+
+
+        .content-wrapper {
+            padding: 20px 30px;
+            background: #f9f9f9;
+            min-height: 100vh;
+        }
+
+        .page-header h1 {
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .breadcrumb {
+            font-size: 0.9rem;
+            background: #fff;
+            border-radius: 5px;
+        }
+
+        .breadcrumb a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .card {
+            border-radius: 10px;
+        }
+
+        .card-header {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        table.table {
+            margin-bottom: 0;
+        }
+
+        table thead.thead-light th {
+            background-color: #f1f3f5;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        table.table-bordered {
+            border: 1px solid #dee2e6;
+        }
+
+        table.table-bordered th,
+        table.table-bordered td {
+            border: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        table.table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-info:hover {
+            background-color: #117a8b;
+            border-color: #0c5460;
+        }
+
+        .badge-success {
+            background-color: #28a745;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.4em 0.7em;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .badge-danger {
+            background-color: #dc3545;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.4em 0.7em;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }

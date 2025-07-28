@@ -11,195 +11,122 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <div class="content-wrapper">
-        <div class="page-header">
-            <h1>
-                User Report's
-            </h1>
+        <div class="page-header mb-4">
+            <h1>User Report's</h1>
             <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ URL::to('admin/dashboard') }}"><i class="fa fa-dashboard"></i>
-                            Dashboard</a></li>
+                <ol class="breadcrumb bg-white p-2 rounded">
+                    <li class="breadcrumb-item">
+                        <a href="{{ URL::to('admin/dashboard') }}">
+                            <i class="fa fa-dashboard"></i> Dashboard
+                        </a>
+                    </li>
                     <li class="breadcrumb-item active" aria-current="page">User Report's</li>
-
                 </ol>
             </nav>
         </div>
-        <div class="row">
-            <div class="col-lg-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="box-header with-border pd-custom">
-                            <div class="listing-btns">
-                                <h1 class="box-title">Test's List</h1>
-                            </div>
-                        </div>
-                        <div class="trainingTabContent">
 
-                            <div class="tab-content" id="tab-Content">
-                                <div class="tab-pane fade show active" id="allTab" role="tabpanel">
-                                    <div class="box p-0">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover table table-bordered mt-2 ">
-                                                <thead class="theadLight">
-                                                    <tr>
-                                                        <th>Test Name</th>
-                                                        <th class="text-center">Passing Score</th>
-                                                        <th class="text-center">Obtaine Score</th>
-                                                        <th class="text-center">Result</th>
-                                                        <th class="text-center">View</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                    @if (isset($testResults) && !empty($testResults))
-                                                        @foreach ($testResults as $result)
-                                                            <tr>
-                                                                <td>{{ $result['test_details']->title }} </td>
-                                                                {{-- @if ($result->status == 0)
-                                                                    <td class="text-center">Ongoing </td>
-                                                                @elseif($result->status == 2)
-                                                                    <td class="text-center">Upcoming</td>
-                                                                @else
-                                                                    <td class="text-center">Completed </td>
-                                                                @endif --}}
-                                                                <td class="text-center">
-                                                                    {{ $result['test_details']->minimum_marks }}%</td>
-                                                                <td class="text-center">
-                                                                    {{ optional($result['test_results'])->percentage !== null ? $result['test_results']->percentage . '%' : '--' }}
-                                                                </td>
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    {{ $result['test_results']->result ?? '--' }}</td>
-                                                                @if (isset($result['test_results']->result) && !empty($result['test_results']->result))
-                                                                    <td class="text-center action-td">
-                                                                        <div class="actionGroup">
-                                                                            <a href="{{ route('Trainees.Test.report', ['user_id' => $result['test_results']->user_id, 'test_id' => $result['test_results']->test_id]) }}"
-                                                                                class="btn btn-info"><span
-                                                                                    class="fa fa-eye"></span>
-                                                                            </a>
-                                                                        </div>
-                                                                    </td>
-                                                                @else
-                                                                    <td class="text-center action-td">
-
-                                                                    </td>
-                                                                @endif
-                                                            </tr>
-                                                        @endforeach
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light border-bottom">
+                        <h3 class="mb-0 text-dark font-weight-bold">Test's List</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Test Name</th>
+                                        <th class="text-center">Passing Score</th>
+                                        <th class="text-center">Obtained Score</th>
+                                        <th class="text-center">Result</th>
+                                        <th class="text-center">View</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (isset($testResults) && !empty($testResults))
+                                        @foreach ($testResults as $result)
+                                            <tr>
+                                                <td>{{ $result['test_details']->title }}</td>
+                                                <td class="text-center">{{ $result['test_details']->minimum_marks }}%</td>
+                                                <td class="text-center">
+                                                    {{ optional($result['test_results'])->percentage !== null ? $result['test_results']->percentage . '%' : '--' }}
+                                                </td>
+                                                <td class="text-center">{{ $result['test_results']->result ?? '--' }}</td>
+                                                <td class="text-center">
+                                                    @if (!empty($result['test_results']->result))
+                                                        <a href="{{ route('Trainees.Test.report', ['user_id' => $result['test_results']->user_id, 'test_id' => $result['test_results']->test_id]) }}"
+                                                            class="btn btn-info btn-sm" title="View Test Report">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
                                                     @else
-                                                        <tr>
-                                                            <td colspan="5" class="text-center">Test Not Found </td>
-                                                        </tr>
+                                                        --
                                                     @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">Test Not Found</td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
                         </div>
-
                     </div>
                 </div>
-
             </div>
-
         </div>
-        {{-- <div class="row">
-            <div class="col-lg-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="box-header with-border pd-custom">
-                            <div class="listing-btns">
-                                <h1 class="box-title">Training's List</h1>
-                            </div>
+
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light border-bottom">
+                        <h3 class="mb-0 text-dark font-weight-bold">Training List</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Training Name</th>
+                                        <th class="text-center">Total Courses</th>
+                                        <th class="text-center">Avg. Passing Score</th>
+                                        <th class="text-center">Avg. Obtained Score</th>
+                                        <th class="text-center">Overall Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($trainingResults as $tr)
+                                        <tr>
+                                            <td>{{ $tr['training']->title }}</td>
+                                            <td class="text-center">{{ $tr['total_courses'] }}</td>
+                                            <td class="text-center">{{ $tr['average_minimum_mark'] }}%</td>
+                                            <td class="text-center">{{ $tr['average_obtain_marks'] }}%</td>
+                                            <td class="text-center">
+                                                @if ($tr['overall_status'] == 'Passed')
+                                                    <span class="badge badge-success">Passed</span>
+                                                @else
+                                                    <span class="badge badge-danger">Failed</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">No Trainings Assigned</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="trainingTabContent">
-
-                            <div class="tab-content" id="tab-Content">
-                                <div class="tab-pane fade show active" id="allTab" role="tabpanel">
-                                    <div class="box p-0">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover table table-bordered mt-2 ">
-                                                <thead class="theadLight">
-                                                    <tr>
-                                                        <th>Training Name</th>
-                                                        <th class="text-center">Training Status</th>
-                                                        <th class="text-center">Course count</th>
-                                                        <th class="text-center">Test count</th>
-                                                        <th class="text-center">Number of Trainee</th>
-                                                        <th class="text-center">Minimum Passing Score</th>
-                                                        <th class="text-center">Report</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                    @if ($allTraining)
-                                                        @foreach ($allTraining as $training)
-                                                            @php
-                                                                // Count the number of training courses with a not-null "test_id"
-                                                                $countCoursesWithTestId = $training->training_courses->whereNotNull('test_id')->count();
-                                                                $averageMinimumMarks = $training->training_courses->whereNotNull('test_id')
-                                                                    ->avg(function ($course) {
-                                                                        return optional($course->test)->minimum_marks ?? 0;
-                                                                    });
-                                                            @endphp
-                                                            <tr>
-                                                                <td>{{ $training->title }} </td>
-                                                                @if ($training->status == 0)
-                                                                    <td class="text-center">Ongoing </td>
-                                                                @elseif($training->status == 2)
-                                                                    <td class="text-center">Upcoming</td>
-                                                                @else
-                                                                    <td class="text-center">Completed </td>
-                                                                @endif
-                                                                <td class="text-center">
-                                                                    {{ count($training->training_courses) ?? '0' }}
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    {{ $countCoursesWithTestId ?? '0' }}
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    {{ count($training->training_participants) ?? '0' }}
-                                                                </td>
-                                                                <td class="text-center">{{ $averageMinimumMarks }}%
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    <div class="actionGroup"><a
-                                                                            href="{{ route('Reports.downloads.training', $training->id) }}"
-                                                                            class="deletBtn"><span
-                                                                                class="fas fa-download"></span></a>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @else
-                                                        <tr>
-                                                            Training Not Created
-                                                        </tr>
-                                                    @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
-
             </div>
-
-        </div> --}}
-
+        </div>
     </div>
 
-    <style>
-        .paddingtop {
-            padding-top: 11px;
-        }
-    </style>
+  
+
     <script>
         $(document).ready(function() {
             $.ajax({

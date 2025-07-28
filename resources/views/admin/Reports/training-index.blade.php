@@ -50,7 +50,7 @@
                                                         <th class="text-center">Total Users</th>
                                                         <th class="text-center">Attempted Users Count</th>
                                                         <th class="text-center">Minimum Passing Score</th>
-                                                        <th class="text-center">Report</th>
+                                                        <th class="text-center">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -109,12 +109,25 @@
                                                                     {{ number_format($averageMinimumMarks, 2) ?? '0' }}{{ number_format($averageMinimumMarks, 2) != 0 ? '%' : '' }}
                                                                 </td>
                                                                 <td class="text-center">
-                                                                    <div class="actionGroup"><a
-                                                                            href="{{ route('Reports.downloads.training', $training->id) }}"
-                                                                            class="deletBtn"><span
-                                                                                class="fas fa-download"></span></a>
+                                                                    <div
+                                                                        class="actionGroup d-flex justify-content-center gap-2">
+                                                                        <a href="{{ route('Reports.training.users', $training->id) }}"
+                                                                            class="btn btn-sm btn-outline-info"
+                                                                            title="View Users">
+                                                                            <i class="fas fa-users me-1"></i> View
+                                                                        </a>
+                                                                        <a href="{{ route('Reports.downloads.training', $training->id) }}"
+                                                                            class="btn btn-sm btn-outline-primary"
+                                                                            title="Download Report">
+                                                                            <i class="fas fa-file-download me-1"></i>
+                                                                            Download
+                                                                        </a>
+
+
                                                                     </div>
                                                                 </td>
+
+
                                                             </tr>
                                                         @endforeach
                                                     @else

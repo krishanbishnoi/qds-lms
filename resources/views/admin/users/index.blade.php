@@ -259,7 +259,7 @@
                             <tbody id="powerwidgets">
                                 <?php $number = 1; ?>
                                 @if (!$results->isEmpty())
-                                    <?php
+                                <?php
                                     $page = $results->currentPage();
                                     $pagelimit = Config::get('Reading.records_per_page');
                                     $number = $page * $pagelimit - $pagelimit;
