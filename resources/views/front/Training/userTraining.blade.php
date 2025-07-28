@@ -65,7 +65,7 @@
                                                             </td>
                                                             <td class="text-center">
                                                                 <div class="actionGroup"><a
-                                                                        data-bs-toggle="modal" data-bs-target="#vcRequestModal"
+                                                                        href="{{ route('userTrainingDetails.index', $training->id) }}"
                                                                         class="continueBtn"><img
                                                                             src="{{ asset('front/img/continue-icon.svg') }}"
                                                                             alt="img" width="47"
@@ -195,35 +195,6 @@
             </div>
         </div>
     </div>
-
-
-    <!-- VC Request Modal -->
-<div class="modal fade" id="vcRequestModal" tabindex="-1" aria-labelledby="vcRequestModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content shadow-lg border-0 rounded-3">
-			<div class="modal-header bg-light border-bottom-0">
-				<h5 class="modal-title fw-semibold text-primary" id="vcRequestModalLabel">Virtual Classroom Required</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-
-			<div class="modal-body text-center px-4 py-3">
-				<p class="text-muted mb-3" style="font-size: 16px;">
-					This training requires <strong>VC (Virtual Classroom)</strong> or <strong>Classroom Training</strong>.
-				</p>
-				<p class="text-muted" style="font-size: 15px;">
-					Please read the content  thorowly and request for vc  
-				</p>
-				<a href="{{ route('request.for.vc', 1) }}" class="btn btn-outline-primary mt-3 px-4">
-					<i class="bi bi-send-fill me-1"></i> Request Special Training
-				</a>
-			</div>
-
-			<div class="modal-footer border-top-0 justify-content-center">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
     <!--Taraining Detail Modal -->
     <div ria-hidden="false" class="modal fade trainingDetailModal" class="modal fade in" id="trainingDetailModals"
         style="display: none;">
