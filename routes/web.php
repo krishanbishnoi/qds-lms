@@ -124,10 +124,6 @@ Route::group(array('prefix' => 'admin'), function () {
 
             Route::get('trainings/vc-requests', 'vcIndex')->name('vc.index');
             Route::post('trainings/vc-request-update/{id}', 'vcRequestUpdate')->name('vc.request.update');
-
-            /* Ai Create Trainings routes */
-            Route::get('trainings/add-new-training-with-ai', 'addAi')->name('training.add.ai');
-            Route::post('trainings/add-new-training-with-ai', 'saveAi')->name('training.submit.ai');
         });
 
         /* training category modules routes */
