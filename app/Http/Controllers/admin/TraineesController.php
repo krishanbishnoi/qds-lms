@@ -20,10 +20,7 @@ use App\Models\EmailAction;
 use App\Models\TestResult;
 use App\Exports\TraineesExport;
 use App\Exports\exportAllTrainee;
-use App\Models\Course;
 use App\Models\TestParticipants;
-use App\Models\TrainingParticipants;
-use App\Models\TrainingTestResult;
 use Blade, Config, Cache, Cookie, DB, File,  Input, Mail, Redirect, Response, Session, URL, View, Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -272,7 +269,7 @@ class TraineesController extends BaseController
         if (empty($model)) {
             return Redirect::route($this->model . ".index");
         }
-        return  view("admin.Trainees.view", compact('model'));
+        return  View::make("admin.$this->model.view", compact('model'));
     }
 
     public function importTrainees()
@@ -390,16 +387,28 @@ class TraineesController extends BaseController
 
     public function traineeWiseReport($id)
     {
-        // Your existing testResults logic (unchanged)
+        $assignedTests = TestParticipants::where('trainee_id', $id)->with('test_details')->get();
+
+        $allTest = TestParticipants::where('trainee_id', $id)->where('type', 1)->with(['test_details', 'user_test_results'])->get();
+
+        $allTraining = Training::with(['training_participants', 'training_courses', 'training_courses.test', 'training_results'])->get();
+
+        $countCoursesWithTestId = $allTraining->pluck('training_courses')->flatten(1)->whereNotNull('test_id')->count();
+
+
         $participants = TestParticipants::where('trainee_id', $id)->get();
+
         $testResults = [];
 
         foreach ($participants as $participant) {
+
             $testId = $participant->test_id;
+
             $testDetails = Test::find($testId);
             $result = TestResult::where('test_id', $testId)->where('user_id', $id)->first();
 
             if ($testDetails && $result) {
+
                 $testResults[] = [
                     'test_details' => $testDetails,
                     'test_results' => $result,
@@ -407,60 +416,8 @@ class TraineesController extends BaseController
             }
         }
 
-        // Fetch trainings where user is participant (without relations)
-        $trainingParticipants = TrainingParticipants::where('trainee_id', $id)->get();
-
-        $trainingResults = [];
-
-        foreach ($trainingParticipants as $tp) {
-            $training = Training::find($tp->training_id);
-            if (!$training) {
-                continue;
-            }
-
-            // Get training courses for this training
-            $courses = Course::where('training_id', $training->id)->get();
-
-            $totalMinimumMark = 0;
-            $totalTestCount = 0;
-            $totalObtainMarks = 0;
-
-            foreach ($courses as $course) {
-                $test = Test::find($course->test_id);
-                if ($test) {
-                    $totalTestCount++;
-                    $totalMinimumMark += $test->minimum_marks;
-
-                    // Latest attempt by user for this test + course
-                    $latestAttempt = TrainingTestResult::where('training_id', $training->id)
-                        ->where('user_id', $id)
-                        ->where('course_id', $course->id)
-                        ->where('test_id', $test->id)
-                        ->orderBy('created_at', 'desc')
-                        ->first();
-
-                    if ($latestAttempt) {
-                        $totalObtainMarks += $latestAttempt->obtain_marks;
-                    }
-                }
-            }
-
-            $averageMinimumMark = $totalTestCount > 0 ? ($totalMinimumMark / $totalTestCount) : 0;
-            $averageObtainMarks = $totalTestCount > 0 ? ($totalObtainMarks / $totalTestCount) : 0;
-            $overallStatus = ($averageObtainMarks >= $averageMinimumMark) ? 'Passed' : 'Failed';
-
-            $trainingResults[] = [
-                'training' => $training,
-                'total_courses' => $totalTestCount,
-                'average_minimum_mark' => round($averageMinimumMark, 2),
-                'average_obtain_marks' => round($averageObtainMarks, 2),
-                'overall_status' => $overallStatus,
-            ];
-        }
-
-        return view("admin.Trainees.reports", compact('testResults', 'trainingResults'));
+        return  View::make("admin.$this->model.reports", compact('allTest', 'allTraining', 'testResults'));
     }
-
 
     public function traineeTestWiseReport(Request $request, $user_id, $test_id)
     {

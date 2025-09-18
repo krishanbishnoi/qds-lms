@@ -139,7 +139,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- <div class="col-md-6">
+                            <div class="col-md-6">
                                 <div class="form-group <?php echo $errors->first('region') ? 'has-error' : ''; ?>">
                                     <div class="mws-form-row">
                                         {!! Html::decode(
@@ -180,7 +180,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div> --}}
+                            </div>
                             <div class="col-md-6">
                                 <div class="form-group <?php echo $errors->first('start_date_time') ? 'has-error' : ''; ?>" id="live_date">
                                     <div class="mws-form-row">

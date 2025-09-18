@@ -14,10 +14,7 @@ use App\Exports\TrainingDocumentResultsExport;
 use App\Exports\TrainingResultsExport;
 use App\Exports\TrainingWithTestResultsExport;
 use App\Exports\userTestReportExport;
-use App\Models\Course;
 use App\Models\Question;
-use App\Models\TraineeAssignedTrainingDocument;
-use App\Models\TrainingDocument;
 use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
@@ -176,7 +173,7 @@ class ReportsController extends BaseController
             $userDetailsQuery = TrainingTestResult::where('training_id', $trainingId)
                 ->where('course_id', $course->id)
                 ->orWhere('test_id', $test->id);
-
+         
             $userDetails = $userDetailsQuery->get(); // Fetch all user details
             // dd($userDetails);
             if ($userDetails->isEmpty()) {
@@ -214,46 +211,6 @@ class ReportsController extends BaseController
         Session::flash('success', trans('Training report downloaded successfully'));
 
         return Excel::download($export, $fileName);
-    }
-
-
-
-    public function showTrainingUsers($trainingId)
-    {
-        $training = Training::findOrFail($trainingId);
-
-        $participantIds = TrainingParticipants::where('training_id', $trainingId)->pluck('trainee_id')->toArray();
-
-        $users = User::whereIn('id', $participantIds)->get();
-
-        $courseIds = Course::where('training_id', $trainingId)->pluck('id')->toArray();
-        $documentIds = TrainingDocument::whereIn('course_id', $courseIds)->pluck('id')->toArray();
-        $totalDocuments = count($documentIds);
-
-        $userProgress = [];
-
-        foreach ($users as $user) {
-            $completedDocs = TraineeAssignedTrainingDocument::where('user_id', $user->id)
-            ->where('training_id', $trainingId)
-            ->where('status', 1)
-            ->whereIn('document_id', $documentIds)
-            ->count();
-
-            $completionPercentage = $totalDocuments > 0
-                ? round(($completedDocs / $totalDocuments) * 100, 2)
-                : 0;
-
-            $userProgress[] = [
-                'name' => $user->fullname,
-                'email' => $user->email,
-                'total_documents' => $totalDocuments,
-                'completed_documents' => $completedDocs,
-                'completion_percentage' => $completionPercentage,
-                'status' => $completionPercentage == 100 ? 'Completed' : 'In Progress',
-            ];
-        }
-
-        return view('admin.Reports.training_users', compact('training', 'userProgress'));
     }
 
 
