@@ -754,7 +754,7 @@ class TrainingController extends BaseController
         }
     }
 
-    public function saveAi(HttpRequest $request)
+    public function saveAi(Request $request)
     {
         try {
 
@@ -777,7 +777,7 @@ class TrainingController extends BaseController
                 $html = $responseData['google']['generated_text'];
 
                 // return response()->json(['redirect' => route('admin.show.ai.content', ['jsonData' => $responseData])]);
-                return View::make('admin.training.show_ai_content', ['jsonData' => $responseData]);
+                return View::make('admin.training.show_ai_content', ['jsonData' => $responseData, 'html' => $html]);
             } else {
                 $errorCode = $response->status();
                 return response()->json(['error' => 'API Error'], $errorCode);
@@ -788,106 +788,6 @@ class TrainingController extends BaseController
         }
     }
 
-
-    // public function assginTrainingParticipants(Request $request)
-    // {
-    //     $training_id = $request->training_id;
-
-    //     DB::beginTransaction();
-
-    //     try {
-    //         $trainingDetail = Training::findOrFail($training_id);
-    //         $courses = DB::table('courses')->where('training_id', $training_id)->get();
-
-    //         $allDocuments = [];
-    //         foreach ($courses as $course) {
-    //             $documents = DB::table('training_documents')
-    //                 ->where('course_id', $course->id)
-    //                 ->get();
-
-    //             foreach ($documents as $doc) {
-    //                 $allDocuments[] = [
-    //                     'course_id' => $course->id,
-    //                     'document_id' => $doc->id,
-    //                     'type' => $doc->type,
-    //                 ];
-    //             }
-    //         }
-
-    //         foreach ($request->empIds as $empId) {
-    //             $user = User::where('olms_id', $empId)->first();
-
-    //             if (!$user) {
-    //                 continue;
-    //             }
-
-    //             // Create participant
-    //             TrainingParticipants::create([
-    //                 'training_id' => $training_id,
-    //                 'trainee_id' => $user->id,
-    //             ]);
-
-    //             // Assign documents
-    //             $documentsToInsert = [];
-    //             foreach ($allDocuments as $doc) {
-    //                 $documentsToInsert[] = [
-    //                     'user_id' => $user->id,
-    //                     'training_id' => $training_id,
-    //                     'course_id' => $doc['course_id'],
-    //                     'document_id' => $doc['document_id'],
-    //                     'type' => $doc['type'],
-    //                     'status' => 0,
-    //                     'created_at' => now(),
-    //                     'updated_at' => now(),
-    //                 ];
-    //             }
-
-    //             if (!empty($documentsToInsert)) {
-    //                 DB::table('trainee_assigned_training_documents')->insert($documentsToInsert);
-    //             }
-
-    //             // Send notification
-    //             $actionUrl = route('userTraining.index');
-    //             $details = [
-    //                 'greeting' => 'New Training Available',
-    //                 'message' => 'New Training Available',
-    //                 'body' => 'You have been assigned a ' . $trainingDetail->title . ' training.',
-    //                 'actionText' => 'View Training',
-    //                 'actionURL' => $actionUrl,
-    //                 'training_id' => $training_id,
-    //             ];
-    //             Notification::send($user, new AssignTrainingNotification($details));
-
-    //             // Send email
-    //             // $settingsEmail = Config::get('Site.email');
-    //             // $full_name = $user->fullname;
-    //             // $authEmail = $user->email;
-    //             // $click_link = $actionUrl;
-
-    //             // $emailActions = EmailAction::where('action', 'training_assigned')->first();
-    //             // $emailTemplates = EmailTemplate::where('action', 'training_assigned')->first();
-
-    //             // if ($emailActions && $emailTemplates) {
-    //             //     $constants = array_map(function ($val) {
-    //             //         return '{' . trim($val) . '}';
-    //             //     }, explode(',', $emailActions->options));
-
-    //             //     $rep_Array = [$full_name, $authEmail, $authEmail, $click_link];
-    //             //     $subject = $emailTemplates->subject;
-    //             //     $messageBody = str_replace($constants, $rep_Array, $emailTemplates->body);
-
-    //             //     $this->sendMail($authEmail, $full_name, $subject, $messageBody, $settingsEmail);
-    //             // }
-    //         }
-
-    //         DB::commit();
-    //         return redirect()->back()->with('success', 'Training participants assigned and notified successfully.');
-    //     } catch (\Exception $e) {
-    //         dd($e);
-    //         DB::rollBack();
-    //         return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
-    //     }
-    // }
     public function assginTrainingParticipants(Request $request)
     {
         $training_id = $request->training_id;
