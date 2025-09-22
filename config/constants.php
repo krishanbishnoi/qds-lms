@@ -19,6 +19,7 @@ return [
         'T/F' => 'True / False',
         'FreeText' => 'Free Text',
         'File' => 'Image',
+        'Rating' => 'Rating',
     ],
 
     'ADDTEST' => [

@@ -16,6 +16,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <link href="{{ asset('old/css/notification/jquery.toastmessage.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 
     <link rel="stylesheet" href="{{ asset('front/css/owl.carousel.min.css') }}">
     <link rel="stylesheet" href="{{ asset('front/css/progess-circle.css') }}">

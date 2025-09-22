@@ -103,18 +103,18 @@
                                                 </div>
                                             </div>
                                         @else --}}
-                                            <div class="col-md-6 mt-3">
-                                                <div class=" row align-items-center">
-                                                    <div class="col-md-3">
-                                                        <label>Test Submit Date</label>
-                                                    </div>
-                                                    <div class="col-md-9">
-                                                        <input type="email" class="form-control"
-                                                            placeholder="connor.spencer@qdegrees.com" readonly
-                                                            value="{{ $latestAttempt->created_at->format('d - M - Y') }}">
-                                                    </div>
+                                        <div class="col-md-6 mt-3">
+                                            <div class=" row align-items-center">
+                                                <div class="col-md-3">
+                                                    <label>Test Submit Date</label>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <input type="email" class="form-control"
+                                                        placeholder="connor.spencer@qdegrees.com" readonly
+                                                        value="{{ $latestAttempt->created_at->format('d - M - Y') }}">
                                                 </div>
                                             </div>
+                                        </div>
                                         {{-- @endif --}}
 
                                         <div class="col-md-6 mt-3">
@@ -201,6 +201,27 @@
                                 @else
                                     <span class="text-muted">Not Given.</span>
                                 @endif
+                            </p>
+                        </div>
+                    @elseif ($question->question_type == 'Rating')
+                        {{-- Rating Answer --}}
+                        @php
+                            $answer = App\Model\Answer::where('question_id', $question->id)
+                                ->where('user_id', $latestAttempt->user_id)
+                                ->where('attempt_number', $attemptNumber)
+                                ->first();
+                            $rating = $answer && $answer->free_text_answer ? (int) $answer->free_text_answer : 0;
+                        @endphp
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="rating-answer mb-0">
+                                <strong>User Rating:</strong>
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= $rating)
+                                        <i class="fas fa-star text-warning"></i>
+                                    @else
+                                        <i class="far fa-star text-muted"></i>
+                                    @endif
+                                @endfor
                             </p>
                         </div>
                     @else

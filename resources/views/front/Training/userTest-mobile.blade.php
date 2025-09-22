@@ -1,4 +1,17 @@
 <div class="mobileScren">
+    <style>
+        .rating-star {
+            font-size: 28px;
+            color: #ccc;
+            /* default empty star */
+            transition: color 0.2s;
+        }
+
+        .rating-star.checked-star {
+            color: #ffc107;
+            /* filled star */
+        }
+    </style>
 
     <div class="modal fade" id="mobile-testInstructionsModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
         data-bs-keyboard="false">
@@ -415,21 +428,51 @@
                 } else if (question.question_type === 'File') {
                     // File capture HTML
                     $optionsList.append(`
-                <li class="file-question-item">
-                    <video id="camera-${question.id}" autoplay playsinline class="w-100 rounded shadow mb-2"></video>
-                    <canvas id="snapshot-${question.id}" style="display:none;"></canvas>
-                    <button type="button" class="btn btn-sm btn-primary mb-2" id="capture-${question.id}">Capture Photo</button>
-                    <input type="hidden" id="file-input-${question.id}">
-                    <div id="preview-${question.id}"></div>
-                </li>
-            `);
+                        <li class="file-question-item">
+                            <video id="camera-${question.id}" autoplay playsinline class="w-100 rounded shadow mb-2"></video>
+                            <canvas id="snapshot-${question.id}" style="display:none;"></canvas>
+                            <button type="button" class="btn btn-sm btn-primary mb-2" id="capture-${question.id}">Capture Photo</button>
+                            <input type="hidden" id="file-input-${question.id}">
+                            <div id="preview-${question.id}"></div>
+                        </li>
+                    `);
 
                     startCamera(question.id);
 
                     $(`#capture-${question.id}`).click(function() {
                         takePhoto(question.id);
                     });
+                } else if (question.question_type === 'Rating') {
+                    const savedRating = userAnswers[question.id] ? userAnswers[question.id].answer_id : 0;
+
+                    let starsHtml = '<li class="rating-question-item d-flex gap-1">';
+                    for (let i = 1; i <= 5; i++) {
+                        const filled = i <= savedRating ? 'checked-star' : '';
+                        starsHtml += `
+            <i class="fa fa-star rating-star ${filled}"
+               data-value="${i}"
+               data-question="${question.id}"
+               style="font-size: 28px; cursor: pointer; color: ${filled ? '#ffc107' : '#ccc'};"></i>`;
+                    }
+                    starsHtml += '</li>';
+
+                    $optionsList.append(starsHtml);
+
+                    // Click handler for stars
+                    $(`.rating-star[data-question="${question.id}"]`).off('click').on('click', function() {
+                        const ratingValue = $(this).data('value');
+                        $(`.rating-star[data-question="${question.id}"]`).each(function() {
+                            $(this).css('color', $(this).data('value') <= ratingValue ? '#ffc107' :
+                                '#ccc');
+                        });
+                        userAnswers[question.id] = {
+                            question_id: question.id,
+                            answer_id: ratingValue,
+                            answer_text: null
+                        };
+                    });
                 }
+
 
                 $('#next-btn').text(index === totalQuestions - 1 ? 'Submit Test' : 'Submit & Next');
                 $('#prev-btn').prop('disabled', index === 0);
@@ -522,6 +565,13 @@
                         question_id: question.id,
                         answer_id: null,
                         answer_text: fileData
+                    };
+                } else if (question.question_type === 'Rating') {
+                    const saved = userAnswers[question.id];
+                    if (saved && saved.answer_id) answerData = {
+                        question_id: question.id,
+                        answer_id: null,
+                        answer_text: saved.answer_id
                     };
                 }
 

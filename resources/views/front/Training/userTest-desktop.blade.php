@@ -1,4 +1,69 @@
 <div class="desktopScren">
+    <style>
+        .star-rating-container {
+            text-align: center;
+        }
+
+        .star-rating {
+            font-size: 2.5rem;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .star {
+            color: #ddd;
+            transition: color 0.2s ease;
+            padding: 0 2px;
+        }
+
+        .star.filled {
+            color: #ffc107;
+        }
+
+        .star:hover {
+            color: #ffc107;
+            transform: scale(1.1);
+        }
+
+        .star-rating:hover .star {
+            color: #ffc107;
+        }
+
+        .star-rating .star:hover~.star {
+            color: #ddd;
+        }
+
+        .rating-text {
+            font-size: 1rem;
+            color: #666;
+            font-weight: bold;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .rating-instruction {
+            color: #495057;
+            font-size: 1.1rem;
+        }
+    </style>
     <!-- Test Instructions Modal -->
     <div class="modal fade" id="testInstructionsModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
         data-bs-keyboard="false">
@@ -365,6 +430,7 @@
     <script>
         $(document).ready(function() {
             // Show instructions modal first
+            initializeStarRating();
             const testInstructionsModal = new bootstrap.Modal(document.getElementById('testInstructionsModal'));
             testInstructionsModal.show();
 
@@ -475,6 +541,24 @@
                         <div id="preview-${question.id}" class=""></div>
                         </div>
                     </div>`;
+                } else if (question.question_type === 'Rating') {
+                    const currentRating = userAnswers[question.id] ? parseInt(userAnswers[question.id]
+                        .answer_text) : 0;
+
+                    questionHtml += `
+    <div class="ansCheck pb-3">
+        <div class="star-rating-container">
+            <div class="star-rating" data-question-id="${question.id}">
+                <span class="star ${currentRating >= 1 ? 'filled' : ''}" data-rating="1">★</span>
+                <span class="star ${currentRating >= 2 ? 'filled' : ''}" data-rating="2">★</span>
+                <span class="star ${currentRating >= 3 ? 'filled' : ''}" data-rating="3">★</span>
+                <span class="star ${currentRating >= 4 ? 'filled' : ''}" data-rating="4">★</span>
+                <span class="star ${currentRating >= 5 ? 'filled' : ''}" data-rating="5">★</span>
+            </div>
+            ${!currentRating ? '<div class="text-danger mt-2">Please select a rating to proceed</div>' : ''}
+        </div>
+        <input type="hidden" id="rating-input-${question.id}" name="answer-text-${question.id}" value="${currentRating || ''}">
+    </div>`;
                 }
 
                 questionHtml += `</div>`;
@@ -507,6 +591,8 @@
                         return 'Free Text';
                     case 'File':
                         return 'File Upload (Camera)';
+                    case 'Rating': // Add this line
+                        return 'Rating Question';
                     default:
                         return 'Question';
                 }
@@ -523,6 +609,10 @@
                     return $(`textarea[name="answer-text-${question.id}"]`).val().trim().length > 0;
                 } else if (question.question_type === 'File') {
                     return !!userAnswers[question.id];
+                } else if (question.question_type === 'Rating') { // Add this condition
+                    // Check if rating is selected (1-5)
+                    const ratingValue = $(`#rating-input-${question.id}`).val();
+                    return ratingValue && parseInt(ratingValue) >= 1 && parseInt(ratingValue) <= 5;
                 }
                 return false;
             }
@@ -530,7 +620,7 @@
             function saveCurrentAnswer() {
                 const question = questions[currentQuestionIndex];
                 let answerData = {};
-
+                console.log(question.question_type);
                 if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
                     const selectedOption = $(`input[name="answer-${question.id}"]:checked`).val();
                     if (selectedOption) {
@@ -570,6 +660,15 @@
                             answer_text: imageData
                         };
                     }
+                } else if (question.question_type === 'Rating') {
+                    const ratingValue = $(`#rating-input-${question.id}`).val();
+                    if (ratingValue && parseInt(ratingValue) >= 1 && parseInt(ratingValue) <= 5) {
+                        answerData = {
+                            question_id: question.id,
+                            answer_id: null,
+                            answer_text: ratingValue
+                        };
+                    }
                 }
 
                 if (Object.keys(answerData).length > 0) {
@@ -580,41 +679,69 @@
                 return false;
             }
 
-            // Camera functions
-            window.startCamera = async function(questionId) {
-                const video = document.getElementById(`camera-${questionId}`);
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        video: true
-                    });
-                    video.srcObject = stream;
-                } catch (err) {
-                    alert("Camera access denied: " + err.message);
+            // const question = questions[currentQuestionIndex];
+            // if (question.question_type === 'File') {
+                // Camera functions
+                window.startCamera = async function(questionId) {
+                    const video = document.getElementById(`camera-${questionId}`);
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({
+                            video: true
+                        });
+                        video.srcObject = stream;
+                    } catch (err) {
+                        alert("Camera access denied: " + err.message);
+                    }
                 }
-            }
 
-            window.takePhoto = function(questionId) {
-                const video = document.getElementById(`camera-${questionId}`);
-                const canvas = document.getElementById(`snapshot-${questionId}`);
-                const input = document.getElementById(`file-input-${questionId}`);
-                const preview = document.getElementById(`preview-${questionId}`);
+                window.takePhoto = function(questionId) {
+                    const video = document.getElementById(`camera-${questionId}`);
+                    const canvas = document.getElementById(`snapshot-${questionId}`);
+                    const input = document.getElementById(`file-input-${questionId}`);
+                    const preview = document.getElementById(`preview-${questionId}`);
 
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                canvas.getContext("2d").drawImage(video, 0, 0);
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext("2d").drawImage(video, 0, 0);
 
-                const dataUrl = canvas.toDataURL("image/png");
-                input.value = dataUrl;
-                userAnswers[questionId] = {
-                    question_id: questionId,
-                    answer_id: null,
-                    answer_text: dataUrl
-                };
-                preview.innerHTML = `<img src="${dataUrl}" class="img-fluid rounded">`;
-            }
+                    const dataUrl = canvas.toDataURL("image/png");
+                    input.value = dataUrl;
+                    userAnswers[questionId] = {
+                        question_id: questionId,
+                        answer_id: null,
+                        answer_text: dataUrl
+                    };
+                    preview.innerHTML = `<img src="${dataUrl}" class="img-fluid rounded">`;
+                }
+            // }
 
             // Function to navigate to the next question
             function goToNextQuestion() {
+                const question = questions[currentQuestionIndex];
+
+                // Check if current question is answered
+                if (!hasAnswerForCurrentQuestion()) {
+                    // Show specific warning for rating questions
+                    if (question.question_type === 'Rating') {
+                        // Add warning message
+                        const ratingContainer = $('.star-rating-container');
+                        if (!ratingContainer.find('.text-danger').length) {
+                            ratingContainer.append(
+                                '<div class="text-danger mt-2">Please select a rating before proceeding</div>');
+                        }
+
+                        // Shake animation for attention
+                        ratingContainer.addClass('shake');
+                        setTimeout(() => {
+                            ratingContainer.removeClass('shake');
+                        }, 500);
+                    } else {
+                        alert('Please provide an answer before proceeding.');
+                    }
+                    return;
+                }
+                // saveCurrentAnswer();
+
                 // First try to save the current answer
                 if (!saveCurrentAnswer()) {
                     // If no answer was selected, show alert and prevent navigation
@@ -711,6 +838,53 @@
 
                     countdown--;
                 }, 1000);
+            }
+
+            // Star rating functionality
+            // Star rating functionality
+            function initializeStarRating() {
+                // Remove any existing event handlers to prevent duplicates
+                $(document).off('click', '.star-rating .star');
+
+                $(document).on('click', '.star-rating .star', function() {
+                    const $star = $(this);
+                    const $starRating = $star.closest('.star-rating');
+                    const questionId = $starRating.data('question-id');
+                    const rating = parseInt($star.data('rating'));
+
+                    // Update all stars visually
+                    $starRating.find('.star').each(function() {
+                        const $thisStar = $(this);
+                        const starRating = parseInt($thisStar.data('rating'));
+
+                        if (starRating <= rating) {
+                            $thisStar.addClass('filled');
+                        } else {
+                            $thisStar.removeClass('filled');
+                        }
+                    });
+
+                    // Update hidden input and display text
+                    $(`#rating-input-${questionId}`).val(rating);
+                    $(`#rating-value-${questionId}`).text(rating);
+
+                    // Remove warning message if present
+                    $starRating.closest('.star-rating-container').find('.text-danger').remove();
+
+                    // Auto-save the rating immediately
+                    const question = questions.find(q => q.id == questionId);
+                    if (question) {
+                        userAnswers[questionId] = {
+                            question_id: parseInt(questionId),
+                            answer_id: null,
+                            answer_text: rating.toString()
+                        };
+                        updateAnswerStatus();
+
+                        // Enable next/submit button if this was the last required question
+                        updateNavigationButtons();
+                    }
+                });
             }
 
             // Function to submit the test
