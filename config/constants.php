@@ -18,6 +18,7 @@ return [
         'SCQ' => 'Single Choice',
         'T/F' => 'True / False',
         'FreeText' => 'Free Text',
+        'File' => 'Image',
     ],
 
     'ADDTEST' => [

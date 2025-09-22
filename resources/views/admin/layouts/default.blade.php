@@ -254,12 +254,12 @@
                                 <li class="nav-item @if ($segment1 == 'designation') active @endif"><a
                                         class="nav-link" href="{{ route('Designation.index') }}">Designation
                                         Management</a></li>
-                                {{-- <li class="nav-item @if ($segment1 == 'regions') active @endif"><a
+                                <li class="nav-item @if ($segment1 == 'regions') active @endif"><a
                                         class="nav-link" href="{{ route('Region.index') }}">Region Management</a>
                                 </li>
                                 <li class="nav-item @if ($segment1 == 'circles') active @endif"><a
                                         class="nav-link" href="{{ route('Circle.index') }}">Circle Management</a>
-                                </li> --}}
+                                </li>
                                 <li class="nav-item @if ($segment1 == 'training-types') active @endif"><a
                                         class="nav-link" href="{{ route('TrainingType.index') }}">TrainingType
                                         Management</a></li>

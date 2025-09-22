@@ -319,38 +319,30 @@
 
     <script>
         $(document).ready(function() {
-            // Enable the button only when checkbox is checked
+            // Enable checkbox to start test
             $('#mobile-checkDefault').change(function() {
                 $('#mobile-startTestBtn').prop('disabled', !this.checked);
             });
 
-            // Wrapper click (to catch clicks even when button is disabled)
             $('#mobile-startTestBtnWrapper').click(function() {
                 if (!$('#mobile-checkDefault').is(':checked')) {
                     const checkbox = $('#mobile-checkDefault');
-
-                    // Add shake + highlight
                     checkbox.addClass('highlight-checkbox');
-
-                    // Scroll into view (optional)
                     checkbox[0].scrollIntoView({
                         behavior: 'smooth',
                         block: 'center'
                     });
-
-                    // Remove after 1.5s
                     setTimeout(function() {
                         checkbox.removeClass('highlight-checkbox');
                     }, 1500);
                 }
             });
 
-            // Show mobile instructions modal first
+            // Show mobile instructions modal
             const mobileTestInstructionsModal = new bootstrap.Modal(document.getElementById(
                 'mobile-testInstructionsModal'));
             mobileTestInstructionsModal.show();
 
-            // Initialize variables
             const questions = {!! json_encode($trainingQuestions) !!};
             const totalQuestions = questions.length;
             let currentQuestionIndex = 0;
@@ -358,158 +350,125 @@
             let testStarted = false;
             let countdownInterval;
 
-            // Start test button handler
+            // Start test
             $('#mobile-startTestBtn').click(function() {
                 mobileTestInstructionsModal.hide();
-                $('.questionsScrn').show(); // Show the existing design div
-                startTimer();
+                $('.questionsScrn').show();
                 testStarted = true;
+                startTimer();
                 showQuestion(currentQuestionIndex);
             });
 
-
-
-            // Function to show question
-            // Update showQuestion function to enable/disable previous button
             function showQuestion(index) {
                 const question = questions[index];
-
-                // Update question info
                 $('#current-question-number').text(index + 1);
                 $('#question-title').text(`Question: ${index + 1}`);
                 $('#question-text').text(question.question);
 
-                // Update progress
                 const progress = ((index + 1) / totalQuestions) * 100;
                 $('#test-progress').css('width', `${progress}%`).attr('aria-valuenow', progress);
 
-                // Clear and rebuild options
                 const $optionsList = $('#question-options').empty();
 
                 if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
-                    question.question_attributes.forEach((option) => {
+                    question.question_attributes.forEach(option => {
                         const isChecked = userAnswers[question.id] &&
                             (userAnswers[question.id].answer_id == option.id ||
                                 (Array.isArray(userAnswers[question.id].answer_id) &&
                                     userAnswers[question.id].answer_id.includes(option.id.toString())));
 
                         $optionsList.append(`
-                        <li>
-                            <input type="radio" id="option-${question.id}-${option.id}" name="answer-${question.id}" 
-                                value="${option.id}" ${isChecked ? 'checked' : ''}>
-                            <label for="option-${question.id}-${option.id}">${option.option}</label>
-                        </li>
-                    `);
+                    <li>
+                        <input type="radio" id="option-${question.id}-${option.id}" name="answer-${question.id}" value="${option.id}" ${isChecked ? 'checked' : ''}>
+                        <label for="option-${question.id}-${option.id}">${option.option}</label>
+                    </li>
+                `);
                     });
 
-
-                    
                 } else if (question.question_type === 'MCQ') {
-                    question.question_attributes.forEach((option) => {
+                    question.question_attributes.forEach(option => {
                         const isChecked = userAnswers[question.id] &&
                             userAnswers[question.id].answer_id &&
                             userAnswers[question.id].answer_id.split(',').includes(option.id.toString());
 
                         $optionsList.append(`
-                        <li>
-                            <input type="checkbox" id="option-${question.id}-${option.id}" name="answer-${question.id}[]" 
-                                value="${option.id}" ${isChecked ? 'checked' : ''}>
-                            <label for="option-${question.id}-${option.id}">${option.option}</label>
-                        </li>
-                    `);
+                    <li>
+                        <input type="checkbox" id="option-${question.id}-${option.id}" name="answer-${question.id}[]" value="${option.id}" ${isChecked ? 'checked' : ''}>
+                        <label for="option-${question.id}-${option.id}">${option.option}</label>
+                    </li>
+                `);
                     });
+
                 } else if (question.question_type === 'FreeText') {
                     const answerText = userAnswers[question.id] ? userAnswers[question.id].answer_text : '';
                     $optionsList.append(`
-                    <li class="free-text-item">
-                        <textarea class="form-control" name="answer-text-${question.id}" 
-                                rows="4" maxlength="150">${answerText}</textarea>
-                        <div class="wordcounter text-end">${answerText.length}/150</div>
-                    </li>
-                `);
+                <li class="free-text-item">
+                    <textarea class="form-control" name="answer-text-${question.id}" rows="4" maxlength="150">${answerText}</textarea>
+                    <div class="wordcounter text-end">${answerText.length}/150</div>
+                </li>
+            `);
 
-                    // Update word counter
                     $(`textarea[name="answer-text-${question.id}"]`).on('input', function() {
                         $(this).siblings('.wordcounter').text(`${$(this).val().length}/150`);
                     });
+
+                } else if (question.question_type === 'File') {
+                    // File capture HTML
+                    $optionsList.append(`
+                <li class="file-question-item">
+                    <video id="camera-${question.id}" autoplay playsinline class="w-100 rounded shadow mb-2"></video>
+                    <canvas id="snapshot-${question.id}" style="display:none;"></canvas>
+                    <button type="button" class="btn btn-sm btn-primary mb-2" id="capture-${question.id}">Capture Photo</button>
+                    <input type="hidden" id="file-input-${question.id}">
+                    <div id="preview-${question.id}"></div>
+                </li>
+            `);
+
+                    startCamera(question.id);
+
+                    $(`#capture-${question.id}`).click(function() {
+                        takePhoto(question.id);
+                    });
                 }
 
-                // Update button text
-                $('#next-btn').text(
-                    index === totalQuestions - 1 ? 'Submit Test' : 'Submit & Next'
-                );
-
-                // Enable/disable Previous button
-                if (index === 0) {
-                    $('#prev-btn').prop('disabled', true);
-                } else {
-                    $('#prev-btn').prop('disabled', false);
-                }
+                $('#next-btn').text(index === totalQuestions - 1 ? 'Submit Test' : 'Submit & Next');
+                $('#prev-btn').prop('disabled', index === 0);
             }
 
-            // Handle Previous button click
-            $('#prev-btn').click(function() {
-                if (currentQuestionIndex > 0) {
-                    // Save current answer (but no validation alert)
-                    saveAnswer();
-                    currentQuestionIndex--;
-                    showQuestion(currentQuestionIndex);
-                }
-            });
-
-            if (countdown <= 60) {
-                $('#countdown-timer').addClass('low-time');
-            } else {
-                $('#countdown-timer').removeClass('low-time');
+            function startCamera(questionId) {
+                const video = document.getElementById(`camera-${questionId}`);
+                navigator.mediaDevices.getUserMedia({
+                        video: true
+                    })
+                    .then(stream => video.srcObject = stream)
+                    .catch(err => alert("Camera access denied: " + err.message));
             }
 
-            function startTimer() {
-                const countdownElement = $('#countdown');
-                const timerImgElement = $('.timerImg');
-                let countdown = {{ $testDetails->time_of_test }} * 60;
+            function takePhoto(questionId) {
+                const video = document.getElementById(`camera-${questionId}`);
+                const canvas = document.getElementById(`snapshot-${questionId}`);
+                const input = document.getElementById(`file-input-${questionId}`);
+                const preview = document.getElementById(`preview-${questionId}`);
 
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext("2d").drawImage(video, 0, 0);
 
-                // Update time remaining in confirmation modal
-                function updateTimeRemainingDisplay(seconds) {
-                    const minutes = Math.floor(seconds / 60);
-                    const remainingSeconds = seconds % 60;
-                    $('#time-remaining-display').text(
-                        `${minutes}m ${remainingSeconds}s`
-                    );
-                }
-
-                updateTimeRemainingDisplay(countdown);
-
-                countdownInterval = setInterval(function() {
-                    const minutes = Math.floor(countdown / 60);
-                    const seconds = countdown % 60;
-
-                    countdownElement.text(
-                        (minutes < 10 ? '0' + minutes : minutes) + 'm ' +
-                        (seconds < 10 ? '0' + seconds : seconds) + 's'
-                    );
-
-                    updateTimeRemainingDisplay(countdown);
-
-                    if (countdown <= 0) {
-                        clearInterval(countdownInterval);
-                        submitTest(); // Auto-submit when time expires
-                    } else if (countdown <= 300) { // 5 minutes or less
-                        countdownElement.addClass('blinking');
-                        timerImgElement.addClass('redBorder');
-                    }
-
-                    countdown--;
-                }, 1000);
+                const dataUrl = canvas.toDataURL("image/png");
+                input.value = dataUrl;
+                userAnswers[questionId] = {
+                    question_id: questionId,
+                    answer_id: null,
+                    answer_text: dataUrl
+                };
+                preview.innerHTML = `<img src="${dataUrl}" class="img-fluid rounded">`;
             }
 
-            // Navigation handler
             $('#next-btn').click(function() {
                 if (!saveAnswer()) {
                     alert('Please select an answer before proceeding.');
                     return;
                 }
-
                 if (currentQuestionIndex < totalQuestions - 1) {
                     currentQuestionIndex++;
                     showQuestion(currentQuestionIndex);
@@ -518,42 +477,52 @@
                 }
             });
 
+            $('#prev-btn').click(function() {
+                if (currentQuestionIndex > 0) {
+                    saveAnswer();
+                    currentQuestionIndex--;
+                    showQuestion(currentQuestionIndex);
+                }
+            });
+
             function saveAnswer() {
                 const question = questions[currentQuestionIndex];
-                const type = question.question_type.trim().toUpperCase();
-
                 let answerData = {};
 
-                if (type === 'SCQ' || type === 'T/F') {
+                if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
                     const selectedOption = $(`input[name="answer-${question.id}"]:checked`).val();
-                    if (selectedOption) {
-                        answerData = {
-                            question_id: question.id,
-                            answer_id: selectedOption,
-                            answer_text: null
-                        };
-                    }
-                } else if (type === 'MCQ') {
+                    if (selectedOption) answerData = {
+                        question_id: question.id,
+                        answer_id: selectedOption,
+                        answer_text: null
+                    };
+
+                } else if (question.question_type === 'MCQ') {
                     const selectedOptions = [];
                     $(`input[name="answer-${question.id}\\[\\]"]:checked`).each(function() {
                         selectedOptions.push($(this).val());
                     });
-                    if (selectedOptions.length > 0) {
-                        answerData = {
-                            question_id: question.id,
-                            answer_id: selectedOptions.join(','),
-                            answer_text: null
-                        };
-                    }
-                } else if (type === 'FREETEXT') {
+                    if (selectedOptions.length > 0) answerData = {
+                        question_id: question.id,
+                        answer_id: selectedOptions.join(','),
+                        answer_text: null
+                    };
+
+                } else if (question.question_type === 'FreeText') {
                     const answerText = $(`textarea[name="answer-text-${question.id}"]`).val().trim();
-                    if (answerText) {
-                        answerData = {
-                            question_id: question.id,
-                            answer_id: null,
-                            answer_text: answerText
-                        };
-                    }
+                    if (answerText) answerData = {
+                        question_id: question.id,
+                        answer_id: null,
+                        answer_text: answerText
+                    };
+
+                } else if (question.question_type === 'File') {
+                    const fileData = document.getElementById(`file-input-${question.id}`).value;
+                    if (fileData) answerData = {
+                        question_id: question.id,
+                        answer_id: null,
+                        answer_text: fileData
+                    };
                 }
 
                 if (Object.keys(answerData).length > 0) {
@@ -564,35 +533,19 @@
             }
 
             function showSubmissionModal() {
-                // Update both desktop and mobile counters to be safe
-                $('#answered-count, #mobile-answered-count').text(Object.keys(userAnswers).length);
-                $('#submissionMdl, #mobile-submissionMdl').modal('show');
+                $('#mobile-submissionMdl').modal('show');
+                $('#mobile-answered-count').text(Object.keys(userAnswers).length);
             }
 
-            $('#mobile-final-submit-btn').click(function() {
-                submitTest();
-            });
-            // Initialize the test when instructions modal is hidden
-            $('#mobile-testInstructionsModal').on('hidden.bs.modal', function() {
-                if (testStarted) {
-                    initializeTest();
-                }
-            });
+            $('#mobile-final-submit-btn').click(submitTest);
 
             function submitTest() {
-                // Save the current answer before submitting
                 if (!saveAnswer()) {
-                    if (!confirm('You have not answered the current question. Are you sure you want to submit?')) {
+                    if (!confirm('You have not answered the current question. Are you sure you want to submit?'))
                         return;
-                    }
                 }
-
                 clearInterval(countdownInterval);
-
-                // First save participant data
                 testParticipantData();
-
-                // Then submit answers
                 submitAnswers();
             }
 
@@ -604,12 +557,7 @@
                     test_id: {{ $trainingTest->id }},
                     _token: '{{ csrf_token() }}'
                 };
-
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route('training.test.participant.info') }}',
-                    data: formData
-                });
+                $.post('{{ route('training.test.participant.info') }}', formData);
             }
 
             function submitAnswers() {
@@ -619,30 +567,23 @@
                 function submitNext() {
                     if (submittedCount < answersToSubmit.length) {
                         const answer = answersToSubmit[submittedCount];
-
-                        $.ajax({
-                            type: 'POST',
-                            url: '{{ URL('/submit-test-response') }}',
-                            data: {
-                                question_id: answer.question_id,
-                                answer_id: answer.answer_id,
-                                answer_text: answer.answer_text,
-                                user_id: {{ Auth::user()->id }},
-                                test_id: {{ $trainingTest->id }},
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function(response) {
-                                submittedCount++;
-                                if (response.successRedirect) {
-                                    window.location.href = '{{ URL('/test-already-submitted') }}';
-                                    return;
-                                }
-                                submitNext();
-                            },
-                            error: function() {
-                                submittedCount++;
-                                submitNext();
+                        $.post('{{ URL('/submit-test-response') }}', {
+                            question_id: answer.question_id,
+                            answer_id: answer.answer_id,
+                            answer_text: answer.answer_text,
+                            user_id: {{ Auth::user()->id }},
+                            test_id: {{ $trainingTest->id }},
+                            _token: '{{ csrf_token() }}'
+                        }, function(response) {
+                            submittedCount++;
+                            if (response.successRedirect) {
+                                window.location.href = '{{ URL('/test-already-submitted') }}';
+                                return;
                             }
+                            submitNext();
+                        }).fail(function() {
+                            submittedCount++;
+                            submitNext();
                         });
                     } else {
                         window.location.href = '{{ route('training.test.result', $trainingTest->id) }}';
@@ -651,20 +592,33 @@
 
                 submitNext();
             }
-        });
 
+            function startTimer() {
+                const countdownElement = $('#countdown');
+                let countdown = {{ $testDetails->time_of_test }} * 60;
 
-        $('.moduleBck').click(function(e) {
-            e.preventDefault();
-            const leaveTest = confirm(
-                "⚠️ Warning:\n\nIf you proceed, your test will be submitted and you won't be able to make further changes.\n\nAre you sure you want to end the test and leave?"
-            );
-            if (leaveTest) {
-                window.location.href = '/'; // change URL as needed
-            } else {
-                // User canceled, do nothing and stay on test
+                function updateDisplay(sec) {
+                    const min = Math.floor(sec / 60);
+                    const s = sec % 60;
+                    $('#time-remaining-display').text(`${min}m ${s}s`);
+                }
+
+                updateDisplay(countdown);
+
+                countdownInterval = setInterval(function() {
+                    const min = Math.floor(countdown / 60);
+                    const sec = countdown % 60;
+                    countdownElement.text(`${min < 10 ? '0' + min : min}m ${sec < 10 ? '0' + sec : sec}s`);
+
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        submitTest();
+                    }
+                    countdown--;
+                }, 1000);
             }
         });
     </script>
+
 
 </div>

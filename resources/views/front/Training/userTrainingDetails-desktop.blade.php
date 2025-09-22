@@ -52,6 +52,9 @@
                             @elseif ($content['type'] === 'doc' && $content['document_type'] === 'pdf')
                                 <iframe src="{{ asset('training_document/' . $content['document']) }}" width="100%"
                                     height="500px" style="border: none;"></iframe>
+                            @elseif ($content['type'] === 'pdf' && $content['document_type'] === 'pdf')
+                                <iframe src="{{ asset('training_document/' . $content['document']) }}" width="100%"
+                                    height="500px" style="border: none;"></iframe>
                             @elseif (($content['type'] === 'doc' && $content['document_type'] == 'ppt') || $content['document_type'] == 'pptx')
                                 @if (config('constants.TRAINING_DOCUMENT_URL') . '/' . $content['document'] != '')
                                     <iframe

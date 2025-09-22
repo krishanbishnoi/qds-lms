@@ -144,7 +144,7 @@ class TestController extends BaseController
                 ->toArray();
             // dd($testDetails,$questionsAlreadyAssigned);
             if ($questionsAlreadyAssigned) {
-  
+
                 $testDetails = Test::where('tests.id', $test_id)->first();
 
                 $testQuestions = Question::whereIn('id', $questionsAlreadyAssigned)
@@ -198,34 +198,29 @@ class TestController extends BaseController
             $testDetails = Test::where('tests.id', $request->test_id)->first();
             return response()->json(['successRedirect' => true, 'testDetails' => $testDetails]);
         } else {
+            // // If the answer does not exist, create a new one
+            // $answer = new Answer();
+            // $answer->test_id = $request->test_id;
+            // $answer->attempt_number   = $attemptNumber;
+            // $answer->question_id = $request->question_id;
+            // $question = $answer->question;
+            // $answer->user_id = $request->user_id;
+            // // For single-choice questions, set the answer directly
+            // $answer->answer_id = $request->answer_id;
+            // $question = $answer->question;
+            // $questionAnswer = $question->questionAnswer;
+            // // Convert questionAttributes array to a Laravel Collection
+            // $questionAttributesCollection = collect($questionAnswer);
+            // // Filter the options to get only the correct ones
+            // $correctOptions = $questionAttributesCollection->where('is_correct', 1)->pluck('id')->toArray();
+            // $correctOptionString = implode(',', $correctOptions);
+            // $answer->valid_answer = $correctOptionString;
+            // $answer->free_text_answer = $request->answer_text;
 
-            // $answerAlreadyExists = Answer::where('test_id', $request->test_id)
-            //     ->where('question_id', $request->question_id)
-            //     ->where('user_id', $request->user_id)
-            //     ->where('attempt_number', $attemptNumber)
-            //     ->first();
-            // // If the answer already exists, we will handle checkbox question behavior
-            // if ($answerAlreadyExists) {
-            //     $question = $answerAlreadyExists->question;
-            //     if ($question->question_type == 'MCQ') {
-            //         $existingAnswers = explode(',', $answerAlreadyExists->answer_id);
-            //         $newAnswer = $request->answer_id;
-            //         if (in_array($newAnswer, $existingAnswers)) {
-            //             $existingAnswers = array_diff($existingAnswers, [$newAnswer]);
-            //         } else {
-            //             $existingAnswers[] = $newAnswer;
-            //         }
-            //         $updatedAnswerIds = implode(',', $existingAnswers);
-            //         $answerAlreadyExists->answer_id = $updatedAnswerIds;
-            //         $answerAlreadyExists->save();
-            //     } elseif ($question->question_type == 'FreeText') {
-            //         $answerAlreadyExists->free_text_answer = $request->answer_text;
-            //         $answerAlreadyExists->save();
-            //     } else {
-            //         $answerAlreadyExists->answer_id = $request->answer_id;
-            //         $answerAlreadyExists->save();
-            //     }
-            // }else {
+            // // Save the answer in the database
+            // $answer->save();
+            // }
+
             // If the answer does not exist, create a new one
             $answer = new Answer();
             $answer->test_id = $request->test_id;
@@ -233,22 +228,46 @@ class TestController extends BaseController
             $answer->question_id = $request->question_id;
             $question = $answer->question;
             $answer->user_id = $request->user_id;
-            // For single-choice questions, set the answer directly
-            $answer->answer_id = $request->answer_id;
-            $question = $answer->question;
-            $questionAnswer = $question->questionAnswer;
-            // Convert questionAttributes array to a Laravel Collection
-            $questionAttributesCollection = collect($questionAnswer);
-            // Filter the options to get only the correct ones
-            $correctOptions = $questionAttributesCollection->where('is_correct', 1)->pluck('id')->toArray();
-            $correctOptionString = implode(',', $correctOptions);
-            $answer->valid_answer = $correctOptionString;
-            $answer->free_text_answer = $request->answer_text;
+
+   
+            if ($question->question_type == 'File' && $request->has('answer_text')) {
+                $imageData = $request->answer_text; // base64 string from hidden input
+                $imageName = 'answer_' . $request->question_id . '_' . time() . '.png';
+
+                // Define folder
+                $folderName = 'answer-img/' . strtoupper(date('M') . date('Y')) . '/';
+                $folderPath = public_path('uploads/' . $folderName);
+
+                // Create folder if not exists
+                if (!\File::exists($folderPath)) {
+                    \File::makeDirectory($folderPath, 0777, true);
+                }
+
+                // Save file
+                $path = $folderPath . $imageName;
+                $image = str_replace('data:image/png;base64,', '', $imageData);
+                $image = str_replace(' ', '+', $image);
+                \File::put($path, base64_decode($image));
+
+                // Save in DB (relative path)
+                $answer->answer_id = null;
+                $answer->valid_answer = null;
+                $answer->free_text_answer = 'uploads/' . $folderName . $imageName;
+            } else {
+                // Normal flow for SCQ / MCQ / FreeText
+                $answer->answer_id = $request->answer_id;
+                $questionAnswer = $question->questionAnswer;
+                $questionAttributesCollection = collect($questionAnswer);
+                $correctOptions = $questionAttributesCollection->where('is_correct', 1)->pluck('id')->toArray();
+                $correctOptionString = implode(',', $correctOptions);
+                $answer->valid_answer = $correctOptionString;
+                $answer->free_text_answer = $request->answer_text;
+            }
 
             // Save the answer in the database
             $answer->save();
-            // }
-            return response()->json(['success' => true]);
+dd($answer);
+            // return response()->json(['success' => true]);
         }
     }
 

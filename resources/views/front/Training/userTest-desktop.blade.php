@@ -311,9 +311,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body">
-                                <video id="video" width="400" height="250" autoplay muted></video>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -371,27 +368,24 @@
             const testInstructionsModal = new bootstrap.Modal(document.getElementById('testInstructionsModal'));
             testInstructionsModal.show();
 
-            // Initialize variables
             const questions = {!! json_encode($trainingQuestions) !!};
             const totalQuestions = questions.length;
             let currentQuestionIndex = 0;
             let userAnswers = {};
             let testStarted = false;
             let countdownInterval;
+
+            // Enable Start Test button after scroll
             const instructionContent = document.getElementById('instructionContent');
             const startTestBtn = document.getElementById('startTestBtn');
-
-            // Enable Start Test button after full scroll
             instructionContent.addEventListener('scroll', function() {
-                const isScrolledToBottom = instructionContent.scrollTop + instructionContent.clientHeight >=
-                    instructionContent.scrollHeight - 20;
-                if (isScrolledToBottom) {
+                if (instructionContent.scrollTop + instructionContent.clientHeight >= instructionContent
+                    .scrollHeight - 20) {
                     startTestBtn.disabled = false;
                 }
             });
 
-
-            // Start test button handler
+            // Start test
             $('#startTestBtn').click(function() {
                 testInstructionsModal.hide();
                 $('#testInterface').show();
@@ -399,7 +393,6 @@
                 testStarted = true;
             });
 
-            // Initialize the test by showing the first question
             function initializeTest() {
                 showQuestion(currentQuestionIndex);
                 updateProgressBar();
@@ -412,17 +405,15 @@
                 const questionContainer = $('#question-container');
                 const questionNumber = $('#current-question-number');
 
-                // Update current question indicator
                 currentQuestionIndex = index;
                 questionNumber.text(index + 1);
                 questionContainer.empty();
 
-                // Build the question HTML
                 let questionHtml = `
-                    <div class="testQuestion">
-                    <div class="clickType mb-2">${getQuestionTypeLabel(question.question_type)}</div>
-                    <h4 class="mb-3">${index + 1}. ${question.question}</h4>
-                    `;
+                <div class="testQuestion">
+                <div class="clickType mb-2">${getQuestionTypeLabel(question.question_type)}</div>
+                <h4 class="mb-3">${index + 1}. ${question.question}</h4>
+            `;
 
                 if (question.question_type === 'SCQ' || question.question_type === 'T/F') {
                     questionHtml += `<div class="ansCheck ">`;
@@ -433,15 +424,14 @@
                                     userAnswers[question.id].answer_id.includes(option.id.toString())));
 
                         questionHtml += `
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio"
-                            id="option-${option.id}" name="answer-${question.id}" value="${option.id}"
-                            ${isChecked ? 'checked' : ''}>
-                        <label class="form-check-label" for="option-${option.id}">
-                            ${option.option}
-                        </label>
-                    </div>
-                    `;
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                id="option-${option.id}" name="answer-${question.id}" value="${option.id}"
+                                ${isChecked ? 'checked' : ''}>
+                            <label class="form-check-label" for="option-${option.id}">
+                                ${option.option}
+                            </label>
+                        </div>`;
                     });
                     questionHtml += `</div>`;
 
@@ -454,15 +444,12 @@
                                     userAnswers[question.id].answer_id.includes(option.id.toString())));
 
                         questionHtml += `
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox"
-                            id="option-${option.id}" name="answer-${question.id}[]" value="${option.id}"
-                            ${isChecked ? 'checked' : ''}>
-                        <label class="form-check-label" for="option-${option.id}">
-                            ${option.option}
-                        </label>
-                    </div>
-                    `;
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox"
+                                id="option-${option.id}" name="answer-${question.id}[]" value="${option.id}"
+                                ${isChecked ? 'checked' : ''}>
+                            <label class="form-check-label" for="option-${option.id}">${option.option}</label>
+                        </div>`;
                     });
                     questionHtml += `</div>`;
 
@@ -472,14 +459,27 @@
                     <div class="ansCheck pb-3">
                         <textarea class="form-control free-text-input mb-2" name="answer-text-${question.id}" rows="4" maxlength="150">${answerText}</textarea>
                         <div class="wordcounter text-end">${answerText.length}/150</div>
-                    </div>
-                    `;
+                    </div>`;
+                } else if (question.question_type === 'File') {
+                    questionHtml += `
+                    <div class="camera-section d-flex gap-3 flex-wrap">
+                         <div style="width: 200px !important;">
+                        <video id="camera-${question.id}" autoplay playsinline class="w-100 rounded shadow mb-2"></video>
+                        <canvas id="snapshot-${question.id}" style="display:none;"></canvas>
+                        <button type="button" class="btn btn-sm btn-primary mb-2" onclick="takePhoto(${question.id})">
+                            Capture Photo
+                        </button>
+                        </div>
+                        <div style="width: 200px !important;">
+                        <input type="hidden" id="file-input-${question.id}" name="answer_id-${question.id}">
+                        <div id="preview-${question.id}" class=""></div>
+                        </div>
+                    </div>`;
                 }
 
                 questionHtml += `</div>`;
                 questionContainer.html(questionHtml);
 
-                // Update word counter for FreeText questions
                 if (question.question_type === 'FreeText') {
                     $(`textarea[name="answer-text-${question.id}"]`).on('input', function() {
                         const length = $(this).val().length;
@@ -487,13 +487,14 @@
                     });
                 }
 
-                // Update navigation buttons
+                if (question.question_type === 'File') {
+                    startCamera(question.id);
+                }
+
                 updateNavigationButtons();
                 updateProgressBar();
             }
 
-
-            // Helper function to get question type label
             function getQuestionTypeLabel(type) {
                 switch (type) {
                     case 'SCQ':
@@ -504,6 +505,8 @@
                         return 'True/False Question';
                     case 'FreeText':
                         return 'Free Text';
+                    case 'File':
+                        return 'File Upload (Camera)';
                     default:
                         return 'Question';
                 }
@@ -518,12 +521,12 @@
                     return $(`input[name="answer-${question.id}[]"]:checked`).length > 0;
                 } else if (question.question_type === 'FreeText') {
                     return $(`textarea[name="answer-text-${question.id}"]`).val().trim().length > 0;
+                } else if (question.question_type === 'File') {
+                    return !!userAnswers[question.id];
                 }
-
                 return false;
             }
 
-            // Function to save the current answer
             function saveCurrentAnswer() {
                 const question = questions[currentQuestionIndex];
                 let answerData = {};
@@ -542,7 +545,6 @@
                     $(`input[name="answer-${question.id}[]"]:checked`).each(function() {
                         selectedOptions.push($(this).val());
                     });
-
                     if (selectedOptions.length > 0) {
                         answerData = {
                             question_id: question.id,
@@ -559,16 +561,56 @@
                             answer_text: answerText
                         };
                     }
+                } else if (question.question_type === 'File') {
+                    const imageData = $(`#file-input-${question.id}`).val();
+                    if (imageData) {
+                        answerData = {
+                            question_id: question.id,
+                            answer_id: null,
+                            answer_text: imageData
+                        };
+                    }
                 }
 
-                // Only save if there's an answer
                 if (Object.keys(answerData).length > 0) {
                     userAnswers[question.id] = answerData;
                     updateAnswerStatus();
                     return true;
                 }
-
                 return false;
+            }
+
+            // Camera functions
+            window.startCamera = async function(questionId) {
+                const video = document.getElementById(`camera-${questionId}`);
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: true
+                    });
+                    video.srcObject = stream;
+                } catch (err) {
+                    alert("Camera access denied: " + err.message);
+                }
+            }
+
+            window.takePhoto = function(questionId) {
+                const video = document.getElementById(`camera-${questionId}`);
+                const canvas = document.getElementById(`snapshot-${questionId}`);
+                const input = document.getElementById(`file-input-${questionId}`);
+                const preview = document.getElementById(`preview-${questionId}`);
+
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext("2d").drawImage(video, 0, 0);
+
+                const dataUrl = canvas.toDataURL("image/png");
+                input.value = dataUrl;
+                userAnswers[questionId] = {
+                    question_id: questionId,
+                    answer_id: null,
+                    answer_text: dataUrl
+                };
+                preview.innerHTML = `<img src="${dataUrl}" class="img-fluid rounded">`;
             }
 
             // Function to navigate to the next question
@@ -797,88 +839,4 @@
             });
         });
     </script>
-
-    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-
-
-    <script>
-        window.addEventListener('DOMContentLoaded', async () => {
-            const video = document.getElementById('video');
-            let warnings = 0;
-            let sensitivity = 100;
-
-            // Wait until face-api is ready
-            const waitForFaceApi = () => new Promise(resolve => {
-                const check = () => {
-                    if (typeof faceapi !== 'undefined') resolve();
-                    else setTimeout(check, 50);
-                };
-                check();
-            });
-
-            await waitForFaceApi();
-            await Promise.all([
-                faceapi.nets.tinyFaceDetector.loadFromUri('/models/face-api/tiny_face_detector'),
-                faceapi.nets.faceLandmark68Net.loadFromUri('/models/face-api/face_landmark_68'),
-            ]);
-
-            startVideo();
-
-            function startVideo() {
-                navigator.mediaDevices.getUserMedia({
-                        video: true
-                    })
-                    .then(stream => video.srcObject = stream)
-                    .catch(err => console.error("Camera error:", err));
-            }
-
-            video.addEventListener('play', () => {
-                const canvas = faceapi.createCanvasFromMedia(video);
-                document.body.append(canvas);
-                const displaySize = {
-                    width: video.width,
-                    height: video.height
-                };
-                faceapi.matchDimensions(canvas, displaySize);
-
-                setInterval(async () => {
-                    const detections = await faceapi
-                        .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
-                        .withFaceLandmarks();
-
-                    if (detections) {
-                        const landmarks = detections.landmarks;
-                        const nose = landmarks.getNose()[3];
-                        const leftEye = landmarks.getLeftEye()[0];
-                        const rightEye = landmarks.getRightEye()[3];
-
-                        const xShift = Math.abs(leftEye.x - rightEye.x);
-                        const yShift = Math.abs(nose.y - (leftEye.y + rightEye.y) / 2);
-
-                        if (xShift < sensitivity || yShift > sensitivity) {
-                            warnings++;
-                            if (warnings === 1) {
-                                alert('⚠️ First warning: Please don’t look away!');
-                                // await fetch('/api/proctor/warning', {
-                                //     method: 'POST'
-                                // });
-                            } else if (warnings >= 2) {
-                                alert(
-                                    '❌ You’ve been disqualified. Test is auto-submitted.'
-                                    );
-                                // await fetch('/api/proctor/autosubmit', {
-                                //     method: 'POST'
-                                // });
-                                // window.location.href = '/test/submit';
-                            }
-                        }
-                    }
-                }, 1000);
-            });
-        });
-    </script>
-
-
-
-
 </div>

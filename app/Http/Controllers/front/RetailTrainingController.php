@@ -555,6 +555,7 @@ class RetailTrainingController extends BaseController
         $OverAllStatus = ($averageObtainMarks >= $averageMinimumMark) ? 'Passed' : 'Failed';
 
 
+
         $start_date = \Carbon\Carbon::parse($training->start_date_time);
         $end_date = \Carbon\Carbon::parse($training->end_date_time);
         $lengthInDays = $start_date->diffInDays($end_date);

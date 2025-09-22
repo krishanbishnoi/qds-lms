@@ -691,7 +691,7 @@
                             }
                         });
                     } else {
-                        window.location.href = '{{ route('user.test.result', $testDetails->id) }}';
+                        // window.location.href = '{{ route('user.test.result', $testDetails->id) }}';
                     }
                 }
 

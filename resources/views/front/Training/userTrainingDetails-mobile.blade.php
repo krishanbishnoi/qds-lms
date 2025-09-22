@@ -283,6 +283,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
 
 <script>
     $(document).ready(function() {
@@ -370,6 +371,9 @@
                             if (item.type === 'video') {
                                 icon = "{{ asset('front/img/video-icon.svg') }}";
                                 typeText = 'Video';
+                            } else if (item.document_type === 'pdf') {
+                                icon = "{{ asset('front/img/docs-icon.svg') }}";
+                                typeText = 'pdf';
                             } else if (item.type === 'doc') {
                                 icon = "{{ asset('front/img/docs-icon.svg') }}";
                                 typeText = 'DOC';
@@ -686,13 +690,140 @@
                         }
                     }
                 });
-            } else if (contentType === 'doc' || contentType === 'pdf') {
+            } else if (contentType === 'pdf') {
+                const pdfUrl = `{{ asset('training_document') }}/${contentSrc}`;
+
+                const contentHtml = `
+                    <div class="pdf-viewer-container" style="border:1px solid #ccc; width:100%;">
+                       
+                        <canvas id="pdf-canvas" style="border:1px solid #ccc; width:100%;"></canvas>
+                         <div class="d-flex justify-content-between align-items-center mb-2 gap-2 p-2">
+                            <!-- Previous Page Icon -->
+                            <button id="prevPage" class="btn btn-lightPDF btn-sm">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+
+                            <!-- Current Page / Total Pages -->
+                            <span class="small text-muted">
+                                <span id="currentPage">1</span> / <span id="totalPages">1</span>
+                            </span>
+
+                            <!-- Next Page Icon -->
+                            <button id="nextPage" class="btn btn-lightPDF btn-sm">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+
+                            <!-- Switch Orientation Icon -->
+                            <button id="toggleOrientation" class="btn btn-lightPDF btn-sm">
+                                <i class="bi bi-arrows-angle-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                $('#content-viewer').html(contentHtml);
+
+                // Initialize tracker
+                globalTracker = {
+                    intervalId: null,
+                    viewedTime: 0,
+                    contentId: contentId,
+                    hasUpdated: false,
+                    type: contentType,
+                    isPlaying: true,
+                    lastUpdateTime: 0,
+                    contentLength: contentLength
+                };
+
+                // PDF.js variables
+                let pdfDoc = null;
+                let currentPage = 1;
+                let totalPages = 0;
+                let scale = 1.0;
+                let orientation = 'portrait';
+                const canvas = document.getElementById('pdf-canvas');
+                const ctx = canvas.getContext('2d');
+
+                pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
+                    pdfDoc = pdf;
+                    totalPages = pdf.numPages;
+                    document.getElementById('totalPages').textContent = totalPages;
+                    renderPage(currentPage);
+                });
+
+                function renderPage(pageNum) {
+                    pdfDoc.getPage(pageNum).then(function(page) {
+                        const viewport = page.getViewport({
+                            scale: scale,
+                            rotation: orientation === 'landscape' ? 90 : 0
+                        });
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        page.render({
+                            canvasContext: ctx,
+                            viewport: viewport
+                        });
+                        document.getElementById('currentPage').textContent = pageNum;
+                    });
+                }
+
+                // Navigation buttons
+                $('#prevPage').click(function() {
+                    if (currentPage <= 1) return;
+                    currentPage--;
+                    renderPage(currentPage);
+                });
+
+                $('#nextPage').click(function() {
+                    if (currentPage >= totalPages) return;
+                    currentPage++;
+                    renderPage(currentPage);
+                });
+                $('#toggleOrientation').click(function() {
+                    orientation = orientation === 'portrait' ? 'landscape' : 'portrait';
+                    $(this).html(
+                        `<i class="bi bi-arrows-angle-expand"></i> ${orientation === '' ? '' : ''}`
+                        );
+                    renderPage(currentPage);
+                });
+
+
+                // Start tracking
+                startDocTracking();
+
+                function startDocTracking() {
+                    if (globalTracker.intervalId) clearInterval(globalTracker.intervalId);
+                    globalTracker.intervalId = setInterval(function() {
+                        globalTracker.viewedTime++;
+                        if (Math.abs(globalTracker.viewedTime - globalTracker.lastUpdateTime) >= 5) {
+                            updatePartialProgress(contentId, courseId, globalTracker.viewedTime);
+                            globalTracker.lastUpdateTime = globalTracker.viewedTime;
+                        }
+                        if (globalTracker.viewedTime >= contentLength && !globalTracker.hasUpdated) {
+                            globalTracker.hasUpdated = true;
+                            updateProgress(contentId, courseId, contentLength, contentType);
+                            stopTracking();
+                        }
+                    }, 1000);
+                }
+
+                // Stop tracking on prev/next
+                $('.prev-content, .next-content').off('click').on('click', function() {
+                    stopTracking();
+                    if (globalTracker.viewedTime > globalTracker.lastUpdateTime) {
+                        if (globalTracker.viewedTime >= contentLength) {
+                            updateProgress(contentId, courseId, contentLength, contentType);
+                        } else {
+                            updatePartialProgress(contentId, courseId, globalTracker.viewedTime);
+                        }
+                    }
+                });
+            } else if (contentType === 'doc') {
                 // Handle document content
                 const pdfUrl = `{{ asset('training_document') }}/${contentSrc}`;
 
                 const contentHtml = `
                  <iframe src="https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true" width="100%"
-                                    height="500px" style="border: none;"></iframe>
+                  height="500px" style="border: none;"></iframe>
                 <div class="d-flex justify-content-between align-items-center px-3 py-2 pb-3">
                     <b>${content.title}</b>
                     <div class="d-flex align-items-center gap-2">
