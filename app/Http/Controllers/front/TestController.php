@@ -266,8 +266,8 @@ class TestController extends BaseController
 
             // Save the answer in the database
             $answer->save();
-
-            return response()->json(['success' => true]);
+dd($answer);
+            // return response()->json(['success' => true]);
         }
     }
 

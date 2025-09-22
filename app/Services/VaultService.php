@@ -28,8 +28,10 @@ class VaultService
     function getVaultSecret($path)
     {
         $client = new Client();
+        $VAULT_ADDR = env('VAULT_ADDR', 'https://uatvault.airtelbank.com:5500');
+        $VAULT_TOKEN = env('VAULT_TOKEN', 'hvs.CAESICDYcB18IsNEbW5_VErzBuugG3AqI8gS1ra4lccDTTa5Gh4KHGh2cy5KVHBjbE9JN1pCRUk1cGwweFY2bnNtQng');
 
-        // // dd(env('VAULT_ADDR'));
+        // dd(env('VAULT_ADDR'));
         $response = $client->request('GET', $VAULT_ADDR . '/v1/secret/data/QA_Degrees/QA_Degrees_LMS', [
             'headers' => [
                 'X-Vault-Token' => $VAULT_TOKEN,
