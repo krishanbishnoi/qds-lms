@@ -617,6 +617,7 @@ Route::group(array('namespace' => 'front'), function () {
     Route::post('/retail/user/document/update-duration', [App\Http\Controllers\front\RetailTrainingController::class, 'updateDocumentPartialDuration'])->name('userTrainingDetails.document.partial');
     Route::get('/retail/user-training/get-course-content', [App\Http\Controllers\front\RetailTrainingController::class, 'getCourseContentForMobile'])
         ->name('userTraining.getCourseContentForMobile');
+    Route::post('/submit-rating', [App\Http\Controllers\front\RetailTrainingController::class, 'submitRating']);
 
 
 

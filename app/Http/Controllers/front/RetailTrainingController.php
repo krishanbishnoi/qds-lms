@@ -20,6 +20,7 @@ use App\Models\Course;
 use App\Models\TrainingTestResult;
 use App\Models\TraineeAssignedTrainingDocument;
 use App\Models\Feedback;
+use App\Models\TrainingRating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -95,6 +96,7 @@ class RetailTrainingController extends BaseController
 
     public function userTrainingDetails($training_id = 0, Request $request)
     {
+        dd(1);
         if ($request->has('user_id')) {
             $user = User::find($request->user_id);
 
@@ -132,7 +134,6 @@ class RetailTrainingController extends BaseController
             ->where('status', 1)
             ->distinct('course_id')
             ->count('course_id');
-
         return  View::make("front.Training.userTrainingDetails", compact('training_id', 'trainingDetails', 'trainingCourses', 'trainingQuestions', 'totalTrainees', 'totalCoursesCount', 'completedCoursesCount'));
     }
     public function userTrainingDetailsDesign($training_id = 0)
@@ -759,6 +760,25 @@ class RetailTrainingController extends BaseController
             'content' => $content,
             'isLastCourse' => $isLastCourse,
         ]);
+    }
+
+    public function submitRating(Request $request)
+    {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'training_id' => 'required|integer|exists:trainings,id',
+            'user_id' => 'required|integer|exists:users,id',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        // Create the rating record in the database
+        TrainingRating::updateorcreate(['user_id' => $validated['user_id']],[
+            'training_id' => $validated['training_id'],
+            'user_id' => $validated['user_id'],
+            'rating' => $validated['rating'],
+        ]);
+
+        return response()->json(['message' => 'Your rating has been submitted successfully!']);
     }
 }
 // end TrainingController
