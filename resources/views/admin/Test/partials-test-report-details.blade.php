@@ -134,7 +134,7 @@
                                                 <div class="col-md-9">
                                                     <input type="email" class="form-control"
                                                         placeholder="connor.spencer@qdegrees.com" readonly
-                                                        value="{{ $latestAttempt->created_at->format('d - M - Y') }}">
+                                                        value="{{ $latestAttempt->updated_at->format('d - M - Y') }}">
                                                 </div>
                                             </div>
                                         </div>
@@ -154,7 +154,7 @@
                                     </div>
                                     <hr class="hrline">
 
-                                    <div class="row">
+                                    {{-- <div class="row">
                                         @if ($test->type == 'training_test')
                                             <div class="col-md-6 mt-3">
                                                 <div class=" row align-items-center">
@@ -180,7 +180,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                 </div>
                             </div>
@@ -198,7 +198,7 @@
             <div class="card mt-3">
                 <div class="card-body">
 
-                    <div class="clickType">{{ $question->question_type }}</div>
+                    {{-- <div class="clickType">{{ $question->question_type }}</div> --}}
 
                     <p class="card-text"><strong>{{ $index + 1 }} . {{ $question->question }}</strong></p>
 
@@ -264,18 +264,25 @@
                                     style="max-width:30%; height:auto; cursor:pointer;" data-bs-toggle="modal"
                                     data-bs-target="#imageModal">
 
-                                <!-- Card below image -->
                                 @php
+                                    $answer = App\Model\Answer::where('question_id', $question->id)
+                                        ->where('user_id', $latestAttempt->user_id)
+                                        ->where('attempt_number', $attemptNumber)
+                                        ->first();
+                                    $img = $answer && $answer->free_text_answer ? $answer->free_text_answer : '';
+
                                     $ruleMap = [
                                         'Take a photo of a croissant placed correctly on the baking tray, making sure your hand is visible while holding it.' =>
                                             'rule_food_hygiene_gloves',
                                         'After baking, check the internal temperature of the croissant. It should be above 40°C (French Butter) or above 45°C (Frangipane Almond).  Take a photo showing the thermometer reading inside the croissant.' =>
                                             'rule_food_temperature_check',
                                     ];
-                                    $rule_id = $ruleMap[$question->question] ?? null;
+                                    $mappedRuleId = $ruleMap[trim($question->question)] ?? null;
                                 @endphp
 
-                            <div class="card ai-score-card mt-3" style="max-width: 30%;">
+                            <div class="card ai-score-card mt-3" style="max-width: 30%;"
+                                data-question-id="{{ $question->id }}" data-rule-id="{{ $mappedRuleId }}"
+                                data-img="{{ asset($img) }}">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
                                         <i class="bi bi-cpu text-primary fs-4 me-2"></i>
@@ -284,11 +291,11 @@
                                     <p id="aiScore-{{ $question->id }}" class="mb-4 fs-5 fw-bold text-success">
                                         Loading...</p>
 
-                                    <div class="d-flex align-items-center mb-2">
+                                    {{-- <div class="d-flex align-items-center mb-2">
                                         <i class="bi bi-chat-left-text text-info fs-5 me-2"></i>
                                         <h6 class="card-subtitle mb-0">Remark</h6>
                                     </div>
-                                    <p id="aiRemark-{{ $question->id }}" class="mt-2 mb-0 text-muted">Loading...</p>
+                                    <p id="aiRemark-{{ $question->id }}" class="mt-2 mb-0 text-muted">Loading...</p> --}}
                                 </div>
                             </div>
 
@@ -382,29 +389,26 @@ sort($correctAnswerIds);
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const questionId = "{{ $question->id }}";
-        const ruleId = "{{ $rule_id }}";
-        const imageUrl = "{{ asset($img) }}"; // image to send
+        const fileCards = document.querySelectorAll('.ai-score-card');
 
-        if (ruleId && imageUrl) {
-            axios.post('https://surveyai.qdegrees.com/run_audit_audit__post', {
-                    file: imageUrl, // or use base64 if API requires
+        fileCards.forEach(card => {
+            const questionId = card.getAttribute('data-question-id');
+            const ruleId = card.getAttribute('data-rule-id');
+            const imageUrl = card.getAttribute('data-img');
+
+            if (!imageUrl || !ruleId) return;
+
+            axios.post('{{ route('ai.score') }}', {
+                    image_url: imageUrl,
                     rule_id: ruleId
                 })
                 .then(function(response) {
-                    const results = response.data.results;
-                    const matchedRule = results.find(r => r.rule_id === ruleId);
+                    console.log(response);
 
-                    if (matchedRule) {
-                        // Update score & remark dynamically
-                        document.getElementById('aiScore-' + questionId).innerText = matchedRule
-                            .confidence + '%';
-                        document.getElementById('aiRemark-' + questionId).innerText = matchedRule.reason ||
-                            'No remarks available';
-                    } else {
-                        document.getElementById('aiScore-' + questionId).innerText = 'N/A';
-                        document.getElementById('aiRemark-' + questionId).innerText = 'No AI result found';
-                    }
+                    document.getElementById('aiScore-' + questionId).innerText =
+                        (response.data.confidence ?? 'N/A') + '%';
+                    document.getElementById('aiRemark-' + questionId).innerText =
+                        response.data.reason ?? 'No remarks available';
                 })
                 .catch(function(error) {
                     console.error(error);
@@ -412,7 +416,7 @@ sort($correctAnswerIds);
                     document.getElementById('aiRemark-' + questionId).innerText =
                         'Failed to fetch AI result';
                 });
-        }
+        });
     });
 </script>
 

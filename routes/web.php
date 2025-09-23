@@ -666,3 +666,11 @@ Route::get('/optimize', function () {
     $exitCode = Artisan::call('optimize');
     return '<h1>optimize cache cleared</h1>';
 });
+
+
+
+
+    Route::post('/ai-score', [App\Http\Controllers\admin\TrainingController::class, 'getAiScore'])
+        ->name('ai.score');
+
+
