@@ -715,6 +715,7 @@ class TrainingController extends BaseController
                 'id' => $item->id,
                 'title' => $item->title,
                 'type' => $item->type,
+                'document_type' => $item->document_type,
                 'document' => $item->document,
                 'length' => $item->length,
                 'is_completed' => in_array($item->id, $completedDocuments),

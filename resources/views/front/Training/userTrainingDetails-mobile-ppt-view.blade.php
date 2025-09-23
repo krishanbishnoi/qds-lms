@@ -817,6 +817,82 @@
                         }
                     }
                 });
+            } else if (contentType === 'doc') {
+                // Handle document content
+                const pdfUrl = `{{ asset('training_document') }}/${contentSrc}`;
+
+                const contentHtml = `
+                 <iframe src="https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true" width="100%"
+                  height="500px" style="border: none;"></iframe>
+                <div class="d-flex justify-content-between align-items-center px-3 py-2 pb-3">
+                    <b>${content.title}</b>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="javascript:void(0)" class="prev-content ${currentContentIndex === 0 ? 'disabled' : ''}">
+                            <img src="{{ asset('front/img/prew-icon.svg') }}" alt="Previous" width="35">
+                        </a>
+                        <a href="javascript:void(0)" class="next-content ${currentContentIndex === currentCourseContent.length - 1 ? 'disabled' : ''}">
+                            <img src="{{ asset('front/img/next-icon.svg') }}" alt="Next" width="35">
+                        </a>
+                    </div>
+                </div>
+                `;
+                $('#content-viewer').html(contentHtml);
+
+                // Initialize tracker
+                globalTracker = {
+                    intervalId: null,
+                    viewedTime: 0,
+                    contentId: contentId,
+                    hasUpdated: false,
+                    type: contentType,
+                    isPlaying: true, // Docs are considered "playing" immediately
+                    lastUpdateTime: 0,
+                    contentLength: contentLength
+                };
+
+                // Start tracking immediately
+                startDocTracking();
+
+                function startDocTracking() {
+                    // Clear existing interval if any
+                    if (globalTracker.intervalId) {
+                        clearInterval(globalTracker.intervalId);
+                    }
+
+                    // Start tracking
+                    globalTracker.intervalId = setInterval(function() {
+                        globalTracker.viewedTime++;
+
+                        // Update partial progress every 5 seconds
+                        if (Math.abs(globalTracker.viewedTime - globalTracker.lastUpdateTime) >=
+                            5) {
+                            updatePartialProgress(contentId, courseId, globalTracker.viewedTime);
+                            globalTracker.lastUpdateTime = globalTracker.viewedTime;
+                        }
+
+                        // Check completion
+                        if (globalTracker.viewedTime >= contentLength && !globalTracker
+                            .hasUpdated) {
+                            globalTracker.hasUpdated = true;
+                            updateProgress(contentId, courseId, contentLength, contentType);
+                            stopTracking();
+                        }
+                    }, 1000);
+                }
+
+                // Stop tracking when navigating away
+                $('.prev-content, .next-content').off('click').on('click', function() {
+                    stopTracking();
+
+                    // Send final update if needed
+                    if (globalTracker.viewedTime > globalTracker.lastUpdateTime) {
+                        if (globalTracker.viewedTime >= contentLength) {
+                            updateProgress(contentId, courseId, contentLength, contentType);
+                        } else {
+                            updatePartialProgress(contentId, courseId, globalTracker.viewedTime);
+                        }
+                    }
+                });
             }
         }
 

@@ -1,4 +1,27 @@
 <div id="testQuestionsContainer">
+    <!-- Custom CSS -->
+    <style>
+        .ai-score-card {
+            border: 2px solid transparent;
+            border-radius: 12px;
+            background-image: linear-gradient(#fff, #fff),
+                linear-gradient(135deg, #007bff, #6f42c1);
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .ai-score-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .ai-score-card .card-title {
+            font-weight: 600;
+        }
+    </style>
+
     <div class="row">
         <div class="col-lg-12 grid-margin stretch-card">
             <div class="card">
@@ -224,6 +247,74 @@
                                 @endfor
                             </p>
                         </div>
+                    @elseif ($question->question_type == 'File')
+                        {{-- Rating Answer --}}
+                        @php
+                            $answer = App\Model\Answer::where('question_id', $question->id)
+                                ->where('user_id', $latestAttempt->user_id)
+                                ->where('attempt_number', $attemptNumber)
+                                ->first();
+                            $img = $answer && $answer->free_text_answer ? $answer->free_text_answer : '';
+                        @endphp
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="rating-answer mb-0">
+                                <strong>User Img:</strong>
+                                <!-- Thumbnail -->
+                                <img src="{{ asset($img) }}" alt="Image"
+                                    style="max-width:30%; height:auto; cursor:pointer;" data-bs-toggle="modal"
+                                    data-bs-target="#imageModal">
+
+                                <!-- Card below image -->
+                                @php
+                                    $ruleMap = [
+                                        'Take a photo of a croissant placed correctly on the baking tray, making sure your hand is visible while holding it.' =>
+                                            'rule_food_hygiene_gloves',
+                                        'After baking, check the internal temperature of the croissant. It should be above 40°C (French Butter) or above 45°C (Frangipane Almond).  Take a photo showing the thermometer reading inside the croissant.' =>
+                                            'rule_food_temperature_check',
+                                    ];
+                                    $rule_id = $ruleMap[$question->question] ?? null;
+                                @endphp
+
+                            <div class="card ai-score-card mt-3" style="max-width: 30%;">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-cpu text-primary fs-4 me-2"></i>
+                                        <h5 class="card-title mb-0">AI Matcher Score</h5>
+                                    </div>
+                                    <p id="aiScore-{{ $question->id }}" class="mb-4 fs-5 fw-bold text-success">
+                                        Loading...</p>
+
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-chat-left-text text-info fs-5 me-2"></i>
+                                        <h6 class="card-subtitle mb-0">Remark</h6>
+                                    </div>
+                                    <p id="aiRemark-{{ $question->id }}" class="mt-2 mb-0 text-muted">Loading...</p>
+                                </div>
+                            </div>
+
+                            </p>
+                        </div>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">User Answer Image</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+
+                                    <!-- Modal Body -->
+                                    <div class="modal-body text-center">
+                                        <img src="{{ asset($img) }}" alt="Full Image" class="img-fluid rounded">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     @else
                         {{-- Multiple Choice Options --}}
                         <ul class="que_options">
@@ -288,6 +379,43 @@ sort($correctAnswerIds);
 
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const questionId = "{{ $question->id }}";
+        const ruleId = "{{ $rule_id }}";
+        const imageUrl = "{{ asset($img) }}"; // image to send
+
+        if (ruleId && imageUrl) {
+            axios.post('https://surveyai.qdegrees.com/run_audit_audit__post', {
+                    file: imageUrl, // or use base64 if API requires
+                    rule_id: ruleId
+                })
+                .then(function(response) {
+                    const results = response.data.results;
+                    const matchedRule = results.find(r => r.rule_id === ruleId);
+
+                    if (matchedRule) {
+                        // Update score & remark dynamically
+                        document.getElementById('aiScore-' + questionId).innerText = matchedRule
+                            .confidence + '%';
+                        document.getElementById('aiRemark-' + questionId).innerText = matchedRule.reason ||
+                            'No remarks available';
+                    } else {
+                        document.getElementById('aiScore-' + questionId).innerText = 'N/A';
+                        document.getElementById('aiRemark-' + questionId).innerText = 'No AI result found';
+                    }
+                })
+                .catch(function(error) {
+                    console.error(error);
+                    document.getElementById('aiScore-' + questionId).innerText = 'Error';
+                    document.getElementById('aiRemark-' + questionId).innerText =
+                        'Failed to fetch AI result';
+                });
+        }
+    });
+</script>
+
 <script>
     $(document).ready(function() {
         $('#user_attempts').change(function() {

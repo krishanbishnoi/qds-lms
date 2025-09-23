@@ -39,93 +39,17 @@
                                 <b>3. Passing Score:</b>
                                 <p>{{ $trainingTest->minimum_marks }}%</p>
                             </li>
-                            <li>
-                                <b>4. Question Types:</b>
-                                <p>The test consists of MCQS (Multiple Choice Questions), SCQS (Single Correct
-                                    Questions), and
-                                    True/False type questions </p>
-                            </li>
-                            <li>
-                                <b>5. All Questions Are Mandatory:</b>
-                                <p>You must answer every question before submitting. Unanswered questions will
-                                    prevent final
-                                    submission.</p>
-                            </li>
-                            <li>
-                                <b>6. No Negative Marking:</b>
-                                <p>There is no penalty for incorrect answers, so attempt all questions
-                                    confidently.</p>
-                            </li>
-                            <li>
-                                <b>7. Stable Internet Required:</b>
-                                <p>Any network disconnection may automatically submit your test and log the
-                                    activity.</p>
-                            </li>
-                            <li>
-                                <b>8. Stay on Test Page:</b>
-                                <p>Switching to another tab or minimizing the browser will trigger warnings.
-                                    Multiple violations
-                                    will auto-submit your test.</p>
-                            </li>
-                            <li>
-                                <b>9. Do Not Refresh:</b>
-                                <p>Reloading, pressing F5, or clicking the back button will end your test
-                                    immediately.</p>
-                            </li>
-                            <li>
-                                <b>10. Webcam Must Stay On:</b>
-                                <p>Your webcam must detect your face during the entire test.</p>
-                            </li>
-                            <li>
-                                <b>11. Mic Access May Be Monitored:</b>
-                                <p>Your microphone may be used to monitor ambient noise levels to detect
-                                    suspicious behavior.
-                                </p>
-                            </li>
-                            <li>
-                                <b>12. No Mobile Devices:</b>
-                                <p>Using your phone, smartwatches, or other digital devices is strictly
-                                    prohibited during the
-                                    test.</p>
-                            </li>
-                            <li>
-                                <b>13. No External Help:</b>
-                                <p>This is an individual assessment. Collaboration or help from others will
-                                    result in
-                                    disqualification.</p>
-                            </li>
-                            <li>
-                                <b>14. Al Surveillance Active:</b>
-                                <p>Face, tab, and activity monitoring tools are in use to ensure test integrity.
-                                    Every action is
-                                    logged.</p>
-                            </li>
-                            <li>
-                                <b>15. Copy/Paste Disabled:</b>
-                                <p>Right-click, inspect element, or using keyboard shortcuts like Ctrl+C/Ctrl+V
-                                    is disabled and
-                                    logged.</p>
-                            </li>
-                            <li>
-                                <b>16. System Focus Monitoring:</b>
-                                <p>Unusual mouse movements or inactivity may be flagged as suspicious.</p>
-                            </li>
-                            <li>
-                                <b>17. Time-Managed Questions:</b>
-                                <p>Allocate your time wisely. Some questions may be time-bound within the test.
-                                </p>
-                            </li>
-                            <li>
-                                <b>18. Zero Tolerance Policy:</b>
-                                <p>Any attempt to bypass restrictions will result in immediate test submission
-                                    and logging of
-                                    the attempt.</p>
-                            </li>
-                            <li class="border-0">
-                                <b>19. Result Review:</b>
-                                <p>Results will be reviewed before finalization. Suspicious attempts may be
-                                    invalidated.</p>
-                            </li>
+                            <li><b>5. All Questions Mandatory</b></li>
+                            <li><b>6. No Negative Marking</b></li>
+                            <li><b>7. Stable Internet Required</b></li>
+                            <li><b>8. Stay on Test Page</b></li>
+                            <li><b>9. Do Not Refresh</b></li>
+                            <li><b>10. Webcam & Mic Must Stay On</b></li>
+                            <li><b>11. No Mobile Devices</b></li>
+                            <li><b>12. No External Help</b></li>
+                            <li><b>13. AI Monitoring Active</b></li>
+                            <li><b>14. Violations = Auto Submit</b></li>
+                            <li><b>15. Results Reviewed Before Finalization</b></li>
                             @if (!empty($trainingTest->description))
                                 <ul class="tittleUl">
                                     <li>
