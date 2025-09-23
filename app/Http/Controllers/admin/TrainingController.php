@@ -1023,10 +1023,10 @@ class TrainingController extends BaseController
     }
     public function vcIndex()
     {
-        $requests = VcTrainingRequest::with(['user', 'training','statususer'])
+        $requests = VcTrainingRequest::with(['user', 'training', 'statususer'])
             ->orderBy('created_at', 'desc')
             ->paginate(20); // or use ->get() if no pagination
-            // dd($requests);
+        // dd($requests);
         return view('admin.training.vc-index', compact('requests'));
     }
     public function vcRequestUpdate(Request $request, $id)
@@ -1038,5 +1038,30 @@ class TrainingController extends BaseController
         VcTrainingRequest::where('id', $id)->update(['status' => $request->status, 'status_updated_by' => Auth::user()->id]);
 
         return back()->with('success', 'Training request status updated.');
+    }
+
+    public function getAiScore(Request $request)
+    {
+        $request->validate([
+            'image_url' => 'required|string',
+            'rule_id'   => 'required|string',
+        ]);
+
+        $imagePath = $request->image_url;
+        $ruleId = $request->rule_id;
+
+        $response = Http::attach(
+            'file',
+            file_get_contents($imagePath),
+            basename($imagePath)
+        )->post('https://surveyai.qdegrees.com/audit/');
+
+        $results = collect($response->json()['results'] ?? []);
+        $matchedRule = $results->firstWhere('rule_id', $ruleId);
+
+        return response()->json([
+            'confidence' => $matchedRule['confidence'] ?? null,
+            'reason'     => $matchedRule['reason'] ?? 'No remarks available',
+        ]);
     }
 }
