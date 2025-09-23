@@ -9,6 +9,68 @@
             margin: auto;
             z-index: 1111111;
         }
+
+        .star {
+            font-size: 30px;
+            color: #ccc;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .star.selected {
+            color: #ffcc00;
+        }
+
+        .rating-control {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .btn-rating {
+            position: relative;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: not-allowed;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            opacity: 0.7;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-rating:not(:disabled) {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            opacity: 1;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-rating:not(:disabled):hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+        }
+
+        .rating-icon {
+            font-size: 16px;
+            margin-right: 6px;
+        }
+
+        .rating-requirement {
+            font-size: 11px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .btn-rating:not(:disabled) .rating-requirement {
+            display: none;
+        }
     </style>
     <div class="d-flex flex-wrap paddingTop">
         <div class="courseName trainingNameMobile d-lg-none w-100">
@@ -97,9 +159,75 @@
                         growth and improvement await.</p>
                 </div>
                 <div class="timerGroup">
+                    <div class="rating-control">
+                        <button id="giveRatingButton" class="btn-rating" disabled>
+                            {{-- <span class="rating-icon">★</span> --}}
+                            Rate This Training
+                            <span class="rating-requirement">50% completion required</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
+            @php
+            $givenRatings = \App\Models\TrainingRating::where('user_id',Auth::id())->where('training_id',$training_id)->value('rating');
+            @endphp
+
+            <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ratingModalLabel">
+                                @if (isset($givenRatings) && $givenRatings)
+                                    Update Your Rating
+                                @else
+                                    Rate Your Training
+                                @endif
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="stars">
+                                <!-- Star Rating (5 Stars) -->
+                                <span class="star" data-value="1">&#9733;</span>
+                                <span class="star" data-value="2">&#9733;</span>
+                                <span class="star" data-value="3">&#9733;</span>
+                                <span class="star" data-value="4">&#9733;</span>
+                                <span class="star" data-value="5">&#9733;</span>
+                            </div>
+                            <div style="display:none;" id="debugInfo">
+                                Given Ratings PHP Value: {{ $givenRatings ?? 'null' }}<br>
+                                Given Ratings Type: {{ gettype($givenRatings) }}<br>
+                                Has Existing Rating: {{ isset($givenRatings) && $givenRatings ? 'true' : 'false' }}
+                            </div>
+                            {{-- <p id="selectedRatingText"> --}}
+                                @if (isset($givenRatings) && $givenRatings)
+                                    Your current rating: {{ $givenRatings }} stars
+                                @else
+                                    No rating selected
+                                @endif
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" id="submitRating" class="btn btn-primary">
+                                @if (isset($givenRatings) && $givenRatings)
+                                    Update Rating
+                                @else
+                                    Submit Rating
+                                @endif
+                            </button>
+
+                            <!-- Add delete button if rating exists -->
+                            {{-- @if (isset($givenRatings) && $givenRatings)
+                                <button type="button" id="deleteRating" class="btn btn-danger">Delete Rating</button>
+                            @endif --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="about_content">
                 <h2>About this Training</h2>
                 <p>{!! $trainingDetails->description !!}</p>
@@ -455,6 +583,19 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script>
+    function enableRatingIfEligible() {
+        const total = $('a.courseGroup').length;
+        const completed = $('a.courseGroup .small.text-success').length;
+        const percentage = total > 0 ? (completed / total) * 100 : 0;
+
+        if (percentage >= 50) {
+            $('#giveRatingButton').prop('disabled', false);
+            // $('#ratingHint').hide();
+        }
+    }
+    $(document).ready(function() {
+        enableRatingIfEligible();
+    });
     //For pdf compalated or not
     $(document).ready(function() {
         // Use event delegation to handle dynamically added checkboxes
@@ -721,6 +862,7 @@
                     .text('Completed');
                 checkAllContentCompleted(courseId);
             });
+            enableRatingIfEligible();
         }
 
         function updatePartialProgress(duration) {
@@ -771,4 +913,112 @@
         countdownElement.innerHTML = paddedHours + ' hours ' + paddedMinutes + ' minutes ' + paddedSeconds + ' seconds';
     }
     var timer = setInterval(countdown, 1000); // Call the countdown function every second (1000 milliseconds)
+</script>
+<script>
+    $(document).ready(function() {
+        let selectedRating = {{ $givenRatings ?? 0 }};
+        const trainingId = <?php echo $training_id; ?>;
+        const hasExistingRating = {{ isset($givenRatings) && $givenRatings ? 'true' : 'false' }};
+
+        // Auto-fill stars if user has existing rating
+        if (hasExistingRating && selectedRating > 0) {
+            highlightStars(selectedRating);
+            $('#selectedRatingText').text('Your current rating: ' + selectedRating + ' stars');
+        }
+
+        // Star click handler
+        $('.star').on('click', function() {
+            selectedRating = $(this).data('value');
+            highlightStars(selectedRating);
+            $('#selectedRatingText').text('Selected Rating: ' + selectedRating + ' stars');
+        });
+
+        // Function to highlight stars
+        function highlightStars(rating) {
+            $('.star').removeClass('selected');
+            $('.star').each(function() {
+                if ($(this).data('value') <= rating) {
+                    $(this).addClass('selected');
+                }
+            });
+        }
+
+        // Open modal handler
+        $('#giveRatingButton').on('click', function() {
+            // Reset to existing rating when modal opens
+            if (hasExistingRating && selectedRating > 0) {
+                highlightStars(selectedRating);
+                $('#selectedRatingText').text('Your current rating: ' + selectedRating + ' stars');
+            } else {
+                selectedRating = 0;
+                $('.star').removeClass('selected');
+                $('#selectedRatingText').text('No rating selected');
+            }
+            $('#ratingModal').modal('show');
+        });
+
+        // Submit rating handler
+        $('#submitRating').on('click', function() {
+            if (selectedRating === 0) {
+                alert('Please select a rating.');
+                return;
+            }
+
+            const userId = {{ auth()->id() }};
+            const url = '/submit-rating';
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    training_id: trainingId,
+                    user_id: userId,
+                    rating: selectedRating,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    alert(response.message);
+                    $('#ratingModal').modal('hide');
+                    // Update button text if it was first rating
+                    if (!hasExistingRating) {
+                        $('#giveRatingButton').html(
+                            '<span class="rating-icon">★</span>Update Rating');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        });
+
+        // Delete rating handler (if delete button exists)
+        $('#deleteRating').on('click', function() {
+            if (confirm('Are you sure you want to delete your rating?')) {
+                const userId = {{ auth()->id() }};
+
+                $.ajax({
+                    url: '/delete-rating',
+                    method: 'POST',
+                    data: {
+                        training_id: trainingId,
+                        user_id: userId,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        alert(response.message);
+                        $('#ratingModal').modal('hide');
+                        // Reset button text
+                        $('#giveRatingButton').html(
+                            '<span class="rating-icon">★</span>Give Rating');
+                        // Reset stars for next time
+                        selectedRating = 0;
+                        hasExistingRating = false;
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Something went wrong. Please try again.');
+                    }
+                });
+            }
+        });
+    });
 </script>
