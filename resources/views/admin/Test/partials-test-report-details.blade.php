@@ -134,7 +134,7 @@
                                                 <div class="col-md-9">
                                                     <input type="email" class="form-control"
                                                         placeholder="connor.spencer@qdegrees.com" readonly
-                                                        value="{{ $latestAttempt->updated_at->format('d - M - Y') }}">
+                                                        value="{{ $latestAttempt->updated_at->format('d - M - Y H:i') }}">
                                                 </div>
                                             </div>
                                         </div>
@@ -403,13 +403,33 @@ sort($correctAnswerIds);
                     rule_id: ruleId
                 })
                 .then(function(response) {
-                    console.log(response);
+                    console.log('AI Score Response:', response.data);
 
-                    document.getElementById('aiScore-' + questionId).innerText =
-                        (response.data.confidence ?? 'N/A') + '%';
-                    document.getElementById('aiRemark-' + questionId).innerText =
-                        response.data.reason ?? 'No remarks available';
+                    const scoreEl = document.getElementById('aiScore-' + questionId);
+                    const remarkEl = document.getElementById('aiRemark-' + questionId);
+
+                    let confidence = response.data.confidence;
+                    // format confidence to 2 decimal places
+                    if (confidence !== null && confidence !== undefined) {
+                        confidence = parseFloat(confidence).toFixed(2);
+                    } else {
+                        confidence = 'N/A';
+                    }
+
+                    if (scoreEl) scoreEl.innerText = confidence + '%';
+                    if (remarkEl) remarkEl.innerText = response.data.reason ??
+                        'No remarks available';
                 })
+
+
+                // .then(function(response) {
+                //     // console.log(response);
+
+                //     // document.getElementById('aiScore-' + questionId).innerText =
+                //     //     (response.data.confidence ?? 'N/A') + '%';
+                //     // document.getElementById('aiRemark-' + questionId).innerText =
+                //     //     response.data.reason ?? 'No remarks available';
+                // })
                 .catch(function(error) {
                     console.error(error);
                     document.getElementById('aiScore-' + questionId).innerText = 'Error';

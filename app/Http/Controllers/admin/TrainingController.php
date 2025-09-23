@@ -1047,13 +1047,26 @@ class TrainingController extends BaseController
             'rule_id'   => 'required|string',
         ]);
 
-        $imagePath = $request->image_url;
-        $ruleId = $request->rule_id;
+        // Convert asset URL → local path
+        $imageUrl = $request->image_url;
+        $ruleId   = $request->rule_id;
 
+        // Remove domain part to get relative path
+        $relativePath = str_replace(asset(''), '', $imageUrl);
+        $localPath    = public_path($relativePath);
+
+        if (!file_exists($localPath)) {
+            return response()->json([
+                'confidence' => null,
+                'reason'     => 'Image not found on server',
+            ], 404);
+        }
+
+        // Send to AI API
         $response = Http::attach(
             'file',
-            file_get_contents($imagePath),
-            basename($imagePath)
+            file_get_contents($localPath),
+            basename($localPath)
         )->post('https://surveyai.qdegrees.com/audit/');
 
         $results = collect($response->json()['results'] ?? []);
