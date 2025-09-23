@@ -528,7 +528,7 @@
                         </a>
                     </div>
                 </div>
-            `;
+                  `;
 
                 $('#content-viewer').html(contentHtml);
 
