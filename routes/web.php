@@ -614,7 +614,8 @@ Route::group(array('namespace' => 'front'), function () {
     Route::any('/retail/update-training-document-progress', array('as' => 'userTrainingDetails.document.progress', 'uses' => 'RetailTrainingController@userTrainingDocumentProgress'));
     Route::post('/retail/training-logs/training_details/{id}', array('as' => 'training_details.popup', 'uses' => 'RetailTrainingController@training_details_popup'));
     Route::post('/retail/user/document/duration', [App\Http\Controllers\front\RetailTrainingController::class, 'getDocumentDuration'])->name('userTrainingDetails.document.duration');
-    Route::post('/retail/user/document/update-duration', [App\Http\Controllers\front\RetailTrainingController::class, 'updateDocumentPartialDuration'])->name('userTrainingDetails.document.partial');
+    // Route::post('/retail/user/document/update-duration', [App\Http\Controllers\front\RetailTrainingController::class, 'updateDocumentPartialDuration'])->name('userTrainingDetails.document.partial');
+    Route::match(['get', 'post'], '/retail/user/document/update-duration', [App\Http\Controllers\front\RetailTrainingController::class, 'updateDocumentPartialDuration'])->name('userTrainingDetails.document.partial');
     Route::get('/retail/user-training/get-course-content', [App\Http\Controllers\front\RetailTrainingController::class, 'getCourseContentForMobile'])
         ->name('userTraining.getCourseContentForMobile');
     Route::post('/submit-rating', [App\Http\Controllers\front\RetailTrainingController::class, 'submitRating']);
@@ -670,7 +671,5 @@ Route::get('/optimize', function () {
 
 
 
-    Route::post('/ai-score', [App\Http\Controllers\admin\TrainingController::class, 'getAiScore'])
-        ->name('ai.score');
-
-
+Route::post('/ai-score', [App\Http\Controllers\admin\TrainingController::class, 'getAiScore'])
+    ->name('ai.score');

@@ -7,7 +7,7 @@
                 <div class="card bg-gradient-danger card-img-holder text-white">
                     <div class="card-body">
 
-                        <h4 class="font-weight-normal mb-3">Total Trainee <i
+                        <h4 class="font-weight-normal mb-3">Trainees <i
                                 class="mdi mdi-account menu-icon mdi-24px float-right"></i>
                         </h4>
                         <h2 class="mb-5">{{ count($totalTrainees) }}</h2>
@@ -18,7 +18,7 @@
                 <div class="card bg-gradient-info card-img-holder text-white">
                     <div class="card-body">
 
-                        <h4 class="font-weight-normal mb-3">Total Trainings Till Now <i
+                        <h4 class="font-weight-normal mb-3">Trainings <i
                                 class="mdi mdi-bulletin-board mdi-24px float-right"></i>
                         </h4>
                         <h2 class="mb-5">{{ count($totalTrainings) }}</h2>
@@ -29,15 +29,14 @@
                 <div class="card bg-gradient-success card-img-holder text-white">
                     <div class="card-body">
 
-                        <h4 class="font-weight-normal mb-3">Total Test Till Now <i
-                                class="mdi mdi-content-paste mdi-24px float-right"></i>
+                        <h4 class="font-weight-normal mb-3">Tests <i class="mdi mdi-content-paste mdi-24px float-right"></i>
                         </h4>
                         <h2 class="mb-5">{{ count($totalTests) }}</h2>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="filterGroup">
+        {{-- <div class="filterGroup">
             <div class="row align-items-end">
                 <div class="col">
                     <div class="form-group ">
@@ -89,7 +88,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="row">
             <div class="col-12 grid-margin">
                 <div class="card">
@@ -109,23 +108,28 @@
                                 <tbody>
                                     <?php $number = 1; ?>
                                     @foreach ($totalTrainings as $training)
-
-                                    <tr>
-                                        <td>
-                                            {{ $number++ }}
-                                        </td>
-                                        <td>{{$training->title}} </td>
-                                        <td>
-                                            <label class="badge badge-gradient-success">DONE</label>
-                                        </td>
-                                        <td> {{  $training->end_date_time }}</td>
-                                        <td class="action-td">
-                                            <div class="d-flex gap-2">
-                                                <a href="javascript:void(0);" class="btn btn-info" title="View"> <span
-                                                        class="fa fa-eye"></span></a>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td>
+                                                {{ $number++ }}
+                                            </td>
+                                            <td>{{ $training->title }} </td>
+                                            <td>
+                                                @if ($training->status == 0)
+                                                    <span class="badge text-danger">Upcoming</span>
+                                                @elseif($training->status == 1)
+                                                    <span class="badge text-warning">Ongoing</span>
+                                                @else
+                                                    <span class="badge text-success">Completed</span>
+                                                @endif
+                                            </td>
+                                            <td> {{ $training->end_date_time }}</td>
+                                            <td class="action-td">
+                                                <div class="d-flex gap-2">
+                                                    <a href="{{ route('Training.index') }}" class="btn btn-info" title="View"> <span
+                                                            class="fa fa-eye"></span></a>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>

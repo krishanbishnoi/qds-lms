@@ -258,11 +258,11 @@
                         @endphp
                         <div class="d-flex justify-content-between align-items-center">
                             <p class="rating-answer mb-0">
-                                <strong>User Img:</strong>
+                                <strong>Answer Img:</strong>
                                 <!-- Thumbnail -->
                                 <img src="{{ asset($img) }}" alt="Image"
-                                    style="max-width:30%; height:auto; cursor:pointer;" data-bs-toggle="modal"
-                                    data-bs-target="#imageModal">
+                                    style="max-width:30%; height:auto; cursor:pointer; border-radius:12px" data-bs-toggle="modal"
+                                    data-bs-target="#imageModal-{{ $question->id }}">
 
                                 @php
                                     $answer = App\Model\Answer::where('question_id', $question->id)
@@ -290,6 +290,7 @@
                                     </div>
                                     <p id="aiScore-{{ $question->id }}" class="mb-4 fs-5 fw-bold text-success">
                                         Loading...</p>
+                                    {{-- Reference Image eye button --}}
 
                                     {{-- <div class="d-flex align-items-center mb-2">
                                         <i class="bi bi-chat-left-text text-info fs-5 me-2"></i>
@@ -297,13 +298,45 @@
                                     </div>
                                     <p id="aiRemark-{{ $question->id }}" class="mt-2 mb-0 text-muted">Loading...</p> --}}
                                 </div>
+                                @if (!empty($question->reference_img))
+                                    <div class="text-center mt-3">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm clickType"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#referenceImageModal-{{ $question->id }}">
+                                            <i class="bi bi-eye"></i> Reference Image
+                                        </button>
+                                    </div>
+                                @endif
                             </div>
 
                             </p>
                         </div>
+                        {{-- Reference Image Modal --}}
+                        @if (!empty($question->reference_img))
+                            <div class="modal fade" id="referenceImageModal-{{ $question->id }}" tabindex="-1"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
 
+                                        <!-- Header -->
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Reference Image</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+
+                                        <!-- Body -->
+                                        <div class="modal-body text-center">
+                                            <img src="{{ asset($question->reference_img) }}" alt="Reference Image"
+                                                class="img-fluid rounded border">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                         <!-- Modal -->
-                        <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal fade" id="imageModal-{{ $question->id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
 

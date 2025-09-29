@@ -133,7 +133,7 @@
                                     <a class="nav-link" href="{{ route('Users.index') }}">Training Managers</a>
                                 </li>
                                 <li class="nav-item @if ($segment2 == 'users' && $segment3 == 'trainers') active @endif">
-                                    <a class="nav-link" href="{{ route('Trainers.index') }}">Trainers Managers</a>
+                                    <a class="nav-link" href="{{ route('Trainers.index') }}">Trainers</a>
                                 </li>
                             </ul>
                         </div>

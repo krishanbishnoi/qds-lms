@@ -96,7 +96,6 @@ class RetailTrainingController extends BaseController
 
     public function userTrainingDetails($training_id = 0, Request $request)
     {
-        dd(1);
         if ($request->has('user_id')) {
             $user = User::find($request->user_id);
 

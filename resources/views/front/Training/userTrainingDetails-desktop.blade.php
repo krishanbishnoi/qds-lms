@@ -111,9 +111,34 @@
                                         type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
-                            @elseif ($content['type'] === 'doc' && $content['document_type'] === 'pdf')
+                                {{-- @elseif ($content['type'] === 'doc' && $content['document_type'] === 'pdf')
                                 <iframe src="{{ asset('training_document/' . $content['document']) }}" width="100%"
-                                    height="500px" style="border: none;"></iframe>
+                                    height="500px" style="border: none;"></iframe> --}}
+                            @elseif ($content['type'] === 'doc' && $content['document_type'] === 'pdf')
+                                <div id="pdf-viewer-{{ $content['id'] }}" class="pdf-viewer-container"
+                                    data-content-id="{{ $content['id'] }}"
+                                    data-pdf-url="{{ asset('training_document/' . $content['document']) }}"
+                                    style="border:1px solid #ccc; width:100%;">
+                                    <canvas id="pdf-canvas-{{ $content['id'] }}"
+                                        style="border:1px solid #ccc; width:100%;"></canvas>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-2 gap-2 p-2">
+                                        <!-- Previous Page -->
+                                        <button id="prevPage-{{ $content['id'] }}" class="btn btn-lightPDF btn-sm">
+                                            <i class="bi bi-chevron-left"></i>
+                                        </button>
+
+
+
+                                        <!-- Current Page / Total Pages -->
+                                        <span id="currentPage-{{ $content['id'] }}">1</span> /
+                                        <span id="totalPages-{{ $content['id'] }}">1</span>
+                                        <!-- Next Page -->
+                                        <button id="nextPage-{{ $content['id'] }}" class="btn btn-lightPDF btn-sm">
+                                            <i class="bi bi-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             @elseif ($content['type'] === 'pdf' && $content['document_type'] === 'pdf')
                                 <iframe src="{{ asset('training_document/' . $content['document']) }}" width="100%"
                                     height="500px" style="border: none;"></iframe>
@@ -170,7 +195,9 @@
             </div>
 
             @php
-            $givenRatings = \App\Models\TrainingRating::where('user_id',Auth::id())->where('training_id',$training_id)->value('rating');
+                $givenRatings = \App\Models\TrainingRating::where('user_id', Auth::id())
+                    ->where('training_id', $training_id)
+                    ->value('rating');
             @endphp
 
             <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel"
@@ -203,11 +230,11 @@
                                 Has Existing Rating: {{ isset($givenRatings) && $givenRatings ? 'true' : 'false' }}
                             </div>
                             {{-- <p id="selectedRatingText"> --}}
-                                @if (isset($givenRatings) && $givenRatings)
-                                    Your current rating: {{ $givenRatings }} stars
-                                @else
-                                    No rating selected
-                                @endif
+                            @if (isset($givenRatings) && $givenRatings)
+                                <span class="mt-2"> Your current rating: {{ $givenRatings }} stars </span>
+                            @else
+                                <span class="mt-2"> No rating selected</span>
+                            @endif
                             </p>
                         </div>
                         <div class="modal-footer">
@@ -582,6 +609,64 @@
     <div class="overllayBg" id="overllayBg" style="display: none;"></div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+{{-- PDF.js library --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pdfViewers = document.querySelectorAll('.pdf-viewer-container');
+
+        pdfViewers.forEach(function(viewer) {
+            const contentId = viewer.dataset
+                .contentId; // make sure you add data-content-id="{{ $content['id'] }}"
+            const pdfUrl = viewer.dataset
+                .pdfUrl; // set data-pdf-url="{{ asset('training_document/' . $content['document']) }}"
+            let pdfDoc = null,
+                currentPage = 1,
+                totalPages = 0,
+                scale = 1.2;
+
+            const canvas = document.getElementById(`pdf-canvas-${contentId}`);
+            const ctx = canvas.getContext('2d');
+
+            pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
+                pdfDoc = pdf;
+                totalPages = pdf.numPages;
+                document.getElementById(`totalPages-${contentId}`).textContent = totalPages;
+                renderPage(currentPage);
+            });
+
+            function renderPage(pageNum) {
+                pdfDoc.getPage(pageNum).then(function(page) {
+                    const viewport = page.getViewport({
+                        scale: scale
+                    });
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    page.render({
+                        canvasContext: ctx,
+                        viewport: viewport
+                    });
+                    document.getElementById(`currentPage-${contentId}`).textContent = pageNum;
+                });
+            }
+
+            // Navigation buttons
+            document.getElementById(`prevPage-${contentId}`).addEventListener('click', function() {
+                if (currentPage <= 1) return;
+                currentPage--;
+                renderPage(currentPage);
+            });
+
+            document.getElementById(`nextPage-${contentId}`).addEventListener('click', function() {
+                if (currentPage >= totalPages) return;
+                currentPage++;
+                renderPage(currentPage);
+            });
+        });
+    });
+</script>
 <script>
     function enableRatingIfEligible() {
         const total = $('a.courseGroup').length;
