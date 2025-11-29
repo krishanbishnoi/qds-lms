@@ -18,8 +18,8 @@
              <div class="container-fluid">
                  <div class="d-flex flex-wrap align-items-center">
                      <div class="logoSec">
-                         <a href="{{ route('front.dashboard') }}"><img src="{{ asset('lms-img/qdegrees-logo.svg') }}"
-                                 alt="logo" width="130" height="33px"></a>
+                         <a href="{{ route('front.dashboard') }}"><img src="{{ asset('lms-img/creditsaison-logo.svg') }}"
+                                 alt="logo"  width="170" height="89"></a>
                      </div>
                      <div class="courseName">
                          <p class="mb-0">{{ $testDetails->title }}</p>

@@ -41,7 +41,7 @@
     @endif
     <div class="form-panel">
         <div class="text-center ">
-            <img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="QDegrees-logo" width="130" height="33">
+            <img src="{{ asset('lms-img/creditsaison-logo.svg') }}" alt="QDegrees-logo"  width="170" height="89">
         </div>
         <div class="from-content">
             <h2 class="fs-5 fw-bold mt-4 mb-3">Log In to your account</h2>
@@ -82,7 +82,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <div class="text-center ">
-                        <img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="QDegrees-logo" width="130" height="33">
+                        <img src="{{ asset('lms-img/creditsaison-logo.svg') }}" alt="QDegrees-logo"  width="170" height="89">
                     </div>
                     <h2 class="fs-5 fw-bold my-4">Link to reset password is sent to your email</h2>
                     <p class="mb-3">Customer data privacy involves protecting and handling sensitive personal

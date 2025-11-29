@@ -1,7 +1,7 @@
 <header class="mainheader">
     <div class="container">
         <nav class="navbar navbar-expand-lg">
-            <a class="navbar-brand" href="#"><img src="images/qdegrees-logo.svg" alt="Trawo" width="100"></a>
+            <a class="navbar-brand" href="#"><img src="images/creditsaison-logo.svg" alt="Trawo" width="100"></a>
             <div class="navbar-collapse ms-auto" id="navbarNavDropdown">
                 <ul class="navbar-nav">
                     <li class="nav-item">
