@@ -133,7 +133,7 @@
                                     <a class="nav-link" href="{{ route('Users.index') }}">Training Managers</a>
                                 </li>
                                 <li class="nav-item @if ($segment2 == 'users' && $segment3 == 'trainers') active @endif">
-                                    <a class="nav-link" href="{{ route('Trainers.index') }}">Trainers</a>
+                                    <a class="nav-link" href="{{ route('Trainers.index') }}">Trainers Managers</a>
                                 </li>
                             </ul>
                         </div>
@@ -264,7 +264,7 @@
                                         class="nav-link" href="{{ route('TrainingType.index') }}">TrainingType
                                         Management</a></li>
                                 <li class="nav-item @if ($segment1 == 'partners') active @endif"><a
-                                        class="nav-link" href="{{ route('Partner.index') }}">Partner Management</a>
+                                        class="nav-link" href="{{ route('Partner.index') }}">Collection Agency</a>
                                 </li>
                                 <li class="nav-item @if ($segment1 == 'domains') active @endif"><a
                                         class="nav-link" href="{{ route('Domain.index') }}">Domain Management</a>

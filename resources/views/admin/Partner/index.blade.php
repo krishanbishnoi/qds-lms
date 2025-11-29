@@ -5,13 +5,13 @@
     <div class="content-wrapper">
         <div class="page-header">
             <h1>
-                {{ $sectionName }}
+                {{ 'Collection Agency' }}
             </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ URL::to('admin/dashboard') }}"><i class="fa fa-dashboard"></i>
                             Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ $sectionName }}</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ 'Collection Agency' }}</li>
 
                 </ol>
             </nav>
@@ -46,10 +46,10 @@
                     <div class="card-body">
                         <div class="box-header with-border pd-custom">
                             <div class="listing-btns">
-                                <h1 class="box-title">{{ $sectionName }}'s List</h1>
+                                <h1 class="box-title">{{ 'Collection Agency' }}'s List</h1>
 
                                 <a href='{{ route("$modelName.add") }}' class="btn btn-success btn-small pull-right mb-2">
-                                    {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
+                                    {{ trans('Add New ') }}{{ 'Collection Agency' }} </a>
                             </div>
                         </div>
                         <table class="table table-hover table table-bordered mt-2 ">
