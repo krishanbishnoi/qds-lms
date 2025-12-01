@@ -44,7 +44,6 @@ class TraineesController extends BaseController
 
     public function index(Request $request)
     {
-
         $DB                  =    User::query();
         $searchVariable      =    array();
         $inputGet            =    $request->all();
@@ -305,13 +304,13 @@ class TraineesController extends BaseController
                 'avaya_id_pbx_id',
                 'fullname',
                 'last_name',
-                'lob',
-                'circle',
+                // 'lob',
+                // 'circle',
                 'gender',
                 'poi',
                 'mobile_number',
                 'password',
-                'region',
+                // 'region',
                 'user_role_id',
                 'validate_string',
                 'olms_id',

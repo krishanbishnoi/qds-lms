@@ -510,7 +510,7 @@ class RetailTestController extends BaseController
             'admin' => "QDegrees Services",
             'date' => date('m/d/Y'),
             'lengthInDays' => $lengthInDays,
-            'logo' => public_path('lms-img/qdegrees-logo.png'),
+            'logo' => public_path('lms-img/creditsaison-logo.png'),
             'background_img' => asset('front/img/backgroundimage.png')
 
         ];
