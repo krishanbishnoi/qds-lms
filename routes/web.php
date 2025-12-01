@@ -4,6 +4,7 @@
 
 // DB::enableQueryLog();
 
+use App\Http\Controllers\admin\AgencyController;
 use App\Http\Controllers\admin\CircleController;
 use App\Http\Controllers\admin\DesignationController;
 use App\Http\Controllers\admin\DomainController;
@@ -356,6 +357,17 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::get('view-lob/{id}', 'view')->name('view');
             Route::get('update-lob-status/{id}/{status}', 'changeStatus')->name('status');
         });
+        Route::controller(AgencyController::class)->prefix('masters/agencies')->name('Agency.')->group(function () {
+            Route::match(['get', 'post'], '/', 'index')->name('index');
+            Route::get('add-new-agency', 'add')->name('add');
+            Route::post('add-new-agency', 'save')->name('save');
+            Route::get('edit-agency/{id}', 'edit')->name('edit');
+            Route::get('delete-agency/{id}', 'delete')->name('delete');
+            Route::get('view-agency/{id}', 'view')->name('view');
+            Route::get('update-agency-status/{id}/{status}', 'changeStatus')->name('status');
+            Route::get('/getCities/{state}', 'getCities')->name('getCities');
+        });
+
 
 
         Route::controller(DesignationController::class)->prefix('masters/designation')->name('Designation.')->group(function () {

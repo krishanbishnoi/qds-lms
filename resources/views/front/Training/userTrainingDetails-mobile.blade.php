@@ -32,21 +32,9 @@
                     <div class="tab-pane fade show active" id="modulesTab">
                         <ul class="courselistUl">
                             @foreach ($trainingCourses as $index => $course)
-                                @php
-                                    $isFirstCourse = $index === 0;
-                                    $isCompleted = checkIfCourseCompleted($course->id);
-                                    $isPreviousCompleted =
-                                        $index === 0 ? true : checkIfCourseCompleted($trainingCourses[$index - 1]->id);
-                                    $canAccess = $isFirstCourse || $isPreviousCompleted;
-
-                                @endphp
                                 <li>
                                     <a href="javascript:void(0)" class="load-course-module"
-                                        data-course-id="{{ $course->id }}"
-                                        data-can-access="{{ $canAccess == true ? 'true' : 'false' }}"
-                                        data-is-completed="{{ $isCompleted ? 'true' : 'false' }}"
-                                        data-is-first="{{ $isFirstCourse ? 'true' : 'false' }}"
-                                        data-test-id="{{ $course->test_id ?? '' }}"
+                                        data-course-id="{{ $course->id }}" data-test-id="{{ $course->test_id ?? '' }}"
                                         data-course-index="{{ $index }}">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="d-flex align-items-center gap-2">
@@ -54,17 +42,7 @@
                                                 <span>Module {{ $index + 1 }} <b>{{ $course['title'] }}</b></span>
                                             </div>
                                             <figure class="m-0">
-
-                                                @if (!$canAccess)
-                                                    <img src="{{ asset('front/img/lock-icon.png') }}" alt="Locked"
-                                                        width="20">
-                                                @elseif($isCompleted)
-                                                    <img src="{{ asset('front/img/completed-icon.png') }}"
-                                                        alt="Completed" width="20">
-                                                @else
-                                                    <img src="{{ asset('front/img/play-btn-icon.png') }}"
-                                                        alt="">
-                                                @endif
+                                                <img src="{{ asset('front/img/play-btn-icon.png') }}" alt="">
                                             </figure>
                                         </div>
                                     </a>
@@ -138,8 +116,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content rounded-4 border-0">
                     <div class="modal-header">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-center mdlContent">
                         <div class="mb-4">
@@ -307,16 +284,6 @@
             const isFirst = String($(this).data('is-first')) === 'true';
             const testId = $(this).data('test-id');
 
-            if (!canAccess) {
-                if (!isFirst) {
-                    $('#holdMdl .module-lock-message').text(
-                        `Module ${$(this).find('strong').text()} is locked until you complete the Module ${parseInt($(this).find('strong').text())-1} test. Let's finish that first!`
-                    );
-                    $('#holdMdl').modal('show');
-                    return;
-                }
-            }
-
             // Load module content
             loadModuleContent(courseId);
         });
@@ -407,9 +374,6 @@
                                             <img src="{{ asset('front/img/play-btn-icon.png') }}" alt="">
                                         </figure>
                                     </div>
-                                    <div class="small ${isCompleted ? 'text-success' : 'text-warning'}">
-                                        ${isCompleted ? 'Completed' : 'Not Started'}
-                                    </div>
                                 </a>
                             </li>`;
                         });
@@ -420,38 +384,18 @@
                             .is_completed);
 
                         if (response.course.test_id) {
-                            const allContentCompleted = response.content.every(item => item
-                                .is_completed);
-                            const canAttempt = response.canAttempt;
-                            const maxAttemptsReached = !canAttempt;
-                            const isDisabled = !allContentCompleted || maxAttemptsReached;
 
-                            let buttonHtml = '';
-                            if (maxAttemptsReached) {
-                                buttonHtml = `
-                                <div class="mt-4 pt-3 border-top">
-                                    <button class="btn btn-primary w-100 start-test-btn disabled"
-                                        style="pointer-events: none; opacity: 0.6;">
-                                        <i class="bi bi-pencil-square me-2"></i>Max Attempts Reached
-                                        <small class="d-block mt-1">You have reached the maximum number of attempts</small>
-                                    </button>
-                                </div>
-                            `;
-                            } else {
-                                buttonHtml = `
-                                <div class="mt-4 pt-3 border-top">
-                                    <a href="{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => '__CID__', 'test_id' => '__TID__']) }}"
-                                        class="btn btn-primary w-100 start-test-btn ${!allContentCompleted ? 'disabled' : ''}"
-                                        data-course-id="${response.course.id}"
-                                        data-test-id="${response.course.test_id}"
-                                        ${!allContentCompleted ? 'style="pointer-events: none; opacity: 0.6;"' : ''}>
-                                        <i class="bi bi-pencil-square me-2"></i>Begin Test
-                                    </a>
-                                </div>
-                            `.replace('__CID__', response.course.id).replace('__TID__', response.course.test_id);
-                            }
-
-                            contentHtml += buttonHtml;
+                            contentHtml += `
+                                    <div class="mt-4 pt-3 border-top">
+                                        <a href="{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => '__CID__', 'test_id' => '__TID__']) }}"
+                                            class="btn btn-primary w-100 start-test-btn"
+                                            data-course-id="${response.course.id}"
+                                            data-test-id="${response.course.test_id}">
+                                            <i class="bi bi-pencil-square me-2"></i>Begin Test
+                                        </a>
+                                    </div>
+                                    `.replace('__CID__', response.course.id).replace('__TID__', response.course
+                                .test_id);
                         } else {
                             console.log(response.isLastCourse)
                             if (response.isLastCourse == true) {
@@ -921,115 +865,13 @@
                                 .removeClass('text-warning')
                                 .addClass('text-success')
                                 .text('Completed');
-
-                            checkAllContentCompleted(courseId);
                         }
                     });
                 }
             });
         }
 
-        function checkAllContentCompleted(courseId) {
-            const container = $('.module-content-container');
-            const allCompleted = container.find('.load-content[data-course-id="' + courseId + '"]')
-                .toArray()
-                .every(item => $(item).find('.small').hasClass('text-success'));
 
-            const hasTest = container.find('.start-test-btn').length > 0;
-            const nextCourseBtn = container.find('.next-course-btn');
-            const finishTrainingBtn = container.find('.finish-trianing-btn');
-            const testBtn = container.find('.start-test-btn');
-            const canAttempt = container.data('can-attempt') !== false; // Default to true if not set
-
-            if (hasTest) {
-                if (allCompleted) {
-                    if (canAttempt) {
-                        // Enable test button if attempts remain
-                        testBtn.removeClass('disabled')
-                            .css({
-                                'pointer-events': 'auto',
-                                'opacity': '1'
-                            })
-                            .attr('href',
-                                "{{ route('userTraining.test', ['training_id' => $training_id, 'course_id' => '__CID__', 'test_id' => '__TID__']) }}"
-                                .replace('__CID__', courseId)
-                                .replace('__TID__', testBtn.data('test-id')));
-                    } else {
-                        // Show max attempts reached
-                        testBtn.addClass('disabled')
-                            .css({
-                                'pointer-events': 'none',
-                                'opacity': '0.6'
-                            })
-                            .attr('href', 'javascript:void(0)')
-                            .html('<i class="bi bi-pencil-square me-2"></i>Max Attempts Reached' +
-                                '<small class="d-block mt-1">You have reached the maximum number of attempts</small>'
-                            );
-                    }
-                } else {
-                    // Content not completed - keep button disabled
-                    testBtn.addClass('disabled')
-                        .css({
-                            'pointer-events': 'none',
-                            'opacity': '0.6'
-                        });
-                }
-            } else {
-                // Handle Next Course or Finish Training button
-                if (finishTrainingBtn.length) {
-                    // Update Finish Training button
-                    if (allCompleted) {
-                        finishTrainingBtn.removeClass('disabled')
-                            .css({
-                                'pointer-events': 'auto',
-                                'opacity': '1'
-                            });
-                    } else {
-                        finishTrainingBtn.addClass('disabled')
-                            .css({
-                                'pointer-events': 'none',
-                                'opacity': '0.6'
-                            });
-                    }
-                } else if (nextCourseBtn.length) {
-                    // Update Next Course button
-                    if (allCompleted) {
-                        nextCourseBtn.removeClass('disabled')
-                            .css({
-                                'pointer-events': 'auto',
-                                'opacity': '1'
-                            });
-                    } else {
-                        nextCourseBtn.addClass('disabled')
-                            .css({
-                                'pointer-events': 'none',
-                                'opacity': '0.6'
-                            });
-                    }
-                } else if (allCompleted) {
-                    // Optionally add Finish Training or Next Course button
-                    const finishTrainingHtml = `
-            <div class="mt-4 pt-3 border-top">
-                <a href="{{ route('userTrainingDetails.index', ['id' => $training_id]) }}"
-                    class="btn btn-secondary w-100 finish-trianing-btn">
-                    <i class="bi bi-arrow-right me-2" onclick="onSurveySubmit()"></i>Finish Training
-                </a>
-            </div>
-        `;
-                    container.append(finishTrainingHtml);
-                }
-            }
-
-
-            // Update module completion status in the list
-            const courseElement = $('.load-course-module[data-course-id="' + courseId + '"]');
-            if (allCompleted) {
-                courseElement.attr('data-is-completed', 'true')
-                    .find('figure img')
-                    .attr('src', "{{ asset('front/img/completed-icon.png') }}")
-                    .attr('alt', 'Completed');
-            }
-        }
 
 
         function formatTime(seconds) {

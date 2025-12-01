@@ -283,31 +283,21 @@
                 <div class="accordion" id="accordionExample">
                     @foreach ($trainingCourses as $index => $course)
                         @php
-                            $isFirstCourse = $index === 0;
-                            $isCompleted = checkIfCourseCompleted($course->id);
-                            $isPreviousCompleted =
-                                $index === 0 ? true : checkIfCourseCompleted($trainingCourses[$index - 1]->id);
-                            $canAccess = $isFirstCourse || $isPreviousCompleted;
+                            $canAccess = true;
                         @endphp
 
                         <div class="accordion-item mb-3 border rounded shadow-sm">
                             <h2 class="accordion-header" id="heading{{ $index }}">
-                                <button
-                                    class="accordion-button collapsed bg-light {{ !$canAccess ? 'locked-course' : '' }}"
-                                    type="button" data-bs-toggle="{{ $canAccess ? 'collapse' : '' }}"
-                                    data-bs-target="{{ $canAccess ? '#collapse' . $index : '' }}"
-                                    aria-expanded="{{ $isFirstCourse ? 'true' : 'false' }}"
-                                    aria-controls="collapse{{ $index }}" data-course-id="{{ $course->id }}"
-                                    onclick="{{ !$canAccess ? 'showLockedMessage(this); return false;' : '' }}">
+                                <button class="accordion-button collapsed bg-light" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ $index }}" aria-expanded="false"
+                                    aria-controls="collapse{{ $index }}"
+                                    data-course-id="{{ $course->id }}">
                                     {{ $course['title'] }}
-                                    @if ($isCompleted)
-                                        <span class="ms-2 badge bg-success">Completed</span>
-                                    @endif
                                 </button>
                             </h2>
 
                             <div id="collapse{{ $index }}"
-                                class="accordion-collapse collapse {{ $isFirstCourse ? 'show' : '' }}"
+                                class="accordion-collapse collapse "
                                 aria-labelledby="heading{{ $index }}" data-bs-parent="#accordionExample">
                                 <div class="accordion-body p-3">
                                     @if ($course->CourseContentAndDocument->isNotEmpty())
@@ -418,10 +408,10 @@
                                                     </div>
 
                                                     <div class="d-flex flex-column align-items-end ms-3">
-                                                        <div
+                                                        {{-- <div
                                                             class="small {{ $documentCompletionInside ? 'text-success' : 'text-warning' }}">
                                                             {{ $documentCompletionInside ? 'Completed' : 'Not Started' }}
-                                                        </div>
+                                                        </div> --}}
                                                     </div>
                                                 </a>
                                             </div>
@@ -465,13 +455,11 @@
 
                                             <div class="mt-4 pt-3 border-top ">
                                                 @php
-                                                    $isDisabled = !$allContentCompleted || !$canAttempt;
+                                                    $isDisabled = false;
                                                     $buttonText = $canAttempt ? 'Begin Test' : 'Max Attempts Reached';
                                                     $message = !$canAttempt
                                                         ? 'You have reached the maximum number of attempts'
-                                                        : (!$allContentCompleted
-                                                            ? 'Complete all content first'
-                                                            : '');
+                                                        : '';
                                                     $testRoute = route('userTraining.test', [
                                                         'training_id' => $training_id,
                                                         'course_id' => $course->id,
@@ -481,9 +469,7 @@
 
                                                 <div class="mt-4 pt-3 border-top ">
                                                     <a class="btn btn-primary w-100 courseListingBtn2{{ $isDisabled ? 'disabled' : '' }}"
-                                                        href="{{ $isDisabled ? 'javascript:void(0)' : $testRoute }}"
-                                                        @if ($isDisabled) data-original-href="{{ $testRoute }}"
-                                                                style="pointer-events: none; opacity: 0.6;" @endif>
+                                                        href="{{ $testRoute }}">
                                                         <i class="bi bi-pencil-square me-2"></i>{{ $buttonText }}
                                                         @if ($message)
                                                             <small class="d-block mt-1">{{ $message }}</small>
@@ -673,10 +659,8 @@
         const completed = $('a.courseGroup .small.text-success').length;
         const percentage = total > 0 ? (completed / total) * 100 : 0;
 
-        if (percentage >= 50) {
-            $('#giveRatingButton').prop('disabled', false);
-            // $('#ratingHint').hide();
-        }
+        $('#giveRatingButton').prop('disabled', false);
+
     }
     $(document).ready(function() {
         enableRatingIfEligible();
@@ -711,82 +695,8 @@
         });
     });
 
-    function showLockedMessage(button) {
-        const $button = $(button);
-        // Remove any existing message
-        $button.find('.locked-message').remove();
-        // Add new message
-        $button.append(
-            '<span class="ms-2 badge bg-warning text-dark locked-message">Complete previous course first</span>'
-        );
-        // Remove the message after 3 seconds
-        setTimeout(() => {
-            $button.find('.locked-message').remove();
-        }, 3000);
-        return false;
-    }
 
-    // This will handle the accordion behavior
-    $(document).ready(function() {
-        $('#accordionExample').on('show.bs.collapse', function(e) {
-            const $header = $(e.target).prev('.accordion-header');
-            const $button = $header.find('.accordion-button');
 
-            // Skip check for first course
-            if ($header.is('#heading0')) return true;
-
-            const courseId = $button.data('course-id');
-            const prevCourseId = $header.parent().prev('.accordion-item').find('.accordion-button')
-                .data('course-id');
-
-            // Check if previous course is completed
-            if (!checkIfCourseCompleted(prevCourseId)) {
-                showLockedMessage($button[0]);
-                e.preventDefault(); // Prevent accordion from opening
-                return false;
-            }
-        });
-    });
-
-    function checkAllContentCompleted(courseId) {
-        var courseItems = $('a.courseGroup[data-course-id="' + courseId + '"]');
-        var allCompleted = true;
-
-        courseItems.each(function() {
-            if (!$(this).find('.small').hasClass('text-success')) {
-                allCompleted = false;
-                return false;
-            }
-        });
-
-        if (allCompleted) {
-            const $button = $('.accordion-item').has('[data-course-id="' + courseId + '"]')
-                .find('.accordion-button');
-
-            $button.find('.badge').remove();
-            $button.append('<span class="ms-2 badge bg-success">Completed</span>');
-
-            var testButton = $('.accordion-item').has('[data-course-id="' + courseId + '"]')
-                .find('.btn-primary');
-            testButton.removeClass('disabled')
-                .css({
-                    'pointer-events': 'auto',
-                    'opacity': '1'
-                })
-                .attr('href', testButton.data('original-href'))
-                .find('small').remove();
-
-            var nextAccordionItem = $('.accordion-item').has('[data-course-id="' + courseId + '"]').next(
-                '.accordion-item');
-            if (nextAccordionItem.length) {
-                const nextButton = nextAccordionItem.find('.accordion-button');
-                nextButton.removeClass('locked-course')
-                    .attr('data-bs-toggle', 'collapse')
-                    .attr('data-bs-target', '#collapse' + nextAccordionItem.index())
-                    .removeAttr('onclick');
-            }
-        }
-    }
 
     // Helper function to check course completion (mimics PHP function)
     function checkIfCourseCompleted(courseId) {
@@ -945,7 +855,6 @@
                     .removeClass('text-warning')
                     .addClass('text-success')
                     .text('Completed');
-                checkAllContentCompleted(courseId);
             });
             enableRatingIfEligible();
         }

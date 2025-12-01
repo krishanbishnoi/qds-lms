@@ -249,22 +249,24 @@
                         </a>
                         <div class="collapse @if ($segment2 === 'masters') show @endif" id="Masters">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item @if ($segment1 == 'lobs') active @endif"><a
-                                        class="nav-link" href="{{ route('Lob.index') }}">LOB Management</a></li>
+                                {{-- <li class="nav-item @if ($segment1 == 'lobs') active @endif"><a
+                                        class="nav-link" href="{{ route('Lob.index') }}">LOB Management</a></li> --}}
+                                <li class="nav-item @if ($segment1 == 'agencies') active @endif"><a
+                                        class="nav-link" href="{{ route('Agency.index') }}">Agency Management</a></li>
                                 <li class="nav-item @if ($segment1 == 'designation') active @endif"><a
                                         class="nav-link" href="{{ route('Designation.index') }}">Designation
                                         Management</a></li>
                                 <li class="nav-item @if ($segment1 == 'regions') active @endif"><a
                                         class="nav-link" href="{{ route('Region.index') }}">Region Management</a>
                                 </li>
-                                <li class="nav-item @if ($segment1 == 'circles') active @endif"><a
-                                        class="nav-link" href="{{ route('Circle.index') }}">Circle Management</a>
+                                {{-- <li class="nav-item @if ($segment1 == 'circles') active @endif"><a
+                                        class="nav-link" href="{{ route('Circle.index') }}">Circle Management</a> --}}
                                 </li>
                                 <li class="nav-item @if ($segment1 == 'training-types') active @endif"><a
                                         class="nav-link" href="{{ route('TrainingType.index') }}">TrainingType
                                         Management</a></li>
-                                <li class="nav-item @if ($segment1 == 'partners') active @endif"><a
-                                        class="nav-link" href="{{ route('Partner.index') }}">Collection Agency</a>
+                                {{-- <li class="nav-item @if ($segment1 == 'partners') active @endif"><a
+                                        class="nav-link" href="{{ route('Partner.index') }}">Collection Agency</a> --}}
                                 </li>
                                 <li class="nav-item @if ($segment1 == 'domains') active @endif"><a
                                         class="nav-link" href="{{ route('Domain.index') }}">Domain Management</a>

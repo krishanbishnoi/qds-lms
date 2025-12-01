@@ -98,8 +98,8 @@
                     <p class="px-3">Are you sure you want to submit your test? Once submitted, you cannot change your
                         answers.</p>
                     <div class="modalSpan text-start mb-4">
-                        <strong class="mb-3">Questions Answered: <span
-                                id="answered-count">0</span>/{{ count($trainingQuestions) }}</strong>
+                        {{-- <strong class="mb-3">Questions Answered: <span
+                                id="answered-count">0</span>/{{ count($trainingQuestions) }}</strong> --}}
                         {{-- <strong>Time Remaining: <span id="time-remaining-display">0m 0s</span></strong> --}}
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2">

@@ -172,6 +172,27 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
+                                <div class="form-group <?php echo $errors->first('agency_id') ? 'has-error' : ''; ?>">
+                                    <div class="mws-form-row">
+                                        {!! Html::decode(
+                                            Form::label(
+                                                'agency_id',
+                                                trans('Agency') .
+                                                    '<span
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        class="requireRed"> * </span>',
+                                                ['class' => 'mws-form-label'],
+                                            ),
+                                        ) !!}
+                                        <div class="mws-form-item">
+                                            {{ Form::select('agency_id', $agency, null, ['class' => 'form-control ', 'placeholder' => 'Please Select Agency ']) }}
+                                            <div class="error-message help-inline">
+                                                <?php echo $errors->first('agency_id'); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- <div class="col-md-6">
                                 <div class="form-group <?php echo $errors->first('lob') ? 'has-error' : ''; ?>">
                                     <div class="mws-form-row">
                                         {!! Html::decode(
@@ -227,7 +248,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-md-6">
                                 <div class="form-group {{ $errors->has('gender') ? 'has-error' : '' }}">
                                     <div class="mws-form-row">
