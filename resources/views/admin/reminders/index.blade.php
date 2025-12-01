@@ -82,7 +82,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <div class="btn-group" role="group">
+                                                <div class="" role="group">
                                                     <a href="{{ route('Reminders.edit', $reminder->id) }}" class="btn btn-sm btn-info" title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
