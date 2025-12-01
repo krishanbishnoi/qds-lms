@@ -23,6 +23,7 @@ use App\Http\Controllers\admin\CoursesController;
 use App\Http\Controllers\admin\EmailtemplateController;
 use App\Http\Controllers\admin\TrainingCategoryController;
 use App\Http\Controllers\admin\TrainingController;
+use App\Http\Controllers\admin\NewDashboardController;
 
 include_once(app_path() . '/global_constants.php');
 include_once(app_path() . '/settings.php');
@@ -48,6 +49,12 @@ Route::group(array('prefix' => 'admin'), function () {
     Route::group(array('middleware' => ['App\Http\Middleware\AuthAdmin', 'PreventBackHistory'], 'namespace' => 'admin'), function () {
         Route::get('/logout', 'AdminLoginController@logout');
         Route::get('/dashboard', array('as' => 'dashboard', 'uses' => 'AdminDashboardController@showdashboard'));
+        // New Training Dashboard routes
+        Route::get('training-dashboard', [NewDashboardController::class, 'index'])->name('Admin.TrainingDashboard');
+        Route::get('training-dashboard/stats', [NewDashboardController::class, 'getDashboardStats'])->name('Admin.TrainingDashboard.stats');
+        Route::get('training-dashboard/list', [NewDashboardController::class, 'getTrainingList'])->name('Admin.TrainingDashboard.list');
+        Route::get('training-dashboard/view/{id}', [NewDashboardController::class, 'viewTraining'])->name('Admin.TrainingDashboard.view');
+        Route::get('training-dashboard/{id}/users', [NewDashboardController::class, 'getTrainingUsers'])->name('Admin.TrainingDashboard.users');
         Route::get('/myaccount', 'AdminDashboardController@myaccount');
         Route::post('/myaccount', 'AdminDashboardController@myaccountUpdate');
         Route::get('/bankdetail', 'AdminDashboardController@bankdetail');
