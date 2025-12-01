@@ -676,6 +676,7 @@
                                 _token: csrfToken
                             },
                             success: function(response) {
+                            console.log(response)
                                 submittedCount++;
                                 if (response.successRedirect) {
                                     window.location.href = '{{ URL('/test-already-submitted') }}';
@@ -691,7 +692,7 @@
                             }
                         });
                     } else {
-                        // window.location.href = '{{ route('user.test.result', $testDetails->id) }}';
+                        window.location.href = '{{ route('user.test.result', $testDetails->id) }}';
                     }
                 }
 

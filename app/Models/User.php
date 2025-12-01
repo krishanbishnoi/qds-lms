@@ -67,7 +67,8 @@ class User extends Eloquent implements
 		'location',
 		'is_certified',
 		'date_of_joining',
-		'is_from_retail'
+		'is_from_retail',
+		'agency_id'
 	];
 
 	/**

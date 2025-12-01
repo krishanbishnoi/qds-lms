@@ -20,6 +20,7 @@ use App\Models\EmailAction;
 use App\Models\TestResult;
 use App\Exports\TraineesExport;
 use App\Exports\exportAllTrainee;
+use App\Models\Agency;
 use App\Models\TestParticipants;
 use Blade, Config, Cache, Cookie, DB, File,  Input, Mail, Redirect, Response, Session, URL, View, Validator;
 use Illuminate\Http\Request;
@@ -117,11 +118,12 @@ class TraineesController extends BaseController
 
     public function add()
     {
-        $region =     Region::pluck('region', 'region')->toArray();
-        $lob = Lob::pluck('lob', 'lob')->toArray();
-        $circle = Circle::pluck('circle', 'circle')->toArray();
+        // $region =     Region::pluck('region', 'region')->toArray();
+        // $lob = Lob::pluck('lob', 'lob')->toArray();
+        // $circle = Circle::pluck('circle', 'circle')->toArray();
         $designation = Designation::pluck('designation', 'designation')->toArray();
-        return view("admin.Trainees.add", compact('region', 'lob', 'circle', 'designation'));
+        $agency = Agency::pluck('name', 'id')->toArray();
+        return view("admin.Trainees.add", compact('designation', 'agency'));
     }
 
     public function save(Request $request)
@@ -130,11 +132,12 @@ class TraineesController extends BaseController
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|max:55',
             'last_name' => 'required|max:55',
-            'lob' => 'required',
+            // 'lob' => 'required',
             'designation' => 'required',
+            'agency_id' => 'required',
             'employee_id' => "required|unique:users,employee_id,{$request->id}",
-            'region' => 'required',
-            'circle' => 'required',
+            // 'region' => 'required',
+            // 'circle' => 'required',
             'gender' => 'required|in:male,female',
             'email' => "required|email|regex:/(.+)@(.+)\.(.+)/i|unique:users,email,{$request->id}",
             'mobile_number' => "required|min:10|regex:/^([0-9\s\-\+\(\)]*)$/|unique:users,mobile_number,{$request->id}",
@@ -153,10 +156,11 @@ class TraineesController extends BaseController
             'email' => $request->email,
             'employee_id' => $request->employee_id,
             'olms_id' => $request->employee_id,
-            'region' => $request->region,
-            'circle' => $request->circle,
-            'lob' => $request->lob,
+            // 'region' => $request->region,
+            // 'circle' => $request->circle,
+            // 'lob' => $request->lob,
             'designation' => $request->designation,
+            'agency_id' => $request->agency_id,
             'gender' => $request->gender,
             'mobile_number' => $request->mobile_number,
         ];
@@ -232,11 +236,12 @@ class TraineesController extends BaseController
         if (empty($model)) {
             return Redirect::back();
         }
-        $region =     Region::pluck('region', 'region')->toArray();
-        $lob = Lob::pluck('lob', 'lob')->toArray();
-        $circle = Circle::pluck('circle', 'circle')->toArray();
+        // $region =     Region::pluck('region', 'region')->toArray();
+        // $lob = Lob::pluck('lob', 'lob')->toArray();
+        // $circle = Circle::pluck('circle', 'circle')->toArray();
         $designation = Designation::pluck('designation', 'designation')->toArray();
-        return view("admin.Trainees.add", compact('model', 'region', 'lob', 'circle', 'designation'));
+        $agency = Agency::pluck('name', 'id')->toArray();
+        return view("admin.Trainees.add", compact('model', 'designation','agency'));
     }
 
     public function delete($userId = 0)

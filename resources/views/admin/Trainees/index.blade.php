@@ -150,7 +150,7 @@
                     <div class="card-body">
                         <div class="box-header with-border pd-custom">
                             <div class="listing-btns">
-                                <h1 class="box-title">{{ $sectionName }}'s List</h1>
+                                <h1 class="box-title">{{ $sectionName }} List</h1>
                                 <a href='{{ route("$modelName.add") }}' class="btn btn-success btn-small pull-right mb-2">
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                                 <button type="submit" name="submit" class="btn btn-danger pull-right trigger_event mb-2"
