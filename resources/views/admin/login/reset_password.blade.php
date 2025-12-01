@@ -8,7 +8,7 @@
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left p-5">
                             <div class="brand-logo">
-                                <img height="100%" width="100%" src="{{ asset('lms-img/qdegrees-logo.svg') }}"
+                                <img height="100%" width="40%" src="{{ asset('lms-img/creditsaison-logo.svg') }}"
                                     alt="logo" />
                             </div>
                             <h4>Reset Password</h4>

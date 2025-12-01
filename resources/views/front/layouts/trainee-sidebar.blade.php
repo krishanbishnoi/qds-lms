@@ -1,7 +1,7 @@
 <div class="siderbar">
     <div class="logoDiv">
         <a href="{{ route('front.dashboard') }}">
-            <img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="logo" width="140" height="43">
+            <img src="{{ asset('lms-img/creditsaison-logo.svg') }}" alt="logo" width="170" height="89">
         </a>
     </div>
     <div class="menuList">

@@ -57,8 +57,8 @@
         <!-- partial:partials/_navbar.html -->
         <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                <a class="" href="{{ route('dashboard') }}"><img height="100%" width="100%"
-                        src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="logo" /></a>
+                <a class="" href="{{ route('dashboard') }}"><img height="100%" width="40%"
+                        src="{{ asset('lms-img/creditsaison-logo.svg') }}" alt="logo" /></a>
 
             </div>
             <br>

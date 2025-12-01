@@ -51,8 +51,8 @@
             <div class="container-fluid">
                 <div class="d-flex flex-wrap align-items-center">
                     <div class="logoSec">
-                        <a href="{{ route('front.dashboard') }}"><img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="logo"
-                                width="130" height="33px"></a>
+                        <a href="{{ route('front.dashboard') }}"><img src="{{ asset('lms-img/creditsaison-logo.svg') }}" alt="logo"
+                                 width="170" height="89"></a>
                     </div>
                     <div class="courseProgress">
                         <a href="{{ route('front.dashboard') }}" class="exitBtn">
@@ -64,7 +64,7 @@
         </header>
     <div class=" rounded-2 bg-transparent backgroundCard">
         <div class="text-center ">
-            <img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="QDegrees-logo" width="130" height="33">
+            <img src="{{ asset('lms-img/creditsaison-logo.svg') }}" alt="QDegrees-logo"  width="170" height="89">
         </div>
         <div class="from-content text-center">
             <h2 class="fs-5 fw-bold mt-4 mb-3">You have @if ($testAttendStatus == 1) successfully @elseif($testAttendStatus == 2) already

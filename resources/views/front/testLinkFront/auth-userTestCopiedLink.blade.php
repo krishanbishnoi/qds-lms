@@ -48,7 +48,7 @@
     @endif
     <div class=" rounded-2 bg-transparent backgroundCard">
         <div class="text-center ">
-            <img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="QDegrees-logo" width="130" height="33">
+            <img src="{{ asset('lms-img/creditsaison-logo.svg') }}" alt="QDegrees-logo"  width="170" height="89">
         </div>
         <div class="from-content text-center">
             <h2 class="fs-5 fw-bold mt-4 mb-3">Welcome to Learning Management System Test Platform   </h2>
