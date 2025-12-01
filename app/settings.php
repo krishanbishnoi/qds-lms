@@ -31,7 +31,7 @@ config::set("Site.email", "QDLms@qdegrees.com");
 config::set("Site.tinymce_api_key", "we36jl3p0m8p3tqc4ogm9vdmn0k19tlz433sfntj2e4e4nf4");
 config::set("Site.tinymce_live_secret_key", "we36jl3p0m8p3tqc4ogm9vdmn0k19tlz433sfntj2e4e4nf4");
 config::set("Site.tinymce_local_secret_key", "we36jl3p0m8p3tqc4ogm9vdmn0k19tlz433sfntj2e4e4nf4");
-config::set("Site.title", "LMS QDegrees");
+config::set("Site.title", "LMS");
 config::set("Social.facebook", "https://www.google.co.in/");
 config::set("Social.google", "https://www.google.co.in/");
 config::set("Social.instagram", "https://www.instagram.com/");

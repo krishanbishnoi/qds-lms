@@ -26,9 +26,8 @@ Route::controller(RetailTrainingController::class)->group(function () {
 });
 
 Route::group(['namespace' => 'api\v1', 'middleware'   => 'App\Http\Middleware\GuestApi'], function () {
-
     //customer routing 
     Route::post('login', array('uses' => 'UsersController@Login'));
+    Route::post('/forgot-password', 'UsersController@apiForgotPassword');
+    Route::post('/reset-password', 'UsersController@apiResetPassword');
 });
-
-Route::group(['namespace' => 'api\v1', 'middleware' => 'jwt.auth'], function () {});
