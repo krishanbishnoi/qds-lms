@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserDetail;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use App\Http\Controllers\BaseController;
+use App\Models\Agency;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -32,7 +33,7 @@ class TraineesExport extends BaseController implements FromCollection, WithHeadi
     {
         return $this->filteredResult->map(function ($item, $index) {
             $user = User::findOrFail($item['id']); // Fetch the user based on user_id
-
+            $agencyName = Agency::where('id',$user->agency_id)->value('name');
             // $userDetails = $user->userDetails;
             // $floorHitDate = $userDetails->floor_hit_date;
             // $days = null;
@@ -67,9 +68,9 @@ class TraineesExport extends BaseController implements FromCollection, WithHeadi
                 'Last Name' => $item['last_name'],
                 'Mobile Number' => $item['mobile_number'],
                 'Email' => $item['email'],
-                'LOB' => $item['lob'],
-                'Region' => $item['region'],
-                'Circle' => $item['circle'],
+                'Agency' => $agencyName,
+                // 'Region' => $item['region'],
+                // 'Circle' => $item['circle'],
                 'Designation' => $item['designation'],
                 'Gender' => $item['gender'],
             ];
@@ -86,9 +87,9 @@ class TraineesExport extends BaseController implements FromCollection, WithHeadi
             'Last Name',
             'Mobile Number',
             'Email',
-            'LOB',
-            'Region',
-            'Circle',
+            'Agency',
+            // 'Region',
+            // 'Circle',
             'Designation',
             'Gender',
 

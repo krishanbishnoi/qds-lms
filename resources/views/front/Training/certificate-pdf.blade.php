@@ -30,7 +30,7 @@
                     Certificate</div>
             </td>
             <td align="right" style="padding-top: 30px;padding-right: 25px;">
-                <img src="data:image/png;base64,{{ base64_encode(file_get_contents('https://lms.qdegrees.com/lms-img/qdegrees-logo.png')) }}"
+                <img src="data:image/png;base64,{{ base64_encode(file_get_contents('https://lms.qdegrees.com/lms-img/creditsaison-logo.png')) }}"
                     alt="logo" width="100">
             </td>
         </tr>

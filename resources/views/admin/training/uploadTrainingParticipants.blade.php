@@ -31,15 +31,15 @@
                         <div class="form-group">
                             <div class="row">
                                 <!-- Project Selection -->
-                                <div class="mb-3 col-6">
+                                {{-- <div class="mb-3 col-6">
                                     {!! Form::label('project', 'Select Product', ['class' => 'block font-bold mb-1']) !!}
                                     {!! Form::select('project', $projects, null, [
                                         'id' => 'projectSelect',
                                         'class' => 'form-control',
                                         'placeholder' => '-- Choose Project --',
                                     ]) !!}
-                                </div>
-                                <div id="method-section" class="mb-3 col-6" style="display: none;">
+                                </div> --}}
+                                <div id="method-section" class="mb-3 col-6" >
                                     {!! Form::label('method', 'Select Method', ['class' => 'block font-bold mb-1']) !!}
                                     {!! Form::select('method', $methods, null, [
                                         'id' => 'methodSelect',
@@ -232,8 +232,9 @@
 
 
         $('#projectSelect').on('change', function() {
-            const selectedProject = $(this).val();
-
+            // const selectedProject = $(this).val();
+            const selectedProject = 'all';
+            
             if (selectedProject === 'RetailIQ') {
                 $('#retailiq-section').show();
                 // $('#vc-availability-section').show();

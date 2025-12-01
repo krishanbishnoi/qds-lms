@@ -20,6 +20,7 @@ use Livewire\WithFileUploads;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use App\Http\Controllers\BaseController;
+use App\Models\Agency;
 use App\Models\EmailAction;
 
 class UserBulk extends Component
@@ -191,9 +192,9 @@ class UserBulk extends Component
             'mobile_number' => 'required',
             'last_name' => 'required',
             'first_name' => 'required',
-            'lob' => 'required',
-            'region' => 'required',
-            'circle' => 'required',
+            'agency' => 'required',
+            // 'region' => 'required',
+            // 'circle' => 'required',
             'gender' => 'required',
         ]);
 
@@ -212,28 +213,28 @@ class UserBulk extends Component
             ]));
         }
         // Validate LOB
-        if (!empty($data['lob']) && !Lob::where('lob', $data['lob'])->exists()) {
+        if (!empty($data['agency']) && !Agency::where('name', $data['agency'])->exists()) {
             throw new \Exception(json_encode([
                 'row' => $rowKey,
-                'errors' => ['lob' => ["LOB '{$data['lob']}' not found in the system"]]
+                'errors' => ['agency' => ["Agency '{$data['agency']}' not found in the system"]]
             ]));
         }
 
         // Validate Region
-        if (!empty($data['region']) && !Region::where('region', $data['region'])->exists()) {
-            throw new \Exception(json_encode([
-                'row' => $rowKey,
-                'errors' => ['region' => ["Region '{$data['region']}' not found in the system"]]
-            ]));
-        }
+        // if (!empty($data['region']) && !Region::where('region', $data['region'])->exists()) {
+        //     throw new \Exception(json_encode([
+        //         'row' => $rowKey,
+        //         'errors' => ['region' => ["Region '{$data['region']}' not found in the system"]]
+        //     ]));
+        // }
 
-        // Validate Circle
-        if (!empty($data['circle']) && !Circle::where('circle', $data['circle'])->exists()) {
-            throw new \Exception(json_encode([
-                'row' => $rowKey,
-                'errors' => ['circle' => ["Circle '{$data['circle']}' not found in the system"]]
-            ]));
-        }
+        // // Validate Circle
+        // if (!empty($data['circle']) && !Circle::where('circle', $data['circle'])->exists()) {
+        //     throw new \Exception(json_encode([
+        //         'row' => $rowKey,
+        //         'errors' => ['circle' => ["Circle '{$data['circle']}' not found in the system"]]
+        //     ]));
+        // }
 
         if (!empty($data['gender']) && !in_array($data['gender'], ['Male', 'Female'], true)) {
             throw new \Exception(json_encode([
@@ -305,7 +306,8 @@ class UserBulk extends Component
         $email = trim($data['email']);
         $validateString = md5(time() . $email);
         $fullName = trim("{$data['first_name']} {$data['last_name']}");
-
+        $agency_id = Agency::where('name',$data['agency'])->value('id');
+ 
         // Determine role based on designation
         $designationName = $data['designation'];
         $roleId = TRAINEE_ROLE_ID; // Default role
@@ -319,7 +321,7 @@ class UserBulk extends Component
         // Create user
         $user = User::create([
             'olms_id' => $data['employee_id'],
-            'circle' => $data['circle'],
+            'agency_id' => $agency_id,
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'mobile_number' => $mobileNumber,
@@ -329,7 +331,7 @@ class UserBulk extends Component
             'designation' => $designationName,
             'gender' => strtolower($data['gender']),
             'parent_id' => Auth::id(),
-            'lob' => $data['lob'],
+            // 'lob' => $data['lob'],
             'ext_qa' => $data['ext_qa'] ?? null,
             'ext_qa_olms' => $data['ext_qa_olms'] ?? null,
             'lms_access' => $data['lms_access'] ?? null,
@@ -339,7 +341,7 @@ class UserBulk extends Component
             'trainer_olms' => $data['trainer_olms'] ?? null,
             'poi' => $data['poi_aadhaar_number'] ?? null,
             'password' => Hash::make('Lms@1234'),
-            'region' => $data['region'] ?? null,
+            // 'region' => $data['region'] ?? null,
             'employee_id' => $data['employee_id'],
             'user_role_id' => $roleId,
             'is_active' => 1,

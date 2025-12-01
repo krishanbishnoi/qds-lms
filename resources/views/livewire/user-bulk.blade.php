@@ -27,7 +27,7 @@
                             <button type="submit" class="btn btn-primary" style="white-space: nowrap">Upload
                                 File</button>
                         </div>
-                                                <a class="btn btn-success" href="{{ route('export.trainees') }}">Download Users</a>
+                        <a class="btn btn-success" href="{{ route('export.trainees') }}">Download Users</a>
 
                     </div>
             </div>

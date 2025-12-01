@@ -569,7 +569,7 @@ class TrainingController extends BaseController
             'admin' => $user->parentManager->fullname,
             'date' => date('m/d/Y'),
             'lengthInDays' => $lengthInDays,
-            'logo' => public_path('lms-img/qdegrees-logo.png'),
+            'logo' => public_path('lms-img/creditsaison-logo.png'),
             'background_img' => public_path('front/img/backgroundimage.png')
         ];
 
@@ -591,7 +591,7 @@ class TrainingController extends BaseController
         //     'admin' => $user->parentManager->fullname,
         //     'date' => date('m/d/Y'),
         //     'lengthInDays' => $lengthInDays,
-        //     'logo' => public_path('lms-img/qdegrees-logo.png'),
+        //     'logo' => public_path('lms-img/creditsaison-logo.png'),
         //     'background_img' => asset('front/img/backgroundimage.png')
         // ];
 

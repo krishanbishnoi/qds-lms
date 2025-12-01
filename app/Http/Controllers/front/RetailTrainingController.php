@@ -519,9 +519,43 @@ class RetailTrainingController extends BaseController
 
 
 
+        // $totalMinimumMark = 0;
+        // $totalTestCount = 0;
+        // $totalObtainMarks = 0;
+
+        // foreach ($courses as $course) {
+        //     $test = Test::find($course->test_id);
+
+        //     if ($test) {
+        //         $totalTestCount++;
+        //         $totalMinimumMark += $test->minimum_marks;
+
+        //         // Get the latest attempt by user for this test
+        //         $latestAttempt = TrainingTestResult::where('training_id', $training->id)
+        //             ->where('user_id', $userId)
+        //             ->where('course_id', $course->id)
+        //             ->where('test_id', $test->id)
+        //             ->orderBy('created_at', 'desc')
+        //             ->first();
+
+        //         if ($latestAttempt) {
+        //             $totalObtainMarks += $latestAttempt->obtain_marks;
+        //         }
+        //     }
+        // }
+
+        // $totalAttendedTestCount = TrainingTestResult::where('training_id', $trainingTestResultDetails->training_id)->where('user_id', $userId)->count();
+        // // Calculate averages
+        // $averageMinimumMark = $totalTestCount > 0 ? ($totalMinimumMark / $totalTestCount) : 0;
+        // $averageObtainMarks = $totalTestCount > 0 ? ($totalObtainMarks / $totalTestCount) : 0;
+
+        // // Determine pass/fail
+        // $OverAllStatus = ($averageObtainMarks >= $averageMinimumMark) ? 'Passed' : 'Failed';
+        $totalObtainMarks = 0;
         $totalMinimumMark = 0;
         $totalTestCount = 0;
-        $totalObtainMarks = 0;
+
+        $overallPass = true; // assume pass unless one test fails
 
         foreach ($courses as $course) {
             $test = Test::find($course->test_id);
@@ -530,29 +564,33 @@ class RetailTrainingController extends BaseController
                 $totalTestCount++;
                 $totalMinimumMark += $test->minimum_marks;
 
-                // Get the latest attempt by user for this test
+                // Get latest attempt
                 $latestAttempt = TrainingTestResult::where('training_id', $training->id)
                     ->where('user_id', $userId)
                     ->where('course_id', $course->id)
                     ->where('test_id', $test->id)
-                    ->orderBy('created_at', 'desc')
+                    ->latest()
                     ->first();
 
                 if ($latestAttempt) {
                     $totalObtainMarks += $latestAttempt->obtain_marks;
+                    // ⛔ If user failed this test → overall fail
+                    if ($latestAttempt->obtain_marks < $test->minimum_marks) {
+                        $overallPass = false;
+                    }
+                } else {
+                    // No attempt = fail
+                    $overallPass = false;
                 }
             }
         }
 
-        $totalAttendedTestCount = TrainingTestResult::where('training_id', $trainingTestResultDetails->training_id)->where('user_id', $userId)->count();
+        $totalAttendedTestCount = TrainingTestResult::where('training_id', $training->id)
+            ->where('user_id', $userId)
+            ->count();
 
-        // Calculate averages
-        $averageMinimumMark = $totalTestCount > 0 ? ($totalMinimumMark / $totalTestCount) : 0;
-        $averageObtainMarks = $totalTestCount > 0 ? ($totalObtainMarks / $totalTestCount) : 0;
-
-        // Determine pass/fail
-        $OverAllStatus = ($averageObtainMarks >= $averageMinimumMark) ? 'Passed' : 'Failed';
-
+        // Final status
+        $OverAllStatus = $overallPass ? 'Passed' : 'Failed';
 
 
         $start_date = \Carbon\Carbon::parse($training->start_date_time);
@@ -580,7 +618,6 @@ class RetailTrainingController extends BaseController
             'trainingData' => $training,
             'totalTestCount' => $totalTestCount,
             'totalAttendedTestCount' => $totalAttendedTestCount,
-            'averageObtainMarks' => $averageObtainMarks,
             'OverAllStatus' => $OverAllStatus,
             'lengthInDays' => $lengthInDays,
             'isLastCourse' => $isLastCourse
@@ -602,7 +639,7 @@ class RetailTrainingController extends BaseController
             'admin' => $user->parentManager->fullname,
             'date' => date('m/d/Y'),
             'lengthInDays' => $lengthInDays,
-            'logo' => public_path('lms-img/qdegrees-logo.png'),
+            'logo' => public_path('lms-img/creditsaison-logo.png'),
             'background_img' => asset('front/img/backgroundimage.png')
         ];
 
@@ -624,7 +661,7 @@ class RetailTrainingController extends BaseController
         //     'admin' => $user->parentManager->fullname,
         //     'date' => date('m/d/Y'),
         //     'lengthInDays' => $lengthInDays,
-        //     'logo' => public_path('lms-img/qdegrees-logo.png'),
+        //     'logo' => public_path('lms-img/creditsaison-logo.png'),
         //     'background_img' => asset('front/img/backgroundimage.png')
         // ];
 
@@ -771,7 +808,7 @@ class RetailTrainingController extends BaseController
         ]);
 
         // Create the rating record in the database
-        TrainingRating::updateorcreate(['user_id' => $validated['user_id']],[
+        TrainingRating::updateorcreate(['user_id' => $validated['user_id']], [
             'training_id' => $validated['training_id'],
             'user_id' => $validated['user_id'],
             'rating' => $validated['rating'],
