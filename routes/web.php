@@ -283,6 +283,19 @@ Route::group(array('prefix' => 'admin'), function () {
         Route::any('/email-logs/email_details/{id}', 'EmailLogsController@EmailDetail');
         /** email-manager routing**/
 
+        /** Reminder Mail Setup routing **/
+        Route::controller(\App\Http\Controllers\admin\ReminderController::class)->prefix('reminders')->group(function () {
+            Route::match(['get', 'post'], '/', 'index')->name('Reminders.index');
+            Route::get('create', 'create')->name('Reminders.create');
+            Route::post('store', 'store')->name('Reminders.store');
+            Route::get('edit/{reminder}', 'edit')->name('Reminders.edit');
+            Route::put('update/{reminder}', 'update')->name('Reminders.update');
+            Route::delete('destroy/{reminder}', 'destroy')->name('Reminders.destroy');
+            Route::post('toggle-status/{reminder}', 'toggleStatus')->name('Reminders.toggleStatus');
+            Route::post('send-test/{reminder}', 'sendTest')->name('Reminders.sendTest');
+        });
+        /** Reminder Mail Setup routing **/
+
 
         ### contact manager routing
         Route::any('contact-manager', array('as' => 'Contact.index', 'uses' => 'ContactsController@listContact'));

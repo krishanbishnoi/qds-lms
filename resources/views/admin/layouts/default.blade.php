@@ -237,6 +237,14 @@
                                 </ul>
                             </div>
                         </li>
+                        
+                            {{-- Reminder Mail Setup (visible to all authenticated users) --}}
+                            <li class="nav-item @if ($segment2 === 'reminders') active @endif">
+                                <a class="nav-link" href="{{ route('Reminders.index') }}">
+                                    <span class="menu-title">Reminder Mail Setup</span>
+                                    <i class="mdi mdi-bell-ring menu-icon"></i>
+                                </a>
+                            </li>
                     @endif
 
                     {{-- Masters Management --}}

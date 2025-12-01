@@ -117,13 +117,7 @@ class AdminLoginController extends BaseController
 			return Redirect::to('/')->with('error', trans('Sorry, you are using wrong link.'));
 		}
 	} // end resetPassword()
-	/**
-	 * Function is used to send email for forgot password process
-	 *
-	 * @param null
-	 *
-	 * @return url.
-	 */
+
 	public function sendPassword()
 	{
 		Request::replace($this->arrayStripTags(Request::all()));

@@ -27,6 +27,15 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('status:chnageTraining')->everyMinute();
         $schedule->command('status:chnageTests')->everyMinute();
+
+        // Send scheduled reminders every hour
+        $schedule->command('reminders:send')->hourly()
+            ->onSuccess(function () {
+                \Log::info('Reminders sent successfully');
+            })
+            ->onFailure(function () {
+                \Log::error('Reminders send job failed');
+            });
     }
 
     /**

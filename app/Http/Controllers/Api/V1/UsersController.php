@@ -244,127 +244,60 @@ class UsersController extends BaseController
 					->first();
 				//echo '<pre>'; print_r($userData); die;				
 				if (!empty($userData)) {
-					if ($userData->is_email_verified == 1) {
-						if ($userData->is_mobile_verified == 1) {
-							$email = $userData->email;
+					$email = $userData->email;
 
-							$userData		=	json_decode(json_encode($userData, true), true);
+					$userData		=	json_decode(json_encode($userData, true), true);
 
-							if ($userData["is_active"] == 0) {
-								$response["status"]			=	"inactive";
-								$response["message"]		=	"Your account is inactive please contact to admin.";
-								$response["data"]			=	array();
-							} else {
-								if (Hash::check(Request::get("password"), $userData['password'])) {
+					if ($userData["is_active"] == 0) {
+						$response["status"]			=	"inactive";
+						$response["message"]		=	"Your account is inactive please contact to admin.";
+						$response["data"]			=	array();
+					} else {
+						if (Hash::check(Request::get("password"), $userData['password'])) {
 
-									$userDetails	=	DB::table("users")
-										->where("email", $email)
-										->where("is_deleted", 0)
-										->where("is_email_verified", 1)
-										->where("is_mobile_verified", 1)
-										->first();
-									if ($userDetails->image != "" && File::exists(USER_IMAGE_ROOT_PATH . $userDetails->image)) {
-										$userDetails->image = USER_IMAGE_URL . $userDetails->image;
-									}
-									//echo "<pre>";print_r($user);die;	
+							$userDetails	=	DB::table("users")
+								->where("email", $email)
+								->where("is_deleted", 0)
+								->first();
 
-									if (!empty($userDetails)) {
-										if ($userDetails->user_role_id != SUPER_ADMIN_ROLE_ID) {
-											$device_token							=  !empty(Request::get('device_token')) ? Request::get('device_token') : '';
-											$device_id							=  !empty(Request::get('device_id')) ? Request::get('device_id') : '';
-											$device_type						=  !empty(Request::get('device_type')) ? Request::get('device_type') : '';
+							if (!empty($userDetails)) {
+								if ($userDetails->user_role_id != SUPER_ADMIN_ROLE_ID) {
+									$device_token							=  !empty(Request::get('device_token')) ? Request::get('device_token') : '';
+									$device_id							=  !empty(Request::get('device_id')) ? Request::get('device_id') : '';
+									$device_type						=  !empty(Request::get('device_type')) ? Request::get('device_type') : '';
 
 
-											$userData = array(
-												"email" 			=> $userData['email'],
-												"password" 			=> Request::get("password"),
-											);
+									$userData = array(
+										"email" 			=> $userData['email'],
+										"password" 			=> Request::get("password"),
+									);
+									// Generate token
+									$token = bin2hex(random_bytes(40)); // 80 character token
 
-											if (! $token = auth('api')->attempt($userData)) {
-												return response()->json(['error' => ' '], 401);
-											}
+									// Save token to user
+									DB::table("users")
+										->where("id", $userDetails->id)
+										->update(["remember_token" => $token]);
 
-											$response["status"]		=	"success";
-											$response["message"]	=	"You are now logged in!";
-											$response["token"]		=	$token;
-										} else {
-											$response["status"]		=	"error";
-											$response["message"]	=	"Unauthorized.";
-											$response["data"]		=	array();
-										}
-									} else {
-										$response["status"]		=	"error";
-										$response["message"]	=	"Username or Password is incorrect.";
-										$response["data"]		=	array();
-									}
+									$response["status"]     = "success";
+									$response["message"]    = "You are now logged in!";
+									$response["token"]      = $token;
+									$response["data"]       = $userDetails;
 								} else {
 									$response["status"]		=	"error";
-									$response["message"]	=	"Password is incorrect.";
+									$response["message"]	=	"Unauthorized.";
 									$response["data"]		=	array();
 								}
+							} else {
+								$response["status"]		=	"error";
+								$response["message"]	=	"Username or Password is incorrect.";
+								$response["data"]		=	array();
 							}
 						} else {
-
-							$otp_number 		= 	mt_rand(1000, 9999);
-							if (!empty($otp_number)) {
-								$record					=	OtpVerification::where('mobile_number', $userData->mobile_number)->first();
-								if ($record) {
-									$otp				=	OtpVerification::find($record->id);
-								} else {
-									$otp				=	new OtpVerification();
-								}
-								$otp->mobile_number		=	$userData->mobile_number;
-								$otp->otp				=	$otp_number;
-								$otp->save();
-							}
-
-							$response["status"]			=	"success";
-							$response["message"]		=	"Your mobile number is not verified yet,we have send an otp to your mobile number please enter to verify.";
-
-							$response["is_email_verified"]			=	$userData->is_email_verified;
-							$response["is_mobile_verified"]			=	$userData->is_mobile_verified;
-							$response["otp"]		=	$otp_number;
+							$response["status"]		=	"error";
+							$response["message"]	=	"Password is incorrect.";
+							$response["data"]		=	array();
 						}
-					} else {
-						$otp_number 		= 	mt_rand(1000, 9999);
-						if (!empty($otp_number)) {
-							$record					=	OtpVerification::where('email', $userData->email)->first();
-							if ($record) {
-								$otp				=	OtpVerification::find($record->id);
-							} else {
-								$otp				=	new OtpVerification();
-							}
-							$otp->email		=	!empty($userData->email) ? $userData->email : '';
-							$otp->otp				=	$otp_number;
-							$otp->save();
-						}
-
-						//Send Verification Email
-						$settingsEmail 						= 	Config::get('Site.email');
-						$full_name          =   $userData->fullname;
-						$email		        =	$userData->email;
-
-						$settingsEmail 		= 	Config::get('Site.email');
-						//$route_url      	=	FRONT_WEBSITE_URL.'login';
-						//$click_link   	=   '<a href="'.$route_url.'" class="btn btn-primary signin-btn" >Click Here</a>';
-						$emailActions	= 	EmailAction::where('action', '=', 'user_otp_verification')->get()->toArray();
-						$emailTemplates	= 	EmailTemplate::where('action', '=', 'user_otp_verification')->get(array('name', 'subject', 'action', 'body'))->toArray();
-						$cons 			= 	explode(',', $emailActions[0]['options']);
-						$constants 		= 	array();
-						foreach ($cons as $key => $val) {
-							$constants[] = '{' . $val . '}';
-						}
-						$subject 		= 	$emailTemplates[0]['subject'];
-						$rep_Array 			= 	array($full_name, $otp_number);
-						$messageBody	= 	str_replace($constants, $rep_Array, $emailTemplates[0]['body']);
-						//echo '<pre>'; print_r($messageBody); die;
-						$mail			= 	$this->sendMail($email, $full_name, $subject, $messageBody, $settingsEmail);
-
-						$response["status"]			=	"success";
-						$response["message"]		=	"Your email is not verified yet,we have send an otp to your email please enter to verify.";
-						$response["is_email_verified"]			=	$userData->is_email_verified;
-						$response["is_mobile_verified"]			=	$userData->is_mobile_verified;
-						$response["data"]			=	array();
 					}
 				} else {
 					$response["status"]			=	"error";
@@ -379,14 +312,121 @@ class UsersController extends BaseController
 		}
 		return json_encode($response);
 	}
+	public function apiForgotPassword()
+	{
+		$data = Request::all();
 
-	/**
-	 * Function use for to send  otp
-	 *
-	 * @param null
-	 *
-	 * @return response
-	 */
+		// Validation
+		$validator = Validator::make(
+			$data,
+			['email' => 'required|email'],
+			[
+				'email.required' => 'The email field is required.',
+				'email.email'    => 'The email must be a valid email address.',
+			]
+		);
+
+		if ($validator->fails()) {
+			return response()->json([
+				'status'  => 'error',
+				'message' => $validator->errors()->first()
+			]);
+		}
+
+		$email = $data['email'];
+		$userDetail = User::where('email', $email)->first();
+
+		if (!$userDetail) {
+			return response()->json([
+				'status'  => 'error',
+				'message' => 'Your email is not registered with ' . Config::get("Site.title") . '.'
+			]);
+		}
+
+		if ($userDetail->is_active != 1) {
+			return response()->json([
+				'status'  => 'error',
+				'message' => 'Your account is disabled. Please contact the administrator.'
+			]);
+		}
+
+		// Generate token exactly like your web version
+		$token = md5($userDetail->email . time() . time());
+
+		User::where('email', $email)
+			->update(['forgot_password_validate_string' => $token]);
+
+		// Email Data
+		$settingsEmail = Config::get('Site.email');
+		$username      = $userDetail->username;
+		$full_name     = $userDetail->first;
+
+		// Same route pattern as your web panel
+		$route_url   = URL::to('front/reset_password/' . $token);
+		$verify_link = $route_url;
+
+		// Email Template System (your existing)
+		$emailActions = EmailAction::where('action', 'forgot_password')->first()->toArray();
+		$emailTemplates = EmailTemplate::where('action', 'forgot_password')
+			->first(['name', 'subject', 'action', 'body'])
+			->toArray();
+
+		$cons = explode(',', $emailActions['options']);
+		$constants = array_map(fn($v) => '{' . $v . '}', $cons);
+
+		$subject = $emailTemplates['subject'];
+		$rep_Array = [$email, $username, $verify_link, $route_url];
+		$messageBody = str_replace($constants, $rep_Array, $emailTemplates['body']);
+
+		// Send Email using your existing function
+		$this->sendMail($email, $full_name, $subject, $messageBody, $settingsEmail);
+
+		// API Response
+		return response()->json([
+			'status'  => 'success',
+			'message' => 'A reset link has been sent to your email address.'
+		]);
+	}
+	public function apiResetPassword()
+	{
+		$token = Request::get('token');
+		$password = Request::get('password');
+
+		// Validation
+		$validator = Validator::make(
+			['password' => $password],
+			['password' => 'required|min:6'],
+			['password.required' => 'Password is required.']
+		);
+
+		if ($validator->fails()) {
+			return response()->json([
+				'status' => 'error',
+				'message' => $validator->errors()->first()
+			]);
+		}
+
+		// Verify token
+		$user = User::where('forgot_password_validate_string', $token)->first();
+
+		if (!$user) {
+			return response()->json([
+				'status' => 'error',
+				'message' => 'Invalid or expired reset link.'
+			]);
+		}
+
+		// Update password
+		User::where('id', $user->id)->update([
+			'password' => Hash::make($password),
+			'forgot_password_validate_string' => null
+		]);
+
+		return response()->json([
+			'status' => 'success',
+			'message' => 'Password has been reset successfully.'
+		]);
+	}
 
 	public function SendMobileOtp()
 	{
