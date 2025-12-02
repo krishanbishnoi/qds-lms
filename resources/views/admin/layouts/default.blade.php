@@ -246,6 +246,12 @@
                                 <i class="mdi mdi-bell-ring menu-icon"></i>
                             </a>
                         </li>
+                        <li class="nav-item @if ($segment2 === 'certificates') active @endif">
+                            <a class="nav-link" href="{{ route('certificates.index') }}">
+                                <span class="menu-title">Certificate Setup</span>
+                                <i class="mdi mdi-bell-ring menu-icon"></i>
+                            </a>
+                        </li>
                     @endif
 
                     {{-- Masters Management --}}

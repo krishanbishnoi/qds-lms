@@ -72,7 +72,7 @@
             display: none;
         }
     </style>
-    <div class="d-flex flex-wrap paddingTop">
+    <div class="d-flex flex-wrap paddingTop" style="margin-top: 30px">
         <div class="courseName trainingNameMobile d-lg-none w-100">
             <p class="mb-0">{{ $trainingDetails->title }}</p>
         </div>
@@ -175,7 +175,7 @@
             <div class="timeSection">
                 <div class="timeDescription">
                     <i><img src="../front/img/timer.svg" alt="img"></i>
-                    <p><span>Time Left</span><span id="countdown" class="ml-5"></span>Embrace the urgency: Time
+                    <p><span></span><span id="countdown" class="ml-5"></span>Embrace the urgency: Time
                         Remaining
                         for Training.
                         Every second counts as you embark on your training journey. The time left is a precious resource
@@ -264,8 +264,8 @@
                     <strong>Other Details</strong>
                     <p><span>Training Type : {{ $trainingDetails->type }}</span><span>Trainee :
                             {{ $totalTrainees }}</span></p>
-                    <p><span>Total Content : {{ count($trainingCourses) }}</span><span>Total Time to finish :
-                            {{ $hours . 'h ' . $minutes . 'm ' }}</span></p>
+                    <p><span>Total Content : {{ count($trainingCourses) }}</span><span>Created At :
+                            {{ $trainingDetails->created_at->format('d/m/Y') }}</span></p>
                 </div>
                 {{-- <hr>
                 <div class="certificates">
@@ -289,15 +289,14 @@
                         <div class="accordion-item mb-3 border rounded shadow-sm">
                             <h2 class="accordion-header" id="heading{{ $index }}">
                                 <button class="accordion-button collapsed bg-light" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ $index }}" aria-expanded="false"
-                                    aria-controls="collapse{{ $index }}"
+                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ $index }}"
+                                    aria-expanded="false" aria-controls="collapse{{ $index }}"
                                     data-course-id="{{ $course->id }}">
                                     {{ $course['title'] }}
                                 </button>
                             </h2>
 
-                            <div id="collapse{{ $index }}"
-                                class="accordion-collapse collapse "
+                            <div id="collapse{{ $index }}" class="accordion-collapse collapse "
                                 aria-labelledby="heading{{ $index }}" data-bs-parent="#accordionExample">
                                 <div class="accordion-body p-3">
                                     @if ($course->CourseContentAndDocument->isNotEmpty())
@@ -896,17 +895,20 @@
 
     function countdown() {
         var countdownElement = document.getElementById('countdown');
+
         if (seconds > 0) {
             seconds--;
         } else {
             clearInterval(timer);
         }
-        var paddedSeconds = (seconds % 60).toString().padStart(2, '0');
-        var paddedMinutes = Math.floor((seconds / 60) % 60).toString().padStart(2, '0');
-        var paddedHours = Math.floor(seconds / 3600).toString().padStart(2, '0');
-        countdownElement.innerHTML = paddedHours + ' hours ' + paddedMinutes + ' minutes ' + paddedSeconds + ' seconds';
+
+        var days = Math.floor(seconds / (3600 * 24));
+
+        countdownElement.innerHTML = days + ' Days Left';
     }
-    var timer = setInterval(countdown, 1000); // Call the countdown function every second (1000 milliseconds)
+
+    var timer = setInterval(countdown, 1000);
+    // Call the countdown function every second (1000 milliseconds)
 </script>
 <script>
     $(document).ready(function() {

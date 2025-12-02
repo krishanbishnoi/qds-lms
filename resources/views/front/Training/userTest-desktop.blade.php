@@ -254,12 +254,12 @@
                 <div class="d-flex flex-wrap align-items-center">
                     <div class="logoSec">
                         <a href="{{ route('front.dashboard') }}"><img src="{{ asset('lms-img/creditsaison-logo.svg') }}"
-                                alt="logo"  width="170" height="89"></a>
+                                alt="logo"  width="100" height="60"></a>
                     </div>
                     <div class="courseName">
                         <p class="mb-0">{{ $trainingTest->title }}</p>
                     </div>
-                    <div id="countdown-timer" class="counttimerGroup">
+                    {{-- <div id="countdown-timer" class="counttimerGroup">
                         <div class="timerImg"><svg xmlns="http://www.w3.org/2000/svg" width="23.51" height="27.845"
                                 viewBox="0 0 23.51 27.845">
                                 <g id="_70fade71b5a52d187d0046af3cc3b5d2" data-name="70fade71b5a52d187d0046af3cc3b5d2"
@@ -278,7 +278,7 @@
                             </svg>
                         </div>
                         <span id="countdown"></span>
-                    </div>
+                    </div> --}}
                     <div class="courseProgress">
                         <a href="{{ route('front.dashboard') }}" class="exitBtn">
                             <img src="{{ asset('front/img/exit.svg') }}.svg" alt="icon" width="23"
@@ -289,7 +289,7 @@
             </div>
         </header>
 
-        <div class="d-flex flex-wrap paddingTop">
+        <div class="d-flex flex-wrap paddingTop" style="margin-top: 30px">
             <div class="courseName trainingNameMobile d-lg-none w-100">
                 <p class="mb-0">{{ $trainingTest->title }}</p>
             </div>
@@ -455,7 +455,7 @@
             $('#startTestBtn').click(function() {
                 testInstructionsModal.hide();
                 $('#testInterface').show();
-                startTimer();
+                // startTimer();
                 testStarted = true;
             });
 
@@ -801,44 +801,44 @@
             }
 
             // Function to start the timer
-            function startTimer() {
-                const countdownElement = $('#countdown');
-                const timerImgElement = $('.timerImg');
-                let countdown = {{ $testDetails->time_of_test }} * 60;
+            // function startTimer() {
+            //     const countdownElement = $('#countdown');
+            //     const timerImgElement = $('.timerImg');
+            //     let countdown = {{ $testDetails->time_of_test }} * 60;
 
-                // Update time remaining in confirmation modal
-                function updateTimeRemainingDisplay(seconds) {
-                    const minutes = Math.floor(seconds / 60);
-                    const remainingSeconds = seconds % 60;
-                    $('#time-remaining-display').text(
-                        `${minutes}m ${remainingSeconds}s`
-                    );
-                }
+            //     // Update time remaining in confirmation modal
+            //     function updateTimeRemainingDisplay(seconds) {
+            //         const minutes = Math.floor(seconds / 60);
+            //         const remainingSeconds = seconds % 60;
+            //         $('#time-remaining-display').text(
+            //             `${minutes}m ${remainingSeconds}s`
+            //         );
+            //     }
 
-                updateTimeRemainingDisplay(countdown);
+            //     updateTimeRemainingDisplay(countdown);
 
-                countdownInterval = setInterval(function() {
-                    const minutes = Math.floor(countdown / 60);
-                    const seconds = countdown % 60;
+            //     countdownInterval = setInterval(function() {
+            //         const minutes = Math.floor(countdown / 60);
+            //         const seconds = countdown % 60;
 
-                    countdownElement.text(
-                        (minutes < 10 ? '0' + minutes : minutes) + 'm ' +
-                        (seconds < 10 ? '0' + seconds : seconds) + 's'
-                    );
+            //         countdownElement.text(
+            //             (minutes < 10 ? '0' + minutes : minutes) + 'm ' +
+            //             (seconds < 10 ? '0' + seconds : seconds) + 's'
+            //         );
 
-                    updateTimeRemainingDisplay(countdown);
+            //         updateTimeRemainingDisplay(countdown);
 
-                    if (countdown <= 0) {
-                        clearInterval(countdownInterval);
-                        submitTest(); // Auto-submit when time expires
-                    } else if (countdown <= 300) { // 5 minutes or less
-                        countdownElement.addClass('blinking');
-                        timerImgElement.addClass('redBorder');
-                    }
+            //         if (countdown <= 0) {
+            //             clearInterval(countdownInterval);
+            //             submitTest(); // Auto-submit when time expires
+            //         } else if (countdown <= 300) { // 5 minutes or less
+            //             countdownElement.addClass('blinking');
+            //             timerImgElement.addClass('redBorder');
+            //         }
 
-                    countdown--;
-                }, 1000);
-            }
+            //         countdown--;
+            //     }, 1000);
+            // }
 
             // Star rating functionality
             // Star rating functionality
