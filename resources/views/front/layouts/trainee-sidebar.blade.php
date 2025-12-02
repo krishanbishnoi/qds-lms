@@ -1,10 +1,31 @@
+<style>
+    .siderbar {
+        height: 100vh;
+        /* or any fixed height */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .one {
+        height: 20%;
+    }
+
+    .two {
+        height: 70%;
+    }
+
+    .three {
+        height: 10%;
+    }
+
+</style>
 <div class="siderbar">
-    <div class="logoDiv">
+    <div class="logoDiv one">
         <a href="{{ route('front.dashboard') }}">
             <img src="{{ asset('lms-img/creditsaison-logo.svg') }}" alt="logo" width="170" height="89">
         </a>
     </div>
-    <div class="menuList">
+    <div class="menuList two">
         <ul>
             <li>
                 <a href="{{ route('front.dashboard') }}"
@@ -38,7 +59,7 @@
                         </svg>
                     </i>Trainings</a>
             </li>
-            <li>
+            <li >
                 <a href="{{ route('userTest.index') }}"
                     class="{{ Request::url() === url('/') . '/my-test' ? 'active' : '' }}"><i>
                         <svg width="22" height="22" viewBox="0 0 18 21" xmlns="http://www.w3.org/2000/svg">
@@ -69,7 +90,7 @@
 
         </ul>
     </div>
-    <div class="logoutbox dropup"> <!-- Use dropup instead of dropdown -->
+    <div class="logoutbox dropup three"> <!-- Use dropup instead of dropdown -->
         <a href="#" class="profile-box d-flex align-items-center justify-content-between text-decoration-none"
             id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
             <div class="d-flex align-items-center">

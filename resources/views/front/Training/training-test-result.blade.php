@@ -81,7 +81,7 @@
                             </div>
                         </div>
                         <hr>
-                        @if ($OverAllStatus == 'Passed' && $isLastCourse)
+                        {{-- @if ($OverAllStatus == 'Passed' && $isLastCourse)
                             <div class="d-sm-flex justify-content-between">
                                 <div class=" fs-6 blue-text">Note:</div>
                                 <div class="text-center"
@@ -93,7 +93,7 @@
                                 </div>
                             </div>
                             <hr>
-                        @endif
+                        @endif --}}
                         <div class="d-sm-flex justify-content-between">
                             <div class="fs-6 blue-text">Certificate</div>
                             <div class="text-center">
