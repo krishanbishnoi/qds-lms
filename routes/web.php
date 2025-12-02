@@ -302,6 +302,13 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::post('toggle-status/{reminder}', 'toggleStatus')->name('Reminders.toggleStatus');
             Route::post('send-test/{reminder}', 'sendTest')->name('Reminders.sendTest');
         });
+        Route::controller(\App\Http\Controllers\admin\CertificateController::class)->prefix('certificates')->group(function () {
+            Route::match(['get', 'post'], '/', 'index')->name('certificates.index');
+            Route::get('change-status/{id}', 'changeStatus')->name('change.status');
+            Route::get('/certificate-preview/{view}', function ($view) {
+                return view($view);
+            })->name('certificate.preview');
+        });
         /** Reminder Mail Setup routing **/
 
 

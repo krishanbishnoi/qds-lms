@@ -15,7 +15,7 @@
             <div class="d-flex flex-wrap align-items-center">
                 <div class="logoSec">
                     <a href="javascript:void(0)"><img src="{{ asset('lms-img/creditsaison-logo.svg') }}" alt="logo"
-                             width="170" height="89"></a>
+                             width="100" height="60"></a>
                 </div>
                 <div class="courseName">
                     <p class="mb-0">{{ $trainingDetails->title }}</p>
@@ -32,13 +32,13 @@
                             }
                         @endphp
 
-                        <div class="progress-circle" data-progress="{{ $roundedProgressPercentage }}"><img
-                                src="{{ asset('front/img/processing.svg') }}" width="20" height="20"></div>
+                        {{-- <div class="progress-circle" data-progress="{{ $roundedProgressPercentage }}"><img
+                                src="{{ asset('front/img/processing.svg') }}" width="20" height="20"></div> --}}
                     </div>
-                    <div class="progressText">
+                    {{-- <div class="progressText">
                         <strong>Progress</strong>
                         <span>{{ $completedCoursesCount }}<i>/{{ $totalCoursesCount }}</i></span>
-                    </div>
+                    </div> --}}
                     {{-- <button type="button" class="optionBtn d-lg-none"><img src="{{ asset('front/img/option.svg') }}"
                             alt="icon" width="23" height="23"></button>
                     <a href="{{ route('front.dashboard') }}"><button type="button" class="exitBtn"><img
@@ -48,7 +48,7 @@
             </div>
         </div>
     </header>
-    <div>
+    <div >
         @use('Jenssegers\Agent\Agent')
 
         @if ((new Agent())->isMobile())
