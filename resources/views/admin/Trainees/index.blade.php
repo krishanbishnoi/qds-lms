@@ -54,7 +54,7 @@
                                 'Select Status',
                                 trans('Select Status') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -68,7 +68,7 @@
                                 'olms_id',
                                 trans('Id') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -90,7 +90,7 @@
                                 'mobile_number',
                                 trans('Mobile Number') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -356,36 +356,52 @@
                                                 @endif
                                             </td>
                                             <td data-th='' class="action-td">
-                                                @if ($result->is_active == 1)
-                                                    <a title="Click To Deactivate"
-                                                        href='{{ route("$modelName.status", [$result->id, 0]) }}'
-                                                        data-confirm='Are you sure?'
-                                                        class="btn btn-success btn-small status_any_item "><span
-                                                            class="fa fa-ban"></span>
-                                                    </a>
-                                                @else
-                                                    <a title="Click To Activate"
-                                                        href='{{ route("$modelName.status", [$result->id, 1]) }}'
-                                                        data-confirm='Are you sure?'
-                                                        class="btn btn-warning btn-small status_any_item"><span
-                                                            class="fa fa-check"></span>
-                                                    </a>
-                                                @endif
-                                                <a href='{{ route("$modelName.edit", "$result->id") }}'
-                                                    class="btn btn-primary" title="Edit"> <span class="fas fa-edit">
-                                                    </span></a>
-                                                <a href='{{ route("$modelName.view", "$result->id") }}'
-                                                    class="btn btn-info" title="View"> <span class="fa fa-eye"></span></a>
-                                                <a href='{{ route("$modelName.delete", "$result->id") }}'
-                                                    data-delete="delete" class="delete_any_item btn btn-danger"
-                                                    title="Delete" data-confirm='Are you sure?'>
-                                                    <span class="fas fa-trash-alt   "></span>
-                                                </a>
-                                                @if (Auth::user()->user_role_id == SUPER_ADMIN_ROLE_ID)
-                                                    <a onclick="ChangeDesignation({{ $result->id }})"
-                                                        class="btn btn-success" title="Change Designation"> <span
-                                                            class="fas fa-angle-double-up"></span></a>
-                                                @endif
+                                                <div class="dropdown">
+                                                    <button class="btn btnRound" type="button" data-bs-toggle="dropdown"
+                                                        aria-expanded="false">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+
+                                                        <li> <a href='{{ route("$modelName.edit", "$result->id") }}'
+                                                                class="dropdown-item" title="Edit">Edit</a></li>
+                                                        <li> <a href='{{ route("$modelName.view", "$result->id") }}'
+                                                                class="dropdown-item" title="View">View</a>
+                                                        </li>
+                                                        <li> <a href='{{ route("$modelName.delete", "$result->id") }}'
+                                                                data-delete="delete" class="delete_any_item dropdown-item"
+                                                                title="Delete" data-confirm='Are you sure?'>
+                                                                Delete
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            @if ($result->is_active == 1)
+                                                                <a title="Click To Deactivate"
+                                                                    href='{{ route("$modelName.status", [$result->id, 0]) }}'
+                                                                    data-confirm='Are you sure?'
+                                                                    class="dropdown-item status_any_item ">Click
+                                                                    To Deactivate
+                                                                </a>
+                                                            @else
+                                                                <a title="Click To Activate"
+                                                                    href='{{ route("$modelName.status", [$result->id, 1]) }}'
+                                                                    data-confirm='Are you sure?'
+                                                                    class="dropdown-item status_any_item">Click
+                                                                    To Activate
+                                                                </a>
+                                                            @endif
+                                                        </li>
+                                                        <li>
+                                                            @if (Auth::user()->user_role_id == SUPER_ADMIN_ROLE_ID)
+                                                                <a onclick="ChangeDesignation({{ $result->id }})"
+                                                                    class="dropdown-item" title="Change Designation">
+                                                                    Change Designation</a>
+                                                            @endif
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                               
                                             </td>
                                         </tr>
                                     @endforeach

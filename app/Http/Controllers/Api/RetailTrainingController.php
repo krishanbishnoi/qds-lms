@@ -151,7 +151,7 @@ class RetailTrainingController extends BaseController
 					$data[] = [
 						'training_name' => $training->title,
 						'training_description' => $training->description,
-						'training_url' => 'https://lms.qdegrees.com/retail/my-trainings-details/' . $trainingId . '?user_id=' . $user->id,
+						'training_url' => 'https://csilms.qdegrees.com/retail/my-trainings-details/' . $trainingId . '?user_id=' . $user->id,
 					];
 				}
 			}
@@ -245,7 +245,7 @@ class RetailTrainingController extends BaseController
 			}
 
 
-			$training_url = 'https://lms.qdegrees.com/retail/my-trainings-details/' . $request->training_id . '?user_id=' . $userId;
+			$training_url = 'https://csilms.qdegrees.com/retail/my-trainings-details/' . $request->training_id . '?user_id=' . $userId;
 
 			return $this->sendSuccess($training_url, config('constants.API_MSG.REC_FETCH_SUCCESS'));
 		} catch (ValidationException $e) {

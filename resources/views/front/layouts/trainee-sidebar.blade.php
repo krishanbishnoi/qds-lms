@@ -17,7 +17,6 @@
     .three {
         height: 10%;
     }
-
 </style>
 <div class="siderbar">
     <div class="logoDiv one">
@@ -59,7 +58,7 @@
                         </svg>
                     </i>Trainings</a>
             </li>
-            <li >
+            <li>
                 <a href="{{ route('userTest.index') }}"
                     class="{{ Request::url() === url('/') . '/my-test' ? 'active' : '' }}"><i>
                         <svg width="22" height="22" viewBox="0 0 18 21" xmlns="http://www.w3.org/2000/svg">
@@ -91,9 +90,9 @@
         </ul>
     </div>
     <div class="logoutbox dropup three"> <!-- Use dropup instead of dropdown -->
-        <a href="#" class="profile-box d-flex align-items-center justify-content-between text-decoration-none"
+        <a href="#" class="profile-box d-flex justify-content-between text-decoration-none"
             id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center dropdown-toggle">
                 @if (!empty(Auth::user()->image))
                     <img src="{{ Auth::user()->image }}" alt="Profile" class="rounded-circle me-2" width="36"
                         height="36">
@@ -113,7 +112,7 @@
                 <span
                     class="fw-semibold">{{ ucwords(Auth::user()->first_name . ' ' . Auth::user()->last_name) }}</span>
             </div>
-            <i class="bi bi-caret-up-fill ms-3"></i> <!-- Gap using ms-3 -->
+            </i> <!-- Gap using ms-3 -->
         </a>
 
         <ul class="dropdown-menu dropdown-menu-end shadow-sm border mt-1" aria-labelledby="profileDropdown">
@@ -121,7 +120,21 @@
             <li><a class="dropdown-item py-2" href="{{ url('/change-password') }}">🔒 Change Password</a></li>
             <li><a class="dropdown-item py-2" href="{{ route('trainee.profile') }}">👤 My Profile</a></li>
         </ul>
-    </div>
 
+
+    </div>
+    <div class="footerBottom">
+        <ul class="footerLeft m-0 p-0">
+            <li>
+                <span style="margin-left: 10px;">
+                    <span style="font-size: 12px;"> Powered by: <a href="https://www.qdegrees.com" target="_blank"
+                        style="text-decoration:none; color:#00438c;">
+                        <img src="{{ asset('lms-img/qdegrees-logo.svg') }}" alt="Powered by QDegrees" width="110"
+                            height="50">
+                    </a>
+                </span>
+            </li>
+        </ul>
+    </div>
 
 </div>

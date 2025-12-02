@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\api\RetailTrainingController;
+use App\Http\Controllers\api\CsiLmsTrainingController;
 use Illuminate\Http\Request;
 
 
@@ -17,8 +17,8 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {});
-Route::controller(RetailTrainingController::class)->group(function () {
-    Route::post('get-training', 'getTrainings');
+
+Route::controller(CsiLmsTrainingController::class)->group(function () {
     Route::post('get-user-training', 'userAudit');
     // get complated and pendid training for view data
     Route::post('get-all-trainings', 'userTrainingDetails');

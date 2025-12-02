@@ -185,10 +185,10 @@
                                     <a class="nav-link  @if ($segment2 === 'tests') active @endif"
                                         href="{{ route('Test.index') }}">Tests</a>
                                 </li>
-                                <li class="nav-item">
+                                {{-- <li class="nav-item">
                                     <a class="nav-link  @if ($segment2 === 'tests' && $segment3 === 'feedback') active @endif"
                                         href="{{ route('Feedback.index') }}">Feedback</a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </div>
                     </li>
@@ -204,12 +204,13 @@
                         </a>
                         <div class="collapse @if ($segment2 === 'reports') show @endif" id="reportsMgmt">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item @if ($segment2 === 'reports' && $segment3 === 'test') active @endif">
-                                    <a class="nav-link" href="{{ route('Reports.test') }}">Test Report</a>
-                                </li>
                                 <li class="nav-item @if ($segment2 === 'reports' && $segment3 === 'training') active @endif">
                                     <a class="nav-link" href="{{ route('Reports.training') }}">Training Report</a>
                                 </li>
+                                <li class="nav-item @if ($segment2 === 'reports' && $segment3 === 'test') active @endif">
+                                    <a class="nav-link" href="{{ route('Reports.test') }}">Test Report</a>
+                                </li>
+
                             </ul>
                         </div>
                     </li>

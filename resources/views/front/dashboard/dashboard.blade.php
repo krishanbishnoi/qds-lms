@@ -1,5 +1,7 @@
 @extends('front.layouts.trainee-default')
+
 @section('content')
+   
     <div class="dashboard-main">
         <div class="containter-fluid">
             <div class="d-flex flex-wrap justify-content-end">
@@ -135,15 +137,15 @@
                                             </div>
                                         </div>
                                         <!-- <div class="col-md-6 col-lg-4 mb-3">
-                                                                                    <figure class="mb-2">
-                                                                                        <img src="{{ TRAINING_DOCUMENT_URL . $training->thumbnail }}" alt="image">
-                                                                                    </figure>
-                                                                                    <h3 class="mb-2">{{ ucwords($training->title) }}</h3>
-                                                                                    <p class="mb-2">{!! ucfirst(implode(' ', array_slice(str_word_count($training->description, 2), 0, 7))) !!}{{ count(str_word_count($training->description, 2)) > 7 ? '...' : '' }}
-                                                                                    </p>
-                                                                                    <span>Number of attempts : <b class="text-dark">
-                                                                                            {{ $training->number_of_attempts }}</b></span>
-                                                                                </div> -->
+                                                                                                            <figure class="mb-2">
+                                                                                                                <img src="{{ TRAINING_DOCUMENT_URL . $training->thumbnail }}" alt="image">
+                                                                                                            </figure>
+                                                                                                            <h3 class="mb-2">{{ ucwords($training->title) }}</h3>
+                                                                                                            <p class="mb-2">{!! ucfirst(implode(' ', array_slice(str_word_count($training->description, 2), 0, 7))) !!}{{ count(str_word_count($training->description, 2)) > 7 ? '...' : '' }}
+                                                                                                            </p>
+                                                                                                            <span>Number of attempts : <b class="text-dark">
+                                                                                                                    {{ $training->number_of_attempts }}</b></span>
+                                                                                                        </div> -->
                                     @endforeach
                                 @else
                                     <div class="item">
@@ -162,7 +164,7 @@
 
                             </div>
                         </div>
-                        <div class="continueTraining mb-3 mb-md-5">
+                        {{-- <div class="continueTraining mb-3 mb-md-5">
                             <div class="d-flex align-items-center justify-content-between">
                                 <h2 class="subheading">Continue Tests,
                                 </h2>
@@ -299,10 +301,12 @@
                                 @endif
 
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
+    
+
         </div>
     </div>
     {{-- Already Submitted test popup Model --}}

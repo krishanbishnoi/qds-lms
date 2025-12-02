@@ -163,6 +163,15 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <form id="filtersForm" class="row g-2">
+                          <div class="col-md-3">
+                            <label>Training</label>
+                            <select id="filterTraining" name="training_id" class="form-control form-control-sm">
+                                <option value="">All</option>
+                                @foreach ($trainings as $t)
+                                    <option value="{{ $t->id }}">{{ $t->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="col-md-2">
                             <label>Agency</label>
                             <select id="filterAgency" name="agency_id" class="form-control form-control-sm">
@@ -190,15 +199,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label>Training</label>
-                            <select id="filterTraining" name="training_id" class="form-control form-control-sm">
-                                <option value="">All</option>
-                                @foreach ($trainings as $t)
-                                    <option value="{{ $t->id }}">{{ $t->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                      
                         <div class="col-md-1">
                             <label>From</label>
                             <input type="date" id="filterFrom" name="from_date" class="form-control form-control-sm">

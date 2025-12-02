@@ -23,14 +23,14 @@
 
 <body>
     <table
-        style="background-image: url(data:image/png;base64,{{ base64_encode(file_get_contents('https://lms.qdegrees.com/front/img/backgroundimage.png')) }}'); background-repeat: no-repeat;width: 100%;background-position: left top;background-size: cover;padding: 0px 32px 32px 32px;">
+        style="background-image: url(data:image/png;base64,{{ base64_encode(file_get_contents('https://csilms.qdegrees.com/front/img/backgroundimage.png')) }}'); background-repeat: no-repeat;width: 100%;background-position: left top;background-size: cover;padding: 0px 32px 32px 32px;">
         <tr>
             <td style="padding-top: 60px;padding-left: 20px;font-size: 35px;font-weight:700;color: #ed1c24;">
                 <div style="font-family: 'Cinzel Decorative', cursive;text-transform:uppercase;">
                     Certificate</div>
             </td>
             <td align="right" style="padding-top: 30px;padding-right: 25px;">
-                <img src="data:image/png;base64,{{ base64_encode(file_get_contents('https://lms.qdegrees.com/lms-img/creditsaison-logo.png')) }}"
+                <img src="data:image/png;base64,{{ base64_encode(file_get_contents('https://csilms.qdegrees.com/lms-img/creditsaison-logo.png')) }}"
                     alt="logo" width="100">
             </td>
         </tr>

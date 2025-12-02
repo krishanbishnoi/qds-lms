@@ -85,7 +85,7 @@
                                             ],
                                         ) }}
                                     </th>
-                                    <th>
+                                    {{-- <th>
                                         {{ link_to_route(
                                             "$modelName.index",
                                             trans('Test Category'),
@@ -103,7 +103,7 @@
                                                             : 'sorting'),
                                             ],
                                         ) }}
-                                    </th>
+                                    </th> --}}
                                     @if (Auth::user()->user_role_id == SUPER_ADMIN_ROLE_ID)
                                         <th>
                                             {{ link_to_route(
@@ -162,7 +162,7 @@
                                                         : 'sorting'),
                                         ],
                                     ) }}
-                                                                                                                                                    </th> -->
+                                                                                                                                                                                                    </th> -->
                                     <th>
                                         {{ link_to_route(
                                             "$modelName.index",
@@ -253,7 +253,7 @@
                                             <td>{{ $sn++ }}</td>
                                             <td data-th="{{ trans('Page Name') }}">{{ $record->title }}</td>
 
-                                            <td data-th="{{ trans('Page Name') }}">{{ $record->category_name }}</td>
+                                            {{-- <td data-th="{{ trans('Page Name') }}">{{ $record->category_name }}</td> --}}
 
                                             @if (Auth::user()->user_role_id == SUPER_ADMIN_ROLE_ID)
                                                 <td data-th="{{ trans('Page Name') }}">{{ $record->created_by }}</td>
@@ -282,49 +282,58 @@
 
 
                                             <td data-th='' class="action-td">
-                                                <a href='{{ route("$modelName.edit", "$record->id") }}'
-                                                    class="btn btn-primary" title="Edit"> <span
-                                                        class="fas fa-edit"></span></a>
+                                                <div class="dropdown">
+                                                    <button class="btn btnRound" type="button" data-bs-toggle="dropdown"
+                                                        aria-expanded="false">
+                                                        <i class="bi bi-three-dots-vertical"></i>
 
+                                                    </button>
+                                                    <ul class="dropdown-menu">
 
-                                                <a href='{{ route("$modelName.delete", "$record->id") }}'
-                                                    data-delete="delete" class="delete_any_item btn btn-danger"
-                                                    title="Delete" data-confirm='Are you sure?'>
-                                                    <span class="fas fa-trash-alt   "></span>
-                                                </a>
+                                                        <li> <a href='{{ route("$modelName.edit", "$record->id") }}'
+                                                                class="dropdown-item" title="Edit">Edit</a></li>
+                                                        <li> <a href='{{ route("$modelName.view", "$record->id") }}'
+                                                                class="dropdown-item" title="View">View</a>
+                                                        </li>
+                                                        <li> <a href='{{ route("$modelName.delete", "$record->id") }}'
+                                                                data-delete="delete" class="delete_any_item dropdown-item"
+                                                                title="Delete" data-confirm='Are you sure?'>
+                                                                Delete
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a title="View Questions"
+                                                                href='{{ route('Question.index', "$record->id") }}'
+                                                                class='dropdown-item'>View Questions
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href='{{ route('import.importregularTestsParticipants', "$record->id") }}'
+                                                                class="dropdown-item" title="Import Tests Participants">
+                                                                Import Tests Participants</a>
+                                                        </li>
 
-                                                <a href='{{ route("$modelName.view", "$record->id") }}'
-                                                    class="btn btn-warning" title="View"> <span
-                                                        class="fas fa-eye"></span></a>
-                                                <a href='{{ route('Question.index', "$record->id") }}' class="btn btn-info"
-                                                    title="View Questions"> <span class="fa fa-question"></span></a>
-                                                <a href='{{ route('import.importregularTestsParticipants', "$record->id") }}'
-                                                    class="btn btn-success" title="Import Tests Participants"> <span
-                                                        class="fa fa-plus"></span></a>
+                                                        <li>
+                                                            <?php $selected_training_manager = DB::table('manager_assign_training')->where('test_id', $record->id)->pluck('user_id')->toArray();
+                                                            
+                                                            $selected_training_trainers = DB::table('trainer_assign_training')->where('test_id', $record->id)->pluck('user_id')->toArray();
+                                                            
+                                                            // echo '<pre>'; print_r($selected_training_manager);
+                                                            
+                                                            ?>
 
-                                                <?php $selected_training_manager = DB::table('manager_assign_training')->where('test_id', $record->id)->pluck('user_id')->toArray();
-                                                
-                                                $selected_training_trainers = DB::table('trainer_assign_training')->where('test_id', $record->id)->pluck('user_id')->toArray();
-                                                
-                                                // echo '<pre>'; print_r($selected_training_manager);
-                                                
-                                                ?>
-
-                                                @if (Auth::user()->user_role_id == MANAGER_ROLE_ID)
-                                                    <a onclick="AssignTrainer({{ $record->id }}, {{ json_encode($selected_training_trainers) }})"
-                                                        class="btn btn-success" title="Assign Trainers"> <span
-                                                            class="fa fa-user"></span></a>
-                                                @else
-                                                    <a onclick="AssignManager({{ $record->id }}, {{ json_encode($selected_training_manager) }})"
-                                                        class="btn btn-success" title="Assign Managers"> <span
-                                                            class="fa fa-user"></span></a>
-                                                @endif
-
-                                                <a id="copyButton" class="btn btn-info" title="Get Test Link"
-                                                    data-clipboard-text="{{ route('userTestDetails.index.link.copied', $record->id) }}">
-                                                    <span class="fas fa-link"></span>
-                                                </a>
-
+                                                            @if (Auth::user()->user_role_id == MANAGER_ROLE_ID)
+                                                                <a onclick="AssignTrainer({{ $record->id }}, {{ json_encode($selected_training_trainers) }})"
+                                                                    class="dropdown-item" title="Assign Trainers"> Assign
+                                                                    Trainers</a>
+                                                            @else
+                                                                <a onclick="AssignManager({{ $record->id }}, {{ json_encode($selected_training_manager) }})"
+                                                                    class="dropdown-item" title="Assign Managers">Assign
+                                                                    Managers</a>
+                                                            @endif
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -370,7 +379,7 @@
                                     'training_manager',
                                     trans('Assign Test Manager') .
                                         '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -416,7 +425,7 @@
                                     'training_trainer',
                                     trans('Assign Trainer') .
                                         '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}

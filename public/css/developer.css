@@ -20,6 +20,26 @@ select.form-control {
 	outline: 1px solid #B9B9B9 !important;
 }
 
+.btnRound .dropdown .dropdown-menu .dropdown-item {
+	padding: 0;
+	font-size: 14px;
+
+}
+
+td.action-td .dropdown-menu a {
+	width: inherit !important;
+	height: inherit !important;
+	border-radius: inherit !important;
+	padding: 0px 10px !important;
+	font-size: 13px !important;
+	    line-height: 30px;
+}
+
+td.action-td .dropdown-menu a:hover {
+	color: #004183 !important;
+}
+
+
 .mr-2 {
 	margin-right: 10px;
 }

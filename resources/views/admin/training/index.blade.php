@@ -278,64 +278,60 @@
                                                 {{ date(Config::get('Reading.date_format'), strtotime($record->updated_at)) }}
                                             </td> --}}
                                             <td data-th='' class="action-td">
-                                                {{--  @if ($record->is_active == 1)
-                                                    <a title="Click To Deactivate"
-                                                        href='{{ route('Training.status', [$record->id, 0]) }}'
-                                                        class="btn btn-success btn-small status_any_item "><span
-                                                            class="fa fa-ban"></span>
-                                                    </a>
-                                                @else
-                                                    <a title="Click To Activate"
-                                                        href='{{ route('Training.status', [$record->id, 1]) }}'
-                                                        class="btn btn-warning btn-small status_any_item"><span
-                                                            class="fa fa-check"></span>
-                                                    </a>
-                                                @endif  --}}
-                                                <a href='{{ route('Training.edit', "$record->id") }}'
-                                                    class="btn btn-primary" title="Edit"> <span
-                                                        class="fas fa-edit"></span></a>
+                                                <div class="dropdown">
+                                                    <button class="btn btnRound" type="button" data-bs-toggle="dropdown"
+                                                        aria-expanded="false">
+                                                        <i class="bi bi-three-dots-vertical"></i>
 
+                                                    </button>
+                                                    <ul class="dropdown-menu">
 
-                                                <a href='{{ route('Training.delete', "$record->id") }}'
-                                                    data-delete="delete" class="delete_any_item btn btn-danger"
-                                                    title="Delete" data-confirm = 'Are you sure?'>
-                                                    <span class="fas fa-trash-alt   "></span>
-                                                </a>
-                                                @if ($record->type != 'RetailIQ Briefings')
-                                                    <a href='{{ route('Course.index', "$record->id") }}'
-                                                        class="btn btn-info" title="View Training Courses"> <span
-                                                            class="fas fa-graduation-cap"></span></a>
-                                                @endif
+                                                        <li> <a href='{{ route('Training.edit', "$record->id") }}'
+                                                                class="dropdown-item" title="Edit">Edit</a></li>
+                                                        <li> <a href='{{ route('Training.view', "$record->id") }}'
+                                                                class="dropdown-item" title="View">View</a>
+                                                        </li>
+                                                        <li> <a href='{{ route('Training.delete', "$record->id") }}'
+                                                                data-delete="delete" class="delete_any_item dropdown-item"
+                                                                title="Delete" data-confirm='Are you sure?'>
+                                                                Delete
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href='{{ route('Course.index', "$record->id") }}'
+                                                                class="dropdown-item" title="View Training Courses">
+                                                                View Training Courses</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href='{{ route('import.importTrainingParticipants', "$record->id") }}'
+                                                                class="dropdown-item"
+                                                                title="Import Training Participants">Import Training
+                                                                Participants</a>
+                                                        </li>
 
-                                                <a href='{{ route('Training.view', "$record->id") }}'
-                                                    class="btn btn-warning" title="View"> <span
-                                                        class="fas fa-eye"></span></a>
-                                                <!-- import.importtrainingparticipants -->
-                                                <a href='{{ route('import.importTrainingParticipants', "$record->id") }}'
-                                                    class="btn btn-success" title="Import Training Participants"> <span
-                                                        class="fa fa-plus"></span></a>
+                                                        <li>
+                                                            <?php
+                                                            $selected_training_manager = DB::table('manager_assign_training')->where('test_id', $record->id)->pluck('user_id')->toArray();
+                                                            
+                                                            $selected_training_trainers = DB::table('trainer_assign_training')->where('test_id', $record->id)->pluck('user_id')->toArray();
+                                                            
+                                                            // echo '<pre>'; print_r($selected_training_manager);
+                                                            
+                                                            ?>
 
-                                                <?php
-                                                $selected_training_manager = DB::table('manager_assign_training')->where('test_id', $record->id)->pluck('user_id')->toArray();
-                                                
-                                                $selected_training_trainers = DB::table('trainer_assign_training')->where('test_id', $record->id)->pluck('user_id')->toArray();
-                                                
-                                                // echo '<pre>'; print_r($selected_training_manager);
-                                                
-                                                ?>
+                                                            @if (Auth::user()->user_role_id == MANAGER_ROLE_ID)
+                                                                <a onclick="AssignTrainer({{ $record->id }}, {{ json_encode($selected_training_manager) }})"
+                                                                    class="dropdown-item" title="Assign Trainers">Assign
+                                                                    Trainers</a>
+                                                            @else
+                                                                <a onclick="AssignManager({{ $record->id }}, {{ json_encode($selected_training_manager) }})"
+                                                                    class="dropdown-item" title="Assign Managers">Assign
+                                                                    Managers</a>
+                                                            @endif
 
-                                                @if (Auth::user()->user_role_id == MANAGER_ROLE_ID)
-                                                    <a onclick="AssignTrainer({{ $record->id }}, {{ json_encode($selected_training_manager) }})"
-                                                        class="btn btn-success" title="Assign Trainers"> <span
-                                                            class="fa fa-user"></span></a>
-                                                @else
-                                                    <a onclick="AssignManager({{ $record->id }}, {{ json_encode($selected_training_manager) }})"
-                                                        class="btn btn-success" title="Assign Managers"> <span
-                                                            class="fa fa-user"></span></a>
-                                                @endif
-
-
-
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -381,7 +377,7 @@
                                     'training_manager',
                                     trans('Assign Training Manager') .
                                         '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
