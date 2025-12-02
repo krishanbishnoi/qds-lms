@@ -132,9 +132,9 @@
                                 <li class="nav-item @if ($segment2 == 'users' && $segment3 == 'training-managers') active @endif">
                                     <a class="nav-link" href="{{ route('Users.index') }}">Training Managers</a>
                                 </li>
-                                <li class="nav-item @if ($segment2 == 'users' && $segment3 == 'trainers') active @endif">
+                                {{-- <li class="nav-item @if ($segment2 == 'users' && $segment3 == 'trainers') active @endif">
                                     <a class="nav-link" href="{{ route('Trainers.index') }}">Trainers Managers</a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </div>
                     </li>
