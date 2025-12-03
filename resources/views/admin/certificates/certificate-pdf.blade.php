@@ -54,7 +54,8 @@
                 {{ Auth::user()->name }}
                 <p
                     style="padding-top: 20px; font-family: sans-serif;color: #5c5a59;font-size: 12px;font-weight: 500;margin-top: 20px;width: 70%;margin: auto;padding-bottom: 40px;">
-                    This certificate acknowledges that <strong>{{ Auth::user()->name }}</strong> has successfully completed
+                    This certificate acknowledges that <strong>{{ Auth::user()->name }}</strong> has successfully
+                    completed
                     the digital training program
                     <strong>COC</strong> on <strong>Soft Skills</strong>, delivered via the LMS
                     platform at QDegrees.
@@ -72,8 +73,8 @@
             </td>
             <td width="50%" style="padding-bottom: 80px;">
                 <span
-                    style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Sr.
-                    Manager<br>Training & Development<br>
+                    style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Manager<br>Training
+                    & Development<br>
                     <b style="font-weight: 500;font-size: 16px;color: #474645;">Qdegrees</b></span>
             </td>
         </tr>

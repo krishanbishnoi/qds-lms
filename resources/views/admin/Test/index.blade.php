@@ -62,7 +62,7 @@
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
                             </div>
                         </div>
-                        <table class="table table-bordered table table-hover table table-bordered mt-2 ">
+                        <table class="table table-bordered table table-hover table table-bordered mt-2 " style="overflow: auto">
                             <thead class="theadLight">
                                 <tr>
                                     <th>SN.</th>

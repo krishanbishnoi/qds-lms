@@ -22,7 +22,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 
 
-class RetailTrainingController extends BaseController
+class CsiLmsTrainingController extends BaseController
 {
     public $res = [];
     public $data = [];
@@ -164,9 +164,6 @@ class RetailTrainingController extends BaseController
         }
     }
 
-
-
-
     public function userTrainingDetails(Request $request)
     {
         try {
@@ -232,7 +229,6 @@ class RetailTrainingController extends BaseController
             return $this->sendError(config('constants.API_MSG.SERVER_ERROR'), $e->getMessage(), 500);
         }
     }
-
 
     public function getTrainingUrl(Request $request)
     {

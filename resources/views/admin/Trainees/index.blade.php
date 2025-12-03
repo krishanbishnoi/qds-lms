@@ -157,7 +157,7 @@
                                     title="Release Selected Games" id="trigger_event">Delete Users</button>
                             </div>
                         </div>
-                        <table class="table table-hover table table-bordered mt-2 " width="100%">
+                        <table class="table table-hover table table-bordered mt-2 " width="100%" style="overflow: auto">
                             <thead class="theadLight">
                                 <tr>
                                     <th> <input type="checkbox" id="checkAll" class='check_box_all'>All</th>

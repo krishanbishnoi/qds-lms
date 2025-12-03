@@ -166,8 +166,7 @@
                                     </div>
                                 </div>
                             </div>
-
-                            {{-- ADDRESS --}}
+                                        {{-- ADDRESS --}}
                             <div class="col-md-6">
                                 <div class="form-group <?php echo $errors->first('address') ? 'has-error' : ''; ?>">
                                     <div class="mws-form-row">
@@ -181,6 +180,34 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class=" form-group <?php echo $errors->first('name') ? 'has-error' : ''; ?>">
+                                    <div class="mws-form-row">
+                                        {!! Form::label('name', 'Agency Manager Name', ['class' => 'form-label required']) !!}
+                                        <div class="mws-form-item">
+                                            {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Enter agency name', 'required']) !!}
+                                            <div class="error-message help-inline">
+                                                {{ $errors->first('name') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class=" form-group <?php echo $errors->first('name') ? 'has-error' : ''; ?>">
+                                    <div class="mws-form-row">
+                                        {!! Form::label('name', 'Agency Manager Email', ['class' => 'form-label required']) !!}
+                                        <div class="mws-form-item">
+                                            {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Enter agency name', 'required']) !!}
+                                            <div class="error-message help-inline">
+                                                {{ $errors->first('name') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                
 
                             {{-- BUTTONS --}}
                             <div class="mws-button-row text-end">

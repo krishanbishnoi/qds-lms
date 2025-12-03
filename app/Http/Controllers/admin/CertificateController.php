@@ -19,15 +19,17 @@ class CertificateController extends Controller
     }
     public function changeStatus($id)
     {
-        $existingCertificates = Certificate::get();
-        foreach($existingCertificates as $certificate){
-            $certificate['is_active'] = 0;
-        }
-        $certificate = Certificate::where('id',$id)->first();
-        if($certificate->is_active == 0){
-            $certificate->is_active = 1;
-        }
-        return redirect()->back()->with(['success','Certificate Selected Successfully.']);
-    }
+        // Step 1: Reset all certificates
+        Certificate::query()->update(['is_active' => 0]);
 
+        // Step 2: Activate selected certificate
+        $certificate = Certificate::find($id);
+
+        if ($certificate) {
+            $certificate->is_active = 1;
+            $certificate->save();
+        }
+
+        return redirect()->back()->with('success', 'Certificate Selected Successfully.');
+    }
 }

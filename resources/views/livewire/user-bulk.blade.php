@@ -2,13 +2,13 @@
     <!-- Upload Form -->
     <div class="card-body">
         <div class="row align-items-end ">
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-4 col-sm-12">
                 <a class="btn btn-primary" href="{{ asset('sample-files/user-upload-sample-file.xlsx') }}">
                     Download
                     sample file</a>
             </div>
 
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-8 col-sm-12">
                 <!-- Left side: Bulk Upload Form -->
                 <form wire:submit.prevent="uploadUsers">
                     <div class="d-flex align-items-center gap-2">
@@ -27,7 +27,7 @@
                             <button type="submit" class="btn btn-primary" style="white-space: nowrap">Upload
                                 File</button>
                         </div>
-                        <a class="btn btn-success" href="{{ route('export.trainees') }}">Download Users</a>
+                        <a class="btn btn-success text-nowrap" href="{{ route('export.trainees') }}">Download Users</a>
 
                     </div>
             </div>

@@ -357,8 +357,7 @@
                                             <th>In-progress</th>
                                             <th>Not Started</th>
                                             <th>Completion %</th>
-                                            <th>Status</th>
-                                            <th>View</th>
+                                            {{-- <th>Status</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody id="trainingsTbody"></tbody>
@@ -529,8 +528,6 @@
                 <td>${row.inprogress || 0}</td>
                 <td>${row.not_started || 0}</td>
                 <td>${row.completion_pct || 0}%</td>
-                <td>${row.status || ''}</td>
-                <td><button class="btn btn-sm btn-primary" onclick="openTraining(${row.id}, '${escapeHtml(row.name)}')">View</button></td>
             </tr>`;
                 tbl.append(tr);
             });

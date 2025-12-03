@@ -48,9 +48,9 @@ Route::group(array('prefix' => 'admin'), function () {
 
     Route::group(array('middleware' => ['App\Http\Middleware\AuthAdmin', 'PreventBackHistory'], 'namespace' => 'admin'), function () {
         Route::get('/logout', 'AdminLoginController@logout');
-        Route::get('/dashboard', array('as' => 'dashboard', 'uses' => 'AdminDashboardController@showdashboard'));
+        Route::get('/old-dashboard', array('as' => 'old.dashboard', 'uses' => 'AdminDashboardController@showdashboard'));
         // New Training Dashboard routes
-        Route::get('training-dashboard', [NewDashboardController::class, 'index'])->name('Admin.TrainingDashboard');
+        Route::get('dashboard', [NewDashboardController::class, 'index'])->name('dashboard');
         Route::get('training-dashboard/stats', [NewDashboardController::class, 'getDashboardStats'])->name('Admin.TrainingDashboard.stats');
         Route::get('training-dashboard/list', [NewDashboardController::class, 'getTrainingList'])->name('Admin.TrainingDashboard.list');
         Route::get('training-dashboard/view/{id}', [NewDashboardController::class, 'viewTraining'])->name('Admin.TrainingDashboard.view');
@@ -298,7 +298,7 @@ Route::group(array('prefix' => 'admin'), function () {
             Route::post('store', 'store')->name('Reminders.store');
             Route::get('edit/{reminder}', 'edit')->name('Reminders.edit');
             Route::put('update/{reminder}', 'update')->name('Reminders.update');
-            Route::delete('destroy/{reminder}', 'destroy')->name('Reminders.destroy');
+            Route::get('destroy/{reminder}', 'destroy')->name('Reminders.destroy');
             Route::post('toggle-status/{reminder}', 'toggleStatus')->name('Reminders.toggleStatus');
             Route::post('send-test/{reminder}', 'sendTest')->name('Reminders.sendTest');
         });

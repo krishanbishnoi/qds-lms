@@ -129,9 +129,9 @@
                                 <li class="nav-item @if ($segment2 == 'users' && !$segment3) active @endif">
                                     <a class="nav-link" href="{{ route('Trainees.index') }}">All Users</a>
                                 </li>
-                                <li class="nav-item @if ($segment2 == 'users' && $segment3 == 'training-managers') active @endif">
+                                {{-- <li class="nav-item @if ($segment2 == 'users' && $segment3 == 'training-managers') active @endif">
                                     <a class="nav-link" href="{{ route('Users.index') }}">Training Managers</a>
-                                </li>
+                                </li> --}}
                                 {{-- <li class="nav-item @if ($segment2 == 'users' && $segment3 == 'trainers') active @endif">
                                     <a class="nav-link" href="{{ route('Trainers.index') }}">Trainers Managers</a>
                                 </li> --}}
@@ -167,7 +167,7 @@
                     </li>
 
                     {{-- Test Management --}}
-                    <li class="nav-item tests @if ($segment2 === 'tests') active @endif">
+                    {{-- <li class="nav-item tests @if ($segment2 === 'tests') active @endif">
                         <a class="nav-link" data-bs-toggle="collapse" href="#testManagement"
                             aria-expanded="{{ $segment2 === 'tests' ? 'true' : 'false' }}"
                             aria-controls="testManagement">
@@ -185,13 +185,9 @@
                                     <a class="nav-link  @if ($segment2 === 'tests') active @endif"
                                         href="{{ route('Test.index') }}">Tests</a>
                                 </li>
-                                {{-- <li class="nav-item">
-                                    <a class="nav-link  @if ($segment2 === 'tests' && $segment3 === 'feedback') active @endif"
-                                        href="{{ route('Feedback.index') }}">Feedback</a>
-                                </li> --}}
                             </ul>
                         </div>
-                    </li>
+                    </li> --}}
 
                     {{-- Reports Management --}}
                     <li class="nav-item @if ($segment2 === 'reports') active @endif">
@@ -207,9 +203,9 @@
                                 <li class="nav-item @if ($segment2 === 'reports' && $segment3 === 'training') active @endif">
                                     <a class="nav-link" href="{{ route('Reports.training') }}">Training Report</a>
                                 </li>
-                                <li class="nav-item @if ($segment2 === 'reports' && $segment3 === 'test') active @endif">
+                                {{-- <li class="nav-item @if ($segment2 === 'reports' && $segment3 === 'test') active @endif">
                                     <a class="nav-link" href="{{ route('Reports.test') }}">Test Report</a>
-                                </li>
+                                </li> --}}
 
                             </ul>
                         </div>
@@ -218,7 +214,7 @@
 
                     @if (Auth::user()->user_role_id == SUPER_ADMIN_ROLE_ID)
                         {{-- Email Template --}}
-                        <li class="nav-item @if ($segment2 === 'email-manager') active @endif">
+                        {{-- <li class="nav-item @if ($segment2 === 'email-manager') active @endif">
                             <a class="nav-link" data-bs-toggle="collapse" href="#email"
                                 aria-expanded="{{ $segment2 === 'email-manager' ? 'true' : 'false' }}"
                                 aria-controls="email">
@@ -237,7 +233,7 @@
                                     </li>
                                 </ul>
                             </div>
-                        </li>
+                        </li> --}}
 
                         {{-- Reminder Mail Setup (visible to all authenticated users) --}}
                         <li class="nav-item @if ($segment2 === 'reminders') active @endif">
@@ -255,44 +251,42 @@
                     @endif
 
                     {{-- Masters Management --}}
-                    @if (Auth::user()->email === 'krishan.gopal@qdegrees.com')
-                        <li class="nav-item @if ($segment2 === 'masters') active @endif">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#Masters"
-                                aria-expanded="{{ $segment2 === 'masters' ? 'true' : 'false' }}"
-                                aria-controls="Masters">
-                                <span class="menu-title">Masters Management</span>
-                                <i class="menu-arrow"></i>
-                                <i class="mdi mdi-book-open-page-variant menu-icon"></i>
-                            </a>
-                            <div class="collapse @if ($segment2 === 'masters') show @endif" id="Masters">
-                                <ul class="nav flex-column sub-menu">
-                                    {{-- <li class="nav-item @if ($segment1 == 'lobs') active @endif"><a
+                    <li class="nav-item @if ($segment2 === 'masters') active @endif">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#Masters"
+                            aria-expanded="{{ $segment2 === 'masters' ? 'true' : 'false' }}" aria-controls="Masters">
+                            <span class="menu-title">Masters Management</span>
+                            <i class="menu-arrow"></i>
+                            <i class="mdi mdi-book-open-page-variant menu-icon"></i>
+                        </a>
+                        <div class="collapse @if ($segment2 === 'masters') show @endif" id="Masters">
+                            <ul class="nav flex-column sub-menu">
+                                {{-- <li class="nav-item @if ($segment1 == 'lobs') active @endif"><a
                                         class="nav-link" href="{{ route('Lob.index') }}">LOB Management</a></li> --}}
-                                    <li class="nav-item @if ($segment1 == 'agencies') active @endif"><a
-                                            class="nav-link" href="{{ route('Agency.index') }}">Agency Management</a>
-                                    </li>
+                                <li class="nav-item @if ($segment1 == 'agencies') active @endif"><a
+                                        class="nav-link" href="{{ route('Agency.index') }}">Agency Management</a>
+                                </li>
+                                @if (Auth::user()->email === 'krishan.gopal@qdegrees.com')
                                     <li class="nav-item @if ($segment1 == 'designation') active @endif"><a
                                             class="nav-link" href="{{ route('Designation.index') }}">Designation
                                             Management</a></li>
                                     <li class="nav-item @if ($segment1 == 'regions') active @endif"><a
                                             class="nav-link" href="{{ route('Region.index') }}">Region Management</a>
                                     </li>
-                                    {{-- <li class="nav-item @if ($segment1 == 'circles') active @endif"><a
-                                        class="nav-link" href="{{ route('Circle.index') }}">Circle Management</a> --}}
-                        </li>
-                        <li class="nav-item @if ($segment1 == 'training-types') active @endif"><a class="nav-link"
-                                href="{{ route('TrainingType.index') }}">TrainingType
-                                Management</a></li>
-                        {{-- <li class="nav-item @if ($segment1 == 'partners') active @endif"><a
+                    </li>
+                    <li class="nav-item @if ($segment1 == 'training-types') active @endif"><a class="nav-link"
+                            href="{{ route('TrainingType.index') }}">TrainingType
+                            Management</a></li>
+                    {{-- <li class="nav-item @if ($segment1 == 'partners') active @endif"><a
                                         class="nav-link" href="{{ route('Partner.index') }}">Collection Agency</a> --}}
-                        </li>
-                        <li class="nav-item @if ($segment1 == 'domains') active @endif"><a class="nav-link"
-                                href="{{ route('Domain.index') }}">Domain Management</a>
-                        </li>
+                    </li>
+                    <li class="nav-item @if ($segment1 == 'domains') active @endif"><a class="nav-link"
+                            href="{{ route('Domain.index') }}">Domain Management</a>
+                    </li>
+        @endif
+
                 </ul>
         </div>
         </li>
-        @endif
         @if (Auth::user()->user_role_id == SUPER_ADMIN_ROLE_ID)
             {{-- Page Management --}}
             {{-- <li class="nav-item @if ($segment1 == 'cms') active @endif">

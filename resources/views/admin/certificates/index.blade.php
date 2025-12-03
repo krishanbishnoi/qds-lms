@@ -4,9 +4,7 @@
     <div class="content-wrapper">
         <div class="page-header">
             <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white me-2">
-                    <i class="mdi mdi-bell-ring"></i>
-                </span>
+           
                 Certificate Setup
             </h3>
             <nav aria-label="breadcrumb">
@@ -103,7 +101,7 @@
                             <tr>
                                 <td colspan="2"
                                     style="font-size: 16px;font-weight: 700;text-transform: uppercase;padding-left: 6px;color: #323232;padding-top: 40px;">
-                                    of achievement test COC</td>
+                                    of achievement COC</td>
                             </tr>
                             <tr align="center">
                                 <td colspan="2" width="100%"
@@ -143,9 +141,8 @@
                                 </td>
                                 <td width="50%" style="padding-bottom: 80px;">
                                     <span
-                                        style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Sr.
+                                        style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">
                                         Manager<br>Training & Development<br>
-                                        <b style="font-weight: 500;font-size: 16px;color: #474645;">Qdegrees</b></span>
                                 </td>
                             </tr>
                         </table>
