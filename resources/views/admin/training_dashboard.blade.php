@@ -253,7 +253,7 @@
                 <div class="col-sm-6 col-md-3 mb-3">
                     <div class="card kpi-card bg-gradient-danger ">
                         <div class="card-body">
-                            <h6>Total Assigned Users</h6>
+                            <h6>Total Assigned Learners</h6>
                             <h3 id="kpiTotalAssigned">0</h3>
                         </div>
                     </div>
@@ -261,7 +261,7 @@
                 <div class="col-sm-6 col-md-3 mb-3">
                     <div class="card kpi-card kpi-success">
                         <div class="card-body">
-                            <h6>Completed Users</h6>
+                            <h6>Completed Training Learners</h6>
                             <h3 id="kpiCompletedUsers">0</h3>
                         </div>
                     </div>
@@ -269,7 +269,7 @@
                 <div class="col-sm-6 col-md-3 mb-3">
                     <div class="card kpi-card kpi-info">
                         <div class="card-body">
-                            <h6>In-progress Users</h6>
+                            <h6>Ongoing Training Learners</h6>
                             <h3 id="kpiInprogress">0</h3>
                         </div>
                     </div>
@@ -277,13 +277,13 @@
                 <div class="col-sm-6 col-md-3 mb-3">
                     <div class="card kpi-card kpi-danger">
                         <div class="card-body">
-                            <h6>Not Started Users</h6>
+                            <h6>Not Yet Started Learners</h6>
                             <h3 id="kpiNotStarted">0</h3>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-12 mb-3" >
+                {{-- <div class="col-12 mb-3" >
                     <div class="card kpi-card" style="background-color: #d6d6d6">
                         <div class="card-body">
                             <h6 style="color: #000">Global Completion Rate</h6>
@@ -293,7 +293,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Charts Row -->
