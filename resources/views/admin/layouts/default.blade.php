@@ -119,7 +119,7 @@
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#users" aria-expanded="false"
                             aria-controls="users">
-                            <span class="menu-title">Users Management</span>
+                            <span class="menu-title">User Management</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-account menu-icon"></i>
                         </a>
@@ -152,11 +152,11 @@
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
                                     <a class="nav-link  @if ($segment2 === 'trainings' && $segment3 === 'category') active @endif"
-                                        href="{{ route('TrainingCategory.index') }}">{{ trans('Trainings Categories') }}</a>
+                                        href="{{ route('TrainingCategory.index') }}">{{ trans('Training Categories') }}</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link  @if ($segment2 === 'trainings') active @endif"
-                                        href="{{ route('Training.index') }}">{{ trans('Trainings') }}</a>
+                                        href="{{ route('Training.index') }}">{{ trans('Training') }}</a>
                                 </li>
                                 {{-- <li class="nav-item">
                                     <a class="nav-link  @if ($segment2 === 'trainings') active @endif"
@@ -194,7 +194,7 @@
                         <a class="nav-link" data-bs-toggle="collapse" href="#reportsMgmt"
                             aria-expanded="{{ $segment2 === 'reports' ? 'true' : 'false' }}"
                             aria-controls="reportsMgmt">
-                            <span class="menu-title">Reports Management</span>
+                            <span class="menu-title">Report Management</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-file-check menu-icon"></i>
                         </a>
@@ -254,7 +254,7 @@
                     <li class="nav-item @if ($segment2 === 'masters') active @endif">
                         <a class="nav-link" data-bs-toggle="collapse" href="#Masters"
                             aria-expanded="{{ $segment2 === 'masters' ? 'true' : 'false' }}" aria-controls="Masters">
-                            <span class="menu-title">Masters Management</span>
+                            <span class="menu-title">Master Management</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-book-open-page-variant menu-icon"></i>
                         </a>

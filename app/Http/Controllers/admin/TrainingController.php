@@ -139,7 +139,6 @@ class TrainingController extends BaseController
                 'trainers'
             ));
         } catch (\Exception $e) {
-            dd($e);
             return redirect()->back()->with('error', 'somthing went wrong');;
         }
     }

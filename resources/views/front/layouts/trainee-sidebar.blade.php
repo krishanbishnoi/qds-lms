@@ -58,7 +58,7 @@
                         </svg>
                     </i>Trainings</a>
             </li>
-            <li>
+            {{-- <li>
                 <a href="{{ route('userTest.index') }}"
                     class="{{ Request::url() === url('/') . '/my-test' ? 'active' : '' }}"><i>
                         <svg width="22" height="22" viewBox="0 0 18 21" xmlns="http://www.w3.org/2000/svg">
@@ -73,7 +73,7 @@
                             </defs>
                         </svg>
                     </i>Test</a>
-            </li>
+            </li> --}}
             <li>
                 <a href="{{ route('userReport.index') }}"
                     class="{{ Request::url() === url('/') . '/my-report' ? 'active' : '' }}"><i>

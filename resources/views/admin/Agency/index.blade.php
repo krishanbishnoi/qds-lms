@@ -45,12 +45,14 @@
                     <div class="card-body">
 
                         <div class="box-header with-border pd-custom">
-                            <div class="listing-btns">
-                                <h1 class="box-title">{{ $sectionName }}'s List</h1>
+                            <div class="listing-btns d-flex justify-content-between align-items-center">
 
-                                <a href="{{ route("$modelName.add") }}" class="btn btn-success btn-small pull-right mb-2">
+                                <h3 class="box-title mb-0">{{ $sectionName }} List</h3>
+
+                                <a href="{{ route("$modelName.add") }}" class="btn btn-success btn-small">
                                     Add New {{ $sectionNameSingular }}
                                 </a>
+
                             </div>
                         </div>
 
@@ -124,7 +126,8 @@
                                                 @endphp
 
                                                 <a href="{{ route("$modelName.status", ['id' => $record->id, 'status' => $isActive ? 0 : 1]) }}"
-                                                    class="btn {{ $isActive ? 'btn-warning' : 'btn-success' }}" title="Active/Inactive" >
+                                                    class="btn {{ $isActive ? 'btn-warning' : 'btn-success' }}"
+                                                    title="Active/Inactive">
                                                     <span class="fas {{ $isActive ? 'fa-times' : 'fa-check' }}"></span>
                                                 </a>
                                             </td>

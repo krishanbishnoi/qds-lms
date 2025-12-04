@@ -48,7 +48,6 @@ class TrainersController extends BaseController
      */
     public function index()
     {
-
         $DB                    =    User::query();
         if (Auth::user()->user_role_id == MANAGER_ROLE_ID) {
             $DB->where('parent_id', Auth::user()->id);

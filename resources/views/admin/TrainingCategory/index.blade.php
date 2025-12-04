@@ -53,11 +53,18 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="box-header with-border pd-custom">
-                            <div class="listing-btns">
-                                <h1 class="box-title">{{ $sectionName }} List</h1>
+                            {{-- <div class="listing-">
+                                <h3 class="box-title">{{ $sectionName }} List</h3>
                                 <a href='{{ route('TrainingCategory.add') }}'
                                     class="btn btn-success btn-small pull-right mb-2">
                                     {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
+                            </div> --}}
+                            <div class="listing-btns d-flex justify-content-between align-items-center">
+                                <h3 class="box-title mb-0">{{ $sectionName }} List</h3>
+
+                                <a href='{{ route('TrainingCategory.add') }}' class="btn btn-success btn-small">
+                                    {{ trans('Add New ') }}{{ $sectionNameSingular }}
+                                </a>
                             </div>
                         </div>
                         <table class="table table-hover table table-bordered mt-2 ">
@@ -165,7 +172,7 @@
                                     'training_manager',
                                     trans('Assign Test Manager') .
                                         '<span
-                                                                                                                                                                                                                                                                                        class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                    class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}
@@ -210,7 +217,7 @@
                                     'training_trainer',
                                     trans('Assign Trainer') .
                                         '<span
-                                                                                                                                                                                                                                                                                        class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                    class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}

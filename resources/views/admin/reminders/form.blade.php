@@ -81,7 +81,7 @@
                             </div>
 
                             <div class="col-md-3 mb-3">
-                                <label for="send_time" class="form-label">Send Time</label>
+                                <label for="send_time" class="form-label">Trigger Time</label>
                                 <input type="time" class="form-control @error('send_time') is-invalid @enderror" id="send_time" name="send_time" 
                                     value="{{ old('send_time', $reminder->send_time ?? '') }}">
                                 <small class="form-text text-muted">Time of day to send</small>

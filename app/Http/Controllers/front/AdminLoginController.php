@@ -63,7 +63,7 @@ class AdminLoginController extends BaseController
 				if (Auth::attempt([$loginType => Request::get('email'), 'password' => Request::get('password')])) {
 					// Authentication passed
 					Session::flash('flash_notice', 'You are now logged in!');
-					return Redirect::intended('/dashboard')->with('message', 'You are now logged in!');
+					return Redirect::intended('/dashboard');
 				} else {
 					// Authentication failed
 					Session::flash('error', 'Email or Password is incorrect.');

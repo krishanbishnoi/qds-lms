@@ -72,7 +72,7 @@
                                                     class="form-select form-select-sm">
                                                     <option value="">Mark Status</option>
                                                     <option value="complated"
-                                                        {{ $request->status == 'complated' ? 'selected' : '' }}>Complated
+                                                        {{ $request->status == 'complated' ? 'selected' : '' }}>Completed
                                                     </option>
                                                     <option value="rejected"
                                                         {{ $request->status == 'rejected' ? 'selected' : '' }}>Reject

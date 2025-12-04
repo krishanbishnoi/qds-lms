@@ -18,6 +18,10 @@
             --kpi-text: rgba(255, 255, 255, 0.95);
         }
 
+        .label{
+            margin-bottom: 10px;
+        }
+
         .content-wrapper {
             padding: 12px;
         }
@@ -164,7 +168,7 @@
                 <div class="card-body">
                     <form id="filtersForm" class="row g-2">
                           <div class="col-md-3">
-                            <label>Training</label>
+                            <label class="label">Training</label>
                             <select id="filterTraining" name="training_id" class="form-control form-control-sm">
                                 <option value="">All</option>
                                 @foreach ($trainings as $t)
@@ -173,7 +177,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label>Agency</label>
+                            <label class="label">Agency</label>
                             <select id="filterAgency" name="agency_id" class="form-control form-control-sm">
                                 <option value="">All</option>
                                 @foreach ($agencies as $a)
@@ -182,7 +186,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label>Region</label>
+                            <label class="label">Region</label>
                             <select id="filterRegion" name="region_id" class="form-control form-control-sm">
                                 <option value="">All</option>
                                 @foreach ($regions as $r)
@@ -191,7 +195,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label>State</label>
+                            <label class="label">State</label>
                             <select id="filterState" name="state_id" class="form-control form-control-sm">
                                 <option value="">All</option>
                                 @foreach ($states as $s)
@@ -201,11 +205,11 @@
                         </div>
                       
                         <div class="col-md-1">
-                            <label>From</label>
+                            <label class="label">From</label>
                             <input type="date" id="filterFrom" name="from_date" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-1">
-                            <label>To</label>
+                            <label class="label">To</label>
                             <input type="date" id="filterTo" name="to_date" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-1 d-flex align-items-end">

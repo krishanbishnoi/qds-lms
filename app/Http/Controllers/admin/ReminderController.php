@@ -34,7 +34,7 @@ class ReminderController extends Controller
     {
         $entities = ['training' => 'Training', 'test' => 'Test'];
         $triggers = [
-            'before_due' => 'Before Due Date',
+            'due_before' => 'Before Due Date',
             'after_due' => 'After Due Date',
             'daily' => 'Daily',
             'weekly' => 'Weekly',

@@ -29,9 +29,9 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="box-header with-border pd-custom">
-                            <div class="listing-btns d-flex justify-content-between mb-3">
+                            {{-- <div class="listing-btns d-flex justify-content-between mb-3">
                                 <h1 class="box-title">Training List</h1>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="trainingTabContent">
 

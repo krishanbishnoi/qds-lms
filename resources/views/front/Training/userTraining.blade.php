@@ -9,7 +9,7 @@
                     <div class="dashboard_head mb-md-5 d-lg-flex justify-content-between">
                         <div class="">
                             <h1 class="fs-2">My <span>{{ $sectionNameSingular }}.</span></h1>
-                            <p>Listing</p>
+                            <p>Trainings</p>
                         </div>
                         {{-- for ntifications file --}}
                         @include('front.layouts.notification')

@@ -628,6 +628,7 @@ class RetailTrainingController extends BaseController
 
     public function userTrainingCertificateDownload($id)
     {
+        // dd($id);
         // // For over all Training certification
         $trainingData = Training::where('id', $id)->first();
         $start_date = \Carbon\Carbon::parse($trainingData->start_date_time);

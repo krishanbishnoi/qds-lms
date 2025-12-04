@@ -1,6 +1,13 @@
 @extends('admin.layouts.default')
 @section('content')
-
+    <style>
+        table thead th {
+            text-align: center !important;
+            vertical-align: middle !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+    </style>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
 
@@ -54,15 +61,24 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="box-header with-border pd-custom">
-                            <div class="listing-btns">
-                                <h1 class="box-title">{{ $sectionName }}'s List</h1>
-                                <a class="btn btn-success" href="{{ route('export.training') }}">Download Trainings</a>
+                            <div class="listing-btns d-flex justify-content-between align-items-center">
 
-                                <a href='{{ route('Training.add') }}' class="btn btn-success btn-small pull-right mb-2">
-                                    {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
+                                <h3 class="box-title mb-0">{{ $sectionName }} List</h3>
+
+                                <div class="d-flex gap-2">
+                                    <a class="btn btn-success" href="{{ route('export.training') }}">
+                                        Download Trainings
+                                    </a>
+
+                                    <a href="{{ route('Training.add') }}" class="btn btn-success btn-small">
+                                        {{ trans('Add New ') }}{{ $sectionNameSingular }}
+                                    </a>
+                                </div>
+
                             </div>
                         </div>
-                        <table class="table table-hover table table-bordered mt-2 "  style="overflow: auto">
+
+                        <table class="table table-hover table table-bordered mt-2 " style="overflow: auto">
                             <thead class="theadLight">
                                 <tr>
                                     <th>SN.</th>
@@ -356,7 +372,6 @@
         </div>
     </div>
 
-
     <div class="modal fade" id="AssignManagerModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -377,7 +392,7 @@
                                     'training_manager',
                                     trans('Assign Training Manager') .
                                         '<span
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        class="requireRed"></span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                class="requireRed"></span>',
                                     ['class' => 'mws-form-label'],
                                 ),
                             ) !!}

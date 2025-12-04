@@ -54,7 +54,7 @@
                                 'Select Status',
                                 trans('Select Status') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -68,7 +68,7 @@
                                 'olms_id',
                                 trans('Id') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -90,7 +90,7 @@
                                 'mobile_number',
                                 trans('Mobile Number') .
                                     '<span class="requireRed">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span>',
                                 ['class' => 'mws-form-label'],
                             ),
                         ) !!}
@@ -149,18 +149,28 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="box-header with-border pd-custom">
-                            <div class="listing-btns">
-                                <h1 class="box-title">{{ $sectionName }} List</h1>
-                                <a href='{{ route("$modelName.add") }}' class="btn btn-success btn-small pull-right mb-2">
-                                    {{ trans('Add New ') }}{{ $sectionNameSingular }} </a>
-                                <button type="submit" name="submit" class="btn btn-danger pull-right trigger_event mb-2"
-                                    title="Release Selected Games" id="trigger_event">Delete Users</button>
+                            <div class="listing-btns d-flex justify-content-between align-items-center">
+                                <h3 class="box-title mb-0">User List</h3>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route("$modelName.add") }}" class="btn btn-success btn-small mb-2">
+                                        {{ trans('Add New ') }}{{ $sectionNameSingular }}
+                                    </a>
+                                    <button type="submit" name="submit" class="btn btn-danger mb-2 trigger_event"
+                                        title="Release Selected Games" id="trigger_event">
+                                        Delete Users
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <table class="table table-hover table table-bordered mt-2 " width="100%" style="overflow: auto">
                             <thead class="theadLight">
                                 <tr>
-                                    <th> <input type="checkbox" id="checkAll" class='check_box_all'>All</th>
+                                    <th>
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            <input type="checkbox" id="checkAll" class="check_box_all">
+                                            <span>All</span>
+                                        </div>
+                                    </th>
 
                                     <th>{{ trans('SN.') }}</th>
                                     <th>
@@ -401,7 +411,7 @@
                                                         </li>
                                                     </ul>
                                                 </div>
-                                               
+
                                             </td>
                                         </tr>
                                     @endforeach

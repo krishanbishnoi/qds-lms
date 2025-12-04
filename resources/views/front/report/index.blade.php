@@ -90,7 +90,7 @@
                             @endphp
                             <div class="col-xl-7 col-xxl-8">
                                 <div class="row">
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-12 mb-3">
                                         <div class="complete-training">
                                             <h2 class="fs-6 fw-semibold text-dark">Trainings Completed</h2>
                                             <div class="row">
@@ -108,7 +108,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    {{-- <div class="col-md-6 mb-3">
                                         <div class="spent-hours">
                                             <h2 class="fs-6 fw-semibold text-dark">Test Completed</h2>
                                             <div class="row">
@@ -126,8 +126,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
+                                    </div> --}}
+                                    {{-- <div class="col-md-6 mb-3">
                                         <div class="ongoing-training">
                                             <div class="row">
                                                 <div class="col-8">
@@ -142,8 +142,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
+                                    </div> --}}
+                                    {{-- <div class="col-md-6 mb-3">
                                         <div class="upcoming-training">
                                             <div class="row">
                                                 <div class="col-8">
@@ -158,7 +158,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -199,15 +199,15 @@
                         </div> --}}
                         <div class="trainingTab nav-tabs d-sm-flex justify-content-between align-items-center my-3"
                             id="tab" role="tablist">
-                            <h2 class="fs-5 fw-semibold blue-text">Completed Trainings And Tests</h2>
+                            <h2 class="fs-5 fw-semibold blue-text">Completed Trainings</h2>
                             <div class="tab-menu d-flex mb-3 mb-md-0">
                                 <button class="tabButton active" data-bs-toggle="tab"
                                     data-bs-target="#complatedTrainingsTab" type="button"
                                     aria-controls="complatedTrainingsTab" aria-selected="true" role="tab">
                                     Trainings</button>
-                                <button class="tabButton" data-bs-toggle="tab" data-bs-target="#completedTestsTab"
+                                {{-- <button class="tabButton" data-bs-toggle="tab" data-bs-target="#completedTestsTab"
                                     type="button" aria-controls="completedTestsTab" aria-selected="false"
-                                    tabindex="-1" role="tab"> Tests</button>
+                                    tabindex="-1" role="tab"> Tests</button> --}}
                             </div>
                         </div>
                         <div class="trainingTabContent">
@@ -222,6 +222,8 @@
                                                     <th class="text-center">Time Left</th>
                                                     <th class="text-center">Score</th>
                                                     <th class="text-center">Result</th>
+                                                    <th class="text-center">Certificate</th>
+
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -260,6 +262,26 @@
                                                             @else
                                                                 <td class="text-center">--</td>
                                                             @endif
+                                                            <td class="text-center">
+                                                                @if ($report['status'] === 'Failed')
+                                                                    <span class="btn btn-sm px-3 py-1 rounded-pill"
+                                                                        style="pointer-events:none; opacity:0.5; background:#6c757d; color:white;"
+                                                                        data-bs-toggle="tooltip"
+                                                                        title="You failed this test">
+                                                                        <i class="bi bi-download me-1"></i> Download
+                                                                    </span>
+                                                                @else
+                                                                    <a href="{{ route('download.user.training.certificate', $report['id']) }}"
+                                                                        class="btn btn-sm px-3 py-1 rounded-pill"
+                                                                        style="background:#28a745; color:white;"
+                                                                        data-bs-toggle="tooltip"
+                                                                        title="Download Certificate">
+                                                                        <i class="bi bi-download me-1"></i> Download
+                                                                    </a>
+                                                                @endif
+
+                                                            </td>
+
                                                         </tr>
                                                     @endforeach
                                                 @endif
@@ -303,6 +325,7 @@
                                                             @else
                                                                 <td class="danger-text">Failed</td>
                                                             @endif
+
                                                         </tr>
                                                     @endforeach
                                                 @endif

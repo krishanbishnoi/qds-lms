@@ -54,16 +54,15 @@ class ReportController extends BaseController
         $userRegion = DB::table('regions')->where('id', Auth::user()->region)->first();
 
         $userTrainings = TrainingParticipants::select('training_id')->where('trainee_id', Auth::user()->id)->get();
-
         $reportData = [];
-
         foreach ($userTrainings as $training) {
             $trainingInfo = DB::table('trainings')
-                ->join('training_types', 'trainings.type', '=', 'training_types.id')
-                ->where('trainings.id', $training->training_id)
-                ->select('trainings.title as trainingName', 'training_types.type as trainingType', 'trainings.end_date_time')
-                ->first();
-
+            ->join('training_types', 'trainings.type', '=', 'training_types.id')
+            ->where('trainings.id', $training->training_id)
+            ->select('trainings.title as trainingName', 'training_types.type as trainingType', 'trainings.end_date_time')
+            ->first();
+            
+            
             $isExpired = now() > $trainingInfo->end_date_time;
             $timeLeft = $isExpired ? 'Expired' : now()->diffInHours($trainingInfo->end_date_time) . ' hours';
 
@@ -84,6 +83,7 @@ class ReportController extends BaseController
             }
 
             $reportData[] = [
+                'id' => $training->training_id,
                 'trainingName' => $trainingInfo->trainingName,
                 'trainingType' =>  $trainingInfo->trainingType,
                 'timeLeft' => $timeLeft,
@@ -127,7 +127,7 @@ class ReportController extends BaseController
         $user = User::find(Auth::user()->id);
         $notifications = $user->notifications->where('read_at', '');
 
-        return view("front.$this->model.index", compact('user', 'userRegion', 'userTrainings', 'userTests', 'completedTests', 'notifications', 'reportData'));
+        return view("front.report.index", compact('user', 'userRegion', 'userTrainings', 'userTests', 'completedTests', 'notifications', 'reportData'));
     }
 
 
