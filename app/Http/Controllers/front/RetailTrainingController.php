@@ -16,6 +16,7 @@ use App\Models\Test;
 use App\Models\Question;
 use App\Models\QuestionAttribute;
 use App\Models\Answer;
+use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\TrainingTestResult;
 use App\Models\TraineeAssignedTrainingDocument;
@@ -597,7 +598,7 @@ class RetailTrainingController extends BaseController
         $end_date = \Carbon\Carbon::parse($training->end_date_time);
         $lengthInDays = $start_date->diffInDays($end_date);
         #####################################################################################################################################################################
-
+        $activeCertificate = Certificate::where('is_active', 1)->value('id');
         if ($hasFreeTextQuestion) {
             $testDetails = Test::where('id', $id)->first();
             $trainingId = $training->id;
@@ -620,7 +621,8 @@ class RetailTrainingController extends BaseController
             'totalAttendedTestCount' => $totalAttendedTestCount,
             'OverAllStatus' => $OverAllStatus,
             'lengthInDays' => $lengthInDays,
-            'isLastCourse' => $isLastCourse
+            'isLastCourse' => $isLastCourse,
+            'activeCertificate' => $activeCertificate,
         ]);
     }
 
@@ -634,6 +636,7 @@ class RetailTrainingController extends BaseController
 
         $user = User::where('id', Auth::user()->id)->with('parentManager')->first();
         $data = [
+            'trainingData' => $trainingData,
             'title' => $trainingData->title,
             'name' => Auth::user()->fullname,
             'admin' => $user->parentManager->fullname,
@@ -642,8 +645,19 @@ class RetailTrainingController extends BaseController
             'logo' => public_path('lms-img/creditsaison-logo.png'),
             'background_img' => asset('front/img/backgroundimage.png')
         ];
+        $activeCertificate = Certificate::where('is_active', 1)->value('id');
 
-        $pdf = PDF::loadView('front.Training.certificate-pdf', $data);
+        $templates = [
+            1 => 'front.certificates.certificate-pdf',
+            2 => 'front.certificates.certificate-pdf-2',
+            3 => 'front.certificates.certificate-pdf-3',
+            4 => 'front.certificates.certificate-pdf-4',
+            5 => 'front.certificates.certificate-pdf-5',
+            6 => 'front.certificates.certificate-pdf-6',
+        ];
+
+        $view = $templates[$activeCertificate] ?? $templates[1];
+        $pdf = PDF::loadView($view, $data, ['isFromIndex' => 0]);
 
         return $pdf->download($trainingData->title . '-certificate.pdf');
 

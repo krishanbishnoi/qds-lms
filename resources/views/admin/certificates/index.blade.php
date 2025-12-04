@@ -4,7 +4,7 @@
     <div class="content-wrapper">
         <div class="page-header">
             <h3 class="page-title">
-           
+
                 Certificate Setup
             </h3>
             <nav aria-label="breadcrumb">
@@ -47,12 +47,15 @@
                                                 </td>
                                                 <td>
                                                     <div class="" role="group">
-                                                        <button type="button" class="btn btn-sm"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#certificate-modal">View</button>
+                                                        <button type="button" class="btn btn-sm viewBtn"
+                                                            data-id="{{ $certificate->id }}" data-bs-toggle="modal"
+                                                            data-bs-target="#certificate-modal">
+                                                            View
+                                                        </button>
                                                         <a href="{{ route('change.status', $certificate->id) }}"
-                                                            class="btn btn-sm {{ $certificate->is_active == 1 ? 'btn-info' : 'btn-danger'  }}" title="Choose Certificate">
-                                                            {{ $certificate->is_active == 1 ? 'Selected' : 'Choose Certificate'}}
+                                                            class="btn btn-sm {{ $certificate->is_active == 1 ? 'btn-info' : 'btn-danger' }}"
+                                                            title="Choose Certificate">
+                                                            {{ $certificate->is_active == 1 ? 'Selected' : 'Choose Certificate' }}
                                                         </a>
                                                     </div>
                                                 </td>
@@ -78,94 +81,35 @@
     </div>
     <div class="modal fade" id="certificate-modal"data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered certificateMan">
+        <div class="modal-dialog certificateMan" style="width: 1250px; height:1250px;">
             <div class="modal-content rounded-1">
                 <div class="modal-header border-0 p-2">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-2 ">
-                    <div class="table-responsive">
-                        <table
-                            style="background-image: url('{{ asset('front/img/backgroundimage.png') }}'); background-repeat: no-repeat;width: 100%;background-position: left top;background-size: cover;padding: 0px 32px 32px 32px;">
-                            <tr>
-                                <td
-                                    style="padding-top: 60px;padding-left: 20px;font-size: 35px;font-weight:700;color: #ed1c24;">
-                                    <div style="font-family: 'Sans-Serif';text-transform:uppercase;">
-                                        Certificate</div>
-                                </td>
-                                <td align="right" style="padding-top: 30px;padding-right: 25px;">
-                                    <img src="{{ asset('lms-img/creditsaison-logo.svg') }}" alt="logo" width="170"
-                                        height="89">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"
-                                    style="font-size: 16px;font-weight: 700;text-transform: uppercase;padding-left: 6px;color: #323232;padding-top: 40px;">
-                                    of achievement COC</td>
-                            </tr>
-                            <tr align="center">
-                                <td colspan="2" width="100%"
-                                    style="text-transform: uppercase;font-size: 16px;font-weight: 700;color: #2c2c2c;font-family: sans-serif;font-size: 12px;    font-weight: 500;padding-top: 30px;">
-                                    proudly presented to :
-                                </td>
-
-                            </tr>
-                            <tr style="text-align: center;">
-                                <td colspan="2"
-                                    style="font-weight: 800;font-family: 'Sans-Serif';font-size: 35px;color: #ed1c24;padding-top: 20px;">
-                                    <b>{{ Auth::user()->fullname }}</b>
-                                    <p
-                                        style="padding-top: 20px; font-family: sans-serif;color: #5c5a59;font-size: 12px;font-weight: 500;margin-top: 20px;width: 70%;margin: auto;padding-bottom: 40px;">
-                                        This certificate acknowledges that <strong>{{ Auth::user()->fullname }}</strong>
-                                        has
-                                        successfully completed
-                                        the digital training program
-                                        <strong>Soft Skills</strong> on
-                                        <strong>{{ today()->format('d-M-Y') }}</strong>,
-                                        delivered via the LMS
-                                        platform at QDegrees.
-                                        <br><br>
-                                        It is awarded in recognition of the learner’s active participation and completion of
-                                        the
-                                        required
-                                        training content.
-                                    </p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="50%" style="padding-bottom: 80px;">
-                                    <span
-                                        style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">Date<br>
-                                        <b
-                                            style="font-weight: 500;font-size: 16px;color: #474645;">{{ today()->format('d-M-Y') }}</b></span>
-                                </td>
-                                <td width="50%" style="padding-bottom: 80px;">
-                                    <span
-                                        style="display: grid;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: normal;color: #5c5a59;">
-                                        Manager<br>Training & Development<br>
-                                </td>
-                            </tr>
-                        </table>
+                <div class="modal-body p-2" id="certificateArea">
+                    {{-- @dd($certificate->id) --}}
+                    <div id="cert_1" class="certTemplate" style="display:none;">
+                        @include('admin.certificates.certificate-pdf',['isFromIndex' => '1'])
                     </div>
-                    {{-- <div class="modal-footer border-0">
-                        @use('Jenssegers\Agent\Agent')
 
-                        @if (new Agent()->isMobile())
-                            <button type="button" class="btn btn-secondary fs-7 text-black" data-bs-dismiss="modal"
-                                aria-label="Close" style="background-color: #FFF2E5">Close</button>
-                        @else
-                            <a href="{{ route('front.dashboard') }}"><button type="button"
-                                    class="btn btn-secondary fs-7 text-black" style="background-color: #FFF2E5"
-                                    data-bs-dismiss="modal">Back
-                                    to
-                                    Home</button></a>
-                        @endif
-                        <a href="{{ route('download.user.training.certificate', $trainingData->id) }}">
-                            <button type="button" class="btn btn-secondary fs-7"
-                                style="background-color: #00407E">Download</button></a>
-                    </div> --}}
+                    <div id="cert_2" class="certTemplate" style="display:none;">
+                        @include('admin.certificates.certificate-pdf-2',['isFromIndex' => '1'])
+                    </div>
+
+                    <div id="cert_3" class="certTemplate" style="display:none;">
+                        @include('admin.certificates.certificate-pdf-3',['isFromIndex' => '1'])
+                    </div>
+
+                    <div id="cert_4" class="certTemplate" style="display:none;">
+                        @include('admin.certificates.certificate-pdf-4',['isFromIndex' => '1'])
+                    </div>
+                    <div id="cert_5" class="certTemplate" style="display:none;">
+                        @include('admin.certificates.certificate-pdf-5',['isFromIndex' => '1'])
+                    </div>
+                    <div id="cert_6" class="certTemplate" style="display:none;">
+                        @include('admin.certificates.certificate-pdf-6',['isFromIndex' => '1'])
+                    </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -174,6 +118,16 @@
             let viewName = $(this).data('view');
             let url = "{{ route('certificate.preview', '') }}/" + viewName;
             $('#certificate-frame').attr('src', url);
+        });
+    </script>
+    <script>
+        document.querySelectorAll('.viewBtn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                let id = this.dataset.id;
+                console.log(id)
+                document.querySelectorAll('.certTemplate').forEach(t => t.style.display = 'none');
+                document.getElementById('cert_' + id).style.display = 'block';
+            });
         });
     </script>
 
