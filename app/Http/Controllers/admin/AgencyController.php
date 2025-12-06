@@ -75,6 +75,8 @@ class AgencyController extends BaseController
                 'region_id'   => 'required',
                 'state_id'    => 'required',
                 'city_id'     => 'required',
+                'agency_manager_name'     => 'required',
+                'agency_manager_email'     => 'required',
             ];
 
             $validator = Validator::make($input, $rules);
@@ -84,15 +86,17 @@ class AgencyController extends BaseController
             }
 
             $data = [
-                'name'        => $request->name,
-                'email'       => $request->email,
-                'mobile_no'   => $request->mobile_no,
-                'agency_code' => $request->agency_code,
-                'region_id'   => $request->region_id,
-                'state_id'    => $request->state_id,
-                'city_id'     => $request->city_id,
-                'address'     => $request->address,
-                'is_active'   => $request->is_active ?? 1,
+                'name'                     => $request->name,
+                'email'                    => $request->email,
+                'mobile_no'                => $request->mobile_no,
+                'agency_code'              => $request->agency_code,
+                'region_id'                => $request->region_id,
+                'state_id'                 => $request->state_id,
+                'city_id'                  => $request->city_id,
+                'address'                  => $request->address,
+                'agency_manager_name'      => $request->agency_manager_name,
+                'agency_manager_email'     => $request->agency_manager_email,
+                'is_active'                => $request->is_active ?? 1,
             ];
 
             $agency = Agency::updateOrCreate(

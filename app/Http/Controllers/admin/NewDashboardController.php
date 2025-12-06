@@ -71,7 +71,7 @@ class NewDashboardController extends Controller
             $data = Cache::remember($cacheKey, 60, function () use ($filters) {
                 // Get training IDs matching filters
                 // detect pivot/participants table name (common variants)
-                $pivotCandidates = ['training_participants', 'training_participants', 'training_participant', 'training_partiviptant', 'training_participent', 'training_participantss'];
+                $pivotCandidates = ['training_participants'];
                 $pivot = null;
                 foreach ($pivotCandidates as $cand) {
                     if (Schema::hasTable($cand)) { $pivot = $cand; break; }
@@ -216,8 +216,8 @@ class NewDashboardController extends Controller
                     $regionHeat = DB::table('trainings as t')
                         ->join('regions as r', 't.region_id', '=', 'r.id')
                         ->whereIn('t.id', $trainingIds)
-                        ->groupBy('r.id', 'r.name')
-                        ->selectRaw('r.id, r.name, COUNT(DISTINCT t.id) as trainings_count')
+                        ->groupBy('r.id', 'r.region')
+                        ->selectRaw('r.id, r.region, COUNT(DISTINCT t.id) as trainings_count')
                         ->get();
                 } elseif ($hasPivot) {
                     // derive regions from participants -> users -> agencies -> regions
@@ -360,7 +360,7 @@ class NewDashboardController extends Controller
     {
         $filters = $this->buildFilters($request);
         // detect pivot and agency table as above
-        $pivotCandidates = ['training_participants', 'training_participants', 'training_participant', 'training_partiviptant', 'training_participent', 'training_participantss'];
+        $pivotCandidates = ['training_participants'];
         $pivot = null;
         foreach ($pivotCandidates as $cand) { if (Schema::hasTable($cand)) { $pivot = $cand; break; } }
         $agencyTable = Schema::hasTable('agencies') ? 'agencies' : (Schema::hasTable('partners') ? 'partners' : null);
@@ -473,7 +473,7 @@ class NewDashboardController extends Controller
     {
         try {
             // detect agency table
-            $agencyTable = Schema::hasTable('agencies') ? 'agencies' : (Schema::hasTable('partners') ? 'partners' : null);
+            $agencyTable = Schema::hasTable('agencies') ? 'agencies'  : null;
 
             $tQuery = DB::table('trainings as t');
             if ($agencyTable && Schema::hasColumn('trainings', 'agency_id')) {
@@ -484,7 +484,7 @@ class NewDashboardController extends Controller
             }
             if (Schema::hasTable('regions') && Schema::hasColumn('trainings', 'region_id')) {
                 $tQuery->leftJoin('regions as r', 't.region_id', '=', 'r.id');
-                $selectRegion = 'r.name as region';
+                $selectRegion = 'r.region as region';
             } else {
                 $selectRegion = 'NULL as region';
             }
@@ -504,7 +504,7 @@ class NewDashboardController extends Controller
             }
 
             // detect pivot table
-            $pivotCandidates = ['training_participants', 'training_participants', 'training_participant', 'training_partiviptant', 'training_participent', 'training_participantss'];
+            $pivotCandidates = ['training_participants'];
             $pivot = null;
             foreach ($pivotCandidates as $cand) { if (Schema::hasTable($cand)) { $pivot = $cand; break; } }
 
@@ -538,8 +538,8 @@ class NewDashboardController extends Controller
                     ->join("{$agencyTable} as a", 'u.agency_id', '=', 'a.id')
                     ->join('regions as r', 'a.region_id', '=', 'r.id')
                     ->where('tt.training_id', $training_id)
-                    ->groupBy('r.id', 'r.name')
-                    ->selectRaw('r.id, r.name, COUNT(DISTINCT u.id) as users_count')
+                    ->groupBy('r.id', 'r.region')
+                    ->selectRaw('r.id, r.region, COUNT(DISTINCT u.id) as users_count')
                     ->get();
             } else {
                 $regionDist = collect();
@@ -591,10 +591,10 @@ class NewDashboardController extends Controller
      */
     public function getTrainingUsers(Request $request, $training_id)
     {
-        $perPage = intval($request->get('per_page', 15));
+        $perPage = intval($request->get('per_page', 10));
         $page = intval($request->get('page', 1));
         // detect pivot
-        $pivotCandidates = ['training_participants', 'training_participants', 'training_participant', 'training_partiviptant', 'training_participent', 'training_participantss'];
+        $pivotCandidates = ['training_participants'];
         $pivot = null;
         foreach ($pivotCandidates as $cand) { if (Schema::hasTable($cand)) { $pivot = $cand; break; } }
 
@@ -605,7 +605,7 @@ class NewDashboardController extends Controller
         $query = DB::table("{$pivot} as tt")
             ->join('users as u', 'tt.trainee_id', '=', 'u.id')
             ->where('tt.training_id', $training_id)
-            ->selectRaw('u.id, u.first_name, u.last_name, u.email, u.mobile, tt.status, tt.updated_at as completion_date, tt.certificate_path')
+            ->selectRaw('u.id, u.olms_id, u.first_name, u.last_name, u.email, tt.status, tt.updated_at as completion_date')
             ->orderBy('u.first_name');
 
         $results = $query->paginate($perPage, ['*'], 'page', $page);

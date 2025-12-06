@@ -20,6 +20,9 @@ class Agency extends Model
         'state_id',
         'city_id',
         'address',
+        'agency_manager_name',
+        'agency_manager_email',
+
     ];
 
     // Relationships (optional)

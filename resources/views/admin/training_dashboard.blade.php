@@ -18,7 +18,7 @@
             --kpi-text: rgba(255, 255, 255, 0.95);
         }
 
-        .label{
+        .label {
             margin-bottom: 10px;
         }
 
@@ -167,7 +167,7 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <form id="filtersForm" class="row g-2">
-                          <div class="col-md-3">
+                        <div class="col-md-3">
                             <label class="label">Training</label>
                             <select id="filterTraining" name="training_id" class="form-control form-control-sm">
                                 <option value="">All</option>
@@ -203,7 +203,7 @@
                                 @endforeach
                             </select>
                         </div>
-                      
+
                         <div class="col-md-1">
                             <label class="label">From</label>
                             <input type="date" id="filterFrom" name="from_date" class="form-control form-control-sm">
@@ -361,7 +361,8 @@
                                             <th>In-progress</th>
                                             <th>Not Started</th>
                                             <th>Completion %</th>
-                                            {{-- <th>Status</th> --}}
+                                            {{-- <th>Status</th>
+                                            <th>View</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody id="trainingsTbody"></tbody>
@@ -386,7 +387,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div id="trainingSummary" class="mb-3"></div>
+                        {{-- <div id="trainingSummary" class="mb-3"></div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <h6>Completion Donut</h6><canvas id="detailDonut"></canvas>
@@ -404,26 +405,25 @@
                             </div>
                         </div>
 
-                        <hr>
+                        <hr> --}}
                         <h5>Participants</h5>
                         <div class="table-responsive">
                             <table class="table table-sm" id="trainingUsersTable">
                                 <thead>
                                     <tr>
-                                        <th>User ID</th>
+                                        <th>Employee ID</th>
                                         <th>Name</th>
-                                        <th>Mobile</th>
-                                        <th>Email</th>
                                         <th>Status</th>
                                         <th>Completion Date</th>
                                         <th>Certificate</th>
+
                                     </tr>
                                 </thead>
                                 <tbody id="trainingUsersTbody"></tbody>
                             </table>
                         </div>
                         <nav>
-                            <ul class="pagination" id="trainingUsersPagination"></ul>
+                            <ul class="pagination justify-content-end mt-4" id="trainingUsersPagination"></ul>
                         </nav>
                     </div>
                 </div>
@@ -532,9 +532,26 @@
                 <td>${row.inprogress || 0}</td>
                 <td>${row.not_started || 0}</td>
                 <td>${row.completion_pct || 0}%</td>
-            </tr>`;
+             </tr>`;
                 tbl.append(tr);
             });
+            // items.forEach(function(row) {
+            //     const tr = `<tr>
+            //     <td>${row.id}</td>
+            //     <td>${row.name}</td>
+            //     <td>${row.agency || ''}</td>
+            //     <td>${row.start_date || ''}</td>
+            //     <td>${row.end_date || ''}</td>
+            //     <td>${row.total_assigned || 0}</td>
+            //     <td>${row.completed || 0}</td>
+            //     <td>${row.inprogress || 0}</td>
+            //     <td>${row.not_started || 0}</td>
+            //     <td>${row.completion_pct || 0}%</td>
+            //     <td>${row.status || ''}</td>
+            //     <td><button class="btn btn-sm btn-primary" onclick="openTraining(${row.id}, '${escapeHtml(row.name)}')">View</button></td>
+            // </tr>`;
+            //     tbl.append(tr);
+            // });
 
             // Pagination
             buildPagination(res);
@@ -760,7 +777,7 @@
         function loadTrainingUsers(training_id, page = 1) {
             $.getJSON("{{ url('admin/training-dashboard') }}" + '/' + training_id + '/users', {
                 page: page,
-                per_page: 15
+                per_page: 10
             }, function(res) {
                 const tbody = $('#trainingUsersTbody');
                 tbody.empty();
@@ -768,7 +785,10 @@
                     const cert = u.certificate_path ?
                         `<a href="${u.certificate_path}" target="_blank">Download</a>` : '';
                     tbody.append(
-                        `<tr><td>${u.id}</td><td>${u.first_name} ${u.last_name}</td><td>${u.mobile || ''}</td><td>${u.email}</td><td>${u.status}</td><td>${u.completion_date || ''}</td><td>${cert}</td></tr>`
+                        `<tr><td>${u.olms_id}</td><td>${u.first_name} ${u.last_name}</td><td>${u.status}</td><td>${u.completion_date || ''}</td>
+                            <td><a target="_blank" href="" class="btn btn-sm px-3 py-1 rounded-pill" style="background:#28a745; color:white;"
+                                 data-bs-toggle="tooltip" title="Download Certificate"><i class="bi bi-download me-1"></i></a></td>
+                         </tr>`
                     );
                 });
                 // build pagination (simple)
